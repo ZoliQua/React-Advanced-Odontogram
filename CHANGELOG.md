@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   tooth loss (K08.1) and retained root (K08.3) — one Condition per finding per
   tooth, presence-gated. Fractures and peri-implant disease are not yet coded
   (no WHO ICD-10 code). The active national pack (e.g. BNO-10) still overlays.
+- **Dental diagnosis coding: per-tooth picker + overrides (DX-2).** A new
+  Diagnoses card lists a tooth's chart-derived ICD-10 diagnoses and lets the
+  clinician suppress one or add a tooth-level diagnosis the chart does not
+  represent; the effective coded set (derived − suppressed + added) drives the
+  FHIR export and the coded-diagnoses summary/tooltip. Payload 2.21 (additive
+  `dxOverrides`); the visual chart is unaffected.
 - **Guided intro tour, reworked and extended.** The tour now steps with the left
   and right arrow keys (a teardown bug used to unbind the keyboard handler after
   the first step), targets the real restoration control instead of a control that

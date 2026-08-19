@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { deriveDentalDiagnoses } from "../derive";
+import { applyDxOverrides, deriveDentalDiagnoses } from "../derive";
 
 describe("deriveDentalDiagnoses (DX-0: caries)", () => {
   it("derives one caries diagnosis per tooth that has any carious surface", () => {
@@ -68,5 +68,20 @@ describe("deriveDentalDiagnoses — DX-1 pulp & apical", () => {
     const keys = one({ toothSelection: "tooth-base", apicalDx: "asymptomatic-apical-periodontitis", periapicalType: "cyst" });
     expect(keys).toContain("radicularCyst");
     expect(keys).not.toContain("apicalPeriodontitisChronic");
+  });
+});
+
+describe("dxOverrides (DX-2)", () => {
+  it("applyDxOverrides: suppress removes, add includes, unknown/invalid ignored", () => {
+    // applyDxOverrides mutates+returns its input Set (by design, see derive.ts), so each
+    // assertion below gets its OWN fresh base Set rather than reusing one across calls.
+    const base = () => new Set(["caries", "pulpitis"] as const);
+    expect([...applyDxOverrides(base() as Set<any>, { caries: "suppress" })].sort()).toEqual(["pulpitis"]);
+    expect([...applyDxOverrides(base() as Set<any>, { calculus: "add" })].sort()).toEqual(["calculus", "caries", "pulpitis"]);
+    expect([...applyDxOverrides(base() as Set<any>, { nope: "add", caries: "bogus" })].sort()).toEqual(["caries", "pulpitis"]);
+  });
+  it("deriveDentalDiagnoses honours a tooth's dxOverrides", () => {
+    const p = { teeth: { "16": { toothSelection: "tooth-base", caries: ["occlusal"], dxOverrides: { caries: "suppress", calculus: "add" } } } };
+    expect(deriveDentalDiagnoses(p).map((d) => d.key).sort()).toEqual(["calculus"]);
   });
 });

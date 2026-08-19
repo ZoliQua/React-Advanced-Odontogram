@@ -36,6 +36,13 @@ const APICAL: Record<string, DiagnosisKey> = {
   "chronic-apical-abscess": "periapicalAbscessSinus",
   "condensing-osteitis": "condensingOsteitis",
 };
+// Peri-implant disease (implant-only). No WHO ICD-10 code -> surfaced uncoded (DX-3a).
+const PERIIMPLANT: Record<string, DiagnosisKey> = {
+  mucositis: "periImplantMucositis",
+  "peri-implantitis-mild": "periImplantitis",
+  "peri-implantitis-moderate": "periImplantitis",
+  "peri-implantitis-severe": "periImplantitis",
+};
 
 const ALL_DX_KEYS = new Set(Object.keys(DX_CODES) as DiagnosisKey[]);
 
@@ -79,6 +86,11 @@ export function deriveDentalDiagnoses(payload: unknown): DerivedDiagnosis[] {
     // Tooth-status findings (their own presence semantics)
     if (rec.toothSelection === "no-tooth-after-extraction") add("toothLoss");
     if (rec.toothSubstrate === "radix" && rec.toothSelection !== "no-tooth-after-extraction") add("retainedRoot");
+    // Peri-implant disease — implant-only; keys are uncoded (no WHO ICD-10)
+    if (rec.toothSelection === "implant") {
+      const pi = PERIIMPLANT[String(rec.periImplant)];
+      if (pi) add(pi);
+    }
 
     if (natural) {
       if (Array.isArray(rec.caries) && rec.caries.length > 0) add("caries"); // DX-0, now gated

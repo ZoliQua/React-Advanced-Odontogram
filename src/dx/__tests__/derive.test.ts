@@ -82,6 +82,21 @@ describe("deriveDentalDiagnoses — DX-3a fracture", () => {
   });
 });
 
+describe("deriveDentalDiagnoses — DX-3a peri-implant disease", () => {
+  it("derives periImplantitis from an implant's peri-implantitis (any severity)", () => {
+    const out = deriveDentalDiagnoses({ teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-moderate" } } });
+    expect(out.map((d) => d.key)).toContain("periImplantitis");
+  });
+  it("derives periImplantMucositis from implant mucositis", () => {
+    const out = deriveDentalDiagnoses({ teeth: { "36": { toothSelection: "implant", periImplant: "mucositis" } } });
+    expect(out.map((d) => d.key)).toContain("periImplantMucositis");
+  });
+  it("ignores a stale periImplant value on a non-implant tooth", () => {
+    const out = deriveDentalDiagnoses({ teeth: { "36": { toothSelection: "tooth-base", periImplant: "peri-implantitis-severe" } } });
+    expect(out.map((d) => d.key)).not.toContain("periImplantitis");
+  });
+});
+
 describe("dxOverrides (DX-2)", () => {
   it("applyDxOverrides: suppress removes, add includes, unknown/invalid ignored", () => {
     // applyDxOverrides mutates+returns its input Set (by design, see derive.ts), so each

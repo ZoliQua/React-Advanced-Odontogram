@@ -4558,7 +4558,7 @@ function getStateSummary(toothNo: number): string[]{
   // a rule-derived one, mirroring how "proposed" plan findings are visually
   // tagged elsewhere.
   for(const d of getToothDiagnoses(toothNo)){
-    const line = `${d.icd10Display} (${d.icd10})`;
+    const line = d.icd10 ? `${d.icd10Display} (${d.icd10})` : `${d.icd10Display} (${t("diagnoses.noCode")})`;
     summary.push(d.source === "added" ? `+ ${line}` : line);
   }
 
@@ -10745,7 +10745,7 @@ export function getOdontogramSummary(): OdontogramSummary {
     // never drifts from the tooltip / active-diagnoses card). An explicitly
     // ADDED (not rule-derived) code is prefixed, mirroring the tooltip.
     for(const d of getToothDiagnoses(toothNo)){
-      const line = `${d.icd10Display} (${d.icd10})`;
+      const line = d.icd10 ? `${d.icd10Display} (${d.icd10})` : `${d.icd10Display} (${t("diagnoses.noCode")})`;
       dxs.push(d.source === "added" ? `+ ${line}` : line);
     }
     if(dxs.length) diagnoses.push(`${lbl(toothNo)} (${dxs.join("; ")})`);

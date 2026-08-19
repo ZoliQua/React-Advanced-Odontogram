@@ -5,7 +5,9 @@ import { describe, it, expect, beforeEach } from "vitest";
 import {
   importStatus, getToothDiagnoses, getActiveDiagnoses, setDxOverrideForSelection,
   __resetChartStateForTest, __collectExportPayloadForTest, __setSelectionForTest, clearSelection,
+  getOdontogramSummary, getToothStateSummary,
 } from "../odontogram";
+import { t } from "../i18n/useI18n";
 
 describe("DX-2 active diagnoses API", () => {
   beforeEach(() => __resetChartStateForTest());
@@ -66,5 +68,27 @@ describe("DX-2 active diagnoses API", () => {
     expect(active.visible).toBe(false);
     expect(active.rows).toEqual([]);
     expect(active.addableKeys).toEqual([]);
+  });
+});
+
+describe("DX-3a uncoded peri-implant surfacing (tooltip + summary)", () => {
+  beforeEach(() => __resetChartStateForTest());
+
+  it("surfaces peri-implantitis in the whole-mouth summary as uncoded (no (null))", () => {
+    importStatus({ version: "2.21", globals: {}, teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } } });
+    const summary = getOdontogramSummary();
+    const text = JSON.stringify(summary);
+    expect(text).toContain("Peri-implantitis");
+    expect(text).not.toContain("(null)");
+    expect(text).toContain(`(${t("diagnoses.noCode")})`);
+  });
+
+  it("surfaces peri-implantitis in the per-tooth tooltip as uncoded (no (null))", () => {
+    importStatus({ version: "2.21", globals: {}, teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } } });
+    const lines = getToothStateSummary(36);
+    const text = JSON.stringify(lines);
+    expect(text).toContain("Peri-implantitis");
+    expect(text).not.toContain("(null)");
+    expect(text).toContain(`(${t("diagnoses.noCode")})`);
   });
 });

@@ -85,4 +85,9 @@ describe("dental Condition emission (DX-0)", () => {
     expect(dx.resource.code.coding[0].code).toBe("S02.5");
     expect(dx.resource.bodySite[0].coding[0].code).toBe("11");
   });
+  it("emits no Condition for uncoded peri-implant disease", () => {
+    const bundle: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(bundle, { teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } } } as any);
+    expect(bundle.entry.some((e: any) => String(e.resource.id).includes("periImplant"))).toBe(false);
+  });
 });

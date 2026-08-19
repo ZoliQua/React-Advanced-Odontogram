@@ -860,6 +860,21 @@ function caseContextSummaryFragment(c: CaseMeta): string {
   }
   return parts.join(" · ");
 }
+/** Builds the labelled whole-mouth case/regional-diagnoses fragment (e.g.
+ *  "Case / regional diagnoses: Temporomandibular joint disorder (K07.6) [Right];
+ *  Recurrent oral aphthae (K12.0)") appended to {@link getOdontogramSummary}'s
+ *  `periodontalText` whenever at least one case condition is active. Returns
+ *  `null` when there are none — independent of {@link caseMetaIsEmpty}, since a
+ *  case can carry conditions with no other case metadata charted. */
+function caseDiagnosesSummaryFragment(): string | null {
+  const conds = getCaseConditions();
+  if(conds.length === 0) return null;
+  const parts = conds.map((c) => {
+    const lat = (c.lateralizable && c.laterality !== "unspecified") ? ` [${t(`caseDx.laterality.${c.laterality}`)}]` : "";
+    return `${t(`dx.case.${c.key}`)} (${c.icd10})${lat}`;
+  });
+  return `${t("case.diagnoses.section")}: ${parts.join("; ")}`;
+}
 // Plan chart is lazily deep-cloned from status the FIRST time plan mode is
 // entered; subsequent entries reuse whatever is already in charts.plan (so
 // plan edits are never silently overwritten by re-cloning from status).
@@ -10883,6 +10898,13 @@ export function getOdontogramSummary(): OdontogramSummary {
   if(!caseMetaIsEmpty(caseMeta)){
     const fragment = caseContextSummaryFragment(caseMeta);
     if(fragment) periodontalText = `${periodontalText} – ${fragment}`;
+  }
+  // Append the case/regional-diagnoses fragment (K-code list with laterality)
+  // whenever at least one case condition is active — independent of the
+  // caseMetaIsEmpty gate above, since conditions can be the only case data set.
+  {
+    const diagnosesFragment = caseDiagnosesSummaryFragment();
+    if(diagnosesFragment) periodontalText = `${periodontalText} – ${diagnosesFragment}`;
   }
   // Append the FINAL (override-aware) 2017 classification — separate from the
   // case-context fragment above (that one only fires when

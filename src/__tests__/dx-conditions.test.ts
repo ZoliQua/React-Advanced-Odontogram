@@ -1,0 +1,63 @@
+import { describe, it, expect } from "vitest";
+import { buildConditionCode, appendDentalConditions } from "../fhir/toFhirDx";
+import { BNO10_PACK, BNO10_SYSTEM } from "../dx/packs";
+import { ICD10_SYSTEM } from "../fhir/codesystems";
+import type { Bundle, Condition, OdontogramExportPayload } from "../fhir/types";
+
+const payload = { version: "2.20", globals: {}, teeth: { "16": { caries: ["occlusal"] } } } as unknown as OdontogramExportPayload;
+
+describe("dental Condition emission (DX-0)", () => {
+  it("buildConditionCode emits the WHO base coding by default", () => {
+    const cc = buildConditionCode("caries");
+    expect(cc.coding).toEqual([{ system: ICD10_SYSTEM, code: "K02", display: "Dental caries" }]);
+    expect(cc.text).toBe("Dental caries");
+  });
+  it("buildConditionCode adds the pack coding (same code) for a translation pack", () => {
+    const cc = buildConditionCode("caries", BNO10_PACK);
+    expect(cc.coding).toEqual([
+      { system: ICD10_SYSTEM, code: "K02", display: "Dental caries" },
+      { system: BNO10_SYSTEM, code: "K02", display: "Fogszuvasodás" },
+    ]);
+  });
+  it("appendDentalConditions emits one K02 Condition per carious tooth", () => {
+    const bundle: Bundle = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(bundle, payload);
+    const conditions = (bundle.entry ?? [])
+      .map((e) => e.resource)
+      .filter((r): r is Condition => r?.resourceType === "Condition");
+    expect(conditions).toHaveLength(1);
+    expect(conditions[0]?.code?.coding?.[0]).toEqual({ system: ICD10_SYSTEM, code: "K02", display: "Dental caries" });
+    expect(conditions[0]?.bodySite?.[0]?.coding?.[0]?.code).toBe("16");
+  });
+  it("appendDentalConditions adds the BNO coding when the pack is passed", () => {
+    const bundle: Bundle = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(bundle, payload, { codingPack: BNO10_PACK });
+    const cond = (bundle.entry ?? [])
+      .map((e) => e.resource)
+      .find((r): r is Condition => r?.resourceType === "Condition");
+    expect(cond?.code?.coding?.some((c) => c.system === BNO10_SYSTEM && c.code === "K02")).toBe(true);
+  });
+  it("appendDentalConditions emits the DECIDUOUS ISO code as bodySite for a milk tooth with an equivalent", () => {
+    // "14" (permanent upper-right 1st premolar position) -> deciduous "54" per FDI_TO_DECIDUOUS.
+    const milkPayload = {
+      version: "2.20",
+      globals: {},
+      teeth: { "14": { toothSelection: "milktooth", caries: ["occlusal"] } },
+    } as unknown as OdontogramExportPayload;
+    const bundle: Bundle = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(bundle, milkPayload);
+    const conditions = (bundle.entry ?? [])
+      .map((e) => e.resource)
+      .filter((r): r is Condition => r?.resourceType === "Condition");
+    expect(conditions).toHaveLength(1);
+    expect(conditions[0]?.bodySite?.[0]?.coding?.[0]?.code).toBe("54");
+  });
+  it("appendDentalConditions still emits the permanent FDI code as bodySite for a non-milk tooth", () => {
+    const bundle: Bundle = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(bundle, payload);
+    const conditions = (bundle.entry ?? [])
+      .map((e) => e.resource)
+      .filter((r): r is Condition => r?.resourceType === "Condition");
+    expect(conditions[0]?.bodySite?.[0]?.coding?.[0]?.code).toBe("16");
+  });
+});

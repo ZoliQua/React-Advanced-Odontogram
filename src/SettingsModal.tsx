@@ -74,6 +74,10 @@ export type SettingsState = {
   onImportStatus: (value: boolean) => void;
   importFhir: boolean;
   onImportFhir: (value: boolean) => void;
+  // Diagnosis coding-pack selection ("none" = WHO ICD-10 base only, "bno10" =
+  // BNO-10 national pack). Session-only module flag, mirrors perioViewMode.
+  codingPack: string;
+  onDiagnosisCodingPack: (value: string) => void;
   secondaryCariesMode: SecondaryCariesMode;
   onSecondaryCariesMode: (value: SecondaryCariesMode) => void;
   icdas: boolean;
@@ -169,6 +173,11 @@ const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
   { value: "zh", labelKey: "language.zh" },
   { value: "ar", labelKey: "language.ar" },
   { value: "fr", labelKey: "language.fr" },
+];
+
+const DIAGNOSIS_CODING_OPTIONS: { value: string; labelKey: string }[] = [
+  { value: "none", labelKey: "settings.diagnosisCoding.none" },
+  { value: "bno10", labelKey: "settings.diagnosisCoding.bno10" },
 ];
 
 const SECONDARY_OPTIONS: { value: SecondaryCariesMode; labelKey: string }[] = [
@@ -533,6 +542,14 @@ export const SETTINGS_TABS: SettingsTab[] = [
           descKey="settings.import.fhir.desc"
           checked={s.importFhir}
           onChange={s.onImportFhir}
+        />
+        <SelectRow<string>
+          t={t}
+          label={t("settings.diagnosisCoding")}
+          descKey="settings.diagnosisCoding.desc"
+          value={s.codingPack}
+          options={DIAGNOSIS_CODING_OPTIONS}
+          onChange={s.onDiagnosisCodingPack}
         />
       </>
     ),

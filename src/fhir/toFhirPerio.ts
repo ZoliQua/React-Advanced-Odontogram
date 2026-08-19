@@ -2,9 +2,10 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import type { Bundle, Observation, Condition, CodeableConcept, ToothRecord, OdontogramExportPayload, FhirExportOptions } from "./types";
-import { LOCAL_SYSTEM, FDI_SYSTEM, ICD10_SYSTEM } from "./codesystems";
+import { LOCAL_SYSTEM, FDI_SYSTEM } from "./codesystems";
 import { PLACEHOLDER_PATIENT_FULLURL, baseObservation } from "./primitives";
 import { toothBodySiteCode } from "./iso3950";
+import { buildConditionCode } from "./toFhirDx";
 import {
   derivePerioClassification,
   type PerioDerivationInput,
@@ -113,16 +114,6 @@ function loincConcept(entry: { code: string; display: string }): CodeableConcept
  */
 function localConcept(code: string, display: string): CodeableConcept {
   return { coding: [{ system: LOCAL_SYSTEM, code, display }], text: display };
-}
-
-/**
- * ICD-10 (WHO) CodeableConcept (`http://hl7.org/fhir/sid/icd-10`, see
- * codesystems.ts). BNO-10 (the Hungarian national ICD-10 clinical modification)
- * mirrors the WHO K05.* codes used here 1:1, so a separate BNO coding is not
- * emitted. SNOMED CT is deferred, mirroring every other engine-local finding.
- */
-function icdConcept(code: string, display: string): CodeableConcept {
-  return { coding: [{ system: ICD10_SYSTEM, code, display }], text: display };
 }
 
 /**
@@ -675,10 +666,9 @@ const K05_EXTENT_DISPLAY: Record<Exclude<PerioExtent, "na">, string> = {
  * NOTHING (no Condition, no evidence Observations) for a "health" diagnosis.
  * Called from `buildFhirBundle` (toFhir.ts) AFTER `appendPerioObservations`.
  *
- * `code`: K05.3 periodontitis, K05.2 when the final `extent` is "molar-incisor"
- * (checked BEFORE the generic periodontitis code — mirrors
- * `derivePerioClassification`'s own molar-incisor-first precedence), K05.1
- * gingivitis.
+ * `code`: K05.3 for periodontitis (any extent — the molar-incisor pattern is
+ * carried by the periodontal-extent stage entry, not a distinct WHO ICD-10
+ * code), K05.1 for gingivitis.
  *
  * `stage[]`: one type-differentiated entry per APPLICABLE axis only — a stage
  * entry iff diagnosis is periodontitis AND `stage` is neither "na" nor
@@ -707,12 +697,13 @@ export function appendPerioCondition(bundle: Bundle, payload: OdontogramExportPa
   const subjectRef = options.subject ?? PLACEHOLDER_PATIENT_FULLURL;
   if (!bundle.entry) bundle.entry = [];
 
-  const code =
-    final.diagnosis === "gingivitis"
-      ? icdConcept("K05.1", "Chronic gingivitis")
-      : final.extent === "molar-incisor"
-        ? icdConcept("K05.2", "Acute periodontitis")
-        : icdConcept("K05.3", "Chronic periodontitis");
+  // All periodontitis diagnoses use K05.3 (Chronic periodontitis). The
+  // molar-incisor PATTERN is not a distinct WHO ICD-10 code: K05.2 is
+  // "Acute periodontitis" (an unrelated diagnosis), and the ICD-10-CM meaning of
+  // K05.2 ("aggressive periodontitis") does not belong on an R4/WHO ICD-10
+  // bundle. The pattern is carried by the periodontal-extent stage entry instead.
+  const dxKey = final.diagnosis === "gingivitis" ? "gingivitis" : "periodontitis";
+  const code = buildConditionCode(dxKey, options.codingPack);
 
   const condition: Condition = {
     resourceType: "Condition",

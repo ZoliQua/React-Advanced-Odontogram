@@ -188,4 +188,7 @@ export interface FhirExportOptions {
    * referenced by every Observation.
    */
   subject?: string;
+  /** Active national diagnosis coding pack (adds a second coding to each
+   *  Condition). Resolved and passed by the export entry point. */
+  codingPack?: import("../dx/packs").CodingPack;
 }

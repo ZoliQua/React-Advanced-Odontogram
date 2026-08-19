@@ -10,10 +10,19 @@ import { buildFhirBundleFromRegistry } from "../fhir";
 const here = import.meta.url;
 const golden = JSON.parse(readFileSync(fileURLToPath(new URL("../../__tests__/parity/fhir-golden.json", here)), "utf8"));
 
+// Strip the bespoke Condition resources: buildFhirBundleFromRegistry is the
+// registry-only path and never emits them (perio K05 / dental K02 Conditions
+// are added by the full buildFhirBundle on top). The golden is captured from
+// the full builder, so compare the registry builder against golden-minus-Conditions.
+const withoutConditions = (bundle: { entry?: { resource?: { resourceType?: string } }[] }) => ({
+  ...bundle,
+  entry: (bundle.entry ?? []).filter((e) => e.resource?.resourceType !== "Condition"),
+});
+
 describe("registry-driven toFhir matches the pre-rewrite engine", () => {
   it("equals the frozen FHIR golden", () => {
     payloadCases().forEach((p, i) =>
-      expect(buildFhirBundleFromRegistry(p.payload), p.name).toEqual(golden[i].bundle));
+      expect(buildFhirBundleFromRegistry(p.payload), p.name).toEqual(withoutConditions(golden[i].bundle)));
   });
   it("matches frozen snapshots for note / customStates / custom subject (branches outside the matrix)", () => {
     const noteP = { teeth: { "11": { note: "chipped mesial" } } };

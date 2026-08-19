@@ -1236,6 +1236,36 @@
               "text": "Metal-ceramic (PFM)"
             }
           }
+        },
+        {
+          "fullUrl": "urn:uuid:odontogram-dx-caries-11",
+          "resource": {
+            "resourceType": "Condition",
+            "id": "odontogram-dx-caries-11",
+            "code": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/sid/icd-10",
+                  "code": "K02",
+                  "display": "Dental caries"
+                }
+              ],
+              "text": "Dental caries"
+            },
+            "subject": {
+              "reference": "urn:uuid:odontogram-subject"
+            },
+            "bodySite": [
+              {
+                "coding": [
+                  {
+                    "system": "urn:iso:std:iso:3950",
+                    "code": "11"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ]
     }

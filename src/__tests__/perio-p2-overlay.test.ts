@@ -163,6 +163,7 @@ vi.mock("../odontogram", async () => {
     // mounts stay in popup housing regardless of what any other test file
     // did to the shared module state.
     getPerioViewMode: vi.fn().mockReturnValue("popup"),
+    getDiagnosisCodingPack: vi.fn().mockReturnValue("none"),
     getFillingDefectEnabled: vi.fn().mockReturnValue(true),
     setFillingDefectEnabled: vi.fn(),
     getFillingComplexity: vi.fn().mockReturnValue("complex"),
@@ -172,6 +173,7 @@ vi.mock("../odontogram", async () => {
     getFillingMaterialAvailability: vi.fn().mockReturnValue({ amalgam: true, composite: true, gic: true, temporary: true }),
     setFillingMaterialAvailability: vi.fn(),
     setPerioViewMode: vi.fn(),
+    setDiagnosisCodingPack: vi.fn(),
     getToothAnatomy: vi.fn().mockReturnValue("classic"),
     setToothAnatomy: vi.fn(),
     getPerioRowVisibility: vi.fn().mockReturnValue({

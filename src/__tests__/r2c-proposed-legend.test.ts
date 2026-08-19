@@ -151,6 +151,7 @@ vi.mock("../odontogram", async () => {
     closePerioOverlay: vi.fn(),
     isPerioOverlayOpen: vi.fn().mockReturnValue(false),
     getPerioViewMode: vi.fn().mockReturnValue("toggle"),
+    getDiagnosisCodingPack: vi.fn().mockReturnValue("none"),
     getFillingDefectEnabled: vi.fn().mockReturnValue(true),
     setFillingDefectEnabled: vi.fn(),
     getFillingComplexity: vi.fn().mockReturnValue("complex"),
@@ -160,6 +161,7 @@ vi.mock("../odontogram", async () => {
     getFillingMaterialAvailability: vi.fn().mockReturnValue({ amalgam: true, composite: true, gic: true, temporary: true }),
     setFillingMaterialAvailability: vi.fn(),
     setPerioViewMode: vi.fn(),
+    setDiagnosisCodingPack: vi.fn(),
     getToothAnatomy: vi.fn().mockReturnValue("classic"),
     setToothAnatomy: vi.fn(),
     getPerioRowVisibility: vi.fn().mockReturnValue({

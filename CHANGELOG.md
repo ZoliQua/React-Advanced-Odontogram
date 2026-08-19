@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Dental diagnosis coding (DX-0 foundation).** Charted findings now export as
+  FHIR `Condition` resources with a WHO ICD-10 base coding, plus an optional
+  pluggable national code pack (Settings → General → Diagnosis coding system;
+  ships WHO-only + BNO-10). DX-0 covers caries (K02) and refactors the perio
+  (K05) Condition to share the coding builder (default output unchanged). More
+  findings, the diagnosis picker, and further packs (US ICD-10-CM, SNOMED) follow
+  in later sub-projects.
 - **Guided intro tour, reworked and extended.** The tour now steps with the left
   and right arrow keys (a teardown bug used to unbind the keyboard handler after
   the first step), targets the real restoration control instead of a control that
@@ -119,6 +126,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   change so `onStateChange` subscribers (e.g. hosts persisting preferences)
   observe fillings-setting changes. `setFillingMaterialAvailability` also
   ignores unknown materials without notifying.
+
+### Fixed
+
+- **FHIR Condition ICD-10 code for the molar-incisor pattern.** A molar-incisor
+  periodontitis emitted `K05.2` with a "Acute periodontitis" display, which is
+  the WHO ICD-10 meaning of K05.2 (an unrelated diagnosis; the ICD-10-CM
+  "aggressive periodontitis" meaning does not belong on an R4/WHO bundle). It now
+  emits `K05.3` (Chronic periodontitis) like every other periodontitis; the
+  molar-incisor pattern is still carried by the periodontal-extent stage entry.
+- **Plugin `customStates` isolation between the status and plan charts.** An
+  object-valued plugin state was shared by reference across the two charts (they
+  are cloned via `serializeState` -> `hydrateState`, which passed `customStates`
+  by reference), so mutating it in one leaked into the other. Object values are
+  now deep-copied on hydrate.
+
+### Security
+
+- **Prototype pollution on FHIR import.** A crafted bundle whose `bodySite`
+  carried a non-numeric tooth code (e.g. `"__proto__"`) reached `ensureTooth`,
+  where the naive `if (!teeth[id])` guard returned `Object.prototype` and later
+  writes leaked onto it. The importer now accepts only two-digit numeric tooth
+  codes (rejecting `__proto__`/`constructor`/`prototype`) and `ensureTooth` uses
+  an own-property check. Regression-tested.
+
+### CI
+
+- Run ESLint as a required CI step alongside type-check, test and build.
 
 ## [2.4.0] - 2026-08-11
 

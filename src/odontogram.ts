@@ -9,6 +9,7 @@ import { sanitizePluginSvg } from "./pluginSanitize";
 import { buildFhirBundle } from "./fhir/toFhir";
 import { parseFhirBundle } from "./fhir/fromFhir";
 import type { FhirExportOptions } from "./fhir/types";
+import { resolveCodingPack } from "./dx/packs";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
@@ -6867,7 +6868,13 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
     const validIds = new Set(registeredPlugins.map(p => p.id));
     for(const [key, val] of Object.entries(raw.customStates)){
       if(validIds.has(key)){
-        s.customStates[key] = val;
+        // Deep-copy object values: charts are cloned via serializeState ->
+        // hydrateState (cloneChart), and serializeState passes customStates by
+        // reference, so without a copy an object-valued plugin state would be
+        // SHARED between the status and plan charts, breaking their isolation.
+        s.customStates[key] = (val !== null && typeof val === "object")
+          ? (typeof structuredClone === "function" ? structuredClone(val) : JSON.parse(JSON.stringify(val)))
+          : val;
       }
     }
   }
@@ -8278,6 +8285,20 @@ export function setPerioViewMode(mode: PerioViewMode): void {
   notifyStateChange();
 }
 
+// Session-only selected diagnosis coding pack (mirrors perioViewMode): a module
+// `let` + getter + setter, NOT part of the export payload. "none" = WHO base only.
+let diagnosisCodingPack = "none";
+
+export function getDiagnosisCodingPack(): string {
+  return diagnosisCodingPack;
+}
+
+export function setDiagnosisCodingPack(id: string): void {
+  if (id === diagnosisCodingPack) return;
+  diagnosisCodingPack = id;
+  notifyStateChange();
+}
+
 // ---- Settings -> Periodontal tab app-level preferences ----
 // Two session-level UI preferences (no payload/FHIR change), mirroring the
 // `perioViewMode` precedent immediately above: a module `let` + getter +
@@ -9226,8 +9247,10 @@ export function exportStatus(){
  *   omitted a placeholder Patient is embedded.
  */
 export function exportFhir(options?: FhirExportOptions){
-  const bundle = buildFhirBundle(collectExportPayload(), options);
+  const merged: FhirExportOptions = { ...options, codingPack: options?.codingPack ?? resolveCodingPack(diagnosisCodingPack) };
+  const bundle = buildFhirBundle(collectExportPayload(), merged);
   downloadJson(bundle, "odontogram-fhir");
+  return bundle;
 }
 
 /**

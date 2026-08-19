@@ -63,6 +63,11 @@ export function localCode(cc: unknown): string | undefined {
 }
 
 export function ensureTooth(teeth: Record<string, ToothRecord>, id: string): ToothRecord {
-  if (!teeth[id]) teeth[id] = {};
+  // Own-property check, NOT `!teeth[id]`: for a plain object `teeth["__proto__"]`
+  // resolves to Object.prototype (truthy), so the naive guard would skip the
+  // assignment and hand back Object.prototype, letting later writes leak onto it
+  // (prototype pollution). hasOwnProperty guarantees we create/return a real own
+  // slot. Callers additionally validate the id (see isToothCode in fromFhir).
+  if (!Object.prototype.hasOwnProperty.call(teeth, id)) teeth[id] = {};
   return teeth[id];
 }

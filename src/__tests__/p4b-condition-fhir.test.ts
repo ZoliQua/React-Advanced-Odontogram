@@ -6,6 +6,8 @@ import { buildFhirBundle } from "../fhir/toFhir";
 import { buildDerivationInputFromPayload } from "../fhir/toFhirPerio";
 import type { OdontogramExportPayload, Condition, Observation } from "../fhir/types";
 import { getPerioClassification, __resetChartStateForTest, __hydrateImportedChartsForTest } from "../odontogram";
+import { BNO10_PACK, BNO10_SYSTEM } from "../dx/packs";
+import { ICD10_SYSTEM } from "../fhir/codesystems";
 
 // SP-perio P4b Task 3: the engine's first FHIR Condition (periodontitis/
 // gingivitis, ICD-10/BNO K05) with type-differentiated stage/grade/extent +
@@ -47,8 +49,9 @@ const periodontitisPayload: OdontogramExportPayload = {
 };
 
 // Molar-incisor pattern: one incisor (11) + one molar (26), both affected,
-// nothing else — extent must resolve to "molar-incisor" (K05.2), not the
-// percentage-based localized/generalized split.
+// nothing else — extent must resolve to "molar-incisor" (carried by the extent
+// stage entry; the Condition.code stays K05.3), not the percentage-based
+// localized/generalized split.
 const molarIncisorPayload: OdontogramExportPayload = {
   version: "2.18",
   teeth: {
@@ -109,11 +112,17 @@ describe("appendPerioCondition — periodontitis/gingivitis Condition (K05)", ()
     for (const ref of evidenceRefs) expect(fullUrls.has(ref as string)).toBe(true);
   });
 
-  it("molar-incisor extent -> Condition.code K05.2", () => {
+  it("molar-incisor extent -> Condition.code K05.3, pattern carried by the extent entry", () => {
     const b = buildFhirBundle(molarIncisorPayload);
     const conditions = conditionsOf(b);
     expect(conditions).toHaveLength(1);
-    expect(icdCode(conditions[0])).toBe("K05.2");
+    const c = conditions[0];
+    // K05.3 (chronic periodontitis). K05.2 is "Acute periodontitis" in WHO
+    // ICD-10 and must NOT be used for the molar-incisor pattern.
+    expect(icdCode(c)).toBe("K05.3");
+    // The molar-incisor pattern is still represented, via the extent stage entry.
+    const extentEntry = c.stage?.find((s) => s.summary?.coding?.some((co) => co.code === "extent-molar-incisor"));
+    expect(extentEntry).toBeDefined();
   });
 
   it("gingivitis -> K05.1, NO stage entry (stage na), no extent entry", () => {
@@ -152,6 +161,15 @@ describe("appendPerioCondition — periodontitis/gingivitis Condition (K05)", ()
     const b1 = buildFhirBundle(periodontitisPayload);
     const b2 = buildFhirBundle(periodontitisPayload);
     expect(JSON.stringify(b1)).toBe(JSON.stringify(b2));
+  });
+
+  it("carries the BNO-10 pack coding on the K05 Condition when a pack is active", () => {
+    const b = buildFhirBundle(periodontitisPayload, { codingPack: BNO10_PACK });
+    const c = conditionsOf(b)[0];
+    // WHO base coding is still first and unchanged.
+    expect(c.code?.coding?.[0]).toEqual({ system: ICD10_SYSTEM, code: "K05.3", display: "Chronic periodontitis" });
+    // A BNO coding (same K05.3 code) is present.
+    expect(c.code?.coding?.some((co) => co.system === BNO10_SYSTEM && co.code === "K05.3")).toBe(true);
   });
 });
 

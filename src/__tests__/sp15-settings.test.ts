@@ -47,6 +47,7 @@ function makeSettings(overrides: Partial<SettingsState> = {}): SettingsState {
     exportPdf: true, onExportPdf: vi.fn(),
     importStatus: true, onImportStatus: vi.fn(),
     importFhir: true, onImportFhir: vi.fn(),
+    codingPack: "none", onDiagnosisCodingPack: vi.fn(),
     secondaryCariesMode: "standard",
     onSecondaryCariesMode: vi.fn(),
     icdas: false,

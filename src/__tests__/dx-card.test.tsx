@@ -162,8 +162,9 @@ describe("DX-2 Task 4: diagnoses i18n keys present in all languages", () => {
     "periapicalAbscess", "periapicalAbscessSinus", "condensingOsteitis",
     "resorption", "attrition", "abrasion", "erosion", "abfraction", "calculus",
     "fluorosis", "tetracyclineStain", "postEruptiveColour", "toothLoss", "retainedRoot",
+    "toothFracture",
   ];
-  const CARD_KEYS = ["card.diagnoses", "diagnoses.add", "diagnoses.suppress", "diagnoses.added"];
+  const CARD_KEYS = ["card.diagnoses", "diagnoses.add", "diagnoses.suppress", "diagnoses.added", "diagnoses.noCode"];
   const ALL_KEYS = [...CARD_KEYS, ...TOOTH_LEVEL_DX_KEYS.map((k) => `dx.${k}`)];
   const ALL_LANGUAGES = ["hu", "en", "de", "es", "it", "sk", "pl", "ru", "pt-br", "zh", "ar", "fr"] as const;
 

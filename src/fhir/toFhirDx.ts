@@ -14,15 +14,17 @@ import { toothBodySiteCode } from "./iso3950";
  * when a national pack is active, the pack's coding (translation packs keep the
  * same code, modification packs remap it). Extended with a SNOMED coding in DX-6.
  */
-export function buildConditionCode(key: DiagnosisKey, pack?: CodingPack): CodeableConcept {
+export function buildConditionCode(key: DiagnosisKey, pack?: CodingPack): CodeableConcept | null {
   const base = DX_CODES[key];
-  const coding: NonNullable<CodeableConcept["coding"]> = [
-    { system: ICD10_SYSTEM, code: base.icd10, display: base.icd10Display },
-  ];
-  if (pack) {
-    const extra = packCoding(pack, key, base.icd10, base.icd10Display);
-    if (extra) coding.push(extra);
+  const coding: NonNullable<CodeableConcept["coding"]> = [];
+  if (base.icd10) {
+    coding.push({ system: ICD10_SYSTEM, code: base.icd10, display: base.icd10Display });
+    if (pack) {
+      const extra = packCoding(pack, key, base.icd10, base.icd10Display);
+      if (extra) coding.push(extra);
+    }
   }
+  if (coding.length === 0) return null; // uncoded diagnosis (no WHO code, no pack code)
   return { coding, text: base.icd10Display };
 }
 
@@ -41,13 +43,15 @@ export function appendDentalConditions(
   const subjectRef = options.subject ?? PLACEHOLDER_PATIENT_FULLURL;
   if (!bundle.entry) bundle.entry = [];
   for (const d of derived) {
+    const code = buildConditionCode(d.key, options.codingPack);
+    if (!code) continue; // uncoded diagnosis (e.g. peri-implant at WHO base) — nothing to emit
     const id = `odontogram-dx-${d.key}-${d.toothNo}`;
     const rec = payload.teeth?.[d.toothNo] ?? {};
     const bodySiteCode = toothBodySiteCode(d.toothNo, rec);
     const condition: Condition = {
       resourceType: "Condition",
       id,
-      code: buildConditionCode(d.key, options.codingPack),
+      code,
       subject: { reference: subjectRef },
       bodySite: [{ coding: [{ system: FDI_SYSTEM, code: bodySiteCode }] }],
     };

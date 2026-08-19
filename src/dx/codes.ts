@@ -10,12 +10,13 @@ export type DiagnosisKey =
   | "periapicalAbscess" | "periapicalAbscessSinus" | "condensingOsteitis"
   | "resorption" | "attrition" | "abrasion" | "erosion" | "abfraction" | "calculus"
   | "fluorosis" | "tetracyclineStain" | "postEruptiveColour"
-  | "toothLoss" | "retainedRoot";
+  | "toothLoss" | "retainedRoot"
+  | "toothFracture" | "periImplantMucositis" | "periImplantitis";
 
-/** A diagnosis's base coding: WHO ICD-10 (always) + an optional SNOMED slot
+/** A diagnosis's base coding: WHO ICD-10 (usually) + an optional SNOMED slot
  *  (filled in DX-6). National codes live in coding packs, not here. */
 export interface DiagnosisCode {
-  icd10: string;
+  icd10?: string;          // optional: an "uncoded" diagnosis (e.g. peri-implant) has no WHO code
   icd10Display: string;
   snomed?: string;
 }
@@ -46,4 +47,7 @@ export const DX_CODES: Record<DiagnosisKey, DiagnosisCode> = {
   postEruptiveColour: { icd10: "K03.7", icd10Display: "Posteruptive colour changes of dental hard tissues" },
   toothLoss: { icd10: "K08.1", icd10Display: "Loss of teeth due to accident, extraction or local periodontal disease" },
   retainedRoot: { icd10: "K08.3", icd10Display: "Retained dental root" },
+  toothFracture: { icd10: "S02.5", icd10Display: "Fracture of tooth" },
+  periImplantMucositis: { icd10Display: "Peri-implant mucositis" },
+  periImplantitis: { icd10Display: "Peri-implantitis" },
 };

@@ -3096,7 +3096,7 @@ export function setPeriImplantForSelection(value: string): void {
  *  a rule-derived finding not suppressed, or an explicitly added one. */
 export type ToothDiagnosis = {
   key: DiagnosisKey;
-  icd10: string;
+  icd10: string | null;
   icd10Display: string;
   source: "derived" | "added";
 };
@@ -3114,7 +3114,7 @@ export function getToothDiagnoses(toothNo: number): ToothDiagnosis[] {
   const overrides: Map<string, string> | undefined = state.dxOverrides;
   return derived.map((d) => ({
     key: d.key,
-    icd10: DX_CODES[d.key].icd10,
+    icd10: DX_CODES[d.key].icd10 ?? null,
     icd10Display: DX_CODES[d.key].icd10Display,
     source: overrides?.get(d.key) === "add" ? "added" : "derived",
   }));
@@ -3164,14 +3164,14 @@ export function getActiveDiagnoses(): ActiveDiagnoses {
 
   const rows: ActiveDiagnosisRow[] = rawKeys.map((key) => ({
     key,
-    icd10: DX_CODES[key as DiagnosisKey].icd10,
+    icd10: DX_CODES[key as DiagnosisKey].icd10 ?? "", // all catalog keys are coded; ?? is an unreachable type guard
     source: "derived",
     suppressed: overrides?.get(key) === "suppress",
   }));
   if(overrides){
     for(const [key, mode] of overrides){
       if(mode === "add" && !rawSet.has(key) && TOOTH_LEVEL_DX_KEYS.has(key)){
-        rows.push({ key, icd10: DX_CODES[key as DiagnosisKey].icd10, source: "added", suppressed: false });
+        rows.push({ key, icd10: DX_CODES[key as DiagnosisKey].icd10 ?? "", source: "added", suppressed: false }); // ?? unreachable type guard
       }
     }
   }
@@ -6461,7 +6461,8 @@ export const VALID_DX_OVERRIDE_VALUE = new Set(["add", "suppress"]);
 // Tooth-level diagnosis keys = every DX_CODES catalog key except the two
 // whole-mouth periodontal ones (periodontitis/gingivitis are derived from the
 // case-level perio classification, not authored per tooth).
-export const TOOTH_LEVEL_DX_KEYS = new Set(Object.keys(DX_CODES).filter((k) => k !== "periodontitis" && k !== "gingivitis"));
+export const TOOTH_LEVEL_DX_KEYS = new Set(Object.keys(DX_CODES).filter((k) =>
+  k !== "periodontitis" && k !== "gingivitis" && k !== "periImplantMucositis" && k !== "periImplantitis"));
 
 function filterSet(arr: Any, allowed: Set<string>): Set<string>{
   if(!Array.isArray(arr)) return new Set();

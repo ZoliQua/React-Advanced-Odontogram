@@ -17,7 +17,7 @@ import { parseFhirBundle } from "../fhir/fromFhir";
 describe("SP7 Task 6: payload version 2.5", () => {
   it("collectExportPayload emits version 2.5", () => {
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.20");
+    expect(payload.version).toBe("2.21");
   });
 
   it("parseFhirBundle (fromFhir) emits version 2.5, independent of the input payload's own version tag", () => {

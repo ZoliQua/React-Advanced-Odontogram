@@ -107,7 +107,7 @@ describe("serialize omit-when-none + round-trip (payload 2.16)", () => {
   it("omits both fields entirely when none; version is 2.16", () => {
     __setToothStateForTest(11, {}); // untouched -> both none -> omitted
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.20");
+    expect(payload.version).toBe("2.21");
     expect(Object.prototype.hasOwnProperty.call(payload.teeth["11"], "cejVisibility")).toBe(false);
     expect(Object.prototype.hasOwnProperty.call(payload.teeth["11"], "rootConcavity")).toBe(false);
   });

@@ -44,7 +44,7 @@ describe("peri-implant mPI/mBI (implant-gated per-surface graded)", () => {
   it("serializes omit-when-empty and roundtrips at version 2.16", () => {
     __setToothStateForTest(11, { toothSelection: "implant" });
     const empty = __collectExportPayloadForTest();
-    expect(empty.version).toBe("2.20");
+    expect(empty.version).toBe("2.21");
     expect(Object.prototype.hasOwnProperty.call(empty.teeth["11"], "mpi")).toBe(false);
     setPeriImplantPlaque(11, "buccal", 2);
     setPeriImplantBleeding(11, "buccal", 1);

@@ -34,7 +34,7 @@ describe("SP6 Task 1: payload version 2.4", () => {
     // for the dedicated version-bump test) while the historical describe/it
     // titles are left as-is, matching the existing convention (e.g. diagnosis-ui.test.ts).
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.20");
+    expect(payload.version).toBe("2.21");
   });
 
   it("parseFhirBundle (fromFhir) emits version 2.4, independent of the input payload's own version tag", () => {
@@ -52,7 +52,7 @@ describe("SP6 Task 1: payload version 2.4", () => {
       radiographicDepth: { mesial: "D2", occlusal: "E1" },
     });
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.20");
+    expect(payload.version).toBe("2.21");
     const raw17 = payload.teeth[17];
     expect(raw17.rootCaries).toBe("active-cavitated");
     expect(raw17.cariesSeverity).toEqual({ mesial: 5, occlusal: 2 });

@@ -145,6 +145,6 @@ describe("P4b Task 2: per-field override + final classification", () => {
 
   it("payload version bumped to 2.18", () => {
     const p = __collectExportPayloadForTest();
-    expect(p.version).toBe("2.20");
+    expect(p.version).toBe("2.21");
   });
 });

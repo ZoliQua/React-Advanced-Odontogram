@@ -48,7 +48,7 @@ describe("PI/GI per-surface graded axes", () => {
   it("serializes omit-when-empty and roundtrips at version 2.16", () => {
     __setToothStateForTest(11, {});
     const empty = __collectExportPayloadForTest();
-    expect(empty.version).toBe("2.20");
+    expect(empty.version).toBe("2.21");
     expect(Object.prototype.hasOwnProperty.call(empty.teeth["11"], "pi")).toBe(false);
     setPlaqueIndex(11, "buccal", 2);
     setGingivalIndex(11, "buccal", 1);

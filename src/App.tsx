@@ -47,6 +47,7 @@ export { default as ToothDetailsCard } from "./surfaces/cards/ToothDetailsCard";
 export { default as CariesCard } from "./surfaces/cards/CariesCard";
 export { default as FillingsCard } from "./surfaces/cards/FillingsCard";
 export { default as RootPeriodontiumCard } from "./surfaces/cards/RootPeriodontiumCard";
+export { default as DiagnosesCard } from "./surfaces/cards/DiagnosesCard";
 export { default as SurfaceCross } from "./surfaces/cards/SurfaceCross";
 export { useEngineState } from "./surfaces/useEngineState";
 export {
@@ -110,8 +111,11 @@ export {
   setCrownReplaceForSelection,
   setCrownNeededForSelection,
   resetTooth,
+  getToothDiagnoses,
+  getActiveDiagnoses,
+  setDxOverrideForSelection,
 } from "./odontogram";
-export type { ActiveOrtho, ActiveCaries, ActiveCariesSurface, ActiveFillings, ActiveFillingSurface, ActiveRootPerio, ActiveRootPerioMod, RootPerioOption, RootPerioOptGroup, ActiveToothDetails, ToothDetailsOption, ExtractionPlanParent } from "./odontogram";
+export type { ActiveOrtho, ActiveCaries, ActiveCariesSurface, ActiveFillings, ActiveFillingSurface, ActiveRootPerio, ActiveRootPerioMod, RootPerioOption, RootPerioOptGroup, ActiveToothDetails, ToothDetailsOption, ExtractionPlanParent, ToothDiagnosis, ActiveDiagnoses, ActiveDiagnosisRow } from "./odontogram";
 export type { SurfaceCell, SurfaceIndicator } from "./surfaces/cards/SurfaceCross";
 
 /**

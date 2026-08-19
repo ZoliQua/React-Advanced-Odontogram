@@ -60,4 +60,13 @@ describe("dental Condition emission (DX-0)", () => {
       .filter((r): r is Condition => r?.resourceType === "Condition");
     expect(conditions[0]?.bodySite?.[0]?.coding?.[0]?.code).toBe("16");
   });
+  it("emits the hard-tissue Conditions with their WHO codes", () => {
+    const bundle: Bundle = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(bundle, { version: "2.20", globals: {}, teeth: {
+      "16": { toothSelection: "tooth-base", wearEdge: "attrition", calculus: true, resorptionType: "internal" },
+    } } as unknown as OdontogramExportPayload);
+    const codes = (bundle.entry ?? []).map((e) => e.resource).filter((r): r is import("../fhir/types").Condition => r?.resourceType === "Condition")
+      .map((c) => c.code?.coding?.[0]?.code).sort();
+    expect(codes).toEqual(["K03.0", "K03.3", "K03.6"]);
+  });
 });

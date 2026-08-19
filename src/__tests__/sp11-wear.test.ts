@@ -49,7 +49,7 @@ describe("SP11: wear enums replace bruxism booleans", () => {
     expect(__getToothStateForTest(12)!.wearEdge).toBe("erosion"); // modern wins
     __setToothStateForTest(13, { toothSelection: "tooth-base", wearEdge: "erosion", wearCervical: "abfraction" });
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.20");
+    expect(payload.version).toBe("2.21");
     const parsed = parseFhirBundle(buildFhirBundle(payload));
     expect(parsed.teeth["13"].wearEdge).toBe("erosion");
     expect(parsed.teeth["13"].wearCervical).toBe("abfraction");

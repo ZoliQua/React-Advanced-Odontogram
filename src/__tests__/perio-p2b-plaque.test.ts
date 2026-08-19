@@ -96,7 +96,7 @@ describe("payload round-trip (version 2.16, plaque additive)", () => {
     setPlaque(16, "buccal", true);
 
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.20");
+    expect(payload.version).toBe("2.21");
     expect((payload.teeth["16"].plaque as string[]).sort()).toEqual(["buccal", "mesial"]);
     expect(payload.teeth["11"].plaque).toBeUndefined();
     expect(Object.prototype.hasOwnProperty.call(payload.teeth["11"], "plaque")).toBe(false);

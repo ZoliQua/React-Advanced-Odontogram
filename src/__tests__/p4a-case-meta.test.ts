@@ -49,7 +49,7 @@ describe("case metadata object", () => {
   });
   it("serializes omit-when-empty and bumps version to 2.17", () => {
     const empty = __collectExportPayloadForTest();
-    expect(empty.version).toBe("2.20");
+    expect(empty.version).toBe("2.21");
     expect(Object.prototype.hasOwnProperty.call(empty, "case")).toBe(false);
     setCaseAge(54); setSmokingStatus("current"); setMaxRblPercent(45);
     const p = __collectExportPayloadForTest();

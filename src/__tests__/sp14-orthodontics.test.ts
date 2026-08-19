@@ -24,7 +24,7 @@ describe("SP14 Task 1: ortho axes + round-trip", () => {
   it("export stamps 2.10 + round-trips all four (JSON)", () => {
     __setToothStateForTest(11, { toothSelection:"tooth-base", orthoAppliance:"bracket", orthoDrift:"mesial", orthoVertical:"extrusion", orthoRotation:true });
     const p = __collectExportPayloadForTest();
-    expect(p.version).toBe("2.20");
+    expect(p.version).toBe("2.21");
     expect(p.teeth[11]).toMatchObject({ orthoAppliance:"bracket", orthoDrift:"mesial", orthoVertical:"extrusion", orthoRotation:true });
   });
   it("hydrate reads back; unknown→none/false; legacy→none/false", () => {

@@ -10,6 +10,7 @@ import { buildFhirBundle } from "./fhir/toFhir";
 import { parseFhirBundle } from "./fhir/fromFhir";
 import type { FhirExportOptions } from "./fhir/types";
 import { resolveCodingPack } from "./dx/packs";
+import { DX_CODES } from "./dx/codes";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
@@ -459,6 +460,7 @@ function defaultState(){
     rootCaries: "none", // none | active | arrested | active-cavitated
     radiographicDepth: new Map(), // surface -> none | E1 | E2 | D1 | D2 | D3
     fillingDefect: new Map(), // surface -> none | marginal | fracture | wear (on a filled surface)
+    dxOverrides: new Map(), // DiagnosisKey -> add | suppress (per-tooth ICD-10 diagnosis override)
     // Implant-only peri-implant disease axis. none | mucositis |
     // peri-implantitis-mild | peri-implantitis-moderate | peri-implantitis-severe.
     periImplant: "none",
@@ -4160,6 +4162,7 @@ function __plainStateForTest(s: Any): Record<string, unknown> {
     fillingSurfaceMaterials: Object.fromEntries(s.fillingSurfaceMaterials ?? []),
     cariesSeverity: Object.fromEntries(s.cariesSeverity ?? []),
     fillingDefect: Object.fromEntries(s.fillingDefect ?? []),
+    dxOverrides: Object.fromEntries(s.dxOverrides ?? []),
     mods: Array.from(s.mods ?? []),
   };
 }
@@ -6254,6 +6257,9 @@ function serializeState(s: Any){
     ...(s.millerClass && s.millerClass !== "none" ? { millerClass: s.millerClass } : {}),
     ...(Object.keys(s.customStates || {}).length > 0 ? { customStates: s.customStates } : {}),
     ...(s.note ? { note: s.note } : {}),
+    // Per-tooth diagnosis add/suppress overrides — omitted ENTIRELY when empty,
+    // same convention as perio/furcation/plaque above.
+    ...((s.dxOverrides?.size ?? 0) > 0 ? { dxOverrides: Object.fromEntries(s.dxOverrides) } : {}),
   };
 }
 
@@ -6316,6 +6322,13 @@ export const VALID_FURCATION_GRADE = new Set([1, 2, 3, 4]); // Glickman I-IV
 // per-tooth-position by furcationEntrances()), so both setPlaque() and
 // hydrateState() validate directly against this one constant.
 export const VALID_PLAQUE_SURFACE = new Set(["mesial", "distal", "buccal", "lingual"]);
+// Per-tooth diagnosis add/suppress overrides. "add" forces a diagnosis on
+// despite no matching clinical finding; "suppress" forces it off despite one.
+export const VALID_DX_OVERRIDE_VALUE = new Set(["add", "suppress"]);
+// Tooth-level diagnosis keys = every DX_CODES catalog key except the two
+// whole-mouth periodontal ones (periodontitis/gingivitis are derived from the
+// case-level perio classification, not authored per tooth).
+export const TOOTH_LEVEL_DX_KEYS = new Set(Object.keys(DX_CODES).filter((k) => k !== "periodontitis" && k !== "gingivitis"));
 
 function filterSet(arr: Any, allowed: Set<string>): Set<string>{
   if(!Array.isArray(arr)) return new Set();
@@ -6607,6 +6620,13 @@ function hydrateState(raw: Any, inferLegacySecondaryCaries = true){
   if(raw.fillingDefect && typeof raw.fillingDefect === "object"){
     for(const [surf, val] of Object.entries(raw.fillingDefect)){
       if(VALID_FILLING_SURFACES.has(surf) && typeof val === "string" && VALID_FILLING_DEFECT_SET.has(val)) s.fillingDefect.set(surf, val);
+    }
+  }
+  // Per-tooth diagnosis add/suppress overrides (legacy payloads have none).
+  s.dxOverrides = new Map();
+  if(raw.dxOverrides && typeof raw.dxOverrides === "object"){
+    for(const [k, v] of Object.entries(raw.dxOverrides)){
+      if(TOOTH_LEVEL_DX_KEYS.has(k) && typeof v === "string" && VALID_DX_OVERRIDE_VALUE.has(v)) s.dxOverrides.set(k, v);
     }
   }
   s.fillingMaterial = validateEnum(raw.fillingMaterial, VALID_FILLING_MATERIAL, s.fillingMaterial);
@@ -6921,7 +6941,7 @@ function collectExportPayload(){
   const planTeeth = planInitialized ? collectTeeth(charts.plan) : null;
   const planDiffers = planTeeth !== null && JSON.stringify(planTeeth) !== JSON.stringify(statusTeeth);
   return {
-    version: "2.20",
+    version: "2.21",
     globals: collectGlobals(),
     teeth: statusTeeth,
     ...(caseMetaIsEmpty(caseMeta) ? {} : { case: serializeCaseMeta(caseMeta) }),
@@ -6951,7 +6971,7 @@ export function getStatusChart(): Any {
  */
 export function getPlanChart(): Any {
   return {
-    version: "2.20",
+    version: "2.21",
     globals: collectGlobals(),
     teeth: collectTeeth(charts.plan),
     ...(caseMetaIsEmpty(caseMeta) ? {} : { case: serializeCaseMeta(caseMeta) }),

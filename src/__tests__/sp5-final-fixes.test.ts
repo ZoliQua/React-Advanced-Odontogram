@@ -48,7 +48,7 @@ describe("FIX 1: legacy caries∩filling severity inference is version-gated", (
   it("export -> reimport is IDEMPOTENT: no severity is injected on the round-trip", () => {
     __setToothStateForTest(16, { ...cariedAndFilled }, "2.4");
     const payload = __collectExportPayloadForTest();
-    expect(payload.version).toBe("2.20");
+    expect(payload.version).toBe("2.21");
     const raw16 = payload.teeth[16];
     // Serialized empty map is {} — not a stored severity.
     expect(raw16.cariesSeverity).toEqual({});

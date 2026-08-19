@@ -15,3 +15,22 @@ describe("DX_CODES base WHO ICD-10 catalog", () => {
     }
   });
 });
+
+describe("DX-1 catalog additions", () => {
+  const expected: Record<string, string> = {
+    cariesCementum: "K02.2", cariesArrested: "K02.3",
+    pulpitis: "K04.0", pulpNecrosis: "K04.1",
+    apicalPeriodontitisAcute: "K04.4", apicalPeriodontitisChronic: "K04.5",
+    radicularCyst: "K04.8", periapicalAbscess: "K04.7", periapicalAbscessSinus: "K04.6",
+    condensingOsteitis: "K04.9",
+    resorption: "K03.3", attrition: "K03.0", abrasion: "K03.1", erosion: "K03.2",
+    abfraction: "K03.8", calculus: "K03.6",
+    fluorosis: "K00.3", tetracyclineStain: "K00.8", postEruptiveColour: "K03.7",
+    toothLoss: "K08.1", retainedRoot: "K08.3",
+  };
+  it("maps every DX-1 diagnosis to its WHO ICD-10 code", () => {
+    for (const [key, code] of Object.entries(expected)) {
+      expect(DX_CODES[key as keyof typeof DX_CODES]?.icd10, key).toBe(code);
+    }
+  });
+});

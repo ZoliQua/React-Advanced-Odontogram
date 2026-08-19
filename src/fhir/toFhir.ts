@@ -5,6 +5,7 @@ import type { Bundle, OdontogramExportPayload, FhirExportOptions } from "./types
 import { buildFhirBundleFromRegistry } from "../registry/fhir";
 import { appendPerioObservations, appendPerioCondition } from "./toFhirPerio";
 import { appendDentalConditions } from "./toFhirDx";
+import { appendCaseConditions } from "./toFhirCase";
 
 /**
  * Convert a serialized odontogram payload into a FHIR R4 collection Bundle.
@@ -22,15 +23,21 @@ import { appendDentalConditions } from "./toFhirDx";
  * "health" contributes nothing.
  *
  * Per-tooth dental diagnoses derived from restorative/caries findings (DX-0:
- * caries K02) are appended LAST by `appendDentalConditions` (`toFhirDx.ts`) as
+ * caries K02) are appended by `appendDentalConditions` (`toFhirDx.ts`) as
  * one `Condition` per finding, tooth-linked via `bodySite` (FDI). The active
  * national coding pack, if any, rides on `options.codingPack`; a payload with
  * no derivable diagnoses contributes nothing.
+ *
+ * Case-level (whole-mouth / regional) diagnoses authored on `payload.case.
+ * caseConditions` are appended LAST by `appendCaseConditions` (`toFhirCase.ts`)
+ * as one patient-level `Condition` per active condition (not tooth-linked); a
+ * payload with no case conditions contributes nothing.
  */
 export function buildFhirBundle(payload: OdontogramExportPayload, options: FhirExportOptions = {}): Bundle {
   const bundle = buildFhirBundleFromRegistry(payload, options);
   appendPerioObservations(bundle, payload, options);
   appendPerioCondition(bundle, payload, options);
   appendDentalConditions(bundle, payload, options);
+  appendCaseConditions(bundle, payload, options);
   return bundle;
 }

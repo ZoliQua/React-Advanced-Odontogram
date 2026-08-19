@@ -255,6 +255,10 @@ vi.mock("../odontogram", async () => {
     setToothLossPerio: actual.setToothLossPerio,
     setMaxRblPercent: actual.setMaxRblPercent,
     resetCaseMeta: actual.resetCaseMeta,
+    // DX-3b Task 5: Case/regional diagnoses picker — <PerioSidebar/> reads/
+    // writes these unconditionally on every mount.
+    getCaseConditions: actual.getCaseConditions,
+    setCaseCondition: actual.setCaseCondition,
     // P4b Task 4: classification panel — <PerioChart/> now reads the final
     // classification + writes the 4 per-axis overrides at mount/render.
     getPerioClassification: actual.getPerioClassification,

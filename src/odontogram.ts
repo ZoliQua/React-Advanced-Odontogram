@@ -12,6 +12,7 @@ import type { FhirExportOptions } from "./fhir/types";
 import { resolveCodingPack } from "./dx/packs";
 import { DX_CODES, type DiagnosisKey } from "./dx/codes";
 import { deriveDentalDiagnoses, isNaturalPresent } from "./dx/derive";
+import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_CASE_KEY, VALID_LATERALITY, type CaseConditionKey, type Laterality } from "./dx/caseCodes";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
@@ -662,12 +663,16 @@ type CaseMeta = {
    *  patientName/examDate; NOT emitted to FHIR. */
   patientDob: string | null;
   examDate: string | null;
+  /** Case-level regional conditions (K07/K09/K11/K12/K00/K13), each with an
+   *  optional laterality. Manually authored, not derived. */
+  caseConditions: Map<string, Laterality>;
 };
 function defaultCaseMeta(): CaseMeta {
   return { age: null, smokingStatus: "unknown", cigarettesPerDay: null,
     diabetesStatus: "unknown", hba1c: null, toothLossPerio: null, maxRblPercent: null,
     diagnosisOverride: null, stageOverride: null, gradeOverride: null, extentOverride: null,
-    patientName: null, patientDob: null, examDate: null };
+    patientName: null, patientDob: null, examDate: null,
+    caseConditions: new Map() };
 }
 let caseMeta: CaseMeta = defaultCaseMeta();
 const VALID_SMOKING = new Set(["unknown", "never", "former", "current"]);
@@ -755,11 +760,32 @@ export function setPatientDob(v: string | null): void {
   if(next !== caseMeta.patientDob){ caseMeta.patientDob = next; notifyStateChange(); }
 }
 export function resetCaseMeta(): void { caseMeta = defaultCaseMeta(); }
+/** Active case conditions in catalog order, for the UI + summary. */
+export function getCaseConditions(): { key: CaseConditionKey; icd10: string; laterality: Laterality; lateralizable: boolean }[] {
+  const out: { key: CaseConditionKey; icd10: string; laterality: Laterality; lateralizable: boolean }[] = [];
+  for(const key of Object.keys(CASE_DX_CODES) as CaseConditionKey[]){
+    const lat = caseMeta.caseConditions.get(key);
+    if(lat === undefined) continue;
+    out.push({ key, icd10: CASE_DX_CODES[key].icd10, laterality: lat, lateralizable: CASE_DX_CODES[key].lateralizable });
+  }
+  return out;
+}
+/** Add/update-laterality/remove one case condition. `null` removes; a
+ *  non-lateralizable key is forced to "unspecified"; invalid key/laterality is
+ *  a silent no-op. Case-level (not DS-1 gated), like the rest of CaseMeta. */
+export function setCaseCondition(key: string, laterality: Laterality | null): void {
+  if(!VALID_CASE_KEY.has(key as CaseConditionKey)) return;
+  if(laterality === null){ if(caseMeta.caseConditions.delete(key)) notifyStateChange(); return; }
+  if(!VALID_LATERALITY.has(laterality)) return;
+  const lat: Laterality = LATERALIZABLE_CASE_KEYS.has(key as CaseConditionKey) ? laterality : "unspecified";
+  if(caseMeta.caseConditions.get(key) !== lat){ caseMeta.caseConditions.set(key, lat); notifyStateChange(); }
+}
 function caseMetaIsEmpty(c: CaseMeta): boolean {
   return c.age === null && c.smokingStatus === "unknown" && c.cigarettesPerDay === null
     && c.diabetesStatus === "unknown" && c.hba1c === null && c.toothLossPerio === null && c.maxRblPercent === null
     && c.diagnosisOverride === null && c.stageOverride === null && c.gradeOverride === null && c.extentOverride === null
-    && c.patientName === null && c.patientDob === null && c.examDate === null;
+    && c.patientName === null && c.patientDob === null && c.examDate === null
+    && c.caseConditions.size === 0;
 }
 function serializeCaseMeta(c: CaseMeta): Record<string, unknown> {
   const o: Record<string, unknown> = {};
@@ -777,6 +803,7 @@ function serializeCaseMeta(c: CaseMeta): Record<string, unknown> {
   if(c.patientName !== null) o.patientName = c.patientName;
   if(c.patientDob !== null) o.patientDob = c.patientDob;
   if(c.examDate !== null) o.examDate = c.examDate;
+  if(c.caseConditions.size > 0) o.caseConditions = Object.fromEntries(c.caseConditions);
   return o;
 }
 function hydrateCaseMeta(raw: Any): void {
@@ -796,6 +823,14 @@ function hydrateCaseMeta(raw: Any): void {
   caseMeta.patientName = (typeof raw.patientName === "string" && raw.patientName.trim() !== "") ? raw.patientName.trim() : null;
   caseMeta.patientDob = (typeof raw.patientDob === "string" && ISO_DATE.test(raw.patientDob.trim())) ? raw.patientDob.trim() : null;
   caseMeta.examDate = (typeof raw.examDate === "string" && ISO_DATE.test(raw.examDate.trim())) ? raw.examDate.trim() : null;
+  caseMeta.caseConditions = new Map();
+  if(raw.caseConditions && typeof raw.caseConditions === "object"){
+    for(const [k, v] of Object.entries(raw.caseConditions)){
+      if(!VALID_CASE_KEY.has(k as CaseConditionKey)) continue;
+      if(typeof v !== "string" || !VALID_LATERALITY.has(v as Laterality)) continue;
+      caseMeta.caseConditions.set(k, LATERALIZABLE_CASE_KEYS.has(k as CaseConditionKey) ? (v as Laterality) : "unspecified");
+    }
+  }
 }
 /** Builds the compact, labelled case-context fragment
  *  (e.g. "Age 54 · current smoker (12/day) · diabetic (HbA1c 7.8%) · max
@@ -824,6 +859,21 @@ function caseContextSummaryFragment(c: CaseMeta): string {
     parts.push(t(`case.summary.toothLoss${c.toothLossPerio === 1 ? "One" : "Other"}`, { n: c.toothLossPerio }));
   }
   return parts.join(" · ");
+}
+/** Builds the labelled whole-mouth case/regional-diagnoses fragment (e.g.
+ *  "Case / regional diagnoses: Temporomandibular joint disorder (K07.6) [Right];
+ *  Recurrent oral aphthae (K12.0)") appended to {@link getOdontogramSummary}'s
+ *  `periodontalText` whenever at least one case condition is active. Returns
+ *  `null` when there are none — independent of {@link caseMetaIsEmpty}, since a
+ *  case can carry conditions with no other case metadata charted. */
+function caseDiagnosesSummaryFragment(): string | null {
+  const conds = getCaseConditions();
+  if(conds.length === 0) return null;
+  const parts = conds.map((c) => {
+    const lat = (c.lateralizable && c.laterality !== "unspecified") ? ` [${t(`caseDx.laterality.${c.laterality}`)}]` : "";
+    return `${t(`dx.case.${c.key}`)} (${c.icd10})${lat}`;
+  });
+  return `${t("case.diagnoses.section")}: ${parts.join("; ")}`;
 }
 // Plan chart is lazily deep-cloned from status the FIRST time plan mode is
 // entered; subsequent entries reuse whatever is already in charts.plan (so
@@ -7075,7 +7125,7 @@ function collectExportPayload(){
   const planTeeth = planInitialized ? collectTeeth(charts.plan) : null;
   const planDiffers = planTeeth !== null && JSON.stringify(planTeeth) !== JSON.stringify(statusTeeth);
   return {
-    version: "2.21",
+    version: "2.22",
     globals: collectGlobals(),
     teeth: statusTeeth,
     ...(caseMetaIsEmpty(caseMeta) ? {} : { case: serializeCaseMeta(caseMeta) }),
@@ -7105,7 +7155,7 @@ export function getStatusChart(): Any {
  */
 export function getPlanChart(): Any {
   return {
-    version: "2.21",
+    version: "2.22",
     globals: collectGlobals(),
     teeth: collectTeeth(charts.plan),
     ...(caseMetaIsEmpty(caseMeta) ? {} : { case: serializeCaseMeta(caseMeta) }),
@@ -10848,6 +10898,13 @@ export function getOdontogramSummary(): OdontogramSummary {
   if(!caseMetaIsEmpty(caseMeta)){
     const fragment = caseContextSummaryFragment(caseMeta);
     if(fragment) periodontalText = `${periodontalText} – ${fragment}`;
+  }
+  // Append the case/regional-diagnoses fragment (K-code list with laterality)
+  // whenever at least one case condition is active — independent of the
+  // caseMetaIsEmpty gate above, since conditions can be the only case data set.
+  {
+    const diagnosesFragment = caseDiagnosesSummaryFragment();
+    if(diagnosesFragment) periodontalText = `${periodontalText} – ${diagnosesFragment}`;
   }
   // Append the FINAL (override-aware) 2017 classification — separate from the
   // case-context fragment above (that one only fires when

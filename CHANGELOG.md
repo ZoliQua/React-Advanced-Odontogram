@@ -145,6 +145,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ICD-10 code, so they are surfaced as "no WHO code" in the tooltip and summary
   and emit no FHIR Condition — a coding follows when SNOMED CT is activated.
   Payload unchanged (2.21); the visual chart is unaffected.
+- **Dental diagnosis coding: case/regional conditions (DX-3b).** A new
+  "Case / regional diagnoses" picker in the perio case panel authors whole-mouth /
+  regional conditions (malocclusion & TMJ K07, oral cysts K09, salivary disease K11,
+  stomatitis & oral mucosa K12/K13, arch-level developmental K00 — ~28 conditions),
+  each optionally lateralized (left/right/bilateral). They export as patient-level
+  FHIR Conditions and appear in the whole-mouth summary. Payload 2.22 (additive
+  `caseConditions`); the visual chart and per-tooth data are unaffected.
 
 ### Fixed
 

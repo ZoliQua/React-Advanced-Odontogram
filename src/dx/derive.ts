@@ -53,6 +53,24 @@ export function deriveDentalDiagnoses(payload: unknown): DerivedDiagnosis[] {
         if (key) add(key);
       }
       if (rec.calculus === true) add("calculus");
+      // Pulp (K04.0/.1)
+      const PULP: Record<string, DiagnosisKey> = { "reversible-pulpitis": "pulpitis", "irreversible-pulpitis": "pulpitis", necrosis: "pulpNecrosis" };
+      const pulp = PULP[String(rec.pulpDx)];
+      if (pulp) add(pulp);
+      // Apical (K04.4-.9); a cyst lesion subtype overrides the periodontitis code
+      if (rec.periapicalType === "cyst") {
+        add("radicularCyst");
+      } else {
+        const APICAL: Record<string, DiagnosisKey> = {
+          "symptomatic-apical-periodontitis": "apicalPeriodontitisAcute",
+          "asymptomatic-apical-periodontitis": "apicalPeriodontitisChronic",
+          "acute-apical-abscess": "periapicalAbscess",
+          "chronic-apical-abscess": "periapicalAbscessSinus",
+          "condensing-osteitis": "condensingOsteitis",
+        };
+        const apical = APICAL[String(rec.apicalDx)];
+        if (apical) add(apical);
+      }
     }
     for (const key of keys) out.push({ toothNo, key });
   }

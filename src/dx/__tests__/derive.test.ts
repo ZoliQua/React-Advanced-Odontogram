@@ -48,3 +48,25 @@ describe("deriveDentalDiagnoses — DX-1 hard-tissue & status", () => {
     expect(one({ toothSelection: "no-tooth-after-extraction", wearEdge: "attrition" })).toEqual(["toothLoss"]);
   });
 });
+
+describe("deriveDentalDiagnoses — DX-1 pulp & apical", () => {
+  const one = (tooth: Record<string, unknown>) =>
+    deriveDentalDiagnoses({ teeth: { "16": tooth } }).map((d) => d.key);
+  it("pulp: pulpitis (reversible+irreversible) and necrosis", () => {
+    expect(one({ toothSelection: "tooth-base", pulpDx: "reversible-pulpitis" })).toContain("pulpitis");
+    expect(one({ toothSelection: "tooth-base", pulpDx: "irreversible-pulpitis" })).toContain("pulpitis");
+    expect(one({ toothSelection: "tooth-base", pulpDx: "necrosis" })).toContain("pulpNecrosis");
+  });
+  it("apical: symptomatic/asymptomatic/abscess/condensing", () => {
+    expect(one({ toothSelection: "tooth-base", apicalDx: "symptomatic-apical-periodontitis" })).toContain("apicalPeriodontitisAcute");
+    expect(one({ toothSelection: "tooth-base", apicalDx: "asymptomatic-apical-periodontitis" })).toContain("apicalPeriodontitisChronic");
+    expect(one({ toothSelection: "tooth-base", apicalDx: "acute-apical-abscess" })).toContain("periapicalAbscess");
+    expect(one({ toothSelection: "tooth-base", apicalDx: "chronic-apical-abscess" })).toContain("periapicalAbscessSinus");
+    expect(one({ toothSelection: "tooth-base", apicalDx: "condensing-osteitis" })).toContain("condensingOsteitis");
+  });
+  it("periapicalType cyst overrides the apical periodontitis code with radicularCyst", () => {
+    const keys = one({ toothSelection: "tooth-base", apicalDx: "asymptomatic-apical-periodontitis", periapicalType: "cyst" });
+    expect(keys).toContain("radicularCyst");
+    expect(keys).not.toContain("apicalPeriodontitisChronic");
+  });
+});

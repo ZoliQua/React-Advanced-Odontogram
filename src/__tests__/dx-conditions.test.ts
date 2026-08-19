@@ -69,4 +69,13 @@ describe("dental Condition emission (DX-0)", () => {
       .map((c) => c.code?.coding?.[0]?.code).sort();
     expect(codes).toEqual(["K03.0", "K03.3", "K03.6"]);
   });
+  it("emits pulp + apical Conditions, cyst overriding the periodontitis code", () => {
+    const bundle: Bundle = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(bundle, { version: "2.20", globals: {}, teeth: {
+      "16": { toothSelection: "tooth-base", pulpDx: "necrosis", apicalDx: "asymptomatic-apical-periodontitis", periapicalType: "cyst" },
+    } } as unknown as OdontogramExportPayload);
+    const codes = (bundle.entry ?? []).map((e) => e.resource).filter((r): r is import("../fhir/types").Condition => r?.resourceType === "Condition")
+      .map((c) => c.code?.coding?.[0]?.code).sort();
+    expect(codes).toEqual(["K04.1", "K04.8"]); // necrosis + radicular cyst (not K04.5)
+  });
 });

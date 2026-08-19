@@ -56,3 +56,7 @@ export const VALID_LATERALITY = new Set<Laterality>(["unspecified", "left", "rig
 export const LATERALIZABLE_CASE_KEYS = new Set(
   (Object.keys(CASE_DX_CODES) as CaseConditionKey[]).filter((k) => CASE_DX_CODES[k].lateralizable),
 );
+
+/** The catalog keys as a Set — prototype-safe membership guard for setters /
+ *  hydrate (the `in` operator would also match inherited Object.prototype names). */
+export const VALID_CASE_KEY = new Set<CaseConditionKey>(Object.keys(CASE_DX_CODES) as CaseConditionKey[]);

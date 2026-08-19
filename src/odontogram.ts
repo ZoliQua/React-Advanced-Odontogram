@@ -12,7 +12,7 @@ import type { FhirExportOptions } from "./fhir/types";
 import { resolveCodingPack } from "./dx/packs";
 import { DX_CODES, type DiagnosisKey } from "./dx/codes";
 import { deriveDentalDiagnoses, isNaturalPresent } from "./dx/derive";
-import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_LATERALITY, type CaseConditionKey, type Laterality } from "./dx/caseCodes";
+import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_CASE_KEY, VALID_LATERALITY, type CaseConditionKey, type Laterality } from "./dx/caseCodes";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
@@ -774,7 +774,7 @@ export function getCaseConditions(): { key: CaseConditionKey; icd10: string; lat
  *  non-lateralizable key is forced to "unspecified"; invalid key/laterality is
  *  a silent no-op. Case-level (not DS-1 gated), like the rest of CaseMeta. */
 export function setCaseCondition(key: string, laterality: Laterality | null): void {
-  if(!(key in CASE_DX_CODES)) return;
+  if(!VALID_CASE_KEY.has(key as CaseConditionKey)) return;
   if(laterality === null){ if(caseMeta.caseConditions.delete(key)) notifyStateChange(); return; }
   if(!VALID_LATERALITY.has(laterality)) return;
   const lat: Laterality = LATERALIZABLE_CASE_KEYS.has(key as CaseConditionKey) ? laterality : "unspecified";
@@ -826,7 +826,7 @@ function hydrateCaseMeta(raw: Any): void {
   caseMeta.caseConditions = new Map();
   if(raw.caseConditions && typeof raw.caseConditions === "object"){
     for(const [k, v] of Object.entries(raw.caseConditions)){
-      if(!(k in CASE_DX_CODES)) continue;
+      if(!VALID_CASE_KEY.has(k as CaseConditionKey)) continue;
       if(typeof v !== "string" || !VALID_LATERALITY.has(v as Laterality)) continue;
       caseMeta.caseConditions.set(k, LATERALIZABLE_CASE_KEYS.has(k as CaseConditionKey) ? (v as Laterality) : "unspecified");
     }

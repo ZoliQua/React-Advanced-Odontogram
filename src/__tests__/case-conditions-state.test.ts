@@ -30,4 +30,14 @@ describe("case-level conditions (caseConditions)", () => {
     setCaseCondition("leukoplakia", "bilateral");
     expect((collect().case as any).caseConditions).toEqual({ leukoplakia: "bilateral" });
   });
+  it("rejects inherited Object.prototype names as case-condition keys (prototype-safe guard)", () => {
+    setCaseCondition("toString", "unspecified");
+    setCaseCondition("constructor", "left");
+    expect(getCaseConditions()).toEqual([]);
+    expect(collect().case).toBeUndefined();
+  });
+  it("still accepts a real catalog key (sanity, unchanged behavior)", () => {
+    setCaseCondition("tmjDisorder", "right");
+    expect(getCaseConditions().find((c) => c.key === "tmjDisorder")!.laterality).toBe("right");
+  });
 });

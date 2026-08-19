@@ -71,6 +71,17 @@ describe("deriveDentalDiagnoses — DX-1 pulp & apical", () => {
   });
 });
 
+describe("deriveDentalDiagnoses — DX-3a fracture", () => {
+  it("derives toothFracture from a broken crown", () => {
+    const out = deriveDentalDiagnoses({ teeth: { "11": { toothSelection: "tooth-base", brokenMesial: true } } });
+    expect(out.map((d) => d.key)).toContain("toothFracture");
+  });
+  it("does not derive toothFracture on an intact tooth", () => {
+    const out = deriveDentalDiagnoses({ teeth: { "11": { toothSelection: "tooth-base" } } });
+    expect(out.map((d) => d.key)).not.toContain("toothFracture");
+  });
+});
+
 describe("dxOverrides (DX-2)", () => {
   it("applyDxOverrides: suppress removes, add includes, unknown/invalid ignored", () => {
     // applyDxOverrides mutates+returns its input Set (by design, see derive.ts), so each

@@ -78,4 +78,11 @@ describe("dental Condition emission (DX-0)", () => {
       .map((c) => c.code?.coding?.[0]?.code).sort();
     expect(codes).toEqual(["K04.1", "K04.8"]); // necrosis + radicular cyst (not K04.5)
   });
+  it("emits an S02.5 Condition for a broken tooth", () => {
+    const bundle: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(bundle, { teeth: { "11": { toothSelection: "tooth-base", brokenIncisal: true } } } as any);
+    const dx = bundle.entry.find((e: any) => e.resource.id === "odontogram-dx-toothFracture-11");
+    expect(dx.resource.code.coding[0].code).toBe("S02.5");
+    expect(dx.resource.bodySite[0].coding[0].code).toBe("11");
+  });
 });

@@ -97,6 +97,8 @@ export function deriveDentalDiagnoses(payload: unknown): DerivedDiagnosis[] {
         const apical = APICAL[String(rec.apicalDx)];
         if (apical) add(apical);
       }
+      // Fracture (K/S02.5) — same broken-crown predicate as fractureSummaryLabel
+      if (rec.brokenMesial || rec.brokenIncisal || rec.brokenDistal) add("toothFracture");
     }
     applyDxOverrides(keys, rec.dxOverrides as Record<string, unknown> | undefined, natural);
     for (const key of keys) out.push({ toothNo, key });

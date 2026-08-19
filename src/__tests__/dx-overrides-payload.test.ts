@@ -12,7 +12,7 @@ describe("dxOverrides payload round-trip", () => {
     // payload exportStatus()/exportFhir() would serialize, without the
     // download side effect.
     const p = __collectExportPayloadForTest() as { version: string; teeth: Record<string, { dxOverrides?: Record<string, string> }> };
-    expect(p.version).toBe("2.21");
+    expect(p.version).toBe("2.22");
     expect(p.teeth["16"].dxOverrides).toEqual({ calculus: "add", caries: "suppress" }); // invalid key/value dropped
     expect(p.teeth["17"].dxOverrides).toBeUndefined(); // omit-when-empty
   });

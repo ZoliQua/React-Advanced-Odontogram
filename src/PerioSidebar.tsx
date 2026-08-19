@@ -83,6 +83,7 @@ const EMPTY_CASE_META: CaseMetaData = {
   patientName: null,
   patientDob: null,
   examDate: null,
+  caseConditions: new Map(),
 };
 
 type ClassificationData = ReturnType<typeof getPerioClassification>;

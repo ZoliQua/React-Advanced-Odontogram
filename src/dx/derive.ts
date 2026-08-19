@@ -42,13 +42,17 @@ const ALL_DX_KEYS = new Set(Object.keys(DX_CODES) as DiagnosisKey[]);
 export type DxOverrideMode = "add" | "suppress";
 
 /** Apply a tooth's dxOverrides to its derived key set: `suppress` removes a key,
- *  `add` includes a valid tooth-level key. Unknown keys / invalid modes ignored. */
-export function applyDxOverrides(keys: Set<DiagnosisKey>, overrides: Record<string, unknown> | undefined): Set<DiagnosisKey> {
+ *  `add` includes a valid tooth-level key. Unknown keys / invalid modes ignored.
+ *  `allowAdd` (default `true`) gates the `add` branch only -- `suppress` always
+ *  applies -- so a caller can forbid injecting a tooth-level diagnosis onto a
+ *  non-present tooth while still letting `suppress` un-code a derived finding
+ *  (e.g. `toothLoss`) there. */
+export function applyDxOverrides(keys: Set<DiagnosisKey>, overrides: Record<string, unknown> | undefined, allowAdd = true): Set<DiagnosisKey> {
   if (!overrides || typeof overrides !== "object") return keys;
   for (const [k, mode] of Object.entries(overrides)) {
     if (!ALL_DX_KEYS.has(k as DiagnosisKey)) continue;
     if (mode === "suppress") keys.delete(k as DiagnosisKey);
-    else if (mode === "add") keys.add(k as DiagnosisKey);
+    else if (mode === "add" && allowAdd) keys.add(k as DiagnosisKey);
   }
   return keys;
 }
@@ -94,7 +98,7 @@ export function deriveDentalDiagnoses(payload: unknown): DerivedDiagnosis[] {
         if (apical) add(apical);
       }
     }
-    applyDxOverrides(keys, rec.dxOverrides as Record<string, unknown> | undefined);
+    applyDxOverrides(keys, rec.dxOverrides as Record<string, unknown> | undefined, natural);
     for (const key of keys) out.push({ toothNo, key });
   }
   return out;

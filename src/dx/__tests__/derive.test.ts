@@ -84,4 +84,28 @@ describe("dxOverrides (DX-2)", () => {
     const p = { teeth: { "16": { toothSelection: "tooth-base", caries: ["occlusal"], dxOverrides: { caries: "suppress", calculus: "add" } } } };
     expect(deriveDentalDiagnoses(p).map((d) => d.key).sort()).toEqual(["calculus"]);
   });
+  it("add is presence-gated: NOT emitted on a non-present tooth, IS emitted on a present tooth", () => {
+    const p = {
+      teeth: {
+        "16": { toothSelection: "none", dxOverrides: { calculus: "add" } },
+        "26": { toothSelection: "tooth-base", dxOverrides: { calculus: "add" } },
+      },
+    };
+    const keysByTooth = deriveDentalDiagnoses(p).reduce<Record<string, string[]>>((acc, d) => {
+      (acc[d.toothNo] ??= []).push(d.key);
+      return acc;
+    }, {});
+    expect(keysByTooth["16"] ?? []).not.toContain("calculus");
+    expect(keysByTooth["26"] ?? []).toContain("calculus");
+  });
+  it("suppress stays global: still un-codes toothLoss on a non-present (extraction-socket) tooth", () => {
+    const p = { teeth: { "16": { toothSelection: "no-tooth-after-extraction", dxOverrides: { toothLoss: "suppress" } } } };
+    expect(deriveDentalDiagnoses(p).map((d) => d.key)).not.toContain("toothLoss");
+  });
+  it("applyDxOverrides: allowAdd=false blocks add but suppress still applies; allowAdd=true (or omitted) allows add", () => {
+    expect([...applyDxOverrides(new Set(["caries"]) as Set<any>, { calculus: "add" }, false)].sort()).toEqual(["caries"]);
+    expect([...applyDxOverrides(new Set(["caries"]) as Set<any>, { calculus: "add" }, true)].sort()).toEqual(["calculus", "caries"]);
+    expect([...applyDxOverrides(new Set(["caries"]) as Set<any>, { calculus: "add" })].sort()).toEqual(["calculus", "caries"]);
+    expect([...applyDxOverrides(new Set(["caries"]) as Set<any>, { caries: "suppress" }, false)]).toEqual([]);
+  });
 });

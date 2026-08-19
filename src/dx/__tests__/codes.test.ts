@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { DX_CODES } from "../codes";
+import { buildConditionCode } from "../../fhir/toFhirDx";
+import { TOOTH_LEVEL_DX_KEYS } from "../../odontogram";
 
 describe("DX_CODES base WHO ICD-10 catalog", () => {
   it("maps the DX-0 diagnoses to their WHO ICD-10 codes", () => {
@@ -8,9 +10,18 @@ describe("DX_CODES base WHO ICD-10 catalog", () => {
     expect(DX_CODES.gingivitis.icd10).toBe("K05.1");
     expect(DX_CODES.periodontitis.icd10).toBe("K05.3");
   });
-  it("every entry has a non-empty display and code", () => {
+  it("every entry has a non-empty display, and a WHO code when coded", () => {
+    // toothFracture is WHO S02.5 (not a K-code, checked separately below);
+    // periImplantMucositis/periImplantitis are intentionally uncoded (no icd10) —
+    // the "uncoded diagnosis" capability (DX-3a).
+    const uncoded = new Set(["periImplantMucositis", "periImplantitis"]);
+    const nonK = new Set(["toothFracture"]);
     for (const [key, c] of Object.entries(DX_CODES)) {
-      expect(c.icd10, key).toMatch(/^K\d{2}(\.\d)?$/);
+      if (uncoded.has(key)) {
+        expect(c.icd10, key).toBeUndefined();
+      } else if (!nonK.has(key)) {
+        expect(c.icd10, key).toMatch(/^K\d{2}(\.\d)?$/);
+      }
       expect(c.icd10Display.length, key).toBeGreaterThan(0);
     }
   });
@@ -32,5 +43,26 @@ describe("DX-1 catalog additions", () => {
     for (const [key, code] of Object.entries(expected)) {
       expect(DX_CODES[key as keyof typeof DX_CODES]?.icd10, key).toBe(code);
     }
+  });
+});
+
+describe("DX-3a uncoded-diagnosis capability", () => {
+  it("codes toothFracture as WHO S02.5", () => {
+    const cc = buildConditionCode("toothFracture");
+    expect(cc?.coding?.[0]).toMatchObject({ code: "S02.5" });
+  });
+  it("returns null for an uncoded peri-implant diagnosis", () => {
+    expect(buildConditionCode("periImplantitis")).toBeNull();
+    expect(buildConditionCode("periImplantMucositis")).toBeNull();
+  });
+  it("peri-implant keys have a display but no icd10", () => {
+    expect(DX_CODES.periImplantitis.icd10).toBeUndefined();
+    expect(DX_CODES.periImplantitis.icd10Display).toBe("Peri-implantitis");
+  });
+  it("TOOTH_LEVEL_DX_KEYS includes fracture, excludes peri-implant, and is size 23", () => {
+    expect(TOOTH_LEVEL_DX_KEYS.has("toothFracture")).toBe(true);
+    expect(TOOTH_LEVEL_DX_KEYS.has("periImplantitis")).toBe(false);
+    expect(TOOTH_LEVEL_DX_KEYS.has("periImplantMucositis")).toBe(false);
+    expect(TOOTH_LEVEL_DX_KEYS.size).toBe(23);
   });
 });

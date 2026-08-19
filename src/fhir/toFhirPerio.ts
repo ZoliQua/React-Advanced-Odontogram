@@ -704,6 +704,7 @@ export function appendPerioCondition(bundle: Bundle, payload: OdontogramExportPa
   // bundle. The pattern is carried by the periodontal-extent stage entry instead.
   const dxKey = final.diagnosis === "gingivitis" ? "gingivitis" : "periodontitis";
   const code = buildConditionCode(dxKey, options.codingPack);
+  if (!code) return; // gingivitis/periodontitis are always coded; defensive guard for the nullable return
 
   const condition: Condition = {
     resourceType: "Condition",

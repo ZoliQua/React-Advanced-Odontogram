@@ -110,8 +110,11 @@ export {
   setCrownReplaceForSelection,
   setCrownNeededForSelection,
   resetTooth,
+  getToothDiagnoses,
+  getActiveDiagnoses,
+  setDxOverrideForSelection,
 } from "./odontogram";
-export type { ActiveOrtho, ActiveCaries, ActiveCariesSurface, ActiveFillings, ActiveFillingSurface, ActiveRootPerio, ActiveRootPerioMod, RootPerioOption, RootPerioOptGroup, ActiveToothDetails, ToothDetailsOption, ExtractionPlanParent } from "./odontogram";
+export type { ActiveOrtho, ActiveCaries, ActiveCariesSurface, ActiveFillings, ActiveFillingSurface, ActiveRootPerio, ActiveRootPerioMod, RootPerioOption, RootPerioOptGroup, ActiveToothDetails, ToothDetailsOption, ExtractionPlanParent, ToothDiagnosis, ActiveDiagnoses, ActiveDiagnosisRow } from "./odontogram";
 export type { SurfaceCell, SurfaceIndicator } from "./surfaces/cards/SurfaceCross";
 
 /**

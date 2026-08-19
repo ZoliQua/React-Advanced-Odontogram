@@ -10,7 +10,8 @@ import { buildFhirBundle } from "./fhir/toFhir";
 import { parseFhirBundle } from "./fhir/fromFhir";
 import type { FhirExportOptions } from "./fhir/types";
 import { resolveCodingPack } from "./dx/packs";
-import { DX_CODES } from "./dx/codes";
+import { DX_CODES, type DiagnosisKey } from "./dx/codes";
+import { deriveDentalDiagnoses, isNaturalPresent } from "./dx/derive";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
 import { validValues, validSurfaces } from "./registry/validate";
@@ -3081,6 +3082,125 @@ export function setPeriImplantForSelection(value: string): void {
   applyToSelected((s: Any)=>{ applyPeriImplantSelection(s, value); });
 }
 
+// ── Coded diagnoses (DX-2) engine API ─────────────────────────────────────────
+// Surfaces the pure `deriveDentalDiagnoses`/`applyDxOverrides` derivation (DX-0/
+// DX-1/DX-2, `src/dx/derive.ts`) for a single tooth and for the active-tooth
+// card, plus the interactive setter for a tooth's `dxOverrides` (per-tooth
+// add/suppress of a coded ICD-10 diagnosis, DX-2 Task 2). `dxOverrides` has no
+// `svgLayer` — a pure data axis, like `cejVisibility`/`rootConcavity` — so
+// nothing here touches SVG render/parity.
+
+/** One EFFECTIVE coded diagnosis on a tooth (after `dxOverrides` are applied):
+ *  a rule-derived finding not suppressed, or an explicitly added one. */
+export type ToothDiagnosis = {
+  key: DiagnosisKey;
+  icd10: string;
+  icd10Display: string;
+  source: "derived" | "added";
+};
+
+/** A tooth's EFFECTIVE coded diagnoses (derived − suppressed + added), reused
+ *  by both the tooltip ({@link getStateSummary}) and the whole-mouth summary
+ *  ({@link getOdontogramSummary}). Reads the ACTIVE chart's tooth state (so
+ *  it's transparently Status/Plan dual-state aware, like every other per-tooth
+ *  getter). A tooth with no state (never touched) has no diagnoses. */
+export function getToothDiagnoses(toothNo: number): ToothDiagnosis[] {
+  const state = toothState.get(toothNo);
+  if(!state) return [];
+  const payload = { teeth: { [String(toothNo)]: serializeState(state) } };
+  const derived = deriveDentalDiagnoses(payload);
+  const overrides: Map<string, string> | undefined = state.dxOverrides;
+  return derived.map((d) => ({
+    key: d.key,
+    icd10: DX_CODES[d.key].icd10,
+    icd10Display: DX_CODES[d.key].icd10Display,
+    source: overrides?.get(d.key) === "add" ? "added" : "derived",
+  }));
+}
+
+/** One row in the active-tooth diagnoses card: a RAW rule-derived key (whether
+ *  or not it's currently suppressed) or a key the user explicitly ADDED that no
+ *  rule would have derived. */
+export type ActiveDiagnosisRow = {
+  key: string;
+  icd10: string;
+  source: "derived" | "added";
+  suppressed: boolean;
+};
+
+/** The active-tooth diagnoses card view-model (return shape of
+ *  {@link getActiveDiagnoses}). */
+export type ActiveDiagnoses = {
+  visible: boolean;
+  rows: ActiveDiagnosisRow[];
+  addableKeys: string[];
+};
+
+/** The active-tooth diagnoses card view-model — mirrors `getActiveRootPerio`'s
+ *  active-tooth guard shape. `rows` covers the RAW derived set (each tagged
+ *  `suppressed` per the tooth's `dxOverrides`) plus any `add`-mode override key
+ *  that no rule derived; `addableKeys` is every other tooth-level diagnosis key
+ *  not already covered by a row, for an "add a diagnosis" picker. Localized
+ *  labels are resolved by the CARD via `t("dx."+key)` — this returns raw keys +
+ *  codes only. `visible` is false (empty rows/addableKeys) with no active tooth
+ *  or on a tooth that isn't naturally present (missing/implant/under-gum/
+ *  extraction-socket — the same gate `deriveDentalDiagnoses` itself applies). */
+export function getActiveDiagnoses(): ActiveDiagnoses {
+  const NONE: ActiveDiagnoses = { visible: false, rows: [], addableKeys: [] };
+  if(activeTooth == null) return NONE;
+  const state = toothState.get(activeTooth);
+  if(!state || !isNaturalPresent({ toothSelection: state.toothSelection })) return NONE;
+
+  const overrides: Map<string, string> | undefined = state.dxOverrides;
+  // RAW derived set: derive with `dxOverrides` stripped so add/suppress don't
+  // pre-apply — the card needs to see what the RULES alone would derive, tagged
+  // with whether it's currently suppressed.
+  const rawRec: Record<string, unknown> = { ...serializeState(state) };
+  delete rawRec.dxOverrides;
+  const rawKeys = deriveDentalDiagnoses({ teeth: { [String(activeTooth)]: rawRec } }).map((d) => d.key as string);
+  const rawSet = new Set(rawKeys);
+
+  const rows: ActiveDiagnosisRow[] = rawKeys.map((key) => ({
+    key,
+    icd10: DX_CODES[key as DiagnosisKey].icd10,
+    source: "derived",
+    suppressed: overrides?.get(key) === "suppress",
+  }));
+  if(overrides){
+    for(const [key, mode] of overrides){
+      if(mode === "add" && !rawSet.has(key) && TOOTH_LEVEL_DX_KEYS.has(key)){
+        rows.push({ key, icd10: DX_CODES[key as DiagnosisKey].icd10, source: "added", suppressed: false });
+      }
+    }
+  }
+  const rowKeys = new Set(rows.map((r) => r.key));
+  const addableKeys = Array.from(TOOTH_LEVEL_DX_KEYS).filter((k) => !rowKeys.has(k));
+
+  return { visible: true, rows, addableKeys };
+}
+
+/** Add/suppress/clear one coded diagnosis on the current selection —
+ *  validates `key` against {@link TOOTH_LEVEL_DX_KEYS} and `mode` against
+ *  {@link VALID_DX_OVERRIDE_VALUE} (or `null`, which clears any existing
+ *  override for `key`); anything else is a silent no-op. Routed through
+ *  {@link gateToothEditBatch} directly (not `applyToSelected`) since
+ *  `dxOverrides` has no SVG/DOM side effect to re-render per tooth. */
+export function setDxOverrideForSelection(key: string, mode: "add" | "suppress" | null): void {
+  if(!TOOTH_LEVEL_DX_KEYS.has(key)) return;
+  if(mode !== null && !VALID_DX_OVERRIDE_VALUE.has(mode)) return;
+  if(selectedTeeth.size === 0) return;
+  const toothNos = Array.from(selectedTeeth) as number[];
+  gateToothEditBatch(toothNos, () => {
+    for(const n of toothNos){
+      let s = toothState.get(n);
+      if(!s){ s = defaultState(); toothState.set(n, s); }
+      if(mode === null) s.dxOverrides.delete(key);
+      else s.dxOverrides.set(key, mode);
+    }
+    notifyStateChange();
+  });
+}
+
 // ── Tooth-details card engine API (composable-UI Tier 3, PR 3f) ──────────────
 // The declarative `ToothDetailsCard` reads/writes the per-tooth base / substrate /
 // restoration / broken / contact / wear / discoloration / crown-action axes
@@ -4429,6 +4549,16 @@ function getStateSummary(toothNo: number): string[]{
   }
   // Clinical diagnoses (pulp / apical / resorption / peri-implant).
   for(const dx of diagnosisSummaryLabels(state)) summary.push(dx);
+  // Coded diagnoses (DX-2) — the tooth's EFFECTIVE ICD-10-coded findings
+  // (derived − suppressed + added), reusing getToothDiagnoses so the tooltip
+  // never drifts from the whole-mouth summary / active-diagnoses card. An
+  // explicitly ADDED (not rule-derived) code is prefixed to distinguish it from
+  // a rule-derived one, mirroring how "proposed" plan findings are visually
+  // tagged elsewhere.
+  for(const d of getToothDiagnoses(toothNo)){
+    const line = `${d.icd10Display} (${d.icd10})`;
+    summary.push(d.source === "added" ? `+ ${line}` : line);
+  }
 
   // Mods
   if(state.mods.size > 0){
@@ -10604,6 +10734,15 @@ export function getOdontogramSummary(): OdontogramSummary {
 
     // Clinical diagnoses (pulp / apical / resorption / peri-implant).
     const dxs = diagnosisSummaryLabels(s);
+    // Coded diagnoses (DX-2) — the tooth's EFFECTIVE ICD-10-coded findings
+    // (derived − suppressed + added), joined into the SAME per-tooth line as
+    // the pulp/apical/resorption labels above (reuses getToothDiagnoses so this
+    // never drifts from the tooltip / active-diagnoses card). An explicitly
+    // ADDED (not rule-derived) code is prefixed, mirroring the tooltip.
+    for(const d of getToothDiagnoses(toothNo)){
+      const line = `${d.icd10Display} (${d.icd10})`;
+      dxs.push(d.source === "added" ? `+ ${line}` : line);
+    }
     if(dxs.length) diagnoses.push(`${lbl(toothNo)} (${dxs.join("; ")})`);
     // Wear (edge/cervical) type-per-location whole-mouth section. Gate on
     // wearRowAllowed, same as the tooltip and the render/UI row — suppresses

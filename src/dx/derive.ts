@@ -9,7 +9,11 @@ export interface DerivedDiagnosis {
 }
 
 const ABSENT = new Set(["implant", "none", "tooth-under-gum", "no-tooth-after-extraction"]);
-function isNaturalPresent(rec: { toothSelection?: unknown }): boolean {
+/** Whether a serialized tooth record counts as "naturally present" for
+ *  diagnosis derivation (excludes implant/missing/under-gum/extraction-socket).
+ *  Exported so callers (e.g. `getActiveDiagnoses` in odontogram.ts) can gate a
+ *  view-model on the exact same presence rule the derivation itself uses. */
+export function isNaturalPresent(rec: { toothSelection?: unknown }): boolean {
   const s = rec?.toothSelection;
   return s === undefined || s === null || !ABSENT.has(String(s));
 }

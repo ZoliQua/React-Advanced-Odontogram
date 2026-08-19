@@ -139,6 +139,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   change so `onStateChange` subscribers (e.g. hosts persisting preferences)
   observe fillings-setting changes. `setFillingMaterialAvailability` also
   ignores unknown materials without notifying.
+- **Dental diagnosis coding: tooth fracture + peri-implant (DX-3a).** A broken
+  tooth now codes to WHO ICD-10 **S02.5** (Fracture of tooth). Peri-implant
+  mucositis and peri-implantitis are recognized as diagnoses but have no WHO
+  ICD-10 code, so they are surfaced as "no WHO code" in the tooltip and summary
+  and emit no FHIR Condition — a coding follows when SNOMED CT is activated.
+  Payload unchanged (2.21); the visual chart is unaffected.
 
 ### Fixed
 

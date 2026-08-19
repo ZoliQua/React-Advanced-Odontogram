@@ -18,6 +18,7 @@ import ToothDetailsCard from "./cards/ToothDetailsCard";
 import CariesCard from "./cards/CariesCard";
 import FillingsCard from "./cards/FillingsCard";
 import RootPeriodontiumCard from "./cards/RootPeriodontiumCard";
+import DiagnosesCard from "./cards/DiagnosesCard";
 
 export default function ToothControlsSurface() {
   const { t, showStatusCard, showOrthoCard } = useOdontogramUi();
@@ -116,6 +117,16 @@ export default function ToothControlsSurface() {
                 </button>
               </div>
               <RootPeriodontiumCard />
+            </section>
+
+            <section id="diagnosesSection" className="card">
+              <div className="card-title card-title-row">
+                <span>{t("card.diagnoses")}</span>
+                <button id="btnToggleDiagnosesCard" className="icon-btn" title={t("actions.collapse", { label: t("card.diagnoses") })} aria-label={t("actions.collapse", { label: t("card.diagnoses") })}>
+                  <span className="toggle-icon" aria-hidden="true">−</span>
+                </button>
+              </div>
+              <DiagnosesCard />
             </section>
 
           </div>

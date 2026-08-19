@@ -34,6 +34,9 @@ import {
 vi.mock("../odontogram", async () => {
   const actual = await vi.importActual<typeof import("../odontogram")>("../odontogram");
   return {
+    // DX-2 Task 4: DiagnosesCard (mounted unconditionally as part of ToothControlsSurface) reads/writes these.
+    getActiveDiagnoses: actual.getActiveDiagnoses,
+    setDxOverrideForSelection: actual.setDxOverrideForSelection,
     initOdontogram: vi.fn().mockImplementation(() => {
       // Simulate the real engine populating #toothGrid with tooth SVGs, so
       // tests can prove the Dental Chart view never unmounts the odontogram.

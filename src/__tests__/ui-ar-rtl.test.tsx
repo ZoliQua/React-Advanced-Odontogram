@@ -47,6 +47,9 @@ vi.mock('../odontogram', () => ({
   setModForSelection: vi.fn(),
   setCalculusForSelection: vi.fn(),
   setPeriImplantForSelection: vi.fn(),
+  // DX-2 Task 4: DiagnosesCard (mounted unconditionally as part of ToothControlsSurface) reads/writes these.
+  getActiveDiagnoses: vi.fn().mockReturnValue({ visible: false, rows: [], addableKeys: [] }),
+  setDxOverrideForSelection: vi.fn(),
   getActiveToothDetails: vi.fn().mockReturnValue({ toothSelectValue: "tooth-base", toothSelectOptions: [], substrateValue: "natural", substrateOptions: [], substrateRowVisible: true, extractionWoundChecked: false, extractionRowVisible: true, missingClosedChecked: false, missingClosedRowVisible: true, restorationValue: "none|none", restorationOptions: [], restorationRowVisible: true, crownLeakageChecked: false, crownLeakageRowVisible: false, brokenMesialChecked: false, brokenIncisalChecked: false, brokenDistalChecked: false, brokenCrownRowVisible: true, contactMesialChecked: false, contactDistalChecked: false, contactPointRowVisible: true, bruxismRowVisible: true, wearSimple: false, wearEdgeValue: "none", wearEdgeOptions: [], wearEdgeToggleChecked: false, wearCervicalValue: "none", wearCervicalOptions: [], wearCervicalToggleChecked: false, discolorationRowVisible: true, discoSimple: false, discolorationValue: "none", discolorationOptions: [], discolorationToggleChecked: false, crownActionsRowVisible: true, bridgePillarChecked: false, bridgePillarRowVisible: true, extractionPlanChecked: false, extractionPlanRowVisible: true, extractionPlanParent: "crownActionsRow", crownReplaceChecked: false, crownReplaceRowVisible: true, crownNeededChecked: false, crownNeededRowVisible: true }),
   setToothSelectionForSelection: vi.fn(),
   setSubstrateForSelection: vi.fn(),

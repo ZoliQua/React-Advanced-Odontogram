@@ -117,6 +117,9 @@ describe("UI-1 Task 1: <PerioSidebar/> controls still call their setters", () =>
 vi.mock("../odontogram", async () => {
   const actual = await vi.importActual<typeof import("../odontogram")>("../odontogram");
   return {
+    // DX-2 Task 4: DiagnosesCard (mounted unconditionally as part of ToothControlsSurface) reads/writes these.
+    getActiveDiagnoses: actual.getActiveDiagnoses,
+    setDxOverrideForSelection: actual.setDxOverrideForSelection,
     initOdontogram: vi.fn().mockImplementation(() => {
       const grid = document.getElementById("toothGrid");
       if (grid && !grid.querySelector("[data-fake-tooth-svg]")) {

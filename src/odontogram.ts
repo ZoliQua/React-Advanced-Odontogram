@@ -1071,9 +1071,9 @@ let readOnly = false;
 let notesEnabled = false;
 /** Per-card collapse state: maps a card id to collapsed (true) / expanded (false).
  *  Keys mirror the btnToggle* button ids without the prefix, lowercased: controls,
- *  status, caries, filling, rootPeriodontium. Session-only state — never serialized
+ *  status, caries, filling, rootPeriodontium, diagnoses. Session-only state — never serialized
  *  to the export payload, like perioViewMode and the other UI-layout flags. */
-const VALID_CARD_IDS = new Set(["controls", "status", "caries", "filling", "rootPeriodontium"]);
+const VALID_CARD_IDS = new Set(["controls", "status", "caries", "filling", "rootPeriodontium", "diagnoses"]);
 let collapsedCards: Record<string, boolean> = {};
 export function getCollapsedCards(): Record<string, boolean> { return { ...collapsedCards }; }
 export function isCardCollapsed(id: string): boolean {
@@ -1418,6 +1418,7 @@ const CARD_TOGGLE_LABELS: Record<string, string> = {
   btnToggleCariesCard: "caries.title",
   btnToggleFillingCard: "filling.title",
   btnToggleRootPeriodontiumCard: "card.rootPeriodontium",
+  btnToggleDiagnosesCard: "card.diagnoses",
 };
 
 // Maps each collapse-toggle button id to its session-state card id.
@@ -1427,6 +1428,7 @@ const BTN_TO_CARD_ID: Record<string, string> = {
   btnToggleCariesCard: "caries",
   btnToggleFillingCard: "filling",
   btnToggleRootPeriodontiumCard: "rootPeriodontium",
+  btnToggleDiagnosesCard: "diagnoses",
 };
 
 // Delegated handler for all card collapse toggles. Attached once to `document`
@@ -5415,6 +5417,7 @@ function refreshToggleLabels(){
     { card: "#cariesSection", btn: "#btnToggleCariesCard", labelKey: "caries.title" },
     { card: "#fillingSection", btn: "#btnToggleFillingCard", labelKey: "filling.title" },
     { card: "#rootPeriodontiumSection", btn: "#btnToggleRootPeriodontiumCard", labelKey: "card.rootPeriodontium" },
+    { card: "#diagnosesSection", btn: "#btnToggleDiagnosesCard", labelKey: "card.diagnoses" },
   ];
   for(const cfg of cardConfig){
     const cardEl = $(cfg.card);
@@ -10131,6 +10134,7 @@ function wireControls(){
     { card: "#cariesSection", btn: "#btnToggleCariesCard", labelKey: "caries.title" },
     { card: "#fillingSection", btn: "#btnToggleFillingCard", labelKey: "filling.title" },
     { card: "#rootPeriodontiumSection", btn: "#btnToggleRootPeriodontiumCard", labelKey: "card.rootPeriodontium" },
+    { card: "#diagnosesSection", btn: "#btnToggleDiagnosesCard", labelKey: "card.diagnoses" },
   ].forEach(({card, btn, labelKey})=>{
     const cardEl = $(card);
     const btnEl = $(btn);

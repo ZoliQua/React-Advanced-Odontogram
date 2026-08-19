@@ -47,6 +47,7 @@ export { default as ToothDetailsCard } from "./surfaces/cards/ToothDetailsCard";
 export { default as CariesCard } from "./surfaces/cards/CariesCard";
 export { default as FillingsCard } from "./surfaces/cards/FillingsCard";
 export { default as RootPeriodontiumCard } from "./surfaces/cards/RootPeriodontiumCard";
+export { default as DiagnosesCard } from "./surfaces/cards/DiagnosesCard";
 export { default as SurfaceCross } from "./surfaces/cards/SurfaceCross";
 export { useEngineState } from "./surfaces/useEngineState";
 export {

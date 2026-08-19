@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (K05) Condition to share the coding builder (default output unchanged). More
   findings, the diagnosis picker, and further packs (US ICD-10-CM, SNOMED) follow
   in later sub-projects.
+- **Dental diagnosis coding: charted findings (DX-1).** Beyond caries, the FHIR
+  export now derives WHO ICD-10 `Condition`s for pulp (K04.0/.1), apical
+  (K04.4-.9, radicular cyst K04.8), root caries (K02.2/.3), tooth wear (K03.0-.2,
+  .8), resorption (K03.3), calculus (K03.6), discoloration (K00.3/.8, K03.7),
+  tooth loss (K08.1) and retained root (K08.3) — one Condition per finding per
+  tooth, presence-gated. Fractures and peri-implant disease are not yet coded
+  (no WHO ICD-10 code). The active national pack (e.g. BNO-10) still overlays.
 - **Guided intro tour, reworked and extended.** The tour now steps with the left
   and right arrow keys (a teardown bug used to unbind the keyboard handler after
   the first step), targets the real restoration control instead of a control that

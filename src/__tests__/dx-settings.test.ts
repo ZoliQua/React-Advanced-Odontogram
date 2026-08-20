@@ -21,7 +21,7 @@ describe("diagnosis coding-pack i18n", () => {
   });
 });
 
-describe("snomedEnabled flag (DX-6 Task 1, dormant)", () => {
+describe("snomedEnabled flag", () => {
   beforeEach(() => setSnomedEnabled(false));
 
   it("defaults off and round-trips", () => {

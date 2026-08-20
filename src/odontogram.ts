@@ -8505,9 +8505,8 @@ export function setDiagnosisCodingPack(id: string): void {
 
 // Session-only SNOMED CT overlay flag (mirrors diagnosisCodingPack above):
 // a module `let` + getter + setter, NOT part of the export payload. Default
-// off; this is dormant infrastructure (DX-6 Task 1) — the Condition builders
-// do not read `options.snomed` yet, so flipping this flag has no observable
-// effect until a later task wires the emission.
+// off; when on, the FHIR export appends a SNOMED CT coding to each diagnosis
+// that has a verified `snomed` concept (see toFhirDx.ts / toFhirCase.ts).
 let snomedEnabled = false;
 
 export function getSnomedEnabled(): boolean {

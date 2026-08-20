@@ -14,7 +14,7 @@ export type CaseConditionKey =
   | "anodontia" | "hereditaryStructure"
   | "lipDisease" | "leukoplakia" | "mucosalLesionOther";
 
-export interface CaseConditionCode { icd10: string; icd10Display: string; lateralizable: boolean; }
+export interface CaseConditionCode { icd10: string; icd10Display: string; lateralizable: boolean; snomed?: string; }
 
 /** WHO ICD-10 catalog for case/regional conditions. `lateralizable` gates the
  *  left/right/bilateral qualifier. Displays are the WHO ICD-10 titles. */

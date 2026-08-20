@@ -40,6 +40,7 @@ const settings: SettingsState = {
     importStatus: true, onImportStatus: vi.fn(),
     importFhir: true, onImportFhir: vi.fn(),
     codingPack: "none", onDiagnosisCodingPack: vi.fn(),
+    snomedEnabled: false, onSnomedEnabled: vi.fn(),
   secondaryCariesMode: "standard",
   onSecondaryCariesMode: vi.fn(),
   icdas: false,

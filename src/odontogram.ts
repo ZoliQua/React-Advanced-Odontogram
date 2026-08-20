@@ -8503,6 +8503,22 @@ export function setDiagnosisCodingPack(id: string): void {
   notifyStateChange();
 }
 
+// Session-only SNOMED CT overlay flag (mirrors diagnosisCodingPack above):
+// a module `let` + getter + setter, NOT part of the export payload. Default
+// off; when on, the FHIR export appends a SNOMED CT coding to each diagnosis
+// that has a verified `snomed` concept (see toFhirDx.ts / toFhirCase.ts).
+let snomedEnabled = false;
+
+export function getSnomedEnabled(): boolean {
+  return snomedEnabled;
+}
+
+export function setSnomedEnabled(v: boolean): void {
+  if (v === snomedEnabled) return;
+  snomedEnabled = v;
+  notifyStateChange();
+}
+
 // ---- Settings -> Periodontal tab app-level preferences ----
 // Two session-level UI preferences (no payload/FHIR change), mirroring the
 // `perioViewMode` precedent immediately above: a module `let` + getter +
@@ -9451,7 +9467,7 @@ export function exportStatus(){
  *   omitted a placeholder Patient is embedded.
  */
 export function exportFhir(options?: FhirExportOptions){
-  const merged: FhirExportOptions = { ...options, codingPack: options?.codingPack ?? resolveCodingPack(diagnosisCodingPack) };
+  const merged: FhirExportOptions = { ...options, codingPack: options?.codingPack ?? resolveCodingPack(diagnosisCodingPack), snomed: options?.snomed ?? snomedEnabled };
   const bundle = buildFhirBundle(collectExportPayload(), merged);
   downloadJson(bundle, "odontogram-fhir");
   return bundle;

@@ -163,6 +163,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (e.g. caries → K02.9, the K07 dentofacial anomalies → the M26 range), on top of the
   always-on WHO ICD-10 base. Reference/best-effort — verify against the official
   ICD-10-CM tabular list before US clinical use. No payload change (2.22).
+- **Dental diagnosis coding: SNOMED CT overlay (DX-6).** An opt-in Settings toggle
+  (SNOMED CT, default off) adds a SNOMED CT coding to each FHIR Condition alongside
+  the WHO ICD-10 (and any national pack) coding. It codes the peri-implant findings
+  (which have no WHO ICD-10 code) as SNOMED-only Conditions and adds a SNOMED
+  laterality qualifier to case-condition bodySites. The seeded concept IDs are
+  provisional — verify against the official SNOMED CT browser before clinical use.
+  No payload change (2.22).
 
 ### Fixed
 

@@ -56,4 +56,14 @@ describe("appendCaseConditions", () => {
     const cc = buildCaseConditionCode("tmjDisorder", BNO10_PACK);
     expect(cc.coding[1]).toMatchObject({ code: "K07.6", display: "Az állkapocsízület rendellenességei" });
   });
+  it("adds the SNOMED laterality qualifier to the bodySite only when snomed is on", () => {
+    const on: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendCaseConditions(on, { case: { caseConditions: { tmjDisorder: "right" } } } as any, { snomed: true } as any);
+    const bs = on.entry[0].resource.bodySite[0].coding;
+    expect(bs.some((c: any) => c.system === "http://snomed.info/sct" && c.code === "24028007")).toBe(true);
+    expect(bs.some((c: any) => String(c.code).startsWith("laterality:"))).toBe(true); // local kept
+    const off: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendCaseConditions(off, { case: { caseConditions: { tmjDisorder: "right" } } } as any);
+    expect(off.entry[0].resource.bodySite[0].coding.every((c: any) => c.system !== "http://snomed.info/sct")).toBe(true);
+  });
 });

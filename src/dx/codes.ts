@@ -23,12 +23,15 @@ export interface DiagnosisCode {
 
 /** The base WHO ICD-10 catalog. Displays are the WHO ICD-10 titles. */
 export const DX_CODES: Record<DiagnosisKey, DiagnosisCode> = {
-  caries: { icd10: "K02", icd10Display: "Dental caries" },
-  gingivitis: { icd10: "K05.1", icd10Display: "Chronic gingivitis" },
+  // SNOMED CT concept IDs (DX-6 overlay). PROVISIONAL — verify each against the
+  // official SNOMED CT browser before clinical use; `caries` is the one
+  // high-confidence anchor. Unset keys emit no SNOMED coding (maintainer-fill).
+  caries: { icd10: "K02", icd10Display: "Dental caries", snomed: "80967001" },
+  gingivitis: { icd10: "K05.1", icd10Display: "Chronic gingivitis", snomed: "66383009" },
   periodontitis: { icd10: "K05.3", icd10Display: "Chronic periodontitis" },
   cariesCementum: { icd10: "K02.2", icd10Display: "Caries of cementum" },
   cariesArrested: { icd10: "K02.3", icd10Display: "Arrested dental caries" },
-  pulpitis: { icd10: "K04.0", icd10Display: "Pulpitis" },
+  pulpitis: { icd10: "K04.0", icd10Display: "Pulpitis", snomed: "65246005" },
   pulpNecrosis: { icd10: "K04.1", icd10Display: "Necrosis of pulp" },
   apicalPeriodontitisAcute: { icd10: "K04.4", icd10Display: "Acute apical periodontitis of pulpal origin" },
   apicalPeriodontitisChronic: { icd10: "K04.5", icd10Display: "Chronic apical periodontitis" },
@@ -49,5 +52,5 @@ export const DX_CODES: Record<DiagnosisKey, DiagnosisCode> = {
   retainedRoot: { icd10: "K08.3", icd10Display: "Retained dental root" },
   toothFracture: { icd10: "S02.5", icd10Display: "Fracture of tooth" },
   periImplantMucositis: { icd10Display: "Peri-implant mucositis" },
-  periImplantitis: { icd10Display: "Peri-implantitis" },
+  periImplantitis: { icd10Display: "Peri-implantitis", snomed: "699715004" },
 };

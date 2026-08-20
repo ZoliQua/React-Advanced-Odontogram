@@ -90,4 +90,19 @@ describe("dental Condition emission (DX-0)", () => {
     appendDentalConditions(bundle, { teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } } } as any);
     expect(bundle.entry.some((e: any) => String(e.resource.id).includes("periImplant"))).toBe(false);
   });
+  it("appends a SNOMED coding to caries only when snomed is on", () => {
+    expect(buildConditionCode("caries", undefined, false)?.coding?.length).toBe(1); // WHO only
+    const on = buildConditionCode("caries", undefined, true);
+    expect(on?.coding?.some((c) => c.system === "http://snomed.info/sct" && c.code === "80967001")).toBe(true);
+  });
+  it("emits a SNOMED-only Condition for peri-implantitis when snomed is on, nothing when off", () => {
+    const onB: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(onB, { teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } } } as any, { snomed: true } as any);
+    const c = onB.entry.find((e: any) => e.resource.id === "odontogram-dx-periImplantitis-36")?.resource;
+    expect(c.code.coding.length).toBe(1);
+    expect(c.code.coding[0]).toMatchObject({ system: "http://snomed.info/sct", code: "699715004" });
+    const offB: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(offB, { teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } } } as any);
+    expect(offB.entry.some((e: any) => String(e.resource.id).includes("periImplant"))).toBe(false);
+  });
 });

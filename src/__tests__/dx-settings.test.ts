@@ -11,4 +11,11 @@ describe("diagnosis coding-pack i18n", () => {
       }
     }
   });
+
+  it("has the ICD-10-CM settings option label in all 12 languages", () => {
+    for (const lang of Object.keys(translations)) {
+      const v = translations[lang as keyof typeof translations]["settings.diagnosisCoding.icd10cm"];
+      expect(typeof v === "string" && v.length > 0, `${lang}:settings.diagnosisCoding.icd10cm`).toBe(true);
+    }
+  });
 });

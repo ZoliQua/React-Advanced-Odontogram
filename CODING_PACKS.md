@@ -112,6 +112,48 @@ BNO-10 is the dental chapter of the Hungarian translation of WHO ICD-10. Its cod
 
 Users can now select BNO-10 in Settings → General → Diagnosis coding system to see Hungarian labels throughout the app and in the FHIR export.
 
+## Example: US ICD-10-CM (a modification pack)
+
+US ICD-10-CM (Clinical Modification) is the engine's first **modification**-class
+pack — unlike BNO-10's translation pack, it doesn't just relabel the WHO code, it
+**remaps the code itself** to the US-specific value. It was added as:
+
+1. An `ICD10CM_PACK` object in `src/dx/packs.ts` (`id: "icd10cm"`,
+   `system: ICD10CM_SYSTEM` = `"http://hl7.org/fhir/sid/icd-10-cm"`) with
+   `kind: "modification"`. Because it's a modification pack it uses `codes` (tooth-level,
+   keyed by `DiagnosisKey`) and `caseCodes` (case-level, keyed by `CaseConditionKey`)
+   instead of `displays`/`caseDisplays` — each entry is a `{ code, display }` pair, e.g.:
+
+   ```typescript
+   codes: {
+     caries: { code: "K02.9", display: "Dental caries, unspecified" },
+     // ...
+   },
+   caseCodes: {
+     tmjDisorder: { code: "M26.609", display: "Unspecified temporomandibular joint disorder, unspecified side" },
+     // the K07 dentofacial-anomaly case keys remap into the M26 range in ICD-10-CM
+     // ...
+   },
+   ```
+
+2. Registered in `CODING_PACKS` as `icd10cm: ICD10CM_PACK`.
+3. Added to `DIAGNOSIS_CODING_OPTIONS` in `src/SettingsModal.tsx` as
+   `{ value: "icd10cm", labelKey: "settings.diagnosisCoding.icd10cm" }`.
+4. Translation keys added to all 12 language files under
+   `settings.diagnosisCoding.icd10cm` (e.g. `"ICD-10-CM (US)"` in English,
+   `"ICD-10-CM (USA)"` in Hungarian).
+
+Selecting ICD-10-CM in Settings changes the code that lands in the FHIR export's
+`Condition.coding` — not just the display text — for both tooth-level and case-level
+diagnoses, while the always-on WHO ICD-10 base coding is still carried alongside it.
+
+**Reference/best-effort caveat:** most K-codes the engine uses are identical between
+WHO ICD-10 and ICD-10-CM, so the pack only remaps the genuinely-divergent keys and
+otherwise reuses flat, non-data-driven codes per diagnosis key (no laterality/encounter
+specificity yet). Treat `ICD10CM_PACK`'s codes as a reference starting point — **verify
+every code against the official CMS/CDC ICD-10-CM tabular list before any US
+clinical or billing use.**
+
 ## Key Points
 
 - A **translation pack never changes the code**, only the display. BNO-10 uses the exact same codes as WHO ICD-10; the code in the FHIR export is unchanged whether BNO-10 or WHO is selected.

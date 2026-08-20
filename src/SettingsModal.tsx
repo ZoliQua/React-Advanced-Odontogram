@@ -178,6 +178,7 @@ const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
 const DIAGNOSIS_CODING_OPTIONS: { value: string; labelKey: string }[] = [
   { value: "none", labelKey: "settings.diagnosisCoding.none" },
   { value: "bno10", labelKey: "settings.diagnosisCoding.bno10" },
+  { value: "icd10cm", labelKey: "settings.diagnosisCoding.icd10cm" },
 ];
 
 const SECONDARY_OPTIONS: { value: SecondaryCariesMode; labelKey: string }[] = [

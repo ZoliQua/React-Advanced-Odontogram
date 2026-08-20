@@ -17,8 +17,8 @@ Define a new `CodingPack` object with the following structure:
 
 ```typescript
 {
-  id: "bno-10",                        // unique pack identifier
-  system: "http://hl7.org/fhir/sid/ksh/bno-10",  // national code-system URI
+  id: "xyz10",                         // unique pack identifier
+  system: "http://example.org/xyz10",  // national code-system URI
   kind: "translation",                 // "translation" or "modification"
   displays: {                          // tooth-level diagnosis displays
     "caries-primary": "Karies (primer)",
@@ -43,13 +43,13 @@ codes: {
 
 ### 2. Register the Pack in `CODING_PACKS`
 
-Add your pack to the `CODING_PACKS` array in `src/dx/packs.ts`:
+Add your pack to the `CODING_PACKS` map in `src/dx/packs.ts` (it is a `Record<string, CodingPack>` keyed by pack id, not an array):
 
 ```typescript
-export const CODING_PACKS: CodingPack[] = [
+export const CODING_PACKS: Record<string, CodingPack> = {
   // ... existing packs
-  bno10Pack,
-];
+  bno10: BNO10_PACK,
+};
 ```
 
 ### 3. Add UI Selectable Option and i18n Labels
@@ -57,26 +57,29 @@ export const CODING_PACKS: CodingPack[] = [
 #### a. Add the option to `DIAGNOSIS_CODING_OPTIONS` in `src/SettingsModal.tsx`:
 
 ```typescript
-const DIAGNOSIS_CODING_OPTIONS = [
-  { value: "who", label: t("settings.diagnosisCodingSystem.who") },
-  { value: "bno-10", label: t("settings.diagnosisCodingSystem.bno10") },
-  // ... add your pack here
+const DIAGNOSIS_CODING_OPTIONS: { value: string; labelKey: string }[] = [
+  { value: "none", labelKey: "settings.diagnosisCoding.none" },
+  { value: "bno10", labelKey: "settings.diagnosisCoding.bno10" },
+  // ... add your pack here, e.g.:
+  // { value: "xyz10", labelKey: "settings.diagnosisCoding.xyz10" },
 ];
 ```
 
+`"none"` is the base/no-pack option (WHO ICD-10 only); it is always present and must not be removed.
+
 #### b. Add the i18n label to all 12 language files in `src/i18n/translations.ts`:
 
-You must add a translation key under `settings.diagnosisCodingSystem` in **all 12 supported languages** (HU, EN, DE, ES, IT, SK, PL, RU, PT-BR, AR, ZH):
+You must add a translation key under `settings.diagnosisCoding` in **all 12 supported languages** (HU, EN, DE, ES, IT, SK, PL, RU, PT-BR, ZH, AR, FR):
 
 ```typescript
 // Hungarian (hu) — source of truth
-"settings.diagnosisCodingSystem.bno10": "BNO-10 (magyar)",
+"settings.diagnosisCoding.bno10": "BNO-10 (magyar)",
 
 // English (en)
-"settings.diagnosisCodingSystem.bno10": "BNO-10 (Hungarian)",
+"settings.diagnosisCoding.bno10": "BNO-10 (Hungarian)",
 
 // German (de)
-"settings.diagnosisCodingSystem.bno10": "BNO-10 (Ungarisch)",
+"settings.diagnosisCoding.bno10": "BNO-10 (Ungarisch)",
 
 // ... and so on for all remaining languages
 ```
@@ -95,16 +98,16 @@ Mirror the test pattern in `src/dx/__tests__/packs.test.ts`:
 
 ## Coverage Requirement
 
-Your pack must provide displays (or codes) for **every coded key** in `DX_CODES` and `CASE_DX_CODES`. There are two uncoded peri-implant keys (`peri-implant-mucositis` and `peri-implant-peri-implantitis-mild` / `-moderate` / `-severe`) that emit no FHIR Condition and need no entry in your pack.
+Your pack must provide displays (or codes) for **every coded key** in `DX_CODES` and `CASE_DX_CODES`. There are two uncoded peri-implant `DiagnosisKey`s (`periImplantMucositis` and `periImplantitis` — they have no `icd10` field in `DX_CODES`) that emit no FHIR Condition and need no entry in your pack.
 
 ## Example: BNO-10 (Hungarian)
 
 BNO-10 is the dental chapter of the Hungarian translation of WHO ICD-10. Its codes are **identical to WHO ICD-10**; only the display text differs (translated to Hungarian). The pack was added as:
 
-1. A `bno10Pack` object in `src/dx/packs.ts` with `kind: "translation"` and Hungarian displays for every tooth-level and case-level diagnosis.
+1. A `BNO10_PACK` object in `src/dx/packs.ts` (`id: "bno10"`, `system: "http://ksh.hu/bno10"`) with `kind: "translation"` and Hungarian displays for every tooth-level and case-level diagnosis.
 2. Registered in `CODING_PACKS`.
-3. Added to `DIAGNOSIS_CODING_OPTIONS` in `src/SettingsModal.tsx` with the label `"BNO-10 (magyar)"`.
-4. Translation keys added to all 12 language files under `settings.diagnosisCodingSystem.bno10`.
+3. Added to `DIAGNOSIS_CODING_OPTIONS` in `src/SettingsModal.tsx` as `{ value: "bno10", labelKey: "settings.diagnosisCoding.bno10" }`, whose Hungarian label is `"BNO-10 (magyar)"`.
+4. Translation keys added to all 12 language files under `settings.diagnosisCoding.bno10`.
 5. Tests verifying completeness and correctness of the Hungarian displays.
 
 Users can now select BNO-10 in Settings → General → Diagnosis coding system to see Hungarian labels throughout the app and in the FHIR export.

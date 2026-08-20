@@ -191,4 +191,7 @@ export interface FhirExportOptions {
   /** Active national diagnosis coding pack (adds a second coding to each
    *  Condition). Resolved and passed by the export entry point. */
   codingPack?: import("../dx/packs").CodingPack;
+  /** Emit a SNOMED CT coding on each Condition when true (DX-6 overlay). Set
+   *  from the `snomedEnabled` session flag by the export entry point. */
+  snomed?: boolean;
 }

@@ -167,6 +167,7 @@ vi.mock("../odontogram", async () => {
     // did to the shared module state.
     getPerioViewMode: vi.fn().mockReturnValue("popup"),
     getDiagnosisCodingPack: vi.fn().mockReturnValue("none"),
+    getSnomedEnabled: vi.fn().mockReturnValue(false),
     getFillingDefectEnabled: vi.fn().mockReturnValue(true),
     setFillingDefectEnabled: vi.fn(),
     getFillingComplexity: vi.fn().mockReturnValue("complex"),
@@ -177,6 +178,7 @@ vi.mock("../odontogram", async () => {
     setFillingMaterialAvailability: vi.fn(),
     setPerioViewMode: vi.fn(),
     setDiagnosisCodingPack: vi.fn(),
+    setSnomedEnabled: vi.fn(),
     getToothAnatomy: vi.fn().mockReturnValue("classic"),
     setToothAnatomy: vi.fn(),
     getPerioRowVisibility: vi.fn().mockReturnValue({

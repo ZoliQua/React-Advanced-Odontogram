@@ -56,6 +56,8 @@ import {
   setPerioIndexNameMode,
   getDiagnosisCodingPack,
   setDiagnosisCodingPack,
+  getSnomedEnabled,
+  setSnomedEnabled,
   getPdfSettings,
   setPdfSettings,
   isDualStateConfirmPending,
@@ -447,6 +449,9 @@ export function OdontogramProvider({
   // Mirror the module-level diagnosis coding-pack flag into React state, kept
   // in sync via onStateChange the same way perioViewMode is mirrored above.
   const [codingPack, setCodingPackState] = useState<string>(() => getDiagnosisCodingPack());
+  // Mirror the module-level SNOMED CT overlay flag into React state, kept in
+  // sync via onStateChange the same way codingPack is mirrored above.
+  const [snomedEnabled, setSnomedEnabledState] = useState<boolean>(() => getSnomedEnabled());
   // PDF export settings mirror (session-only module state).
   const [pdfSettings, setPdfSettingsState] = useState(() => getPdfSettings());
   // Whether the perio (Dental Chart) view is the one currently showing — ONLY
@@ -675,6 +680,14 @@ export function OdontogramProvider({
     return onStateChange(refresh);
   }, []);
 
+  // Mirror the module-level SNOMED CT overlay flag into React state the same
+  // way codingPack is mirrored above.
+  useEffect(() => {
+    const refresh = () => setSnomedEnabledState(getSnomedEnabled());
+    refresh();
+    return onStateChange(refresh);
+  }, []);
+
   // Mirror the pending-confirm flag into React state. Subscribe only (no initial
   // read) — a confirm is only ever requested by a post-mount edit, so
   // `confirmOpen` starts false and this never calls the module during initial render.
@@ -765,6 +778,8 @@ export function OdontogramProvider({
     onPerioIndexNameMode: (v) => setPerioIndexNameMode(v),
     codingPack,
     onDiagnosisCodingPack: (v) => setDiagnosisCodingPack(v),
+    snomedEnabled,
+    onSnomedEnabled: (v: boolean) => setSnomedEnabled(v),
     fillingDefectEnabled: fillingDefectOn,
     onFillingDefectEnabled: (v) => { setFillingDefectOn(v); setFillingDefectEnabled(v); onFillingDefectEnabledChange?.(v); },
     fillingComplexity: fillingComplexityState,

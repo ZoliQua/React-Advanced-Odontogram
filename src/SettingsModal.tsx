@@ -78,6 +78,11 @@ export type SettingsState = {
   // BNO-10 national pack). Session-only module flag, mirrors perioViewMode.
   codingPack: string;
   onDiagnosisCodingPack: (value: string) => void;
+  // SNOMED CT overlay toggle (DX-6 Task 1, dormant): adds a SNOMED CT coding
+  // to each Condition in the FHIR export. Session-only module flag, mirrors
+  // codingPack above.
+  snomedEnabled: boolean;
+  onSnomedEnabled: (value: boolean) => void;
   secondaryCariesMode: SecondaryCariesMode;
   onSecondaryCariesMode: (value: SecondaryCariesMode) => void;
   icdas: boolean;
@@ -551,6 +556,13 @@ export const SETTINGS_TABS: SettingsTab[] = [
           value={s.codingPack}
           options={DIAGNOSIS_CODING_OPTIONS}
           onChange={s.onDiagnosisCodingPack}
+        />
+        <ToggleRow
+          t={t}
+          label={t("settings.snomed")}
+          descKey="settings.snomed.desc"
+          checked={s.snomedEnabled}
+          onChange={s.onSnomedEnabled}
         />
       </>
     ),

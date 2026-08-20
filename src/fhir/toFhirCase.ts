@@ -19,8 +19,13 @@ export function buildCaseConditionCode(key: CaseConditionKey, pack?: CodingPack)
   const coding: NonNullable<CodeableConcept["coding"]> = [
     { system: ICD10_SYSTEM, code: base.icd10, display: base.icd10Display },
   ];
-  if (pack && pack.kind === "translation") {
-    coding.push({ system: pack.system, code: base.icd10, display: pack.caseDisplays?.[key] ?? base.icd10Display });
+  if (pack) {
+    if (pack.kind === "modification") {
+      const m = pack.caseCodes?.[key];
+      if (m) coding.push({ system: pack.system, code: m.code, display: m.display });
+    } else {
+      coding.push({ system: pack.system, code: base.icd10, display: pack.caseDisplays?.[key] ?? base.icd10Display });
+    }
   }
   return { coding, text: base.icd10Display };
 }

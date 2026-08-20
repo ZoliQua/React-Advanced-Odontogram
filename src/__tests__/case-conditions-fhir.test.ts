@@ -2,11 +2,17 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { describe, it, expect } from "vitest";
-import { appendCaseConditions } from "../fhir/toFhirCase";
+import { appendCaseConditions, buildCaseConditionCode } from "../fhir/toFhirCase";
 import { BNO10_PACK } from "../dx/packs";
+import type { CodingPack } from "../dx/packs";
 
 const bundle = () => ({ resourceType: "Bundle", type: "collection", entry: [] }) as any;
 const find = (b: any, id: string) => b.entry.find((e: any) => e.resource.id === id)?.resource;
+
+const FAKE_MOD: CodingPack = {
+  id: "fake", system: "http://example.org/fake", kind: "modification",
+  caseCodes: { tmjDisorder: { code: "M26.609", display: "TMJ disorder (fake)" } },
+};
 
 describe("appendCaseConditions", () => {
   it("emits a patient-level Condition with a laterality bodySite for a lateralized condition", () => {
@@ -36,5 +42,18 @@ describe("appendCaseConditions", () => {
     // WHO coding first (English), then the BNO coding with the Hungarian display
     expect(c.code.coding[0]).toMatchObject({ code: "K07.6", display: "Temporomandibular joint disorder" });
     expect(c.code.coding[1]).toMatchObject({ system: "http://ksh.hu/bno10", code: "K07.6", display: "Az állkapocsízület rendellenességei" });
+  });
+  it("a modification pack remaps a case condition code", () => {
+    const cc = buildCaseConditionCode("tmjDisorder", FAKE_MOD);
+    expect(cc.coding[0]).toMatchObject({ code: "K07.6", display: "Temporomandibular joint disorder" }); // WHO base first
+    expect(cc.coding[1]).toEqual({ system: "http://example.org/fake", code: "M26.609", display: "TMJ disorder (fake)" });
+  });
+  it("a modification pack with no caseCode for a key adds no second coding", () => {
+    const cc = buildCaseConditionCode("anodontia", FAKE_MOD);
+    expect(cc.coding.length).toBe(1); // WHO base only
+  });
+  it("a translation pack (BNO-10) still localizes the display, same code (unchanged)", () => {
+    const cc = buildCaseConditionCode("tmjDisorder", BNO10_PACK);
+    expect(cc.coding[1]).toMatchObject({ code: "K07.6", display: "Az állkapocsízület rendellenességei" });
   });
 });

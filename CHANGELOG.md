@@ -157,6 +157,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   case-level diagnosis (selectable in Settings → diagnosis coding); case Conditions
   localize under the BNO system too. A new `CODING_PACKS.md` guide documents how to
   add another country's pack. No payload change (2.22).
+- **Dental diagnosis coding: US ICD-10-CM pack (DX-5).** A selectable ICD-10-CM
+  (Clinical Modification) coding pack — the first `modification`-class pack — that
+  remaps the diagnosis code (not just the display) on tooth AND case Conditions
+  (e.g. caries → K02.9, the K07 dentofacial anomalies → the M26 range), on top of the
+  always-on WHO ICD-10 base. Reference/best-effort — verify against the official
+  ICD-10-CM tabular list before US clinical use. No payload change (2.22).
 
 ### Fixed
 

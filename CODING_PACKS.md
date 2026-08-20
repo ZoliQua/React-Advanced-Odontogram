@@ -160,3 +160,21 @@ clinical or billing use.**
 - **All 12 languages must have a label** for every new pack option added to `DIAGNOSIS_CODING_OPTIONS`, even if the option is only for one country. This ensures the Settings menu is consistent in every language the app ships.
 - **Payload version is unaffected** — adding a pack is a UI-only change. The JSON export does not include which pack is selected (the pack is applied at export time based on the Settings choice).
 - **FHIR output changes** — the `Condition.coding` will carry the national code system URI instead of the WHO system URI when the pack is active, and the display text will be localized to the pack's language (for translation packs, the code stays the same; for modification packs, the code changes too).
+
+## SNOMED CT Overlay
+
+The **SNOMED CT overlay** is an independent diagnostic coding system that rides alongside the WHO ICD-10 base and the national packs (if selected). It is toggled via **Settings → General → SNOMED CT** (default **off**).
+
+When enabled, each FHIR `Condition` gains an additional **SNOMED CT coding** whenever the charted diagnosis has a verified SNOMED CT concept ID in `src/dx/codes.ts` or `src/dx/caseCodes.ts`. The overlay is independent — the WHO ICD-10 base coding is always present, and the national pack (if selected) still overlays its codes; SNOMED CT codes are *added* without replacing them.
+
+### Key Points
+
+- **Seeded concept IDs are provisional.** The SNOMED CT IDs currently seeded in the codebase are a reference starting point — **verify every code against the official SNOMED CT browser before any clinical use.** This is not a complete or authoritative SNOMED clinical mapping.
+- **Unset slots emit nothing.** If a diagnosis has no `snomed` concept ID defined in the code catalog, the overlay does not emit a SNOMED coding for that diagnosis — it is maintainer's responsibility to complete the mapping.
+- **Two concrete effects:**
+  1. **Peri-implant findings (no WHO code)** — the diagnoses `periImplantMucositis` and `periImplantitis` have no WHO ICD-10 code. When the SNOMED CT overlay is enabled, they emit a **SNOMED-only `Condition`** (no WHO base code, since none exists).
+  2. **Case-condition laterality qualifier** — case-level diagnoses that carry a `laterality` (left/right/bilateral) gain a **SNOMED CT `bodySite` qualifier** encoding the laterality, in addition to the laterality captured by the case-condition key itself.
+
+### No Payload Impact
+
+The SNOMED CT overlay is a pure export-time feature (like the national packs). It does not change the JSON export payload format or version — the toggle is applied only during FHIR export based on the Settings selection.

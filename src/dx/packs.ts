@@ -2,6 +2,7 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import type { DiagnosisKey } from "./codes";
+import type { CaseConditionKey } from "./caseCodes";
 
 /**
  * A national code overlay. `translation` packs keep the WHO codes and only
@@ -14,6 +15,7 @@ export interface CodingPack {
   system: string;
   kind: "translation" | "modification";
   displays?: Partial<Record<DiagnosisKey, string>>;
+  caseDisplays?: Partial<Record<CaseConditionKey, string>>;
   codes?: Partial<Record<DiagnosisKey, { code: string; display: string }>>;
 }
 
@@ -53,6 +55,36 @@ export const BNO10_PACK: CodingPack = {
     toothLoss: "Fogak elvesztése baleset, foghúzás vagy helyi fogágybetegség miatt",
     retainedRoot: "Visszamaradt foggyökér",
     toothFracture: "Fogtörés",
+  },
+  caseDisplays: {
+    jawSizeAnomaly: "Az állcsontméret jelentős rendellenességei",
+    jawBaseAnomaly: "Az állcsont-koponyaalap viszony rendellenességei",
+    archRelationAnomaly: "A fogív viszony rendellenességei",
+    toothPositionAnomaly: "A fogak helyzeti rendellenességei",
+    malocclusionUnspecified: "Fogazati záródási rendellenesség (malocclusio), nem meghatározott",
+    dentofacialFunctional: "Dentofacialis működési rendellenességek",
+    tmjDisorder: "Az állkapocsízület rendellenességei",
+    odontogenicCyst: "Fejlődési odontogen ciszták",
+    nonOdontogenicCyst: "A szájüreg fejlődési (nem odontogen) cisztái",
+    jawCystOther: "Az állcsont egyéb cisztái",
+    oralCystOther: "A szájüreg egyéb cisztái, m.n.o.",
+    salivaryAtrophy: "A nyálmirigy sorvadása (atrophia)",
+    salivaryHypertrophy: "A nyálmirigy túltengése (hypertrophia)",
+    sialadenitis: "Nyálmirigygyulladás (sialoadenitis)",
+    salivaryAbscess: "Nyálmirigytályog",
+    salivaryFistula: "Nyálmirigysipoly",
+    sialolithiasis: "Nyálkövesség (sialolithiasis)",
+    mucocele: "A nyálmirigy mucokéléje (nyálretenciós ciszta)",
+    salivarySecretion: "A nyálelválasztás zavarai",
+    recurrentAphthae: "Visszatérő szájfekélyek (aphthák)",
+    stomatitisOther: "A szájnyálkahártya-gyulladás egyéb formái",
+    oralCellulitis: "A száj cellulitise és tályogja",
+    oralMucositis: "Szájnyálkahártya-gyulladás (fekélyes mucositis)",
+    anodontia: "Foghiány (anodontia)",
+    hereditaryStructure: "A fog szerkezetének öröklődő rendellenességei, m.n.o.",
+    lipDisease: "Az ajak betegségei",
+    leukoplakia: "Leukoplakia és a szájhám egyéb elváltozásai",
+    mucosalLesionOther: "A szájnyálkahártya egyéb és nem meghatározott elváltozásai",
   },
 };
 

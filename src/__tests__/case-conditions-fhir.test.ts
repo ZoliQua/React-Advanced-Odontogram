@@ -3,6 +3,7 @@
 
 import { describe, it, expect } from "vitest";
 import { appendCaseConditions } from "../fhir/toFhirCase";
+import { BNO10_PACK } from "../dx/packs";
 
 const bundle = () => ({ resourceType: "Bundle", type: "collection", entry: [] }) as any;
 const find = (b: any, id: string) => b.entry.find((e: any) => e.resource.id === id)?.resource;
@@ -27,5 +28,13 @@ describe("appendCaseConditions", () => {
     appendCaseConditions(b, { case: {} } as any);
     appendCaseConditions(b, {} as any);
     expect(b.entry.length).toBe(0);
+  });
+  it("uses the BNO-10 Hungarian case display under the pack system", () => {
+    const b: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendCaseConditions(b, { case: { caseConditions: { tmjDisorder: "right" } } } as any, { codingPack: BNO10_PACK } as any);
+    const c = b.entry.find((e: any) => e.resource.id === "odontogram-case-tmjDisorder").resource;
+    // WHO coding first (English), then the BNO coding with the Hungarian display
+    expect(c.code.coding[0]).toMatchObject({ code: "K07.6", display: "Temporomandibular joint disorder" });
+    expect(c.code.coding[1]).toMatchObject({ system: "http://ksh.hu/bno10", code: "K07.6", display: "Az állkapocsízület rendellenességei" });
   });
 });

@@ -17,6 +17,7 @@ export interface CodingPack {
   displays?: Partial<Record<DiagnosisKey, string>>;
   caseDisplays?: Partial<Record<CaseConditionKey, string>>;
   codes?: Partial<Record<DiagnosisKey, { code: string; display: string }>>;
+  caseCodes?: Partial<Record<CaseConditionKey, { code: string; display: string }>>;
 }
 
 // BNO-10 (Hungarian ICD-10). The Hungarian codes are identical to WHO ICD-10

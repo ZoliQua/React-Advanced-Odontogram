@@ -152,6 +152,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   each optionally lateralized (left/right/bilateral). They export as patient-level
   FHIR Conditions and appear in the whole-mouth summary. Payload 2.22 (additive
   `caseConditions`); the visual chart and per-tooth data are unaffected.
+- **Dental diagnosis coding: complete BNO-10 (Hungarian) pack (DX-4).** The BNO-10
+  coding pack now carries Hungarian displays for every coded tooth-level and
+  case-level diagnosis (selectable in Settings → diagnosis coding); case Conditions
+  localize under the BNO system too. A new `CODING_PACKS.md` guide documents how to
+  add another country's pack. No payload change (2.22).
 
 ### Fixed
 

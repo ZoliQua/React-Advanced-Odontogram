@@ -12,15 +12,15 @@ const LATERALITY_DISPLAY: Record<Exclude<Laterality, "unspecified">, string> = {
 };
 
 /** `Condition.code` for a case condition: WHO ICD-10 base + (for a translation
- *  pack, e.g. BNO-10) the same code under the pack's system. Localized case
- *  displays arrive in DX-4. */
+ *  pack, e.g. BNO-10) the same code under the pack's system, using the pack's
+ *  localized case display (`pack.caseDisplays`) when available. */
 export function buildCaseConditionCode(key: CaseConditionKey, pack?: CodingPack): CodeableConcept {
   const base = CASE_DX_CODES[key];
   const coding: NonNullable<CodeableConcept["coding"]> = [
     { system: ICD10_SYSTEM, code: base.icd10, display: base.icd10Display },
   ];
   if (pack && pack.kind === "translation") {
-    coding.push({ system: pack.system, code: base.icd10, display: base.icd10Display });
+    coding.push({ system: pack.system, code: base.icd10, display: pack.caseDisplays?.[key] ?? base.icd10Display });
   }
   return { coding, text: base.icd10Display };
 }

@@ -33,6 +33,11 @@ authoritative key set, so add a key there first, then add the same key to every
 other language. The UI currently ships in twelve languages. Each language also
 has its own README in `lang/`.
 
+## Adding a National Diagnosis-Coding Pack
+
+See [`CODING_PACKS.md`](./CODING_PACKS.md) for a step-by-step guide to add your
+country's national diagnosis codes (e.g., BNO-10 for Hungary, ICD-10-CM for the US).
+
 ## Style
 
 - Follow the patterns already in the surrounding code.

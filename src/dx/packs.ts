@@ -89,8 +89,82 @@ export const BNO10_PACK: CodingPack = {
   },
 };
 
+// US ICD-10-CM (Clinical Modification) — a `modification`-class pack: it REMAPS
+// the code, not just the display. Most K-codes the engine uses are identical
+// between WHO ICD-10 and ICD-10-CM; this pack remaps the genuinely-divergent
+// ones (e.g. caries -> K02.9 unspecified; the K07 dentofacial anomalies ->
+// the M26 range) and uses CM display titles.
+// REFERENCE / BEST-EFFORT: verify against the official ICD-10-CM tabular list
+// before any US clinical/billing use. Codes are flat per-key (no data-driven
+// specificity yet — see DX-5 spec §7).
+export const ICD10CM_SYSTEM = "http://hl7.org/fhir/sid/icd-10-cm";
+
+export const ICD10CM_PACK: CodingPack = {
+  id: "icd10cm",
+  system: ICD10CM_SYSTEM,
+  kind: "modification",
+  codes: {
+    caries: { code: "K02.9", display: "Dental caries, unspecified" },
+    gingivitis: { code: "K05.10", display: "Chronic gingivitis, plaque induced" },
+    periodontitis: { code: "K05.30", display: "Chronic periodontitis, unspecified" },
+    cariesCementum: { code: "K02.7", display: "Dental root caries" },
+    cariesArrested: { code: "K02.3", display: "Arrested dental caries" },
+    pulpitis: { code: "K04.0", display: "Pulpitis" },
+    pulpNecrosis: { code: "K04.1", display: "Necrosis of pulp" },
+    apicalPeriodontitisAcute: { code: "K04.4", display: "Acute apical periodontitis of pulpal origin" },
+    apicalPeriodontitisChronic: { code: "K04.5", display: "Chronic apical periodontitis" },
+    radicularCyst: { code: "K04.8", display: "Radicular cyst" },
+    periapicalAbscess: { code: "K04.7", display: "Periapical abscess without sinus" },
+    periapicalAbscessSinus: { code: "K04.6", display: "Periapical abscess with sinus" },
+    condensingOsteitis: { code: "K04.99", display: "Other diseases of pulp and periapical tissues" },
+    resorption: { code: "K03.3", display: "Pathological resorption of teeth" },
+    attrition: { code: "K03.0", display: "Excessive attrition of teeth" },
+    abrasion: { code: "K03.1", display: "Abrasion of teeth" },
+    erosion: { code: "K03.2", display: "Erosion of teeth" },
+    abfraction: { code: "K03.89", display: "Other specified diseases of hard tissues of teeth" },
+    calculus: { code: "K03.6", display: "Deposits [accretions] on teeth" },
+    fluorosis: { code: "K00.3", display: "Mottled teeth" },
+    tetracyclineStain: { code: "K00.8", display: "Other disorders of tooth development" },
+    postEruptiveColour: { code: "K03.7", display: "Posteruptive color changes of dental hard tissues" },
+    toothLoss: { code: "K08.409", display: "Partial loss of teeth, unspecified cause, unspecified class" },
+    retainedRoot: { code: "K08.3", display: "Retained dental root" },
+    toothFracture: { code: "S02.5XXA", display: "Fracture of tooth (traumatic), initial encounter" },
+  },
+  caseCodes: {
+    jawSizeAnomaly: { code: "M26.00", display: "Unspecified anomaly of jaw size" },
+    jawBaseAnomaly: { code: "M26.10", display: "Unspecified anomaly of jaw-cranial base relationship" },
+    archRelationAnomaly: { code: "M26.20", display: "Unspecified anomaly of dental arch relationship" },
+    toothPositionAnomaly: { code: "M26.30", display: "Unspecified anomaly of tooth position of fully erupted tooth or teeth" },
+    malocclusionUnspecified: { code: "M26.4", display: "Malocclusion, unspecified" },
+    dentofacialFunctional: { code: "M26.50", display: "Dentofacial functional abnormalities, unspecified" },
+    tmjDisorder: { code: "M26.609", display: "Unspecified temporomandibular joint disorder, unspecified side" },
+    odontogenicCyst: { code: "K09.0", display: "Developmental odontogenic cysts" },
+    nonOdontogenicCyst: { code: "K09.1", display: "Developmental (nonodontogenic) cysts of oral region" },
+    jawCystOther: { code: "M27.40", display: "Unspecified cyst of jaw" },
+    oralCystOther: { code: "K09.8", display: "Other cysts of oral region, not elsewhere classified" },
+    salivaryAtrophy: { code: "K11.0", display: "Atrophy of salivary gland" },
+    salivaryHypertrophy: { code: "K11.1", display: "Hypertrophy of salivary gland" },
+    sialadenitis: { code: "K11.20", display: "Sialoadenitis, unspecified" },
+    salivaryAbscess: { code: "K11.3", display: "Abscess of salivary gland" },
+    salivaryFistula: { code: "K11.4", display: "Fistula of salivary gland" },
+    sialolithiasis: { code: "K11.5", display: "Sialolithiasis" },
+    mucocele: { code: "K11.6", display: "Mucocele of salivary gland" },
+    salivarySecretion: { code: "K11.7", display: "Disturbances of salivary secretion" },
+    recurrentAphthae: { code: "K12.0", display: "Recurrent oral aphthae" },
+    stomatitisOther: { code: "K12.1", display: "Other forms of stomatitis" },
+    oralCellulitis: { code: "K12.2", display: "Cellulitis and abscess of mouth" },
+    oralMucositis: { code: "K12.30", display: "Oral mucositis (ulcerative), unspecified" },
+    anodontia: { code: "K00.0", display: "Anodontia" },
+    hereditaryStructure: { code: "K00.5", display: "Hereditary disturbances in tooth structure, not elsewhere classified" },
+    lipDisease: { code: "K13.0", display: "Diseases of lips" },
+    leukoplakia: { code: "K13.21", display: "Leukoplakia of oral mucosa, including tongue" },
+    mucosalLesionOther: { code: "K13.79", display: "Other lesions of oral mucosa" },
+  },
+};
+
 export const CODING_PACKS: Record<string, CodingPack> = {
   bno10: BNO10_PACK,
+  icd10cm: ICD10CM_PACK,
 };
 
 /** Resolve a pack id to its definition. "none"/null/unknown -> undefined. */

@@ -690,7 +690,7 @@ Note: enabling persistence restores the saved case via `importStatus()`, which r
 Note: the persisted payload can include patient-identifying case data (patient name, exam date) in plaintext `localStorage`. If you chart such data, ensure device-level protection or clear it with `clearPersistedState()` when appropriate.
 
 ### 💾 Status Export/Import Format
-The export creates a JSON file (version `2.20`; imports also accept legacy `1.4` and `2.0` through `2.19` and migrate automatically) containing:
+The export creates a JSON file (version `2.22`; imports also accept legacy `1.4` and `2.0` through `2.21` and migrate automatically) containing:
 
 **Global fields:**
 - `wisdomVisible` - wisdom teeth visible
@@ -723,6 +723,7 @@ The export creates a JSON file (version `2.20`; imports also accept legacy `1.4`
 - `periapicalType` - periapical lesion subtype (none/granuloma/cyst), shown only under symptomatic/asymptomatic apical periodontitis; legacy `abscess` still accepted on import
 - `resorptionType` - root resorption type (none/internal/external-cervical)
 - `periImplant` - implant-only peri-implant status (none/mucositis/peri-implantitis-mild/-moderate/-severe), 2018 World Workshop staging
+- `dxOverrides` - per-tooth diagnosis-coding overrides (version 2.21): an object keyed by ICD-10 diagnosis key → `add` | `suppress`, forcing a coded diagnosis on despite no matching chart finding, or off despite one; shapes the effective coded set exported as FHIR `Condition`s
 - `endoResection` - apicoectomy flag
 - `fissureSealing` - fissure sealant flag
 - `calculus` - calculus flag
@@ -750,8 +751,8 @@ The export creates a JSON file (version `2.20`; imports also accept legacy `1.4`
 **Top-level `plan` field (version 2.11+):**
 - `plan` - optional object, same shape as `teeth` (per-tooth fields above), holding the **plan** (intended post-treatment) chart. Present only when the plan chart has been initialized (the `Status | Plan` toggle has been switched to Plan at least once) AND its content differs from the status chart — a status-only export omits it entirely and stays byte-identical to a pre-2.11 export apart from the version number. On import, an absent `plan` clears/uninitializes the plan chart (it never resurrects a stale plan left over from before the import); a present `plan` restores the plan chart alongside status. The plan chart can also be read/written independently of import/export via `getPlanChart()`/`setPlanChart()` (see Public API above), and `getStatusChart()` always returns the status-primary payload regardless of the active chart mode.
 
-**Top-level `case` field (version 2.17+, extended in 2.18, 2.19 and 2.20):**
-- `case` - optional object holding case-level (not per-tooth) metadata, shared by both the status and plan charts (mirrors the top-level `globals` key). Omit-when-empty: absent entirely when every field is at its default, so a case-less export stays byte-identical apart from the version number. Fields (each omitted when at its default): `age`; `smokingStatus` (+ `cigarettesPerDay`); `diabetesStatus` (+ `hba1c`); `toothLossPerio`; `maxRblPercent`; the four 2017-classification per-axis clinician overrides `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`; (version 2.19) `patientName` / `examDate`; and (version 2.20) `patientDob`. It feeds the periodontal staging/grading classification and the PDF report header; read/written via `getCaseMeta()` and the `setCase*` setters (see Public API above). Patient name, date of birth and exam date are chart-identity metadata only — they are **not** part of the FHIR export.
+**Top-level `case` field (version 2.17+, extended in 2.18, 2.19, 2.20 and 2.22):**
+- `case` - optional object holding case-level (not per-tooth) metadata, shared by both the status and plan charts (mirrors the top-level `globals` key). Omit-when-empty: absent entirely when every field is at its default, so a case-less export stays byte-identical apart from the version number. Fields (each omitted when at its default): `age`; `smokingStatus` (+ `cigarettesPerDay`); `diabetesStatus` (+ `hba1c`); `toothLossPerio`; `maxRblPercent`; the four 2017-classification per-axis clinician overrides `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`; (version 2.19) `patientName` / `examDate`; and (version 2.20) `patientDob`; and (version 2.22) `caseConditions` — case/regional diagnoses (malocclusion & TMJ K07, oral cysts K09, salivary-gland disease K11, stomatitis & oral mucosa K12/K13, arch-level developmental K00), each mapped to a laterality (unspecified / left / right / bilateral). It feeds the periodontal staging/grading classification and the PDF report header; read/written via `getCaseMeta()` and the `setCase*` setters (see Public API above). Patient name, date of birth and exam date are chart-identity metadata only — they are **not** part of the FHIR export.
 
 ### 🖨️ Export
 Beyond the odontogram's own Status JSON / FHIR / PNG / JPG / SVG export, the **periodontal chart** has its own export path:

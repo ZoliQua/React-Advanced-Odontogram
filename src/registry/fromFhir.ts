@@ -6,6 +6,7 @@ import { localCode, ensureTooth } from "../fhir/primitives";
 import { AXES } from "./axes";
 import type { ClinicalAxis } from "./types";
 import { deciduousToFdi } from "../fhir/iso3950";
+import { importDiagnosisConditions } from "../fhir/importConditions";
 
 // Reverse lookup: finding code -> axis.
 const BY_FINDING: Record<string, ClinicalAxis> = {};
@@ -152,5 +153,13 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
     for (const surf of Object.keys(rec.secondaryCaries)) delete rec.cariesSeverity[surf];
     if (Object.keys(rec.cariesSeverity).length === 0) delete rec.cariesSeverity;
   }
-  return { version: "2.20", globals, teeth };
+  // DX-7: reconstruct the diagnosis layer from Condition resources — case
+  // conditions (direct) + per-tooth dxOverrides (diff vs the re-derived chart).
+  const { caseConditions, dxOverridesByTooth } = importDiagnosisConditions(entries, teeth);
+  for (const [toothId, ov] of Object.entries(dxOverridesByTooth)) {
+    ensureTooth(teeth, toothId).dxOverrides = ov;
+  }
+  const payload: OdontogramExportPayload = { version: "2.20", globals, teeth };
+  if (Object.keys(caseConditions).length > 0) (payload as { case?: unknown }).case = { caseConditions };
+  return payload;
 }

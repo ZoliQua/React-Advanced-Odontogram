@@ -71,6 +71,7 @@ Per-site probing depth, gingival margin, bleeding on probing (+ suppuration) at 
 - 🔍 Multi-surface caries & fillings (ICDAS / CARS severity, root & radiographic caries), endo & AAE pulp diagnosis, apical diagnosis, peri-implant status, wear, discoloration, orthodontics
 - 🩺 Full periodontal module (see above) + 2017 classification
 - 🔗 **HL7 FHIR R4** export/import; JSON export/import with migrations
+- 🧬 **Standards-based diagnosis coding** — WHO ICD-10 always on, per-tooth & case/regional diagnoses, selectable national packs (BNO-10, US ICD-10-CM), an opt-in SNOMED CT overlay, and full FHIR `Condition` export/import round-trip
 - 🖼️ PNG / JPG / SVG chart export and a customizable, **multilingual PDF report** (jsPDF, lazy-loaded) — colour themes, a grouped dentition-summary table, a periodontal chart/description, and bundled Unicode fonts so every UI language (incl. Hungarian accents, Cyrillic, Arabic RTL and Chinese) renders correctly
 - 🔢 FDI / Universal / Palmer numbering · 🌐 12 UI languages (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR, Arabic RTL) · 🎨 theming via `--odon-*` CSS variables · 🧩 plugin system · ⌨️ keyboard accessibility
 

@@ -690,7 +690,7 @@ Poznámka: zapnutie perzistencie obnoví uložený prípad cez `importStatus()`,
 Poznámka: uložený payload môže obsahovať identifikačné údaje pacienta (meno pacienta, dátum vyšetrenia) v čistom texte v `localStorage`. Ak zaznamenávate takéto údaje, zabezpečte ochranu na úrovni zariadenia alebo ich podľa potreby vymažte pomocou `clearPersistedState()`.
 
 ### 💾 Formát exportu/importu stavu
-Export vytvorí súbor JSON (verzia `2.20`; import tiež akceptuje staršie verzie `1.4` a `2.0` až `2.19` a automaticky ich migruje) obsahujúci:
+Export vytvorí súbor JSON (verzia `2.22`; import tiež akceptuje staršie verzie `1.4` a `2.0` až `2.21` a automaticky ich migruje) obsahujúci:
 
 **Globálne polia:**
 - `wisdomVisible` - zuby múdrosti viditeľné
@@ -723,6 +723,7 @@ Export vytvorí súbor JSON (verzia `2.20`; import tiež akceptuje staršie verz
 - `periapicalType` - podtyp periapikálnej lézie (none/granuloma/cyst), zobrazený iba pri symptomatickej/asymptomatickej apikálnej parodontitíde; staršia hodnota `abscess` je pri importe stále akceptovaná
 - `resorptionType` - typ resorpcie koreňa (none/internal/external-cervical)
 - `periImplant` - stav peri-implantátu iba pre implantáty (none/mucositis/peri-implantitis-mild/-moderate/-severe), stagingovanie podľa 2018 World Workshop
+- `dxOverrides` - diagnostické prepísania kódovania na úrovni zuba (verzia 2.21): objekt indexovaný kľúčom ICD-10 diagnózy → `add` | `suppress`, ktorý vynúti kódovanú diagnózu napriek chýbajúcemu zodpovedajúcemu nálezu v karte, alebo ju vypne napriek jeho prítomnosti; formuje efektívnu množinu kódovaných diagnóz exportovanú ako FHIR `Condition`
 - `endoResection` - príznak apikektómie
 - `fissureSealing` - príznak zapečatenia fisúr
 - `calculus` - príznak zubného kameňa
@@ -750,8 +751,8 @@ Export vytvorí súbor JSON (verzia `2.20`; import tiež akceptuje staršie verz
 **Pole `plan` na najvyššej úrovni (verzia 2.11+):**
 - `plan` - voliteľný objekt s rovnakým tvarom ako `teeth` (polia pre každý zub vyššie), obsahujúci graf **plánu** (plan, zamýšľaný stav po ošetrení). Prítomný iba vtedy, keď bol graf plánu inicializovaný (prepínač `Status | Plan` bol aspoň raz prepnutý na Plan) A jeho obsah sa líši od grafu stavu — export iba so stavom ho úplne vynechá a zostáva bajtovo identický s exportom pred verziou 2.11 okrem čísla verzie. Pri importe chýbajúce `plan` vymaže/zruší inicializáciu grafu plánu (nikdy neobnoví zastaraný plán ponechaný spred importu); prítomné `plan` obnoví graf plánu popri stave. Graf plánu je možné čítať/zapisovať aj nezávisle od exportu/importu cez `getPlanChart()`/`setPlanChart()` (pozri Verejné API vyššie), a `getStatusChart()` vždy vracia payload primárne založený na stave, bez ohľadu na aktívny režim grafu.
 
-**Pole `case` na najvyššej úrovni (verzia 2.17+, rozšírené vo verziách 2.18, 2.19 a 2.20):**
-- `case` - voliteľný objekt s metadátami na úrovni prípadu (nie na úrovni zuba), zdieľaný grafom stavu aj plánu (zrkadlí kľúč `globals` na najvyššej úrovni). Vynechaný, keď je prázdny: úplne chýba, keď je každé pole na svojej predvolenej hodnote, takže export bez údajov o prípade zostáva bajtovo identický okrem čísla verzie. Polia (každé vynechané pri predvolenej hodnote): `age`; `smokingStatus` (+ `cigarettesPerDay`); `diabetesStatus` (+ `hba1c`); `toothLossPerio`; `maxRblPercent`; štyri klinické prepísania podľa jednotlivých osí klasifikácie 2017 `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`; (verzia 2.19) `patientName` / `examDate`; a (verzia 2.20) `patientDob`. Vstupuje do parodontálnej klasifikácie štádia/stupňa a do hlavičky PDF správy; čítaný/zapisovaný cez `getCaseMeta()` a settery `setCase*` (pozri Verejné API vyššie). Meno pacienta, dátum narodenia a dátum vyšetrenia sú iba identifikačné metadáta grafu — **nie sú** súčasťou exportu FHIR.
+**Pole `case` na najvyššej úrovni (verzia 2.17+, rozšírené vo verziách 2.18, 2.19, 2.20 a 2.22):**
+- `case` - voliteľný objekt s metadátami na úrovni prípadu (nie na úrovni zuba), zdieľaný grafom stavu aj plánu (zrkadlí kľúč `globals` na najvyššej úrovni). Vynechaný, keď je prázdny: úplne chýba, keď je každé pole na svojej predvolenej hodnote, takže export bez údajov o prípade zostáva bajtovo identický okrem čísla verzie. Polia (každé vynechané pri predvolenej hodnote): `age`; `smokingStatus` (+ `cigarettesPerDay`); `diabetesStatus` (+ `hba1c`); `toothLossPerio`; `maxRblPercent`; štyri klinické prepísania podľa jednotlivých osí klasifikácie 2017 `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`; (verzia 2.19) `patientName` / `examDate`; a (verzia 2.20) `patientDob`; a (verzia 2.22) `caseConditions` — diagnózy na úrovni prípadu/regiónu (porucha skusu a temporomandibulárneho kĺbu K07, cysty ústnej dutiny K09, ochorenia slinných žliaz K11, stomatitída a ochorenia ústnej sliznice K12/K13, vývojové anomálie zubného oblúka K00), z ktorých každá je priradená k strane postihnutia (bližšie neurčené / vľavo / vpravo / obojstranné). Vstupuje do parodontálnej klasifikácie štádia/stupňa a do hlavičky PDF správy; čítaný/zapisovaný cez `getCaseMeta()` a settery `setCase*` (pozri Verejné API vyššie). Meno pacienta, dátum narodenia a dátum vyšetrenia sú iba identifikačné metadáta grafu — **nie sú** súčasťou exportu FHIR.
 
 ### 🖨️ Export
 Okrem vlastného exportu odontogramu Stav JSON / FHIR / PNG / JPG / SVG má **parodontálny graf** vlastnú exportnú cestu:

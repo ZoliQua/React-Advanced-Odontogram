@@ -692,7 +692,7 @@ enablePersistence({
 说明：持久化的数据可能以明文形式在 `localStorage` 中包含患者身份信息（患者姓名、检查日期）。如果您在牙位图中记录了此类数据，请确保设备级别的保护，或在适当时使用 `clearPersistedState()` 将其清除。
 
 ### 💾 状态导出/导入格式
-导出会生成一个 JSON 文件（版本 `2.20`；导入同时也接受旧版 `1.4` 及 `2.0` 至 `2.19`，并自动迁移），其中包含：
+导出会生成一个 JSON 文件（版本 `2.22`；导入同时也接受旧版 `1.4` 及 `2.0` 至 `2.21`，并自动迁移），其中包含：
 
 **全局字段：**
 - `wisdomVisible` - 智齿是否可见
@@ -725,6 +725,7 @@ enablePersistence({
 - `periapicalType` - 根尖病损亚型（none/granuloma/cyst），仅在有症状/无症状根尖周炎下显示；导入时仍接受旧版 `abscess` 值
 - `resorptionType` - 牙根吸收类型（none/internal/external-cervical）
 - `periImplant` - 仅限种植体的种植体周状态（none/mucositis/peri-implantitis-mild/-moderate/-severe），采用 2018 年世界研讨会分期标准
+- `dxOverrides` - 按牙位的诊断编码覆盖项（版本 2.21）：一个以 ICD-10 诊断键为索引的对象，映射到 `add` | `suppress`，即使没有匹配的临床发现也强制开启某个编码诊断，或即使存在匹配发现也将其强制关闭；决定最终导出为 FHIR `Condition` 的有效编码集合
 - `endoResection` - 根尖切除标志
 - `fissureSealing` - 窝沟封闭标志
 - `calculus` - 牙石标志
@@ -752,8 +753,8 @@ enablePersistence({
 **顶层 `plan` 字段（版本 2.11+）：**
 - `plan` - 可选对象，结构与 `teeth`（上述按牙位字段）相同，保存**计划**（拟定治疗后）图表。仅当计划图表已被初始化（`Status | Plan` 切换开关至少切换到过“计划”一次）**且**其内容与现状图表不同时才会出现——纯现状导出会完全省略此字段，除版本号外与 2.11 之前的导出保持逐字节一致。导入时，若 `plan` 字段缺失，则会清除/取消初始化计划图表（绝不会复活导入前遗留的旧计划）；若 `plan` 字段存在，则在恢复现状图表的同时一并恢复计划图表。计划图表也可以通过 `getPlanChart()`/`setPlanChart()`（见上文“公共 API”）独立于导入/导出进行读写，而 `getStatusChart()` 始终返回以现状为主的数据，与当前激活哪个图表模式无关。
 
-**顶层 `case` 字段（版本 2.17+，在 2.18、2.19 和 2.20 中扩展）：**
-- `case` - 可选对象，保存病例级（非按牙位）元数据，由现状图表和计划图表共享（与顶层的 `globals` 键类似）。空值省略：当所有字段均为默认值时该字段完全不出现，因此无病例数据的导出除版本号外保持逐字节一致。各字段（在默认值时均被省略）：`age`（年龄）；`smokingStatus`（吸烟状况，+ `cigarettesPerDay`）；`diabetesStatus`（糖尿病状况，+ `hba1c`）；`toothLossPerio`（牙周炎致失牙数）；`maxRblPercent`（最大影像学骨吸收百分比）；2017 年分类的四个按轴临床医生覆盖值 `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`；以及（版本 2.19）`patientName` / `examDate`；以及（版本 2.20）`patientDob`。该字段用于牙周分期/分级分类及 PDF 报告标题；通过 `getCaseMeta()` 及 `setCase*` 系列设置函数读写（见上文“公共 API”）。患者姓名、出生日期与检查日期仅为图表身份标识元数据——**不**属于 FHIR 导出的一部分。
+**顶层 `case` 字段（版本 2.17+，在 2.18、2.19、2.20 和 2.22 中扩展）：**
+- `case` - 可选对象，保存病例级（非按牙位）元数据，由现状图表和计划图表共享（与顶层的 `globals` 键类似）。空值省略：当所有字段均为默认值时该字段完全不出现，因此无病例数据的导出除版本号外保持逐字节一致。各字段（在默认值时均被省略）：`age`（年龄）；`smokingStatus`（吸烟状况，+ `cigarettesPerDay`）；`diabetesStatus`（糖尿病状况，+ `hba1c`）；`toothLossPerio`（牙周炎致失牙数）；`maxRblPercent`（最大影像学骨吸收百分比）；2017 年分类的四个按轴临床医生覆盖值 `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`；以及（版本 2.19）`patientName` / `examDate`；以及（版本 2.20）`patientDob`；以及（版本 2.22）`caseConditions`——病例/区域性诊断（错颌畸形与颞下颌关节紊乱 K07、口腔囊肿 K09、唾液腺疾病 K11、口炎与口腔黏膜疾病 K12/K13，以及牙弓层面的发育异常 K00），均映射到一个侧别（未指定 / 左侧 / 右侧 / 双侧）。该字段用于牙周分期/分级分类及 PDF 报告标题；通过 `getCaseMeta()` 及 `setCase*` 系列设置函数读写（见上文“公共 API”）。患者姓名、出生日期与检查日期仅为图表身份标识元数据——**不**属于 FHIR 导出的一部分。
 
 ### 🖨️ 导出
 除了牙位图自身的状态 JSON / FHIR / PNG / JPG / SVG 导出外，**牙周图表**还拥有自己的一套导出路径：

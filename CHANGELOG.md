@@ -170,6 +170,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   laterality qualifier to case-condition bodySites. The seeded concept IDs are
   provisional — verify against the official SNOMED CT browser before clinical use.
   No payload change (2.22).
+- **Dental diagnosis coding: FHIR import round-trip (DX-7).** `parseFhirBundle` now
+  reconstructs the diagnosis layer from Condition resources — case/regional conditions
+  (with laterality) and per-tooth diagnosis overrides (add/suppress, diffed against the
+  re-derived chart) — completing the FHIR round-trip for our own exports. Chart-only
+  bundles are unaffected. No payload change (2.22).
 
 ### Fixed
 

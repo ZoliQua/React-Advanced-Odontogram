@@ -149,6 +149,15 @@ export interface ToothRecord {
   mbi?: Record<string, number>;
   customStates?: Record<string, unknown>;
   note?: string;
+  // DX-7: per-tooth clinician overrides of the derived diagnosis set —
+  // "add" authors a diagnosis the chart doesn't derive, "suppress" hides one
+  // the chart does derive. Present only when at least one key is overridden —
+  // omitted entirely otherwise. Consumed by `deriveDentalDiagnoses`
+  // (`dx/derive.ts`) to compute the EFFECTIVE diagnosis set that FHIR export
+  // (`toFhirDx.ts`) emits; reconstructed on FHIR import by diffing the
+  // Condition resources' effective set against the re-derived raw set
+  // (`fhir/importConditions.ts`, wired in `registry/fromFhir.ts`).
+  dxOverrides?: Record<string, "add" | "suppress">;
 }
 
 /** The serialized odontogram export payload (matches exportStatus()'s object).

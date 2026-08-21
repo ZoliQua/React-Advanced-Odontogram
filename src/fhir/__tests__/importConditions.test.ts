@@ -2,7 +2,7 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { describe, it, expect } from "vitest";
-import { importDiagnosisConditions } from "../importConditions";
+import { importDiagnosisConditions, CATALOG } from "../importConditions";
 import { LOCAL_SYSTEM } from "../codesystems";
 import { TOOTH_LEVEL_DX_KEYS } from "../../odontogram"; // test-only import (drift guard)
 
@@ -59,7 +59,22 @@ describe("importDiagnosisConditions", () => {
       cond({ id: "odontogram-dx-periImplantitis-36" }),
     ], { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } });
     expect(dxOverridesByTooth["36"]).toBeUndefined();
-    // and the catalog the importer uses matches the exported catalog
-    expect(TOOTH_LEVEL_DX_KEYS.has("toothFracture")).toBe(true);
+    // and the local CATALOG the importer uses is exactly the real exported catalog (no drift)
+    expect([...CATALOG].sort()).toEqual([...TOOTH_LEVEL_DX_KEYS].sort());
+  });
+
+  it("rejects an Object.prototype-name case id without creating a spurious entry", () => {
+    const { caseConditions } = importDiagnosisConditions([
+      cond({ id: "odontogram-case-toString" }),
+    ], {});
+    expect(caseConditions).toEqual({});
+    expect(Object.prototype.hasOwnProperty.call(caseConditions, "toString")).toBe(false);
+  });
+
+  it("rejects an Object.prototype-name WHO code fallback without creating a spurious entry", () => {
+    const { caseConditions } = importDiagnosisConditions([
+      cond({ id: "external-2", code: { coding: [{ system: "http://hl7.org/fhir/sid/icd-10", code: "constructor" }] } }),
+    ], {});
+    expect(caseConditions).toEqual({});
   });
 });

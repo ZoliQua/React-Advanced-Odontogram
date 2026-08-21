@@ -178,3 +178,21 @@ When enabled, each FHIR `Condition` gains an additional **SNOMED CT coding** whe
 ### No Payload Impact
 
 The SNOMED CT overlay is a pure export-time feature (like the national packs). It does not change the JSON export payload format or version — the toggle is applied only during FHIR export based on the Settings selection.
+
+## FHIR Import Round-Trip
+
+**`parseFhirBundle` reconstructs the diagnosis layer from FHIR Condition resources** on import. It recovers two elements that are not otherwise stored in the JSON payload:
+
+1. **Case/regional conditions** — whole-mouth or regional diagnoses like malocclusion, oral cysts, or salivary disease — whose only carrier in the FHIR export is the patient-level `Condition` resource (the JSON payload carries them but FHIR export may originate from a non-odontogram source).
+2. **Per-tooth diagnosis overrides** — the `dxOverrides` (add/suppress decisions) — by diffing the imported Conditions against the re-derived chart. This allows round-trip: export from the engine → import the FHIR bundle → the overrides are reconstructed from the diff.
+
+**Scope: our-own-export bundles only.** The importer uses two mechanisms to recognize engine-exported bundles:
+- **ID convention:** engine-exported Condition IDs follow a predictable format (tooth number + diagnosis key or case-condition key).
+- **WHO-code fallback:** unrecognized IDs are accepted if their code matches a WHO ICD-10 catalog entry, allowing tolerance for minor bundle mutations.
+
+**Two safeguards ensure correctness:**
+
+1. **Catalog-restricted diff.** The override diff only considers Conditions whose codes map to known catalog entries (`TOOTH_LEVEL_DX_KEYS` / `CASE_DX_CODES`). Unrecognized diagnoses are omitted, preventing spurious overrides from foreign or partial bundles.
+2. **Chart-only bundles never suppress all.** A bundle carrying Observations (tooth-level findings) but no Condition resources (case-conditions) is never interpreted as "suppress every derived diagnosis". The importer checks for the presence of the "Dental diagnosis" Observation section; if absent, case-conditions are kept and all overrides default to `null` (no suppress).
+
+**Limitation: best-effort on foreign bundles.** The suppress direction is only as accurate as the chart's own FHIR round-trip — a chart with drift between its JSON and FHIR representations will reconstruct incomplete or incorrect overrides. Foreign bundles (from non-odontogram sources) or partial bundles are best-effort: they may reconstruct only a subset of intended overrides, depending on how closely their Condition coding aligns with the engine's catalog.

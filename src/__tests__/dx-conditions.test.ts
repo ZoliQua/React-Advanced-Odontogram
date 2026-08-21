@@ -100,9 +100,19 @@ describe("dental Condition emission (DX-0)", () => {
     appendDentalConditions(onB, { teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } } } as any, { snomed: true } as any);
     const c = onB.entry.find((e: any) => e.resource.id === "odontogram-dx-periImplantitis-36")?.resource;
     expect(c.code.coding.length).toBe(1);
-    expect(c.code.coding[0]).toMatchObject({ system: "http://snomed.info/sct", code: "699715004" });
+    expect(c.code.coding[0]).toMatchObject({ system: "http://snomed.info/sct", code: "699422003" });
     const offB: any = { resourceType: "Bundle", type: "collection", entry: [] };
     appendDentalConditions(offB, { teeth: { "36": { toothSelection: "implant", periImplant: "peri-implantitis-severe" } } } as any);
+    expect(offB.entry.some((e: any) => String(e.resource.id).includes("periImplant"))).toBe(false);
+  });
+  it("emits a SNOMED-only Condition for peri-implant mucositis when snomed is on, nothing when off", () => {
+    const onB: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(onB, { teeth: { "36": { toothSelection: "implant", periImplant: "mucositis" } } } as any, { snomed: true } as any);
+    const c = onB.entry.find((e: any) => e.resource.id === "odontogram-dx-periImplantMucositis-36")?.resource;
+    expect(c.code.coding.length).toBe(1);
+    expect(c.code.coding[0]).toMatchObject({ system: "http://snomed.info/sct", code: "699684005" });
+    const offB: any = { resourceType: "Bundle", type: "collection", entry: [] };
+    appendDentalConditions(offB, { teeth: { "36": { toothSelection: "implant", periImplant: "mucositis" } } } as any);
     expect(offB.entry.some((e: any) => String(e.resource.id).includes("periImplant"))).toBe(false);
   });
 });

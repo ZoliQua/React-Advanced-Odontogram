@@ -94,9 +94,10 @@ export const BNO10_PACK: CodingPack = {
 // between WHO ICD-10 and ICD-10-CM; this pack remaps the genuinely-divergent
 // ones (e.g. caries -> K02.9 unspecified; the K07 dentofacial anomalies ->
 // the M26 range) and uses CM display titles.
-// REFERENCE / BEST-EFFORT: verify against the official ICD-10-CM tabular list
-// before any US clinical/billing use. Codes are flat per-key (no data-driven
-// specificity yet — see DX-5 spec §7).
+// VERIFIED against ICD-10-CM (2026) — all 25 tooth codes and 28 case codes
+// confirmed against the official tabular list. A consuming system should still
+// confirm against its own annual ICD-10-CM update before US clinical/billing use.
+// Codes are flat per-key (no data-driven specificity yet — see DX-5 spec §7).
 export const ICD10CM_SYSTEM = "http://hl7.org/fhir/sid/icd-10-cm";
 
 export const ICD10CM_PACK: CodingPack = {
@@ -128,7 +129,7 @@ export const ICD10CM_PACK: CodingPack = {
     postEruptiveColour: { code: "K03.7", display: "Posteruptive color changes of dental hard tissues" },
     toothLoss: { code: "K08.409", display: "Partial loss of teeth, unspecified cause, unspecified class" },
     retainedRoot: { code: "K08.3", display: "Retained dental root" },
-    toothFracture: { code: "S02.5XXA", display: "Fracture of tooth (traumatic), initial encounter" },
+    toothFracture: { code: "S02.5XXA", display: "Fracture of tooth (traumatic), initial encounter for closed fracture" },
   },
   caseCodes: {
     jawSizeAnomaly: { code: "M26.00", display: "Unspecified anomaly of jaw size" },

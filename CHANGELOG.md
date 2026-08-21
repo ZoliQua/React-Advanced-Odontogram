@@ -178,6 +178,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Dental diagnosis coding: verified the ICD-10-CM + SNOMED codes.** Corrected two
+  provisional SNOMED concept IDs (pulpitis → 32620007, peri-implantitis →
+  699422003) and added a SNOMED concept for peri-implant mucositis (699684005),
+  and fixed the ICD-10-CM tooth-fracture display title; all ICD-10-CM codes were
+  confirmed against ICD-10-CM 2026 and the SNOMED concepts against SNOMED CT
+  International (CSIRO Ontoserver).
 - **FHIR Condition ICD-10 code for the molar-incisor pattern.** A molar-incisor
   periodontitis emitted `K05.2` with a "Acute periodontitis" display, which is
   the WHO ICD-10 meaning of K05.2 (an unrelated diagnosis; the ICD-10-CM

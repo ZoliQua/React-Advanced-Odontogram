@@ -85,8 +85,8 @@ export default function DiagnosesCard() {
           }}
         >
           <option value="">{t("diagnoses.add")}</option>
-          {dx.addableKeys.map((key) => (
-            <option key={key} value={key}>{t("dx." + key)}</option>
+          {dx.addableKeys.map((opt) => (
+            <option key={opt.key} value={opt.key}>{t("dx." + opt.key)}</option>
           ))}
         </select>
       </div>

@@ -3162,12 +3162,13 @@ export function getToothDiagnoses(toothNo: number): ToothDiagnosis[] {
   const payload = { teeth: { [String(toothNo)]: serializeState(state) } };
   const derived = deriveDentalDiagnoses(payload);
   const overrides: Map<string, string> | undefined = state.dxOverrides;
-  return derived.map((d) => ({
+  const list: ToothDiagnosis[] = derived.map((d) => ({
     key: d.key,
     icd10: DX_CODES[d.key].icd10 ?? null,
     icd10Display: DX_CODES[d.key].icd10Display,
     source: overrides?.get(d.key) === "add" ? "added" : "derived",
   }));
+  return list.sort((a, b) => (a.icd10 ?? "￿").localeCompare(b.icd10 ?? "￿"));
 }
 
 /** One row in the active-tooth diagnoses card: a RAW rule-derived key (whether
@@ -3185,7 +3186,7 @@ export type ActiveDiagnosisRow = {
 export type ActiveDiagnoses = {
   visible: boolean;
   rows: ActiveDiagnosisRow[];
-  addableKeys: string[];
+  addableKeys: { key: string; icd10: string }[];
 };
 
 /** The active-tooth diagnoses card view-model — mirrors `getActiveRootPerio`'s
@@ -3225,10 +3226,55 @@ export function getActiveDiagnoses(): ActiveDiagnoses {
       }
     }
   }
+  rows.sort((a, b) => a.icd10.localeCompare(b.icd10));
   const rowKeys = new Set(rows.map((r) => r.key));
-  const addableKeys = Array.from(TOOTH_LEVEL_DX_KEYS).filter((k) => !rowKeys.has(k));
+  const addableKeys = Array.from(REVERSE_MAPPABLE_KEYS)
+    .filter((k) => !rowKeys.has(k))
+    .map((k) => ({ key: k, icd10: DX_CODES[k as DiagnosisKey].icd10 ?? "" }))
+    .sort((a, b) => a.icd10.localeCompare(b.icd10));
 
   return { visible: true, rows, addableKeys };
+}
+
+// Reverse of deriveDentalDiagnoses' forward maps: adding a diagnosis from the
+// card writes the underlying chart axis (default value) so the finding becomes
+// real (glyph + derived + exported). Many-to-one forward maps use a clinical
+// default (refinable via the specific control). `caries` is intentionally absent
+// (per-surface — authored in the Caries UI).
+const DX_REVERSE_MAP: Record<string, (s: Any) => void> = {
+  pulpitis: (s) => { s.pulpDx = "irreversible-pulpitis"; },
+  pulpNecrosis: (s) => { s.pulpDx = "necrosis"; },
+  apicalPeriodontitisAcute: (s) => { s.apicalDx = "symptomatic-apical-periodontitis"; },
+  apicalPeriodontitisChronic: (s) => { s.apicalDx = "asymptomatic-apical-periodontitis"; },
+  periapicalAbscess: (s) => { s.apicalDx = "acute-apical-abscess"; },
+  periapicalAbscessSinus: (s) => { s.apicalDx = "chronic-apical-abscess"; },
+  condensingOsteitis: (s) => { s.apicalDx = "condensing-osteitis"; },
+  radicularCyst: (s) => { s.apicalDx = "asymptomatic-apical-periodontitis"; s.periapicalType = "cyst"; },
+  calculus: (s) => { s.calculus = true; },
+  cariesCementum: (s) => { s.rootCaries = "active"; },
+  cariesArrested: (s) => { s.rootCaries = "arrested"; },
+  resorption: (s) => { s.resorptionType = "internal"; },
+  attrition: (s) => { s.wearEdge = "attrition"; },
+  erosion: (s) => { s.wearEdge = "erosion"; },
+  abrasion: (s) => { s.wearCervical = "abrasion"; },
+  abfraction: (s) => { s.wearCervical = "abfraction"; },
+  fluorosis: (s) => { s.discoloration = "fluorosis"; },
+  tetracyclineStain: (s) => { s.discoloration = "tetracycline"; },
+  postEruptiveColour: (s) => { s.discoloration = "other"; },
+  toothLoss: (s) => { s.toothSelection = "no-tooth-after-extraction"; },
+  retainedRoot: (s) => { s.toothSubstrate = "radix"; },
+  toothFracture: (s) => { s.brokenMesial = true; },
+};
+export const REVERSE_MAPPABLE_KEYS = new Set(Object.keys(DX_REVERSE_MAP));
+
+/** Add a tooth-level diagnosis by writing its chart axis on the selection — a
+ *  real finding (glyph + derived + exported), through the same DS-1-gated,
+ *  repainting path as the clinical controls. Prototype-safe key guard; a
+ *  non-reverse-mappable key (e.g. `caries`) is a silent no-op. */
+export function addDiagnosisToSelection(key: string): void {
+  if(!REVERSE_MAPPABLE_KEYS.has(key)) return;      // prototype-safe (Set, not `in`)
+  const apply = DX_REVERSE_MAP[key];
+  applyToSelected((s: Any) => apply(s));
 }
 
 /** Add/suppress/clear one coded diagnosis on the current selection —

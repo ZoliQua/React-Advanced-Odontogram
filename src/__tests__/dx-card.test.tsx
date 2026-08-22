@@ -48,7 +48,7 @@ const VIEW_MODEL_VISIBLE = {
     { key: "caries", icd10: "K02", source: "derived" as const, suppressed: false },
     { key: "toothLoss", icd10: "K08.1", source: "added" as const, suppressed: false },
   ],
-  addableKeys: ["pulpitis", "calculus"],
+  addableKeys: [{ key: "pulpitis", icd10: "K04.0" }, { key: "calculus", icd10: "K03.6" }],
 };
 
 beforeEach(() => {

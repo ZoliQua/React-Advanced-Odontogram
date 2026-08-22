@@ -176,6 +176,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   re-derived chart) — completing the FHIR round-trip for our own exports. Chart-only
   bundles are unaffected. No payload change (2.22).
 
+### Changed
+
+- **Diagnoses card: code-first, sorted, and add-writes-the-chart.** The per-tooth
+  Diagnoses card now shows the ICD-10 code first (e.g. "K04.0 Pulpitis"), sorts the
+  diagnoses by code, and — when you add a diagnosis from the picker — writes the
+  underlying chart finding (so the glyph appears on the tooth and it derives/exports
+  normally) instead of only tagging the coded layer. Plain caries stays authored per
+  surface in the Caries UI. Suppressing a derived diagnosis remains coded-layer only.
+
 ### Fixed
 
 - **Dental diagnosis coding: verified the ICD-10-CM + SNOMED codes.** Corrected two

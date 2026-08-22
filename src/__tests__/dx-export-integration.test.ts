@@ -25,7 +25,10 @@ describe("exportFhir + diagnosis coding pack", () => {
     importStatus(cariesPayload);
     const conds = conditionsOf(exportFhir());
     expect(conds.length).toBeGreaterThanOrEqual(1);
-    expect(conds.every((c: any) => !c.code.coding.some((co: any) => co.system === BNO10_SYSTEM))).toBe(true);
+    // BNO-10 now shares the standard ICD-10 system URI, so "no BNO system" is no
+    // longer distinguishable by system. Without a pack (and SNOMED off) each
+    // Condition carries exactly the single WHO ICD-10 coding — no pack coding added.
+    expect(conds.every((c: any) => c.code.coding.length === 1)).toBe(true);
   });
 
   it("adds the BNO coding when the pack is selected", () => {
@@ -33,6 +36,9 @@ describe("exportFhir + diagnosis coding pack", () => {
     importStatus(cariesPayload);
     const conds = conditionsOf(exportFhir());
     const caries = conds.find((c: any) => c.code.coding.some((co: any) => co.code === "K02"));
+    // Two codings under the same ICD-10 system: WHO English base + BNO Hungarian
+    // display. The Hungarian display is the signal the pack coding was applied.
     expect(caries.code.coding.some((co: any) => co.system === BNO10_SYSTEM && co.code === "K02")).toBe(true);
+    expect(caries.code.coding.some((co: any) => co.code === "K02" && co.display === "Fogszuvasodás")).toBe(true);
   });
 });

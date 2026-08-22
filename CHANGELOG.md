@@ -178,6 +178,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **BNO-10 pack aligned to the official NEAK titles.** The Hungarian (BNO-10)
+  diagnosis-coding pack now carries the official NEAK BNO-10 display strings
+  (verified against the NEAK "3- és 4-jegyű BNO kódok" törzs) instead of the
+  earlier clinician-friendly paraphrases, and uses the standard ICD-10 system URI
+  (`http://hl7.org/fhir/sid/icd-10`) rather than the previous stand-in — the
+  Hungarian codes are identical to WHO ICD-10, so a consumer sees one ICD-10 code
+  with both English and Hungarian displays. All 53 codes were confirmed present in
+  the official törzs, with one documented exception: oral mucositis (K12.3) is a
+  valid WHO code but absent from the Hungarian BNO-10, so it keeps the WHO code
+  with our own Hungarian display. Default (WHO-only) FHIR export is unchanged.
 - **Diagnoses card: code-first, sorted, and add-writes-the-chart.** The per-tooth
   Diagnoses card now shows the ICD-10 code first (e.g. "K04.0 Pulpitis"), sorts the
   diagnoses by code, and — when you add a diagnosis from the picker — writes the

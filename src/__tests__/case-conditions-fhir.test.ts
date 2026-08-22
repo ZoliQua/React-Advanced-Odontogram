@@ -39,9 +39,10 @@ describe("appendCaseConditions", () => {
     const b: any = { resourceType: "Bundle", type: "collection", entry: [] };
     appendCaseConditions(b, { case: { caseConditions: { tmjDisorder: "right" } } } as any, { codingPack: BNO10_PACK } as any);
     const c = b.entry.find((e: any) => e.resource.id === "odontogram-case-tmjDisorder").resource;
-    // WHO coding first (English), then the BNO coding with the Hungarian display
+    // WHO coding first (English), then the BNO coding with the Hungarian display.
+    // BNO-10 shares the standard ICD-10 system URI (same codes, localized display).
     expect(c.code.coding[0]).toMatchObject({ code: "K07.6", display: "Temporomandibular joint disorder" });
-    expect(c.code.coding[1]).toMatchObject({ system: "http://ksh.hu/bno10", code: "K07.6", display: "Az állkapocsízület rendellenességei" });
+    expect(c.code.coding[1]).toMatchObject({ system: "http://hl7.org/fhir/sid/icd-10", code: "K07.6", display: "A temporomandibularis ízület betegségei" });
   });
   it("a modification pack remaps a case condition code", () => {
     const cc = buildCaseConditionCode("tmjDisorder", FAKE_MOD);
@@ -54,7 +55,7 @@ describe("appendCaseConditions", () => {
   });
   it("a translation pack (BNO-10) still localizes the display, same code (unchanged)", () => {
     const cc = buildCaseConditionCode("tmjDisorder", BNO10_PACK);
-    expect(cc.coding[1]).toMatchObject({ code: "K07.6", display: "Az állkapocsízület rendellenességei" });
+    expect(cc.coding[1]).toMatchObject({ code: "K07.6", display: "A temporomandibularis ízület betegségei" });
   });
   it("adds the SNOMED laterality qualifier to the bodySite only when snomed is on", () => {
     const on: any = { resourceType: "Bundle", type: "collection", entry: [] };

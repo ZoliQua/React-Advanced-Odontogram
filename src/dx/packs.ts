@@ -21,10 +21,13 @@ export interface CodingPack {
 }
 
 // BNO-10 (Hungarian ICD-10). The Hungarian codes are identical to WHO ICD-10
-// (KSH: BNO-10 == WHO 2019); only the display language differs.
-// NOTE: confirm the official BNO-10 canonical URI before release; this is a
-// stable stand-in.
-export const BNO10_SYSTEM = "http://ksh.hu/bno10";
+// (KSH: BNO-X == WHO ICD-10 2019); only the display language differs, so the
+// pack deliberately uses the STANDARD ICD-10 system URI (there is no separately
+// registered FHIR canonical for the Hungarian variant). A consumer therefore
+// sees one ICD-10 code carrying both the WHO English display and this Hungarian
+// display. The Hungarian display strings below are the official NEAK BNO-10
+// titles (törzs "3- és 4-jegyű BNO kódok", verified against BNOX_3_4.DBF).
+export const BNO10_SYSTEM = "http://hl7.org/fhir/sid/icd-10";
 
 export const BNO10_PACK: CodingPack = {
   id: "bno10",
@@ -33,59 +36,63 @@ export const BNO10_PACK: CodingPack = {
   displays: {
     caries: "Fogszuvasodás",
     gingivitis: "Idült fogínygyulladás",
-    periodontitis: "Idült fogágygyulladás",
-    cariesCementum: "Cementszuvasodás",
-    cariesArrested: "Nyugvó (arretált) fogszuvasodás",
-    pulpitis: "Fogbélgyulladás (pulpitis)",
-    pulpNecrosis: "A fogbél elhalása",
-    apicalPeriodontitisAcute: "Heveny gyökércsúcs körüli fogágygyulladás pulpalis eredettel",
-    apicalPeriodontitisChronic: "Idült gyökércsúcs körüli fogágygyulladás",
-    radicularCyst: "Gyökértömlő (radikuláris ciszta)",
-    periapicalAbscess: "Gyökércsúcs körüli tályog sipoly nélkül",
-    periapicalAbscessSinus: "Gyökércsúcs körüli tályog sipollyal",
-    condensingOsteitis: "A fogbél és a gyökércsúcs körüli szövetek egyéb és nem meghatározott betegségei",
-    resorption: "A fogak kóros felszívódása (resorptio)",
-    attrition: "A fogak fokozott kopása (attritio)",
-    abrasion: "A fogak koptató kopása (abrasio)",
-    erosion: "A fogak eróziója",
-    abfraction: "A fogak kemény szöveteinek egyéb meghatározott betegségei",
-    calculus: "Lerakódások (fogkő) a fogakon",
-    fluorosis: "Foltos fogzománc (fluorózis)",
-    tetracyclineStain: "A fogfejlődés egyéb rendellenességei",
-    postEruptiveColour: "A fog kemény szöveteinek előtörés utáni színelváltozásai",
-    toothLoss: "Fogak elvesztése baleset, foghúzás vagy helyi fogágybetegség miatt",
+    periodontitis: "Idült periodontitis",
+    cariesCementum: "A cement szuvasodása",
+    cariesArrested: "Gyógyult fogszuvasodás",
+    pulpitis: "Fogbélgyulladás",
+    pulpNecrosis: "Fogbélelhalás",
+    apicalPeriodontitisAcute: "Heveny gyökércsúcsi periodontitis, pulpa eredetű",
+    apicalPeriodontitisChronic: "Periodontitis apicalis chronica",
+    radicularCyst: "Foggyökércysta",
+    periapicalAbscess: "Gyökércsúcs körüli tályog, üreg nélkül",
+    periapicalAbscessSinus: "Gyökércsúcs körüli tályog, üreggel",
+    condensingOsteitis: "A fogbél és a periapicalis szövetek egyéb és k.m.n. betegségei",
+    resorption: "Kóros fogresorptio",
+    attrition: "Excesszív fogkopás",
+    abrasion: "Fogabrasio",
+    erosion: "Fogerosio",
+    abfraction: "A fog kemény szöveteinek egyéb meghatározott betegségei",
+    calculus: "Zománcdepozitum",
+    fluorosis: "Foltos fogak",
+    tetracyclineStain: "A fogfejlődés egyéb zavarai",
+    postEruptiveColour: "A fog kemény szöveteinek áttörés utáni elszíneződése",
+    toothLoss: "A fogak elvesztése baleset, foghúzás vagy localis periodontalis betegség következtében",
     retainedRoot: "Visszamaradt foggyökér",
-    toothFracture: "Fogtörés",
+    toothFracture: "A fogak törése",
   },
   caseDisplays: {
-    jawSizeAnomaly: "Az állcsontméret jelentős rendellenességei",
-    jawBaseAnomaly: "Az állcsont-koponyaalap viszony rendellenességei",
-    archRelationAnomaly: "A fogív viszony rendellenességei",
+    jawSizeAnomaly: "Az állcsontok lényegesebb nagyságbeli rendellenességei",
+    jawBaseAnomaly: "Az állcsont és a koponyaalap viszonyának anomáliái",
+    archRelationAnomaly: "Harapási rendellenességek",
     toothPositionAnomaly: "A fogak helyzeti rendellenességei",
-    malocclusionUnspecified: "Fogazati záródási rendellenesség (malocclusio), nem meghatározott",
-    dentofacialFunctional: "Dentofacialis működési rendellenességek",
-    tmjDisorder: "Az állkapocsízület rendellenességei",
-    odontogenicCyst: "Fejlődési odontogen ciszták",
-    nonOdontogenicCyst: "A szájüreg fejlődési (nem odontogen) cisztái",
-    jawCystOther: "Az állcsont egyéb cisztái",
-    oralCystOther: "A szájüreg egyéb cisztái, m.n.o.",
-    salivaryAtrophy: "A nyálmirigy sorvadása (atrophia)",
-    salivaryHypertrophy: "A nyálmirigy túltengése (hypertrophia)",
-    sialadenitis: "Nyálmirigygyulladás (sialoadenitis)",
+    malocclusionUnspecified: "Occlusiós zavar k.m.n.",
+    dentofacialFunctional: "Dentofacialis működési zavarok",
+    tmjDisorder: "A temporomandibularis ízület betegségei",
+    odontogenicCyst: "Fogfejlődési zavarból származó odontogen cysták",
+    nonOdontogenicCyst: "Szájtájéki, fejlődési zavarból származó (nem-odontogen) cysták",
+    jawCystOther: "Egyéb állcsonti cysták",
+    oralCystOther: "Egyéb, szájtájéki cysták m.n.o.",
+    salivaryAtrophy: "Nyálmirigysorvadás",
+    salivaryHypertrophy: "Nyálmirigytúltengés",
+    sialadenitis: "Nyálmirigygyulladás",
     salivaryAbscess: "Nyálmirigytályog",
     salivaryFistula: "Nyálmirigysipoly",
-    sialolithiasis: "Nyálkövesség (sialolithiasis)",
-    mucocele: "A nyálmirigy mucokéléje (nyálretenciós ciszta)",
-    salivarySecretion: "A nyálelválasztás zavarai",
-    recurrentAphthae: "Visszatérő szájfekélyek (aphthák)",
-    stomatitisOther: "A szájnyálkahártya-gyulladás egyéb formái",
-    oralCellulitis: "A száj cellulitise és tályogja",
+    sialolithiasis: "Nyálmirigykövesség",
+    mucocele: "Nyálmirigy mucokele",
+    salivarySecretion: "A nyáltermelés rendellenességei",
+    recurrentAphthae: "Recurráló aphthák a szájban",
+    stomatitisOther: "Stomatitis egyéb formái",
+    oralCellulitis: "Cellulitis és abscessus a szájban",
+    // K12.3 (oral mucositis) is a valid WHO ICD-10 code but is NOT present in the
+    // Hungarian BNO-10 törzs (the operational list, based on the 1995 handbook,
+    // stops at K12.2). No official NEAK title exists, so we keep the WHO code
+    // (from CASE_DX_CODES) with our own Hungarian display here.
     oralMucositis: "Szájnyálkahártya-gyulladás (fekélyes mucositis)",
-    anodontia: "Foghiány (anodontia)",
-    hereditaryStructure: "A fog szerkezetének öröklődő rendellenességei, m.n.o.",
-    lipDisease: "Az ajak betegségei",
-    leukoplakia: "Leukoplakia és a szájhám egyéb elváltozásai",
-    mucosalLesionOther: "A szájnyálkahártya egyéb és nem meghatározott elváltozásai",
+    anodontia: "Foghiány",
+    hereditaryStructure: "A fogak örökletes szerkezeti rendellenességei m.n.o.",
+    lipDisease: "Az ajkak betegségei",
+    leukoplakia: "Leukoplakia és egyéb epithelialis rendellenességek a szájüregben és a nyelven",
+    mucosalLesionOther: "Egyéb és k.m.n. szájnyálkahártya elváltozások",
   },
 };
 

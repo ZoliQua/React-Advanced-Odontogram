@@ -14,15 +14,20 @@
 //
 // A `derived` row shows a suppress checkbox (`diagnoses.suppress`) toggling the
 // override between `"suppress"` and `null`. An `added` row shows a
-// `diagnoses.added` tag + a remove button clearing the override (`null`). The
-// add `<select id="dxAddSelect">` is a controlled component pinned to the empty
-// placeholder value (`diagnoses.add`) — selecting one of `addableKeys` applies
-// it as `"add"` and the select snaps straight back to the placeholder on the
-// next render (no held selection to clear manually).
+// `diagnoses.added` tag + a remove button clearing the override (`null`). Both
+// row kinds render CODE-FIRST — the ICD-10 code precedes the localized label
+// (falling back to the label alone when a row has no code). The add
+// `<select id="dxAddSelect">` is a controlled component pinned to the empty
+// placeholder value (`diagnoses.add`) — its options render code-first too
+// (task 2), and selecting one of `addableKeys` calls `addDiagnosisToSelection`
+// (task 1), which writes the underlying chart axis directly (a real finding,
+// through the repainting apply path) rather than `setDxOverrideForSelection`'s
+// `"add"` override; the select still snaps straight back to the placeholder on
+// the next render (no held selection to clear manually).
 
 import { useLayoutEffect, useRef } from "react";
 import { t } from "../../i18n/useI18n";
-import { getActiveDiagnoses, setDxOverrideForSelection } from "../../odontogram";
+import { getActiveDiagnoses, setDxOverrideForSelection, addDiagnosisToSelection } from "../../odontogram";
 import { useEngineState } from "../useEngineState";
 
 export default function DiagnosesCard() {
@@ -44,8 +49,8 @@ export default function DiagnosesCard() {
       <div id="diagnosesRows" ref={rowsRef}>
         {dx.rows.map((row) => (
           <div key={row.key} id={`dxRow-${row.key}`} className="row" data-source={row.source}>
+            {row.icd10 ? <span className="dx-code">{row.icd10}</span> : null}
             <span className="dx-label">{t("dx." + row.key)}</span>
-            <span className="dx-code">{row.icd10}</span>
             {row.source === "added" ? (
               <>
                 <span className="pill dx-added-tag">{t("diagnoses.added")}</span>
@@ -81,12 +86,12 @@ export default function DiagnosesCard() {
           disabled={dx.addableKeys.length === 0}
           onChange={(e) => {
             const key = e.target.value;
-            if (key) setDxOverrideForSelection(key, "add");
+            if (key) addDiagnosisToSelection(key);
           }}
         >
           <option value="">{t("diagnoses.add")}</option>
-          {dx.addableKeys.map((key) => (
-            <option key={key} value={key}>{t("dx." + key)}</option>
+          {dx.addableKeys.map(({ key, icd10 }) => (
+            <option key={key} value={key}>{icd10 ? `${icd10} ${t("dx." + key)}` : t("dx." + key)}</option>
           ))}
         </select>
       </div>

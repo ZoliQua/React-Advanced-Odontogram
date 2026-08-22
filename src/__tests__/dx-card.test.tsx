@@ -4,16 +4,19 @@
 // DX-2 Task 4 — declarative-render test for `DiagnosesCard`. Mounts the card as
 // part of `ToothControlsSurface` under `<OdontogramProvider>` with the
 // lifecycle-only mock the composable-surface suites use (initOdontogram/
-// destroyOdontogram stubbed), PLUS `getActiveDiagnoses`/`setDxOverrideForSelection`
-// mocked to a canned view-model — unlike the other card tests, the diagnoses
-// card's view-model comes from a pure derivation (`deriveDentalDiagnoses`) over
-// a fully-populated tooth state, which is out of scope to assemble here; a
-// canned view-model (one derived row + one added row + two addable keys) is
-// enough to prove the card's OWN rendering/wiring contract. Proves the card
-// renders `#diagnosesRows` with a derived row's label+code+suppress checkbox and
-// an added row's label+code+remove button+`added` tag, that toggling suppress /
-// clicking remove / picking an addable option call `setDxOverrideForSelection`
-// with the right arguments, and that `#diagnosesSection` hides per `dx.visible`.
+// destroyOdontogram stubbed), PLUS `getActiveDiagnoses`/`setDxOverrideForSelection`/
+// `addDiagnosisToSelection` mocked to a canned view-model — unlike the other
+// card tests, the diagnoses card's view-model comes from a pure derivation
+// (`deriveDentalDiagnoses`) over a fully-populated tooth state, which is out of
+// scope to assemble here; a canned view-model (one derived row + one added row +
+// two addable keys) is enough to prove the card's OWN rendering/wiring contract.
+// Proves the card renders `#diagnosesRows` with a derived row's CODE-FIRST
+// label+code+suppress checkbox and an added row's code-first label+code+remove
+// button+`added` tag, that toggling suppress / clicking remove still call
+// `setDxOverrideForSelection`, that picking an addable option (rendered
+// code-first, e.g. "K04.0 Pulpitis") calls `addDiagnosisToSelection` (task 2 —
+// NOT `setDxOverrideForSelection(key,"add")`), and that `#diagnosesSection`
+// hides per `dx.visible`.
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createElement } from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
@@ -26,6 +29,7 @@ import {
 
 const getActiveDiagnosesMock = vi.fn();
 const setDxOverrideForSelectionMock = vi.fn();
+const addDiagnosisToSelectionMock = vi.fn();
 
 vi.mock("../odontogram", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../odontogram")>();
@@ -35,6 +39,7 @@ vi.mock("../odontogram", async (importOriginal) => {
     destroyOdontogram: vi.fn(),
     getActiveDiagnoses: (...args: unknown[]) => getActiveDiagnosesMock(...args),
     setDxOverrideForSelection: (...args: unknown[]) => setDxOverrideForSelectionMock(...args),
+    addDiagnosisToSelection: (...args: unknown[]) => addDiagnosisToSelectionMock(...args),
   };
 });
 
@@ -56,6 +61,7 @@ beforeEach(() => {
   document.body.innerHTML = "";
   getActiveDiagnosesMock.mockReset();
   setDxOverrideForSelectionMock.mockReset();
+  addDiagnosisToSelectionMock.mockReset();
   getActiveDiagnosesMock.mockReturnValue(VIEW_MODEL_VISIBLE);
   __resetChartStateForTest();
   setChartMode("status");
@@ -63,7 +69,7 @@ beforeEach(() => {
 });
 
 describe("DX-2 Task 4: <DiagnosesCard/> renders declaratively", () => {
-  it("renders a derived row with its label, code and a suppress control", () => {
+  it("renders a derived row code-first, with a suppress control", () => {
     renderControls();
     const rows = document.getElementById("diagnosesRows");
     expect(rows).toBeTruthy();
@@ -72,6 +78,13 @@ describe("DX-2 Task 4: <DiagnosesCard/> renders declaratively", () => {
     expect(row).toBeTruthy();
     expect(row?.getAttribute("data-source")).toBe("derived");
     expect(row?.textContent).toContain("K02");
+    // Code-first: the code precedes the label in both DOM order and text order.
+    expect(row?.querySelector(".dx-code")?.textContent).toBe("K02");
+    expect(row?.querySelector(".dx-label")?.textContent).toBe("Dental caries");
+    const codeIndex = row?.textContent?.indexOf("K02") ?? -1;
+    const labelIndex = row?.textContent?.indexOf("Dental caries") ?? -1;
+    expect(codeIndex).toBeGreaterThanOrEqual(0);
+    expect(codeIndex).toBeLessThan(labelIndex);
 
     const suppress = document.getElementById("dxSuppress-caries") as HTMLInputElement;
     expect(suppress).toBeTruthy();
@@ -81,19 +94,37 @@ describe("DX-2 Task 4: <DiagnosesCard/> renders declaratively", () => {
     expect(document.getElementById("dxRemove-caries")).toBeFalsy();
   });
 
-  it("renders an added row with its label, code, an 'added' tag and a remove button", () => {
+  it("renders an added row code-first, with an 'added' tag and a remove button", () => {
     renderControls();
     const row = document.getElementById("dxRow-toothLoss");
     expect(row).toBeTruthy();
     expect(row?.getAttribute("data-source")).toBe("added");
     expect(row?.textContent).toContain("K08.1");
     expect(row?.textContent).toContain("added");
+    // Code-first here too.
+    const codeIndex = row?.textContent?.indexOf("K08.1") ?? -1;
+    const labelIndex = row?.textContent?.indexOf("Tooth loss") ?? -1;
+    expect(codeIndex).toBeGreaterThanOrEqual(0);
+    expect(codeIndex).toBeLessThan(labelIndex);
 
     const remove = document.getElementById("dxRemove-toothLoss") as HTMLButtonElement;
     expect(remove).toBeTruthy();
     expect(remove.tagName).toBe("BUTTON");
     // No suppress checkbox on an added row.
     expect(document.getElementById("dxSuppress-toothLoss")).toBeFalsy();
+  });
+
+  it("renders a row with no code with just the label (no empty .dx-code)", () => {
+    getActiveDiagnosesMock.mockReturnValue({
+      visible: true,
+      rows: [{ key: "caries", icd10: "", source: "derived" as const, suppressed: false }],
+      addableKeys: [],
+    });
+    renderControls();
+    const row = document.getElementById("dxRow-caries");
+    expect(row).toBeTruthy();
+    expect(row?.querySelector(".dx-code")).toBeFalsy();
+    expect(row?.querySelector(".dx-label")?.textContent).toBe("Dental caries");
   });
 
   it("toggling the suppress checkbox calls setDxOverrideForSelection(key, 'suppress'/null)", () => {
@@ -123,18 +154,35 @@ describe("DX-2 Task 4: <DiagnosesCard/> renders declaratively", () => {
     expect(setDxOverrideForSelectionMock).toHaveBeenCalledWith("toothLoss", null);
   });
 
-  it("renders #dxAddSelect over addableKeys with a placeholder, and selecting one calls setDxOverrideForSelection(key, 'add')", () => {
+  it("renders #dxAddSelect options code-first, and selecting one calls addDiagnosisToSelection(key) — NOT setDxOverrideForSelection", () => {
     renderControls();
     const select = document.getElementById("dxAddSelect") as HTMLSelectElement;
     expect(select).toBeTruthy();
     // Placeholder + the two addable keys.
     expect(select.options.length).toBe(3);
     expect(select.value).toBe("");
+    // Code-first option labels.
+    expect(select.options[1].value).toBe("pulpitis");
+    expect(select.options[1].textContent).toBe("K04.0 Pulpitis");
+    expect(select.options[2].value).toBe("calculus");
+    expect(select.options[2].textContent).toBe("K03.6 Dental calculus");
 
     fireEvent.change(select, { target: { value: "pulpitis" } });
-    expect(setDxOverrideForSelectionMock).toHaveBeenCalledWith("pulpitis", "add");
+    expect(addDiagnosisToSelectionMock).toHaveBeenCalledWith("pulpitis");
+    expect(setDxOverrideForSelectionMock).not.toHaveBeenCalledWith("pulpitis", "add");
     // Controlled select snaps back to the placeholder.
     expect(select.value).toBe("");
+  });
+
+  it("renders an addable option with no code with just the label", () => {
+    getActiveDiagnosesMock.mockReturnValue({
+      visible: true,
+      rows: [],
+      addableKeys: [{ key: "pulpitis", icd10: "" }],
+    });
+    renderControls();
+    const select = document.getElementById("dxAddSelect") as HTMLSelectElement;
+    expect(select.options[1].textContent).toBe("Pulpitis");
   });
 
   it("hides #diagnosesSection when dx.visible is false", () => {

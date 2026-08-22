@@ -25,7 +25,7 @@ describe("coding packs", () => {
   });
   it("localizes a newly-added tooth key display under the BNO system, same code", () => {
     const c = packCoding(BNO10_PACK, "pulpitis", "K04.0", "Pulpitis");
-    expect(c).toEqual({ system: BNO10_SYSTEM, code: "K04.0", display: "Fogbélgyulladás (pulpitis)" });
+    expect(c).toEqual({ system: BNO10_SYSTEM, code: "K04.0", display: "Fogbélgyulladás" });
   });
   it("has a Hungarian display for every case-level diagnosis", () => {
     for (const key of Object.keys(CASE_DX_CODES) as CaseConditionKey[]) {

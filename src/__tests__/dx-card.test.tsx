@@ -30,6 +30,7 @@ import {
 const getActiveDiagnosesMock = vi.fn();
 const setDxOverrideForSelectionMock = vi.fn();
 const addDiagnosisToSelectionMock = vi.fn();
+const removeDiagnosisFromSelectionMock = vi.fn();
 
 vi.mock("../odontogram", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../odontogram")>();
@@ -40,6 +41,7 @@ vi.mock("../odontogram", async (importOriginal) => {
     getActiveDiagnoses: (...args: unknown[]) => getActiveDiagnosesMock(...args),
     setDxOverrideForSelection: (...args: unknown[]) => setDxOverrideForSelectionMock(...args),
     addDiagnosisToSelection: (...args: unknown[]) => addDiagnosisToSelectionMock(...args),
+    removeDiagnosisFromSelection: (...args: unknown[]) => removeDiagnosisFromSelectionMock(...args),
   };
 });
 
@@ -62,6 +64,7 @@ beforeEach(() => {
   getActiveDiagnosesMock.mockReset();
   setDxOverrideForSelectionMock.mockReset();
   addDiagnosisToSelectionMock.mockReset();
+  removeDiagnosisFromSelectionMock.mockReset();
   getActiveDiagnosesMock.mockReturnValue(VIEW_MODEL_VISIBLE);
   __resetChartStateForTest();
   setChartMode("status");
@@ -69,7 +72,7 @@ beforeEach(() => {
 });
 
 describe("DX-2 Task 4: <DiagnosesCard/> renders declaratively", () => {
-  it("renders a derived row code-first, with a suppress control", () => {
+  it("renders a derived row code-first, with an exclude toggle AND a delete button", () => {
     renderControls();
     const rows = document.getElementById("diagnosesRows");
     expect(rows).toBeTruthy();
@@ -86,15 +89,18 @@ describe("DX-2 Task 4: <DiagnosesCard/> renders declaratively", () => {
     expect(codeIndex).toBeGreaterThanOrEqual(0);
     expect(codeIndex).toBeLessThan(labelIndex);
 
-    const suppress = document.getElementById("dxSuppress-caries") as HTMLInputElement;
-    expect(suppress).toBeTruthy();
-    expect(suppress.type).toBe("checkbox");
-    expect(suppress.checked).toBe(false);
-    // No remove button on a derived row.
-    expect(document.getElementById("dxRemove-caries")).toBeFalsy();
+    // Part 2: exclude toggle — a BUTTON reflecting the suppressed state via aria-pressed.
+    const exclude = document.getElementById("dxSuppress-caries") as HTMLButtonElement;
+    expect(exclude).toBeTruthy();
+    expect(exclude.tagName).toBe("BUTTON");
+    expect(exclude.getAttribute("aria-pressed")).toBe("false");
+    // Part 3: delete — present on a derived row too (clears the finding).
+    const remove = document.getElementById("dxRemove-caries") as HTMLButtonElement;
+    expect(remove).toBeTruthy();
+    expect(remove.tagName).toBe("BUTTON");
   });
 
-  it("renders an added row code-first, with an 'added' tag and a remove button", () => {
+  it("renders an added row code-first, with an 'added' tag and a delete button (no exclude toggle)", () => {
     renderControls();
     const row = document.getElementById("dxRow-toothLoss");
     expect(row).toBeTruthy();
@@ -110,7 +116,7 @@ describe("DX-2 Task 4: <DiagnosesCard/> renders declaratively", () => {
     const remove = document.getElementById("dxRemove-toothLoss") as HTMLButtonElement;
     expect(remove).toBeTruthy();
     expect(remove.tagName).toBe("BUTTON");
-    // No suppress checkbox on an added row.
+    // No exclude toggle on an added row (nothing to suppress).
     expect(document.getElementById("dxSuppress-toothLoss")).toBeFalsy();
   });
 
@@ -127,31 +133,40 @@ describe("DX-2 Task 4: <DiagnosesCard/> renders declaratively", () => {
     expect(row?.querySelector(".dx-label")?.textContent).toBe("Dental caries");
   });
 
-  it("toggling the suppress checkbox calls setDxOverrideForSelection(key, 'suppress'/null)", () => {
+  it("clicking the exclude toggle calls setDxOverrideForSelection(key, 'suppress')", () => {
     renderControls();
-    const suppress = document.getElementById("dxSuppress-caries") as HTMLInputElement;
-    fireEvent.click(suppress);
+    const exclude = document.getElementById("dxSuppress-caries") as HTMLButtonElement;
+    fireEvent.click(exclude);
     expect(setDxOverrideForSelectionMock).toHaveBeenCalledWith("caries", "suppress");
   });
 
-  it("toggling suppress OFF on an already-suppressed row calls setDxOverrideForSelection(key, null)", () => {
+  it("clicking the exclude toggle on an already-suppressed row calls setDxOverrideForSelection(key, null)", () => {
     getActiveDiagnosesMock.mockReturnValue({
       visible: true,
       rows: [{ key: "caries", icd10: "K02", source: "derived" as const, suppressed: true }],
       addableKeys: [],
     });
     renderControls();
-    const suppress = document.getElementById("dxSuppress-caries") as HTMLInputElement;
-    expect(suppress.checked).toBe(true);
-    fireEvent.click(suppress);
+    const exclude = document.getElementById("dxSuppress-caries") as HTMLButtonElement;
+    expect(exclude.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(exclude);
     expect(setDxOverrideForSelectionMock).toHaveBeenCalledWith("caries", null);
   });
 
-  it("clicking the remove button on an added row calls setDxOverrideForSelection(key, null)", () => {
+  it("clicking delete on a DERIVED row calls removeDiagnosisFromSelection(key) — clears the finding", () => {
+    renderControls();
+    const remove = document.getElementById("dxRemove-caries") as HTMLButtonElement;
+    fireEvent.click(remove);
+    expect(removeDiagnosisFromSelectionMock).toHaveBeenCalledWith("caries");
+    // Delete is not a coded-layer suppress.
+    expect(setDxOverrideForSelectionMock).not.toHaveBeenCalled();
+  });
+
+  it("clicking delete on an added row calls removeDiagnosisFromSelection(key)", () => {
     renderControls();
     const remove = document.getElementById("dxRemove-toothLoss") as HTMLButtonElement;
     fireEvent.click(remove);
-    expect(setDxOverrideForSelectionMock).toHaveBeenCalledWith("toothLoss", null);
+    expect(removeDiagnosisFromSelectionMock).toHaveBeenCalledWith("toothLoss");
   });
 
   it("renders #dxAddSelect options code-first, and selecting one calls addDiagnosisToSelection(key) — NOT setDxOverrideForSelection", () => {
@@ -212,7 +227,8 @@ describe("DX-2 Task 4: diagnoses i18n keys present in all languages", () => {
     "fluorosis", "tetracyclineStain", "postEruptiveColour", "toothLoss", "retainedRoot",
     "toothFracture",
   ];
-  const CARD_KEYS = ["card.diagnoses", "diagnoses.add", "diagnoses.suppress", "diagnoses.added", "diagnoses.noCode"];
+  const CARD_KEYS = ["card.diagnoses", "diagnoses.add", "diagnoses.suppress", "diagnoses.added", "diagnoses.noCode",
+    "diagnoses.excludeHint", "diagnoses.includeHint", "diagnoses.delete", "diagnoses.deleteHint"];
   const ALL_KEYS = [...CARD_KEYS, ...TOOTH_LEVEL_DX_KEYS.map((k) => `dx.${k}`)];
   const ALL_LANGUAGES = ["hu", "en", "de", "es", "it", "sk", "pl", "ru", "pt-br", "zh", "ar", "fr"] as const;
 

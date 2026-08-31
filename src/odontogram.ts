@@ -871,7 +871,8 @@ function caseDiagnosesSummaryFragment(): string | null {
   if(conds.length === 0) return null;
   const parts = conds.map((c) => {
     const lat = (c.lateralizable && c.laterality !== "unspecified") ? ` [${t(`caseDx.laterality.${c.laterality}`)}]` : "";
-    return `${t(`dx.case.${c.key}`)} (${c.icd10})${lat}`;
+    // Code-first, matching the Diagnoses card + the case-diagnoses list rows.
+    return `${c.icd10 ? c.icd10 + " " : ""}${t(`dx.case.${c.key}`)}${lat}`;
   });
   return `${t("case.diagnoses.section")}: ${parts.join("; ")}`;
 }
@@ -3275,6 +3276,54 @@ export function addDiagnosisToSelection(key: string): void {
   if(!REVERSE_MAPPABLE_KEYS.has(key)) return;      // prototype-safe (Set, not `in`)
   const apply = DX_REVERSE_MAP[key];
   applyToSelected((s: Any) => apply(s));
+}
+
+// Clear the chart axis a diagnosis derives from, back to its default/none — the
+// destructive inverse of DX_REVERSE_MAP, used by the card's delete (×) control so
+// removing a diagnosis also removes its glyph. Covers every reverse-mappable key
+// plus `caries` (clears the surfaces). Wear keys are axis-guarded because
+// `erosion` can live on either the incisal (`wearEdge`) or cervical
+// (`wearCervical`) axis (see ENUM_RULES in derive.ts).
+const DX_CLEAR_MAP: Record<string, (s: Any) => void> = {
+  pulpitis: (s) => { s.pulpDx = "normal"; },
+  pulpNecrosis: (s) => { s.pulpDx = "normal"; },
+  apicalPeriodontitisAcute: (s) => { s.apicalDx = "normal"; },
+  apicalPeriodontitisChronic: (s) => { s.apicalDx = "normal"; },
+  periapicalAbscess: (s) => { s.apicalDx = "normal"; },
+  periapicalAbscessSinus: (s) => { s.apicalDx = "normal"; },
+  condensingOsteitis: (s) => { s.apicalDx = "normal"; },
+  radicularCyst: (s) => { s.apicalDx = "normal"; s.periapicalType = "none"; },
+  calculus: (s) => { s.calculus = false; },
+  cariesCementum: (s) => { s.rootCaries = "none"; },
+  cariesArrested: (s) => { s.rootCaries = "none"; },
+  resorption: (s) => { s.resorptionType = "none"; },
+  attrition: (s) => { if(s.wearEdge === "attrition") s.wearEdge = "none"; },
+  erosion: (s) => { if(s.wearEdge === "erosion") s.wearEdge = "none"; if(s.wearCervical === "erosion") s.wearCervical = "none"; },
+  abrasion: (s) => { if(s.wearCervical === "abrasion") s.wearCervical = "none"; },
+  abfraction: (s) => { if(s.wearCervical === "abfraction") s.wearCervical = "none"; },
+  fluorosis: (s) => { s.discoloration = "none"; },
+  tetracyclineStain: (s) => { s.discoloration = "none"; },
+  postEruptiveColour: (s) => { s.discoloration = "none"; },
+  toothLoss: (s) => { s.toothSelection = "tooth-base"; },
+  retainedRoot: (s) => { s.toothSubstrate = "natural"; },
+  toothFracture: (s) => { s.brokenMesial = false; s.brokenIncisal = false; s.brokenDistal = false; },
+  caries: (s) => { s.caries = new Set(); s.cariesSeverity = new Map(); }, // per-surface finding: clear the surface Set + severities
+};
+const DX_CLEARABLE_KEYS = new Set(Object.keys(DX_CLEAR_MAP));
+
+/** Remove a tooth-level diagnosis from the current selection: clears the
+ *  underlying chart axis (so the glyph disappears too, through the repainting
+ *  apply path) AND drops any coded-layer override (add/suppress) for the key.
+ *  The card's delete (×) uses this — the full inverse of
+ *  {@link addDiagnosisToSelection}, extended to `caries` (clears the surfaces)
+ *  so every listed diagnosis is fully removable. Prototype-safe key guard. */
+export function removeDiagnosisFromSelection(key: string): void {
+  if(selectedTeeth.size === 0) return;
+  const clear = DX_CLEARABLE_KEYS.has(key) ? DX_CLEAR_MAP[key] : null;
+  applyToSelected((s: Any) => {
+    if(clear) clear(s);
+    s.dxOverrides?.delete(key);
+  });
 }
 
 /** Add/suppress/clear one coded diagnosis on the current selection —

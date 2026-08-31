@@ -373,9 +373,11 @@ export default function PerioSidebar() {
           <div id="caseDiagnosesSection" className="case-diagnoses">
             <div className="case-diagnoses-title">{t("case.diagnoses.section")}</div>
             {caseConds.map((c) => (
-              <div className="case-diagnoses-row" key={c.key}>
-                <span className="case-dx-label">{t(`dx.case.${c.key}`)}</span>
-                <span className="case-dx-code">{c.icd10}</span>
+              <div className="case-diagnoses-row dx-row" key={c.key}>
+                <span className="dx-name">
+                  {c.icd10 ? <span className="dx-code">{c.icd10}</span> : null}
+                  <span className="dx-label">{t(`dx.case.${c.key}`)}</span>
+                </span>
                 {c.lateralizable && (
                   <select
                     value={c.laterality}
@@ -389,11 +391,13 @@ export default function PerioSidebar() {
                 )}
                 <button
                   type="button"
-                  className="case-dx-remove"
+                  className="btn btn-ghost btn-icon btn-danger dx-delete case-dx-remove"
                   disabled={readOnly}
+                  aria-label={t("case.diagnoses.remove")}
+                  title={t("case.diagnoses.remove")}
                   onClick={() => setCaseCondition(c.key, null)}
                 >
-                  {t("case.diagnoses.remove")}
+                  ×
                 </button>
               </div>
             ))}

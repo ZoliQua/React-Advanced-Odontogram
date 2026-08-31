@@ -707,8 +707,12 @@ select:focus{
    code-first name, then a compact action cluster (exclude toggle + delete ×).
    Scoped overrides so the shared .btn-icon (32px svg, big padding) stays compact
    here. Not a checkbox row, so the .row:has(checkbox) chip box never applies. */
-.dx-row{ justify-content:space-between; }
-.dx-name{ display:flex; gap:8px; align-items:baseline; min-width:0; flex:1 1 auto; }
+/* display:flex here (not only on .row) so the perio case-diagnoses rows — which
+   carry .dx-row but NOT .row — are also a single flex line: the × delete button
+   stays inline instead of wrapping under a multi-line label. */
+.dx-row{ display:flex; align-items:center; gap:10px; justify-content:space-between; }
+.case-diagnoses-row.dx-row{ padding:5px 0; }
+.dx-name{ display:flex; gap:8px; align-items:baseline; min-width:0; flex:1 1 auto; flex-wrap:wrap; }
 .dx-name .dx-code{ font-variant-numeric:tabular-nums; font-weight:600; opacity:.7; white-space:nowrap; }
 .dx-name .dx-label{ overflow:hidden; text-overflow:ellipsis; }
 .dx-actions{ display:flex; gap:4px; align-items:center; flex:0 0 auto; }

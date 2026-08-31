@@ -19,6 +19,14 @@ describe("case-level conditions (caseConditions)", () => {
     setCaseCondition("anodontia", "left");
     expect(getCaseConditions().find((c) => c.key === "anodontia")!.laterality).toBe("unspecified");
   });
+  it("returns conditions sorted by ICD-10 code, not catalog order", () => {
+    // anodontia (K00.0) sits AFTER jawSizeAnomaly (K07.0) in the catalog, but its
+    // code is lower — added last, it must still come first when code-sorted.
+    setCaseCondition("jawSizeAnomaly", "unspecified"); // K07.0
+    setCaseCondition("lipDisease", "unspecified");     // K13.0
+    setCaseCondition("anodontia", "unspecified");      // K00.0 (catalog-late)
+    expect(getCaseConditions().map((c) => c.icd10)).toEqual(["K00.0", "K07.0", "K13.0"]);
+  });
   it("ignores unknown keys and invalid laterality", () => {
     setCaseCondition("nope", "left");
     setCaseCondition("tmjDisorder", "sideways" as any);

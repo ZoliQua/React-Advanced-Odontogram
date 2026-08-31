@@ -187,7 +187,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   removed (it also covers `caries`, clearing the surfaces). This replaces the old
   CSS-hidden suppress checkbox, whose "Exclude" label rendered as unclickable
   text. The periodontal Case/regional diagnoses list adopts the same code-first
-  layout and an × delete icon, and its summary enumeration is code-first too.
+  layout and an × delete icon, is sorted by ICD-10 code (`getCaseConditions` now
+  code-sorts, so the list and its summary enumeration match the Diagnoses card),
+  and its rows stay on one line (the × no longer wraps under a long label).
 - **BNO-10 pack aligned to the official NEAK titles.** The Hungarian (BNO-10)
   diagnosis-coding pack now carries the official NEAK BNO-10 display strings
   (verified against the NEAK "3- és 4-jegyű BNO kódok" törzs) instead of the

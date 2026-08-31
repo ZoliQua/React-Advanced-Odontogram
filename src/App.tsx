@@ -115,6 +115,7 @@ export {
   getActiveDiagnoses,
   setDxOverrideForSelection,
   addDiagnosisToSelection,
+  removeDiagnosisFromSelection,
 } from "./odontogram";
 export type { ActiveOrtho, ActiveCaries, ActiveCariesSurface, ActiveFillings, ActiveFillingSurface, ActiveRootPerio, ActiveRootPerioMod, RootPerioOption, RootPerioOptGroup, ActiveToothDetails, ToothDetailsOption, ExtractionPlanParent, ToothDiagnosis, ActiveDiagnoses, ActiveDiagnosisRow } from "./odontogram";
 export type { SurfaceCell, SurfaceIndicator } from "./surfaces/cards/SurfaceCross";

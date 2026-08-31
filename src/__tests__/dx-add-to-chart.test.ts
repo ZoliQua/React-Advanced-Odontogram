@@ -9,7 +9,9 @@
 // Caries UI) — adding it via this API is a silent no-op.
 import { describe, it, expect, beforeEach } from "vitest";
 import {
-  addDiagnosisToSelection, getToothDiagnoses, REVERSE_MAPPABLE_KEYS, TOOTH_LEVEL_DX_KEYS,
+  addDiagnosisToSelection, removeDiagnosisFromSelection, getToothDiagnoses,
+  setDxOverrideForSelection, setWearCervicalForSelection, setCariesSurfaceForSelection,
+  REVERSE_MAPPABLE_KEYS, TOOTH_LEVEL_DX_KEYS,
   __resetChartStateForTest, __setSelectionForTest, __getToothStateForTest,
 } from "../odontogram";
 
@@ -51,5 +53,54 @@ describe("DX add-to-chart: addDiagnosisToSelection writes the chart axis", () =>
     for (const k of REVERSE_MAPPABLE_KEYS) expect(TOOTH_LEVEL_DX_KEYS.has(k)).toBe(true);
     for (const k of TOOTH_LEVEL_DX_KEYS) if (k !== "caries") expect(REVERSE_MAPPABLE_KEYS.has(k)).toBe(true);
     expect(REVERSE_MAPPABLE_KEYS.has("caries")).toBe(false);
+  });
+});
+
+describe("DX remove-from-chart: removeDiagnosisFromSelection clears the axis + override", () => {
+  beforeEach(() => __resetChartStateForTest());
+
+  it("clears the underlying axis so the finding is no longer derived", () => {
+    __setSelectionForTest([11]);
+    addDiagnosisToSelection("fluorosis");
+    expect(getToothDiagnoses(11).map((d) => d.key)).toContain("fluorosis");
+
+    removeDiagnosisFromSelection("fluorosis");
+    expect(__getToothStateForTest(11)?.discoloration).toBe("none");
+    expect(getToothDiagnoses(11).map((d) => d.key)).not.toContain("fluorosis");
+  });
+
+  it("clears erosion whether it lives on the incisal or the cervical axis", () => {
+    __setSelectionForTest([11]);
+    setWearCervicalForSelection("erosion"); // erosion authored on the cervical axis
+    expect(getToothDiagnoses(11).map((d) => d.key)).toContain("erosion");
+    removeDiagnosisFromSelection("erosion");
+    expect(__getToothStateForTest(11)?.wearCervical).toBe("none");
+    expect(getToothDiagnoses(11).map((d) => d.key)).not.toContain("erosion");
+  });
+
+  it("also drops any coded-layer override for the key", () => {
+    __setSelectionForTest([11]);
+    addDiagnosisToSelection("pulpitis");
+    setDxOverrideForSelection("pulpitis", "suppress");
+    expect((__getToothStateForTest(11)?.dxOverrides as Record<string, string>)?.pulpitis).toBe("suppress");
+
+    removeDiagnosisFromSelection("pulpitis");
+    expect(__getToothStateForTest(11)?.pulpDx).toBe("normal");
+    expect((__getToothStateForTest(11)?.dxOverrides as Record<string, string>)?.pulpitis).toBeUndefined();
+    // Re-adding derives it again as a NON-suppressed finding (the override is gone).
+    addDiagnosisToSelection("pulpitis");
+    expect(getToothDiagnoses(11).map((d) => d.key)).toContain("pulpitis");
+  });
+
+  it("clears the caries surfaces (full delete of a per-surface finding)", () => {
+    __setSelectionForTest([11]);
+    setCariesSurfaceForSelection("caries-occlusal", true);
+    expect((__getToothStateForTest(11)?.caries as string[]).length).toBeGreaterThan(0);
+    removeDiagnosisFromSelection("caries");
+    expect(__getToothStateForTest(11)?.caries).toEqual([]);
+  });
+
+  it("is a silent no-op with no active selection", () => {
+    expect(() => removeDiagnosisFromSelection("pulpitis")).not.toThrow();
   });
 });

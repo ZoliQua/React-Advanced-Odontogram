@@ -178,6 +178,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Diagnoses row controls: exclude toggle + delete, and a full-delete that
+  clears the chart.** Each diagnosis row is now three explicit parts — the
+  code-first text, an **exclude** toggle (eye/eye-off icon with a hover tooltip;
+  drops the finding from the FHIR export but keeps it on the chart), and a
+  **delete** (×) button. Delete now calls a new `removeDiagnosisFromSelection`,
+  which clears the underlying chart axis so the diagnosis **and** its glyph are
+  removed (it also covers `caries`, clearing the surfaces). This replaces the old
+  CSS-hidden suppress checkbox, whose "Exclude" label rendered as unclickable
+  text. The periodontal Case/regional diagnoses list adopts the same code-first
+  layout and an × delete icon, and its summary enumeration is code-first too.
 - **BNO-10 pack aligned to the official NEAK titles.** The Hungarian (BNO-10)
   diagnosis-coding pack now carries the official NEAK BNO-10 display strings
   (verified against the NEAK "3- és 4-jegyű BNO kódok" törzs) instead of the

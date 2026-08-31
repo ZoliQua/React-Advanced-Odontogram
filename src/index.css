@@ -703,6 +703,21 @@ select:focus{
 .odon-depth-group-label:first-child{padding-top:2px}
 .odon-depth-title{font-size:12px; font-weight:800; color:var(--text); padding:2px 4px 6px; border-bottom:1px solid var(--line); margin-bottom:2px}
 .row input[type="checkbox"]{display:none}
+/* Diagnoses card rows (DiagnosesCard) + perio case-diagnoses rows (PerioSidebar):
+   code-first name, then a compact action cluster (exclude toggle + delete ×).
+   Scoped overrides so the shared .btn-icon (32px svg, big padding) stays compact
+   here. Not a checkbox row, so the .row:has(checkbox) chip box never applies. */
+.dx-row{ justify-content:space-between; }
+.dx-name{ display:flex; gap:8px; align-items:baseline; min-width:0; flex:1 1 auto; }
+.dx-name .dx-code{ font-variant-numeric:tabular-nums; font-weight:600; opacity:.7; white-space:nowrap; }
+.dx-name .dx-label{ overflow:hidden; text-overflow:ellipsis; }
+.dx-actions{ display:flex; gap:4px; align-items:center; flex:0 0 auto; }
+.dx-row .btn-icon{ padding:5px 8px; }
+.dx-row .btn-icon svg{ width:16px; height:16px; display:block; }
+.dx-delete{ font-size:16px; line-height:1; }
+.dx-exclude{ color: var(--muted, #64748b); }
+.dx-exclude.is-active{ color:#b45309; background: rgba(180,83,9,.14); }
+.dark .dx-exclude.is-active{ color:#fbbf24; background: rgba(251,191,36,.16); }
 .row:has(input[type="checkbox"]){
   border-radius:12px;
   border:1px solid var(--line);

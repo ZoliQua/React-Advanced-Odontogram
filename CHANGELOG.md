@@ -178,6 +178,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Case/regional diagnoses moved into a pop-up.** The "Case / regional
+  diagnoses" list left the Periodontal-status sidebar and now lives in its own
+  focus-trapped dialog (`CaseDiagnosesModal`), opened from a new **Diagnoses**
+  button beside the Odontogram / Periodontal-status view toggle. The add-picker
+  in the pop-up is code-first (`K07.6 …`) and code-sorted, matching the rows.
+  (Shell-DOM parity fixture re-frozen for the one new button; the SVG/FHIR/
+  round-trip goldens are byte-identical.)
 - **Diagnoses row controls: exclude toggle + delete, and a full-delete that
   clears the chart.** Each diagnosis row is now three explicit parts — the
   code-first text, an **exclude** toggle (eye/eye-off icon with a hover tooltip;

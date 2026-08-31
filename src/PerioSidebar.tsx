@@ -24,11 +24,8 @@ import {
   setGradeOverride,
   setExtentOverride,
   getPerioIndexNameMode,
-  getCaseConditions,
-  setCaseCondition,
 } from "./odontogram";
 import { indexName } from "./perioIndexNames";
-import { CASE_DX_CODES, type CaseConditionKey, type Laterality } from "./dx/caseCodes";
 
 // Standalone, separately-mountable perio-context panel bundling the whole-mouth
 // summary bar, the patient-data case-metadata form, and the 2017 classification
@@ -129,25 +126,19 @@ function extentLabel(v: string): string {
   return t(`perio.class.extent.${v}`);
 }
 
-type CaseConditionsData = ReturnType<typeof getCaseConditions>;
-const EMPTY_CASE_CONDITIONS: CaseConditionsData = [];
-
 export default function PerioSidebar() {
   const [summary, setSummary] = useState<PerioSummaryData>(EMPTY_SUMMARY);
   const [caseMeta, setCaseMetaState] = useState<CaseMetaData>(EMPTY_CASE_META);
   const [classification, setClassification] = useState<ClassificationData>(EMPTY_CLASSIFICATION);
-  const [caseConds, setCaseConds] = useState<CaseConditionsData>(EMPTY_CASE_CONDITIONS);
 
   useEffect(() => {
     setSummary(getPerioSummary());
     setCaseMetaState(getCaseMeta());
     setClassification(getPerioClassification());
-    setCaseConds(getCaseConditions());
     const unsubscribe = onStateChange(() => {
       setSummary(getPerioSummary());
       setCaseMetaState(getCaseMeta());
       setClassification(getPerioClassification());
-      setCaseConds(getCaseConditions());
     });
     return unsubscribe;
   }, []);
@@ -370,49 +361,8 @@ export default function PerioSidebar() {
               }}
             />
           </div>
-          <div id="caseDiagnosesSection" className="case-diagnoses">
-            <div className="case-diagnoses-title">{t("case.diagnoses.section")}</div>
-            {caseConds.map((c) => (
-              <div className="case-diagnoses-row dx-row" key={c.key}>
-                <span className="dx-name">
-                  {c.icd10 ? <span className="dx-code">{c.icd10}</span> : null}
-                  <span className="dx-label">{t(`dx.case.${c.key}`)}</span>
-                </span>
-                {c.lateralizable && (
-                  <select
-                    value={c.laterality}
-                    disabled={readOnly}
-                    onChange={(e) => setCaseCondition(c.key, e.target.value as Laterality)}
-                  >
-                    {(["unspecified", "left", "right", "bilateral"] as Laterality[]).map((l) => (
-                      <option key={l} value={l}>{t(`caseDx.laterality.${l}`)}</option>
-                    ))}
-                  </select>
-                )}
-                <button
-                  type="button"
-                  className="btn btn-ghost btn-icon btn-danger dx-delete case-dx-remove"
-                  disabled={readOnly}
-                  aria-label={t("case.diagnoses.remove")}
-                  title={t("case.diagnoses.remove")}
-                  onClick={() => setCaseCondition(c.key, null)}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-            <select
-              id="caseDxAddSelect"
-              value=""
-              disabled={readOnly}
-              onChange={(e) => { if (e.target.value) setCaseCondition(e.target.value, "unspecified"); }}
-            >
-              <option value="">{t("case.diagnoses.add")}</option>
-              {(Object.keys(CASE_DX_CODES) as CaseConditionKey[])
-                .filter((k) => !caseConds.some((c) => c.key === k))
-                .map((k) => (<option key={k} value={k}>{t(`dx.case.${k}`)}</option>))}
-            </select>
-          </div>
+          {/* Case / regional diagnoses moved to its own pop-up (CaseDiagnosesModal),
+              opened from the "Diagnoses" button beside the view toggle. */}
           <div className="case-meta-panel-subheading">{t("perio.class.title")}</div>
           <div className="perio-class-row">
             <label className="perio-class-row-label" htmlFor="perioClassDiagnosisOverride">{t("perio.class.diagnosis")}</label>

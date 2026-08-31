@@ -722,6 +722,11 @@ select:focus{
 .dx-exclude{ color: var(--muted, #64748b); }
 .dx-exclude.is-active{ color:#b45309; background: rgba(180,83,9,.14); }
 .dark .dx-exclude.is-active{ color:#fbbf24; background: rgba(251,191,36,.16); }
+/* Case/regional diagnoses pop-up (CaseDiagnosesModal) — reuses the credits-modal
+   chrome; the body is the moved case-diagnoses list + code-first add-picker. */
+.odon-casedx-modal{ max-width:520px; }
+.odon-casedx-body{ display:flex; flex-direction:column; gap:6px; margin-top:12px; }
+.odon-casedx-body #caseDxAddSelect{ width:100%; margin-top:6px; }
 .row:has(input[type="checkbox"]){
   border-radius:12px;
   border:1px solid var(--line);

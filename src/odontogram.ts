@@ -768,6 +768,9 @@ export function getCaseConditions(): { key: CaseConditionKey; icd10: string; lat
     if(lat === undefined) continue;
     out.push({ key, icd10: CASE_DX_CODES[key].icd10, laterality: lat, lateralizable: CASE_DX_CODES[key].lateralizable });
   }
+  // Code-sorted (catalog order jumps chapters — e.g. K00.x sits after K12.x),
+  // matching the Diagnoses card + the case-diagnoses list/summary.
+  out.sort((a, b) => a.icd10.localeCompare(b.icd10));
   return out;
 }
 /** Add/update-laterality/remove one case condition. `null` removes; a

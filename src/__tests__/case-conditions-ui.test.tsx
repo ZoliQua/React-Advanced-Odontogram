@@ -1,20 +1,20 @@
 // Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
-// DX-3b Task 5 — declarative-render test for the "Case / regional diagnoses"
-// section of `<PerioSidebar/>`. Mirrors `dx-card.test.tsx`'s mocking pattern
-// (mock only the two engine symbols the section reads/writes, keep everything
-// else real via `importOriginal`), rendering `<PerioSidebar/>` directly — same
-// precedent as `ui1-perio-sidebar.test.tsx` part (a), nothing the section needs
-// requires a live initOdontogram()/SVG-grid mount. Proves: the section renders
-// one row per active condition (label + ICD-10 code + remove button), a
-// lateralizable row additionally gets a laterality select, the add-select
-// offers only catalog keys not already active, and each control calls through
-// to `setCaseCondition` with the right arguments.
+// Declarative-render test for the "Case / regional diagnoses" pop-up
+// (`<CaseDiagnosesModal/>`) — moved out of `<PerioSidebar/>` into its own dialog
+// opened by the "Diagnoses" button beside the view toggle. Mocks only the two
+// engine symbols the modal reads/writes (keep everything else real via
+// `importOriginal`), and passes an identity `t` so option/label text is the raw
+// key — code assertions (ICD-10) are language-independent. Proves: the modal
+// renders one row per active condition (code-first label + ICD-10 + × delete), a
+// lateralizable row additionally gets a laterality select, the add-select offers
+// only catalog keys not already active — code-first and code-sorted — and each
+// control calls through to `setCaseCondition` with the right arguments.
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createElement } from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
-import PerioSidebar from "../PerioSidebar";
+import CaseDiagnosesModal from "../CaseDiagnosesModal";
 import { __resetChartStateForTest, setNumberingSystem, resetCaseMeta } from "../odontogram";
 
 const getCaseConditionsMock = vi.fn();
@@ -29,8 +29,10 @@ vi.mock("../odontogram", async (importOriginal) => {
   };
 });
 
-function renderSidebar() {
-  return render(createElement(PerioSidebar));
+const t = (k: string) => k; // identity — code assertions are language-independent
+
+function renderModal() {
+  return render(createElement(CaseDiagnosesModal, { open: true, t, onClose: () => {} }));
 }
 
 beforeEach(() => {
@@ -44,44 +46,59 @@ beforeEach(() => {
   resetCaseMeta();
 });
 
-describe("DX-3b Task 5: Case/regional diagnoses picker in <PerioSidebar/>", () => {
-  it("renders the section with its title and an add-select with a placeholder", () => {
-    renderSidebar();
-    const section = document.getElementById("caseDiagnosesSection");
-    expect(section).toBeTruthy();
+describe("CaseDiagnosesModal: Case/regional diagnoses pop-up", () => {
+  it("renders the dialog with its section, add-select and a placeholder", () => {
+    renderModal();
+    expect(document.getElementById("caseDiagnosesModal")).toBeTruthy();
+    expect(document.getElementById("caseDiagnosesSection")).toBeTruthy();
     const select = document.getElementById("caseDxAddSelect") as HTMLSelectElement;
     expect(select).toBeTruthy();
     expect(select.value).toBe("");
   });
 
+  it("renders nothing when open is false", () => {
+    render(createElement(CaseDiagnosesModal, { open: false, t, onClose: () => {} }));
+    expect(document.getElementById("caseDiagnosesModal")).toBeFalsy();
+  });
+
   it("renders no rows when there are no active conditions", () => {
-    renderSidebar();
+    renderModal();
     expect(document.querySelectorAll(".case-diagnoses-row").length).toBe(0);
   });
 
+  it("the add-select options are code-first and code-sorted (K00.0 first)", () => {
+    renderModal();
+    const select = document.getElementById("caseDxAddSelect") as HTMLSelectElement;
+    // options[0] is the placeholder; options[1] is the lowest ICD-10 code (K00.0 anodontia).
+    expect(select.options[1].textContent?.startsWith("K00.0 ")).toBe(true);
+    const codes = Array.from(select.options).slice(1).map((o) => o.textContent!.split(" ")[0]);
+    const sorted = [...codes].sort((a, b) => a.localeCompare(b));
+    expect(codes).toEqual(sorted);
+  });
+
   it("picking a key from the add-select calls setCaseCondition(key, 'unspecified')", () => {
-    renderSidebar();
+    renderModal();
     const select = document.getElementById("caseDxAddSelect") as HTMLSelectElement;
     fireEvent.change(select, { target: { value: "tmjDisorder" } });
     expect(setCaseConditionMock).toHaveBeenCalledWith("tmjDisorder", "unspecified");
   });
 
-  it("renders an active non-lateralizable row with its label, code and no laterality select", () => {
+  it("renders an active non-lateralizable row code-first, with no laterality select", () => {
     getCaseConditionsMock.mockReturnValue([
       { key: "malocclusionUnspecified", icd10: "K07.4", laterality: "unspecified", lateralizable: false },
     ]);
-    renderSidebar();
+    renderModal();
     const rows = document.querySelectorAll(".case-diagnoses-row");
     expect(rows.length).toBe(1);
-    expect(rows[0].textContent).toContain("K07.4");
+    expect(rows[0].querySelector(".dx-code")?.textContent).toBe("K07.4");
     expect(rows[0].querySelector("select")).toBeFalsy();
   });
 
-  it("clicking the remove button on an active row calls setCaseCondition(key, null)", () => {
+  it("clicking the × delete on an active row calls setCaseCondition(key, null)", () => {
     getCaseConditionsMock.mockReturnValue([
       { key: "malocclusionUnspecified", icd10: "K07.4", laterality: "unspecified", lateralizable: false },
     ]);
-    renderSidebar();
+    renderModal();
     const removeBtn = document.querySelector(".case-dx-remove") as HTMLButtonElement;
     expect(removeBtn).toBeTruthy();
     fireEvent.click(removeBtn);
@@ -92,7 +109,7 @@ describe("DX-3b Task 5: Case/regional diagnoses picker in <PerioSidebar/>", () =
     getCaseConditionsMock.mockReturnValue([
       { key: "tmjDisorder", icd10: "K07.6", laterality: "unspecified", lateralizable: true },
     ]);
-    renderSidebar();
+    renderModal();
     const row = document.querySelector(".case-diagnoses-row") as HTMLElement;
     const select = row.querySelector("select") as HTMLSelectElement;
     expect(select).toBeTruthy();
@@ -104,7 +121,7 @@ describe("DX-3b Task 5: Case/regional diagnoses picker in <PerioSidebar/>", () =
     getCaseConditionsMock.mockReturnValue([
       { key: "tmjDisorder", icd10: "K07.6", laterality: "unspecified", lateralizable: true },
     ]);
-    renderSidebar();
+    renderModal();
     const select = document.getElementById("caseDxAddSelect") as HTMLSelectElement;
     const optionValues = Array.from(select.options).map((o) => o.value);
     expect(optionValues).not.toContain("tmjDisorder");

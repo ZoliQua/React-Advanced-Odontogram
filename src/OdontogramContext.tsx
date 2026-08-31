@@ -323,6 +323,8 @@ export type OdontogramUiContextValue = {
   setPdfOpen: (open: boolean) => void;
   creditsOpen: boolean;
   setCreditsOpen: (open: boolean) => void;
+  caseDxOpen: boolean;
+  setCaseDxOpen: (open: boolean) => void;
 };
 
 const OdontogramUiContext = createContext<OdontogramUiContextValue | null>(null);
@@ -422,6 +424,7 @@ export function OdontogramProvider({
   const [hasPerio, setHasPerio] = useState(false);
   const [pdfOpen, setPdfOpen] = useState(false);
   const [creditsOpen, setCreditsOpen] = useState(false);
+  const [caseDxOpen, setCaseDxOpen] = useState(false);
   // Mirror the module-level perio-overlay flag into React state, kept in sync via
   // the onStateChange subscription below so a host that calls openPerioOverlay()/
   // closePerioOverlay() directly (bypassing this button) still re-renders <PerioChart/>.
@@ -831,6 +834,8 @@ export function OdontogramProvider({
     setPdfOpen,
     creditsOpen,
     setCreditsOpen,
+    caseDxOpen,
+    setCaseDxOpen,
   };
 
   return (

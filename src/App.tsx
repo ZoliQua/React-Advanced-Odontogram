@@ -19,6 +19,7 @@ import PerioSidebar from "./PerioSidebar";
 import DualStateConfirm from "./DualStateConfirm";
 import ExportOptionsModal from "./ExportOptionsModal";
 import CreditsModal from "./CreditsModal";
+import CaseDiagnosesModal from "./CaseDiagnosesModal";
 import { type OdontogramThemeConfig } from "./theme";
 export type { OdontogramThemeConfig };
 import type { OdontogramPlugin, PluginLayer } from "./plugin";
@@ -181,6 +182,8 @@ function ShellLayout(){
     setPdfOpen,
     creditsOpen,
     setCreditsOpen,
+    caseDxOpen,
+    setCaseDxOpen,
   } = useOdontogramUi();
 
   return (
@@ -226,6 +229,16 @@ function ShellLayout(){
               {t("perio.open")}
             </button>
           )}
+          <button
+            type="button"
+            id="openCaseDiagnosesBtn"
+            className="btn btn-ghost"
+            onClick={() => setCaseDxOpen(true)}
+            title={t("case.diagnoses.section")}
+            aria-label={t("case.diagnoses.section")}
+          >
+            {t("case.diagnoses.button")}
+          </button>
         </div>
         {/* Unmount the odontogram column while the perio (Dental Chart) view is
             active. Composable-UI Tier 2 made control wiring re-runnable, so the
@@ -276,6 +289,11 @@ function ShellLayout(){
         open={creditsOpen}
         t={t}
         onClose={() => setCreditsOpen(false)}
+      />
+      <CaseDiagnosesModal
+        open={caseDxOpen}
+        t={t}
+        onClose={() => setCaseDxOpen(false)}
       />
     </>
   );

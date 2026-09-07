@@ -3,6 +3,7 @@
 
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
+import { assignEntryIdentities } from "../../fhir/primitives";
 import { fileURLToPath } from "node:url";
 import { payloadCases } from "../../__tests__/parity/matrix";
 import { buildFhirBundleFromRegistry } from "../fhir";
@@ -22,7 +23,7 @@ const withoutConditions = (bundle: { entry?: { resource?: { resourceType?: strin
 describe("registry-driven toFhir matches the pre-rewrite engine", () => {
   it("equals the frozen FHIR golden", () => {
     payloadCases().forEach((p, i) =>
-      expect(buildFhirBundleFromRegistry(p.payload), p.name).toEqual(withoutConditions(golden[i].bundle)));
+      expect((() => { const b = buildFhirBundleFromRegistry(p.payload); assignEntryIdentities(b); return b; })(), p.name).toEqual(withoutConditions(golden[i].bundle)));
   });
   it("matches frozen snapshots for note / customStates / custom subject (branches outside the matrix)", () => {
     const noteP = { teeth: { "11": { note: "chipped mesial" } } };
@@ -38,7 +39,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
       {
         "entry": [
           {
-            "fullUrl": "urn:uuid:odontogram-subject",
+            "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
             "resource": {
               "id": "odontogram-subject",
               "resourceType": "Patient",
@@ -84,7 +85,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "resourceType": "Observation",
               "status": "final",
               "subject": {
-                "reference": "urn:uuid:odontogram-subject",
+                "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
               },
             },
           },
@@ -97,7 +98,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
       {
         "entry": [
           {
-            "fullUrl": "urn:uuid:odontogram-subject",
+            "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
             "resource": {
               "id": "odontogram-subject",
               "resourceType": "Patient",
@@ -138,7 +139,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "resourceType": "Observation",
               "status": "final",
               "subject": {
-                "reference": "urn:uuid:odontogram-subject",
+                "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
               },
               "valueString": "x",
             },
@@ -178,7 +179,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "resourceType": "Observation",
               "status": "final",
               "subject": {
-                "reference": "urn:uuid:odontogram-subject",
+                "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
               },
               "valueQuantity": {
                 "value": 3,
@@ -220,7 +221,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "resourceType": "Observation",
               "status": "final",
               "subject": {
-                "reference": "urn:uuid:odontogram-subject",
+                "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
               },
               "valueBoolean": true,
             },

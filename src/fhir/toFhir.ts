@@ -6,6 +6,7 @@ import { buildFhirBundleFromRegistry } from "../registry/fhir";
 import { appendPerioObservations, appendPerioCondition } from "./toFhirPerio";
 import { appendDentalConditions } from "./toFhirDx";
 import { appendCaseConditions } from "./toFhirCase";
+import { assignEntryIdentities } from "./primitives";
 
 /**
  * Convert a serialized odontogram payload into a FHIR R4 collection Bundle.
@@ -39,5 +40,8 @@ export function buildFhirBundle(payload: OdontogramExportPayload, options: FhirE
   appendPerioCondition(bundle, payload, options);
   appendDentalConditions(bundle, payload, options);
   appendCaseConditions(bundle, payload, options);
+  // LAST: every entry gets a deterministic id + absolute fullUrl (HL7 validator
+  // bdl-15 / valid-UUID rules, issue #23). Source-identified entries are kept.
+  assignEntryIdentities(bundle);
   return bundle;
 }

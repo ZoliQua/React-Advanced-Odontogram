@@ -176,6 +176,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   re-derived chart) — completing the FHIR round-trip for our own exports. Chart-only
   bundles are unaffected. No payload change (2.22).
 
+### Fixed
+
+- **FHIR export now passes the HL7 validator's Bundle identity rules (issue
+  #23).** validator.fhir.org flagged the `collection` Bundle on two counts: 32 of
+  33 entries had no `Bundle.entry.fullUrl` (constraint bdl-15 requires one on
+  every entry of a non-transaction Bundle), and the placeholder subject used
+  `urn:uuid:odontogram-subject`, which is not a valid RFC 4122 UUID (the
+  `urn:uuid:` scheme may only wrap a real UUID — the same latent fault sat on the
+  Condition and evidence-Observation fullUrls). Every entry now carries a
+  deterministic `id` plus an absolute, readable `fullUrl` under the engine's own
+  FHIR base (`https://github.com/ZoliQua/React-Odontogram-Modul/fhir/<Type>/<id>`,
+  a sibling of the local CodeSystem URL); per-tooth Observations derive their id
+  from content (type + FDI tooth + finding code, ordinal-suffixed for per-surface
+  repeats), and every `subject`/evidence reference points at those fullUrls. No
+  random UUIDs, so the export stays golden-testable. The FHIR **import** is
+  unaffected (it reads `resource.id`, never `fullUrl`); the JSON round-trip golden
+  is byte-identical. The remaining validator messages are terminology-server
+  `validate-code` timeouts on the engine's own (unpublished) CodeSystem — expected
+  for a local code system, not a defect. Reported by @BabuBahir.
+
 ### Changed
 
 - **Case/regional diagnoses moved into a pop-up.** The "Case / regional

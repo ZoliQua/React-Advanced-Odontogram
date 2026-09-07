@@ -6,7 +6,7 @@
       "type": "collection",
       "entry": [
         {
-          "fullUrl": "urn:uuid:odontogram-subject",
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
           "resource": {
             "resourceType": "Patient",
             "id": "odontogram-subject"
@@ -22,7 +22,7 @@
       "type": "collection",
       "entry": [
         {
-          "fullUrl": "urn:uuid:odontogram-subject",
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
           "resource": {
             "resourceType": "Patient",
             "id": "odontogram-subject"
@@ -54,10 +54,12 @@
               "text": "Edentulous (whole mouth)"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
-            "valueBoolean": true
-          }
+            "valueBoolean": true,
+            "id": "odontogram-observation-case-edentulous"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-case-edentulous"
         }
       ]
     }
@@ -69,7 +71,7 @@
       "type": "collection",
       "entry": [
         {
-          "fullUrl": "urn:uuid:odontogram-subject",
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
           "resource": {
             "resourceType": "Patient",
             "id": "odontogram-subject"
@@ -101,7 +103,7 @@
               "text": "Tooth status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -121,8 +123,10 @@
                 }
               ],
               "text": "No tooth status"
-            }
-          }
+            },
+            "id": "odontogram-observation-12-tooth-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-12-tooth-status"
         },
         {
           "resource": {
@@ -150,7 +154,7 @@
               "text": "Tooth status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -170,8 +174,10 @@
                 }
               ],
               "text": "Primary (deciduous) tooth"
-            }
-          }
+            },
+            "id": "odontogram-observation-54-tooth-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-54-tooth-status"
         },
         {
           "resource": {
@@ -199,7 +205,7 @@
               "text": "Tooth status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -219,8 +225,10 @@
                 }
               ],
               "text": "Dental implant"
-            }
-          }
+            },
+            "id": "odontogram-observation-15-tooth-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-15-tooth-status"
         },
         {
           "resource": {
@@ -248,7 +256,7 @@
               "text": "Tooth status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -268,8 +276,10 @@
                 }
               ],
               "text": "Tooth under gum"
-            }
-          }
+            },
+            "id": "odontogram-observation-16-tooth-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-16-tooth-status"
         },
         {
           "resource": {
@@ -297,7 +307,7 @@
               "text": "Tooth status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -317,8 +327,10 @@
                 }
               ],
               "text": "Missing after extraction"
-            }
-          }
+            },
+            "id": "odontogram-observation-17-tooth-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-17-tooth-status"
         },
         {
           "resource": {
@@ -346,7 +358,7 @@
               "text": "Endodontic status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -366,8 +378,10 @@
                 }
               ],
               "text": "Endodontic medical filling"
-            }
-          }
+            },
+            "id": "odontogram-observation-33-endodontic-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-33-endodontic-status"
         },
         {
           "resource": {
@@ -395,7 +409,7 @@
               "text": "Endodontic status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -415,8 +429,10 @@
                 }
               ],
               "text": "Root canal filling"
-            }
-          }
+            },
+            "id": "odontogram-observation-34-endodontic-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-34-endodontic-status"
         },
         {
           "resource": {
@@ -444,7 +460,7 @@
               "text": "Endodontic status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -464,8 +480,10 @@
                 }
               ],
               "text": "Incomplete root canal filling"
-            }
-          }
+            },
+            "id": "odontogram-observation-35-endodontic-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-35-endodontic-status"
         },
         {
           "resource": {
@@ -493,7 +511,7 @@
               "text": "Endodontic status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -513,8 +531,10 @@
                 }
               ],
               "text": "Glass fiber post"
-            }
-          }
+            },
+            "id": "odontogram-observation-36-endodontic-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-36-endodontic-status"
         },
         {
           "resource": {
@@ -542,7 +562,7 @@
               "text": "Endodontic status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -562,8 +582,10 @@
                 }
               ],
               "text": "Metal post"
-            }
-          }
+            },
+            "id": "odontogram-observation-37-endodontic-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-37-endodontic-status"
         },
         {
           "resource": {
@@ -591,7 +613,7 @@
               "text": "Tooth mobility"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -611,8 +633,10 @@
                 }
               ],
               "text": "Mobility grade 1"
-            }
-          }
+            },
+            "id": "odontogram-observation-46-tooth-mobility"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-46-tooth-mobility"
         },
         {
           "resource": {
@@ -640,7 +664,7 @@
               "text": "Tooth mobility"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -660,8 +684,10 @@
                 }
               ],
               "text": "Mobility grade 2"
-            }
-          }
+            },
+            "id": "odontogram-observation-47-tooth-mobility"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-47-tooth-mobility"
         },
         {
           "resource": {
@@ -689,7 +715,7 @@
               "text": "Tooth mobility"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -709,8 +735,10 @@
                 }
               ],
               "text": "Mobility grade 3"
-            }
-          }
+            },
+            "id": "odontogram-observation-48-tooth-mobility"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-48-tooth-mobility"
         },
         {
           "resource": {
@@ -738,7 +766,7 @@
               "text": "Periapical lesion type"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -758,11 +786,13 @@
                 }
               ],
               "text": "Periapical granuloma"
-            }
-          }
+            },
+            "id": "odontogram-observation-50-periapical-lesion-type"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-50-periapical-lesion-type"
         },
         {
-          "fullUrl": "urn:uuid:odontogram-dx-toothLoss-17",
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Condition/odontogram-dx-toothLoss-17",
           "resource": {
             "resourceType": "Condition",
             "id": "odontogram-dx-toothLoss-17",
@@ -777,7 +807,7 @@
               "text": "Loss of teeth due to accident, extraction or local periodontal disease"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": [
               {
@@ -801,7 +831,7 @@
       "type": "collection",
       "entry": [
         {
-          "fullUrl": "urn:uuid:odontogram-subject",
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
           "resource": {
             "resourceType": "Patient",
             "id": "odontogram-subject"
@@ -833,7 +863,7 @@
               "text": "Dental caries"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -863,8 +893,10 @@
                 },
                 "valueInteger": 4
               }
-            ]
-          }
+            ],
+            "id": "odontogram-observation-11-caries"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-11-caries"
         },
         {
           "resource": {
@@ -892,7 +924,7 @@
               "text": "Dental restoration"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -948,8 +980,10 @@
                   "text": "Amalgam filling"
                 }
               }
-            ]
-          }
+            ],
+            "id": "odontogram-observation-12-restoration"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-12-restoration"
         },
         {
           "resource": {
@@ -977,7 +1011,7 @@
               "text": "Dental calculus"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -988,8 +1022,10 @@
               ],
               "text": "Tooth 13"
             },
-            "valueBoolean": true
-          }
+            "valueBoolean": true,
+            "id": "odontogram-observation-13-calculus"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-13-calculus"
         },
         {
           "resource": {
@@ -1017,7 +1053,7 @@
               "text": "Planned extraction"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -1028,8 +1064,10 @@
               ],
               "text": "Tooth 13"
             },
-            "valueBoolean": true
-          }
+            "valueBoolean": true,
+            "id": "odontogram-observation-13-extraction-planned"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-13-extraction-planned"
         },
         {
           "resource": {
@@ -1057,7 +1095,7 @@
               "text": "Tooth status"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -1077,8 +1115,10 @@
                 }
               ],
               "text": "No tooth status"
-            }
-          }
+            },
+            "id": "odontogram-observation-14-tooth-status"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-14-tooth-status"
         },
         {
           "resource": {
@@ -1106,7 +1146,7 @@
               "text": "Closed gap (missing tooth)"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -1117,8 +1157,10 @@
               ],
               "text": "Tooth 14"
             },
-            "valueBoolean": true
-          }
+            "valueBoolean": true,
+            "id": "odontogram-observation-14-missing-gap-closed"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-14-missing-gap-closed"
         },
         {
           "resource": {
@@ -1146,7 +1188,7 @@
               "text": "Tooth substrate"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -1166,8 +1208,10 @@
                 }
               ],
               "text": "Prepared for crown"
-            }
-          }
+            },
+            "id": "odontogram-observation-15-tooth-substrate"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-15-tooth-substrate"
         },
         {
           "resource": {
@@ -1195,7 +1239,7 @@
               "text": "Restoration type"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -1215,8 +1259,10 @@
                 }
               ],
               "text": "Crown"
-            }
-          }
+            },
+            "id": "odontogram-observation-15-restoration-type"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-15-restoration-type"
         },
         {
           "resource": {
@@ -1244,7 +1290,7 @@
               "text": "Restoration material"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": {
               "coding": [
@@ -1264,11 +1310,13 @@
                 }
               ],
               "text": "Metal-ceramic (PFM)"
-            }
-          }
+            },
+            "id": "odontogram-observation-15-restoration-material"
+          },
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Observation/odontogram-observation-15-restoration-material"
         },
         {
-          "fullUrl": "urn:uuid:odontogram-dx-caries-11",
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Condition/odontogram-dx-caries-11",
           "resource": {
             "resourceType": "Condition",
             "id": "odontogram-dx-caries-11",
@@ -1283,7 +1331,7 @@
               "text": "Dental caries"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": [
               {
@@ -1298,7 +1346,7 @@
           }
         },
         {
-          "fullUrl": "urn:uuid:odontogram-dx-calculus-13",
+          "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Condition/odontogram-dx-calculus-13",
           "resource": {
             "resourceType": "Condition",
             "id": "odontogram-dx-calculus-13",
@@ -1313,7 +1361,7 @@
               "text": "Deposits [accretions] on teeth"
             },
             "subject": {
-              "reference": "urn:uuid:odontogram-subject"
+              "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject"
             },
             "bodySite": [
               {

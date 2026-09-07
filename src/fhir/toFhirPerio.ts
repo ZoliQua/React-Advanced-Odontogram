@@ -3,7 +3,7 @@
 
 import type { Bundle, Observation, Condition, CodeableConcept, ToothRecord, OdontogramExportPayload, FhirExportOptions } from "./types";
 import { LOCAL_SYSTEM, FDI_SYSTEM } from "./codesystems";
-import { PLACEHOLDER_PATIENT_FULLURL, baseObservation } from "./primitives";
+import { PLACEHOLDER_PATIENT_FULLURL, baseObservation, fhirFullUrl } from "./primitives";
 import { toothBodySiteCode } from "./iso3950";
 import { buildConditionCode } from "./toFhirDx";
 import {
@@ -614,11 +614,11 @@ function computeFinalClassification(payload: OdontogramExportPayload): FinalPeri
 // primitives.ts (PLACEHOLDER_PATIENT_ID/PLACEHOLDER_PATIENT_FULLURL). No
 // Date/random anywhere — same bundle in, byte-identical bundle out, always.
 const CONDITION_ID = "odontogram-perio-condition";
-const CONDITION_FULLURL = `urn:uuid:${CONDITION_ID}`;
+const CONDITION_FULLURL = fhirFullUrl("Condition", CONDITION_ID);
 const SMOKING_OBS_ID = "odontogram-perio-smoking-observation";
-const SMOKING_OBS_FULLURL = `urn:uuid:${SMOKING_OBS_ID}`;
+const SMOKING_OBS_FULLURL = fhirFullUrl("Observation", SMOKING_OBS_ID);
 const HBA1C_OBS_ID = "odontogram-perio-hba1c-observation";
-const HBA1C_OBS_FULLURL = `urn:uuid:${HBA1C_OBS_ID}`;
+const HBA1C_OBS_FULLURL = fhirFullUrl("Observation", HBA1C_OBS_ID);
 
 const SMOKING_STATUS_CONCEPT: Record<"never" | "former" | "current", { code: string; display: string }> = {
   never: { code: "smoking-never", display: "Never smoker" },

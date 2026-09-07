@@ -3,7 +3,7 @@
 
 import type { Bundle, Condition, CodeableConcept, OdontogramExportPayload, FhirExportOptions } from "./types";
 import { ICD10_SYSTEM, FDI_SYSTEM, SNOMED_SYSTEM } from "./codesystems";
-import { PLACEHOLDER_PATIENT_FULLURL } from "./primitives";
+import { PLACEHOLDER_PATIENT_FULLURL, fhirFullUrl } from "./primitives";
 import { DX_CODES, type DiagnosisKey } from "../dx/codes";
 import { packCoding, type CodingPack } from "../dx/packs";
 import { deriveDentalDiagnoses } from "../dx/derive";
@@ -56,6 +56,6 @@ export function appendDentalConditions(
       subject: { reference: subjectRef },
       bodySite: [{ coding: [{ system: FDI_SYSTEM, code: bodySiteCode }] }],
     };
-    bundle.entry.push({ fullUrl: `urn:uuid:${id}`, resource: condition });
+    bundle.entry.push({ fullUrl: fhirFullUrl("Condition", id), resource: condition });
   }
 }

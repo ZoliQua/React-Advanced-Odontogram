@@ -3,7 +3,7 @@
 
 import type { Bundle, Condition, CodeableConcept, OdontogramExportPayload, FhirExportOptions } from "./types";
 import { ICD10_SYSTEM, LOCAL_SYSTEM, SNOMED_SYSTEM } from "./codesystems";
-import { PLACEHOLDER_PATIENT_FULLURL } from "./primitives";
+import { PLACEHOLDER_PATIENT_FULLURL, fhirFullUrl } from "./primitives";
 import type { CodingPack } from "../dx/packs";
 import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_LATERALITY, type CaseConditionKey, type Laterality } from "../dx/caseCodes";
 
@@ -65,6 +65,6 @@ export function appendCaseConditions(bundle: Bundle, payload: OdontogramExportPa
       if (options.snomed) bsCoding.push({ system: SNOMED_SYSTEM, code: LATERALITY_SNOMED[laterality], display: LATERALITY_DISPLAY[laterality] });
       condition.bodySite = [{ coding: bsCoding }];
     }
-    bundle.entry.push({ fullUrl: `urn:uuid:${id}`, resource: condition });
+    bundle.entry.push({ fullUrl: fhirFullUrl("Condition", id), resource: condition });
   }
 }

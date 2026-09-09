@@ -7,6 +7,7 @@ import { appendPerioObservations, appendPerioCondition } from "./toFhirPerio";
 import { appendDentalConditions } from "./toFhirDx";
 import { appendCaseConditions } from "./toFhirCase";
 import { assignEntryIdentities } from "./primitives";
+import { appendCodeSystem } from "./codeSystemResource";
 
 /**
  * Convert a serialized odontogram payload into a FHIR R4 collection Bundle.
@@ -40,6 +41,9 @@ export function buildFhirBundle(payload: OdontogramExportPayload, options: FhirE
   appendPerioCondition(bundle, payload, options);
   appendDentalConditions(bundle, payload, options);
   appendCaseConditions(bundle, payload, options);
+  // The engine's own CodeSystem (default on) so local codes resolve in
+  // validators; placed after the Patient, before identities are assigned.
+  appendCodeSystem(bundle, options);
   // LAST: every entry gets a deterministic id + absolute fullUrl (HL7 validator
   // bdl-15 / valid-UUID rules, issue #23). Source-identified entries are kept.
   assignEntryIdentities(bundle);

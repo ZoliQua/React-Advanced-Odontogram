@@ -11,13 +11,14 @@ import { buildFhirBundleFromRegistry } from "../fhir";
 const here = import.meta.url;
 const golden = JSON.parse(readFileSync(fileURLToPath(new URL("../../__tests__/parity/fhir-golden.json", here)), "utf8"));
 
-// Strip the bespoke Condition resources: buildFhirBundleFromRegistry is the
-// registry-only path and never emits them (perio K05 / dental K02 Conditions
-// are added by the full buildFhirBundle on top). The golden is captured from
-// the full builder, so compare the registry builder against golden-minus-Conditions.
+// Strip what only the FULL builder adds on top of the registry path: the bespoke
+// Condition resources (perio K05 / dental K02 / case Conditions) and the
+// embedded engine CodeSystem (appendCodeSystem, issue #23 follow-up). The golden
+// is captured from the full builder, so compare the registry builder against
+// golden-minus-those.
 const withoutConditions = (bundle: { entry?: { resource?: { resourceType?: string } }[] }) => ({
   ...bundle,
-  entry: (bundle.entry ?? []).filter((e) => e.resource?.resourceType !== "Condition"),
+  entry: (bundle.entry ?? []).filter((e) => e.resource?.resourceType !== "Condition" && e.resource?.resourceType !== "CodeSystem"),
 });
 
 describe("registry-driven toFhir matches the pre-rewrite engine", () => {

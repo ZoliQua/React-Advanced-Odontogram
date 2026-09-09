@@ -203,4 +203,9 @@ export interface FhirExportOptions {
   /** Emit a SNOMED CT coding on each Condition when true (DX-6 overlay). Set
    *  from the `snomedEnabled` session flag by the export entry point. */
   snomed?: boolean;
+  /** Embed the engine's own `CodeSystem` resource in the Bundle (default `true`)
+   *  so validators can resolve the LOCAL_SYSTEM codes from the Bundle itself.
+   *  Pass `false` for a leaner Bundle when the consumer already hosts the
+   *  published `fhir/CodeSystem-odontogram.json`. */
+  includeCodeSystem?: boolean;
 }

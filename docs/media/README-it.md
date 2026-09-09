@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+</p>
+
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.2.1-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -14,6 +18,31 @@
 > 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md)
 
 ---
+
+## 📑 Indice
+
+- [📋 Panoramica](#-panoramica)
+- [📦 Utilizzo come pacchetto npm](#-utilizzo-come-pacchetto-npm)
+- [✨ Funzionalità principali](#-funzionalità-principali)
+- [📦 Moduli](#-moduli)
+- [🛠️ Controlli dell'interfaccia](#-controlli-dellinterfaccia)
+- [🦷 Tipi di dente e stati](#-tipi-di-dente-e-stati)
+- [⚙️ Impostazioni](#-impostazioni)
+- [🖼️ Sistema di template SVG](#-sistema-di-template-svg)
+- [🔢 Sistemi di numerazione](#-sistemi-di-numerazione)
+- [🚀 Utilizzo](#-utilizzo)
+- [🔗 Integrazione](#-integrazione)
+- [🧪 Test](#-test)
+- [📖 Documentazione API](#-documentazione-api)
+- [📡 API pubblica](#-api-pubblica)
+- [💾 Persistenza dello stato (localStorage)](#-persistenza-dello-stato-localstorage)
+- [💾 Formato di esportazione/importazione dello stato](#-formato-di-esportazioneimportazione-dello-stato)
+- [🖨️ Esportazione](#-esportazione)
+- [📁 Struttura delle cartelle](#-struttura-delle-cartelle)
+- [⚙️ Stack tecnologico](#-stack-tecnologico)
+- [📝 Note](#-note)
+- [🔒 Note sulla sicurezza](#-note-sulla-sicurezza)
+- [📖 Come citare](#-come-citare)
 
 ## 🇮🇹 Italiano
 
@@ -76,9 +105,16 @@ export function Chart() {
 | `plugins` | `OdontogramPlugin[]` | — | Registra plugin di stato personalizzati / livelli aggiuntivi. |
 | `enableNotes` | `boolean` | `false` | Abilita le note per dente. |
 | `enableIcdas` | `boolean` | `false` | Abilita il punteggio delle carie ICDAS II. |
+| `fillingComplexity` | `"complex" \| "simple"` | `"complex"` | Complessità dell'otturazione: `"simple"` (un materiale per dente) o `"complex"` (materiali per superficie). |
+| `fillingDefectEnabled` | `boolean` | `true` | Abilita i riscontri di difetti dell'otturazione sulla scheda Otturazioni. |
+| `fillingMaterialAvailability` | `Record<string, boolean>` | tutti disponibili | Materiali di otturazione disponibili come mappa booleana su `amalgam`/`composite`/`gic`/`temporary` (le chiavi sconosciute vengono ignorate). |
+| `fissureSealingEnabled` | `boolean` | `true` | Abilita la sigillatura dei solchi sulla scheda Otturazioni. |
+| `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Si attivano quando l'utente modifica l'impostazione corrispondente da Impostazioni → Otturazioni. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Si attivano quando l'utente cambia l'impostazione dall'interfaccia. |
 
 Sono accettate anche proprietà più granulari a livello di dettaglio (`pulpDetailLevel`, `secondaryCariesMode`, `rootCariesMode`, `radiographicDepthMode`, `wearDetailLevel`, `discolorationDetailLevel`, `surfaceNotation`, `showStatusCard`, `showOrthoCard`) — consulta i tipi `.d.ts` distribuiti per l'elenco completo e tipizzato.
+
+Le quattro prop di otturazione sopra sono **solo di ripristino**: una prop omessa non scrive mai nel motore (una chiamata imperativa a `setFillingComplexity()` prima del montaggio viene preservata e la modalità autonoma è invariata), mentre una prop fornita scrive insieme il motore e lo stato del modal Impostazioni, così il modal non mostra mai un valore obsoleto. `fillingMaterialAvailability` viene applicata per diff tramite una chiave serializzata canonica — un re-render con un letterale inline di contenuto identico non riscrive mai il motore. I callback `on*Change` scattano da Impostazioni → Otturazioni: il percorso di riscrittura per gli host che persistono le preferenze.
 
 #### API pubblica (export con nome)
 
@@ -106,6 +142,38 @@ import {
 ```
 
 La superficie completa (≈ 44 funzioni + tipi come `OdontogramSummary`, `OdontogramThemeConfig`, `OdontogramPlugin`, `FhirExportOptions`, `PerioViewMode`, …) è completamente tipizzata nelle dichiarazioni incluse.
+
+#### Superfici componibili (avanzato)
+
+`OdontogramShell` è il componente all-in-one supportato e non richiede alcuna configurazione aggiuntiva. Se hai bisogno di collocare le regioni dell'odontogramma in aree diverse del tuo layout, anche le quattro superfici dell'interfaccia della shell vengono esportate e possono essere composte sotto un unico `OdontogramProvider`, condividendo tutte un'unica sessione gestita dal pacchetto:
+
+```tsx
+import {
+  OdontogramProvider,
+  OdontogramTopbar,
+  OdontogramChartSurface,
+  ToothInfoSurface,
+  ToothControlsSurface,
+} from "react-advanced-odontogram";
+import "react-advanced-odontogram/style.css";
+
+function Workspace() {
+  return (
+    <OdontogramProvider language="en" numberingSystem="FDI">
+      <MyHeaderArea><OdontogramTopbar /></MyHeaderArea>
+      <MyMainArea>
+        <OdontogramChartSurface />
+        <ToothInfoSurface />
+      </MyMainArea>
+      <MySidePanel><ToothControlsSurface /></MySidePanel>
+    </OdontogramProvider>
+  );
+}
+```
+
+`OdontogramProvider` accetta le stesse props di `OdontogramShell`. È disponibile un hook `useOdontogramUi()` (e il tipo `OdontogramUiContextValue`) per costruire le tue superfici. Vincolo attuale: usa un solo provider per pagina. Le superfici possono essere montate e smontate su richiesta — si ricollegano automaticamente al rimontaggio. `OdontogramShell` stesso è invariato — è esattamente questa composizione nella disposizione predefinita.
+
+Per una composizione ancora più fine, vengono esportate anche le singole schede di controllo — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` e `ToothDetailsCard` —, ciascuna un componente dichiarativo autonomo che legge e scrive la sessione condivisa tramite l'API del motore (viene esportato un hook `useEngineState()` per costruire le tue). Monta solo le schede di cui un determinato layout ha bisogno, in qualsiasi disposizione, sotto un unico `OdontogramProvider`.
 
 #### Utilizzo con Next.js (App Router)
 
@@ -151,8 +219,9 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 - 🔢 12 filtri di selezione (tutti, presenti, permanenti, decidui, impianti, mancanti, superiori/inferiori, frontali/molari)
 - 📊 Preset di stato predefiniti (ripristino, dentizione primaria, dentizione mista, edentulo)
 - 📦 34 template di restauro predefiniti (ponti, protesi rimovibili, protesi su barra con impianti)
-- 💾 Esportazione/importazione dello stato in JSON (versione 2.20; le importazioni continuano ad accettare le versioni legacy 1.4 e da 2.0 a 2.19 e vengono migrate automaticamente, con stati personalizzati dei plugin e note per dente)
-- 🔗 Esportazione HL7 FHIR R4 (Bundle di raccolta di Observation per dente, codifica dentale ISO 3950 per la dentizione permanente, sistema di codici locale — mappatura SNOMED CT pianificata)
+- 💾 Esportazione/importazione dello stato in JSON (versione 2.22; le importazioni continuano ad accettare le versioni legacy 1.4 e da 2.0 a 2.21 e vengono migrate automaticamente, con stati personalizzati dei plugin e note per dente)
+- 💽 Persistenza opzionale su localStorage (`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`) — disattivata per impostazione predefinita; salva automaticamente l'odontogramma di stato (e, opzionalmente, il piano) a ogni cambiamento di stato e lo ripristina al successivo montaggio del componente, con un limite di sicurezza di 4 MB e gli errori di archiviazione/parsing instradati a un callback `onError` (o a `console.warn`) invece di generare un'eccezione
+- 🔗 Esportazione HL7 FHIR R4 (Bundle di raccolta di Observation per dente, codifica dentale ISO 3950 per la dentizione permanente **e** per i denti decidui (51-85, con corrispondenza senza perdita di dati in importazione), sistema di codici locale, più un overlay SNOMED CT opzionale (Impostazioni → SNOMED CT)); un componente di carie con una gravità registrata riporta anche una codifica del sistema di punteggio — ICDAS su una superficie primaria (non otturata), CARS su una ricorrente (otturata)
 - ✚ Interfaccia di selezione superfici a croce (B/M/O/D/L) per carie e otturazioni
 - 🧱 Materiali di restauro per superficie (otturazioni miste, es. buccale amalgama + distale composito)
 - 🖼️ Esportazione immagine PNG/JPG/SVG dell'odontogramma (scaricabile; PNG/JPG rasterizzato da SVG vettoriale)
@@ -171,6 +240,16 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 - 🪨 Tartaro, e riassorbimento radicolare tipizzato come interno o cervicale esterno (`resorptionType`)
 - 📏 Profondità della carie per superficie (superficiale / dentina / profonda), o punteggio ICDAS II opzionale (0–6) tramite `enableIcdas`
 - 🩹 Interruttore di microinfiltrazione marginale della corona, visibile solo con restauro a corona o ponte
+- 🧬 Codifica diagnostica basata su standard (WHO ICD-10, sempre attiva): ogni reperto registrato deriva una diagnosi codificata ICD-10 — carie (K02), carie radicolare/del cemento e carie arrestata (K02.2/.3), pulpite e necrosi pulpare (K04.0/.1), parodontite apicale, ascesso periapicale e cisti radicolare (K04.4–.9), attrito/abrasione/erosione/abfrazione (K03.0–.8), tartaro (K03.6), riassorbimento (K03.3), discromia (K00.3/K00.8/K03.7), perdita dentale (K08.1), radice residua (K08.3) e frattura dentale (S02.5) — mostrata nel tooltip e nel riepilogo dell'intera bocca, ed esportata come FHIR Conditions.
+- 🩺 Scheda Diagnosi per dente: consulta le diagnosi ICD-10 derivate di un dente e curale — sopprimi una diagnosi derivata erroneamente o aggiungine una che l'odontogramma non rappresenta. L'insieme effettivo (derivate − soppresse + aggiunte) guida l'esportazione FHIR.
+- 🗺️ Condizioni di caso / regionali: registra diagnosi dell'intera bocca non legate a un singolo dente — malocclusione e disturbi dell'ATM (K07), cisti della regione orale (K09), malattie delle ghiandole salivari (K11), stomatite e mucosa orale (K12/K13), e anomalie dello sviluppo a livello di arcata (K00) — ciascuna eventualmente lateralizzabile (sinistra / destra / bilaterale).
+- 🌍 Pacchetti di codifica nazionali (Impostazioni → Codifica diagnosi): sovrappone un sistema di codici nazionale alla base WHO ICD-10 — BNO-10 (ungherese, etichette localizzate; mantiene il codice WHO) o US ICD-10-CM (codici rimappati, ad es. l'intervallo dentofacciale K07 → M26). Aggiungere il pacchetto di un altro paese è una piccola voce `CodingPack` — vedi `CODING_PACKS.md`.
+- 🔬 Overlay SNOMED CT (Impostazioni → SNOMED CT, opzionale, disattivato per impostazione predefinita): aggiunge una codifica SNOMED CT accanto a quella WHO e a quella di un eventuale pacchetto nazionale, e codifica i reperti peri-implantari privi di un codice WHO ICD-10. Gli ID concetto ICD-10-CM e SNOMED sono di riferimento/best-effort — verificarli rispetto all'elenco tabellare ufficiale ICD-10-CM / al browser SNOMED CT prima dell'uso clinico.
+- 🔁 Round-trip FHIR Condition: le diagnosi vengono esportate come risorse FHIR `Condition` (collegate al dente, più condizioni di caso a livello di paziente con un `bodySite` di lateralità) accanto alle Observation, e l'importazione le ricostruisce — le condizioni di caso direttamente, e le sovrascritture di aggiunta/soppressione per dente confrontando le Condition importate con l'odontogramma ri-derivato.
+- 🩺 **Scheda Diagnosi, rivista:** ogni riga di diagnosi per dente mostra prima il codice ICD-10 (`K04.0 Pulpitis`) e le righe sono ordinate per codice. Ogni riga ha un interruttore di **esclusione** (rimuove la diagnosi dall'esportazione FHIR ma la mantiene sull'odontogramma) e un pulsante di **eliminazione** (×) che rimuove la diagnosi *e* il reperto corrispondente sul dente. Aggiungere una diagnosi dal selettore scrive anche il reperto sottostante, così il simbolo appare subito.
+- 🗂️ **Finestra diagnosi di caso/regionali:** le diagnosi a bocca intera e regionali (anomalie mascellari, cisti, condizioni salivari e della mucosa…) sono state spostate dalla barra laterale parodontale a una finestra di dialogo dedicata, apribile dal pulsante **Diagnosi** accanto al selettore Odontogramma / Stato parodontale; il suo selettore è ordinato per codice.
+- 🇭🇺 **Pacchetto BNO-10:** i testi visualizzati in ungherese sono ora i titoli ufficiali NEAK BNO-10, e il pacchetto usa l'URI standard del sistema ICD-10 (BNO-X è identico all'ICD-10 dell'OMS).
+- ✅ **Esportazione FHIR pulita per i validatori HL7:** ogni voce del Bundle porta un `id` deterministico e un `fullUrl` assoluto (nessun segnaposto `urn:uuid`), e il Bundle incorpora il **CodeSystem** proprio del motore in modo che i suoi codici locali siano risolvibili durante la validazione; lo stesso CodeSystem è pubblicato nel repository come `fhir/CodeSystem-odontogram.json` (passa `includeCodeSystem: false` nelle opzioni di esportazione FHIR per ometterlo).
 - 🧰 Barra superiore di icone unificata con una finestra modale Impostazioni a schede (Generale / Pannelli / Dettagli dentali / Carie / Polpa / Note / Parodontale — numerazione, note, visibilità pannelli, ICDAS, interruttore profondità carie, granularità carie radicolare/radiografica, livello di dettaglio pulpare, livello di dettaglio usura/discromia dentale, informazioni dentali)
 - 🗂️ Impostazioni → scheda "Pannelli": mostra/nasconde in modo indipendente i pannelli di riepilogo Stati e Ortodonzia per l'intera bocca
 - 🦷🩺 Impostazioni → scheda "Parodontale": 16 interruttori mostra/nascondi per indice per le righe del grafico parodontale (raggruppati in tasca/igiene/mucogengivale/supporto/peri-implantare — PD/GM/CAL/BOP, placca, PI, GI, visibilità CEJ, concavità radicolare, KG, GT, forcazione, mobilità, classe di Miller, mPI, mBI), ciascuno con una descrizione, più un'opzione di visualizzazione del nome degli indici tradotta-vs-canonica (canonica = un nome scientifico fisso in inglese/latino in ogni lingua dell'interfaccia; i tooltip restano sempre localizzati indipendentemente da questa impostazione). Entrambe sono preferenze a livello di applicazione (come `perioViewMode`) — mai parte del payload di esportazione
@@ -180,13 +259,14 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 - 🗂️ Menu di esportazione unificato (Stato JSON / FHIR / PNG / JPG)
 - 📥 Menu di importazione con importazione FHIR (ricarica Bundle esportati)
 - ⏳ Overlay di avanzamento durante l'esportazione delle immagini
-- 🎓 Tour introduttivo interattivo in 12 passi
+- 🎓 Tour introduttivo interattivo in 18 passi
 - 🔢 Tre sistemi di numerazione (FDI, Universal, Palmer)
-- 🌐 I18n (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) con selettore di lingua (190+ chiavi di traduzione per lingua)
+- 🌐 I18n — 12 lingue dell'interfaccia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) con selettore di lingua; l'arabo visualizza l'interfaccia da destra a sinistra, con i grafici dentale e parodontale fissati da sinistra a destra (AR/ZH/FR sono traduzioni automatiche, in attesa di revisione da parte di madrelingua)
 - 🌗 Supporto modalità scura con pulsante di attivazione (autonoma o controllata dall'app principale)
 - 🎨 Configurazione tema personalizzato (prop `themeConfig`) con proprietà CSS personalizzate (`--odon-*`)
 - 📱 UX touch su mobile: popover zoom al tocco, menu contestuale con pressione prolungata, zoom a pizzico, target touch WCAG 44px, navigazione per arcata
-- 🔌 Sistema di plugin SVG personalizzati: overlay visivi, stato personalizzato per dente, supporto esportazione/importazione JSON
+- 🔌 Sistema di plugin SVG personalizzati: overlay visivi, stato personalizzato per dente, supporto esportazione/importazione JSON — l'output di `renderSvg()` dei plugin viene sanificato con DOMPurify (profilo SVG) prima di essere inserito nell'odontogramma live; i plugin continuano comunque a essere eseguiti come codice fidato, quindi vanno caricati solo da fonti attendibili
+- 🛡️ Content-Security-Policy: la build di produzione della demo inserisce un tag meta CSP (il server di sviluppo non è interessato) — le applicazioni ospitanti che integrano il componente dovrebbero impostare la propria CSP
 - ⚠️ Avvisi di validazione dello stato per combinazioni di stati dentali incompatibili
 - 🏷️ Tooltip automatico dello stato sui riquadri dentali (mostra tutti gli stati attivi)
 - 🩺 Tooltip per dente e pannello di riepilogo per l'intera bocca modernizzati: entrambi mostrano l'intero set di reperti clinici (diagnosi pulpare/apicale + sottotipo di lesione, riassorbimento radicolare, stato peri-implantare, carie radicolare graduata, tartaro, microinfiltrazione marginale della corona, frattura, perdita di contatto, usura tipizzata del bordo/cervicale), con una sezione dedicata "Diagnosi" nel pannello, una sezione dedicata "Usura", e un qualificatore grossolano di gravità della carie (superficiale/moderata/profonda)
@@ -202,7 +282,7 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 - 🩺 Registrazione parodontale: per sito, **profondità di sondaggio (PD)**, **margine gengivale (GM)**, **sanguinamento al sondaggio (BOP)** (+ suppurazione) nei sei siti standard per dente, con **livello di attacco clinico derivato (CAL = PD + margine gengivale)**, recessione e **%BOP** per l'intera bocca. Un **grafico parodontale per l'intera bocca** — ogni arcata disegnata come **due SVG separati, buccale e palatale/linguale** (che riutilizzano la grafica dentale con un orientamento uniforme corona-verso-fascia su entrambi gli aspetti; una **grafica per impianto** per i denti con impianto) con una **linea CEJ** rossa, una **griglia guida in millimetri numerata**, e una **curva margine gengivale / profondità della tasca** sovrapposta ai denti, divisa da una **fascia centrale degli indici parodontali** (etichettata `▲ Buccale … Linguale/Palatale ▼`) che porta gli indici condivisi per dente — la **classe di Miller** in cima, e **Placca/PI/GI/mPI/mBI** visualizzati come una **tessera a diamante anatomica** per dente (punta buccale in alto, punta linguale in basso, mesiale/distale sulla riga centrale scambiati per lato in modo che il mesiale punti sempre verso la linea mediana dell'arcata); le righe numeriche (nomi completi degli indici — PD/GM/CAL/BOP + mobilità + forcazione — in celle più grandi e più adatte al tocco) allineate in colonne e un riepilogo (PD/CAL medi, %BOP, PI%), con inserimento tramite **avanzamento automatico da tastiera**; il grafico **si adatta dinamicamente riempiendo la larghezza disponibile**, responsivo a qualsiasi dimensione della finestra. Presentato come un **interruttore di visualizzazione** `Odontogramma | Stato parodontale`, il cui pannello destro viene riconvertito in una **barra laterale con contesto parodontale** (dati paziente, la classificazione 2017 e il riepilogo per l'intera bocca) mentre quella vista è attiva (un'opzione nelle Impostazioni riporta l'intera presentazione a un **popup**), e resta comunque un **componente invocabile separatamente** (export `PerioChart`) così un'app ospitante può richiamare il grafico parodontale indipendentemente dall'odontogramma di base. Esportazione **FHIR** per sito tramite il pannello parodontale LOINC (`74029-0`; PD `32910-2`, recessione `32911-0`, CAL `32912-8`)
 - 🅿️ Stile "proposto": in modalità Piano, i reperti che il piano **aggiunge** rispetto allo stato attuale (corona pianificata, estrazione, movimento ortodontico, protesi, …) vengono visualizzati con un distinto **contorno tratteggiato e colorato "proposto"**, in modo che il piano si legga come intenzione e non come fatto — con una legenda "tratteggiato = proposto" nella scheda del grafico. Il rendering in modalità Stato è identico byte per byte; il trattamento è solo del piano e viene completamente ripristinato tornando indietro
 - 🚦 Restrizioni in modalità Piano: il grafico del Piano mostra solo ciò che un dentista può *fare* — il selettore di base offre solo Assente / Permanente / Impianto, e i reperti di sola diagnosi (carie, usura dentale, discromia, e l'intero blocco parodontale — mobilità, griglia di sondaggio a sei siti, modificatori di infiammazione/parodontali, tartaro, stato peri-implantare) sono nascosti; il controllo polpa/endodonzia mantiene il **trattamento** endodontico (canalare / perno / apicectomia / perno parapulpare) nascondendo invece la **diagnosi** pulpare/apicale e il riassorbimento radicolare. Restauro, protesi, ortodonzia, necessità/sostituzione della corona e piano di estrazione restano pianificabili
-- 🧪 1746 test automatizzati superati (1 test aggiuntivo saltato) (Vitest) in 164 file di test (165 totali) che coprono numerazione, traduzioni, preset, i18n, componente App, tema, touch, plugin, accessibilità e parità degli assi clinici/diagnosi
+- 🧪 Un'ampia suite di test automatizzati Vitest che copre numerazione, traduzioni, preset, i18n, componente App, tema, touch, plugin, accessibilità e parità degli assi clinici/diagnosi
 - 📖 Documentazione API TypeDoc con commenti JSDoc su tutti gli export pubblici (`npm run docs`)
 
 ### 📦 Moduli
@@ -210,7 +290,7 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 - 🎛️ Pannello di controllo e stato
 - 🎨 Motore di stratificazione SVG e template
 - 🔢 Numerazione dentale e mappatura delle etichette (FDI/Universal/Palmer)
-- 🌐 Localizzazione (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
+- 🌐 Localizzazione — 12 lingue dell'interfaccia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR), incluso l'arabo (RTL)
 - 💾 Esportazione/importazione dello stato
 - 📋 Extra di stato: template di restauro predefiniti
 - 🎨 Configurazione del tema: palette di colori personalizzabile tramite proprietà CSS `--odon-*`
@@ -226,7 +306,7 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 ### 🛠️ Controlli dell'interfaccia
 
 **🔝 Barra superiore:**
-- Selettore di lingua (menu a tendina HU/EN/DE/ES/IT/SK/PL/RU/PT-BR)
+- Selettore di lingua (menu a tendina HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR)
 - Pulsante modalità scura (icona sole/luna, alterna tra tema chiaro e scuro)
 - Selettore del sistema di numerazione (menu a tendina FDI/Universal/Palmer)
 - Pulsanti Esporta stato / Importa stato
@@ -367,6 +447,7 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 Si apre dall'icona a ingranaggio nella barra superiore; un `dialog` ARIA con focus intrappolato e layout a schede (Esc/clic sullo sfondo per chiudere, tasti freccia per cambiare scheda). Tutte le impostazioni sono stato dell'interfaccia a livello di sessione, salvo diversa indicazione — nessuna di esse modifica i dati per dente o il payload di esportazione.
 
 - **Generale:** sistema di numerazione (FDI/Universal/Palmer), lingua, tema chiaro/scuro, visibilità del pannello informazioni dentali
+- **Odontogramma:** profilo di anatomia dentale (`classic` predefinito / `measured`) — `measured` rende nove modelli dentali misurati dalla letteratura in un layout a due arcate con larghezza per dente; commutabile a runtime, senza effetto sul valore predefinito `classic`
 - **Pannelli:** mostra/nasconde in modo indipendente la scheda Stati per l'intera bocca e la scheda Ortodonzia (entrambe visibili per impostazione predefinita)
 - **Dettagli dentali:** livello di dettaglio dell'usura e livello di dettaglio della discromia (simple/complex, ciascuno predefinito complex), notazione delle superfici (simple/full, predefinito full)
 - **Carie:** interruttore punteggio ICDAS II (`enableIcdas`), interruttore profondità carie (`cariesDepthEnabled`), granularità carie radicolare (`rootCariesMode`: simple/severity), granularità secondaria/CARS (`secondaryCariesMode`: simple/standard/full), granularità profondità radiografica (`radiographicDepthMode`: off/threeLevel/detailed) — la precedente scheda separata "Carie secondaria" è stata unita a questa, con il controllo CARS posizionato direttamente sopra la profondità radiografica
@@ -471,12 +552,15 @@ setPluginState(11, "implant-brand", "Straumann");
 
 ### 🧪 Test
 ```bash
-npm run test           # Esegui tutti i 1704 test (1 test aggiuntivo saltato)
+npm run test           # Esegui l'ampia suite di test automatizzati Vitest
 npm run test:watch     # Modalità watch
 npm run test:coverage  # Report di copertura
 ```
 
 ### 📖 Documentazione API
+
+🅰️ **Versione Angular:** è disponibile un port ufficiale per Angular, [Angular Advanced Odontogram](https://github.com/ZoliQua/Angular-Advanced-Odontogram) (`angular-advanced-odontogram` su npm) — le esportazioni JSON e FHIR R4 sono interscambiabili tra le due librerie.
+
 ```bash
 npm run docs           # Genera la documentazione TypeDoc in docs/
 ```
@@ -576,10 +660,48 @@ npm run docs           # Genera la documentazione TypeDoc in docs/
 | `exportPdf(opts)` | Scarica un report PDF nativo jsPDF (`{patientData, odontogramChart, odontogramDescription, individualNotes, perioStatus, perioDescription}`, ciascuna sezione opzionale) — testo vettoriale più immagini rasterizzate di denti/grafico parodontale; la sezione delle note individuali viene saltata automaticamente quando nessun dente ha una nota, e le due sezioni parodontali vengono saltate automaticamente ogni volta che `hasAnyPerioData()` è falso, indipendentemente da `opts` |
 | `importFhirBundle(input)` | Importa un Bundle FHIR R4 (oggetto o stringa JSON) prodotto da questo modulo |
 | `setImportFormat(format)` | Imposta il parser per la prossima importazione file — `"status"` o `"fhir"` |
-| `startIntroTour()` | Avvia il tour introduttivo interattivo in 12 passi |
+| `startIntroTour()` | Avvia il tour introduttivo interattivo in 18 passi |
+
+### 💾 Persistenza dello stato (localStorage)
+
+Persistenza opzionale su `localStorage` per lo stato del caso dell'odontogramma (`src/persistence.ts`, ri-esportata dal punto di ingresso del pacchetto). Disattivata per impostazione predefinita — le integrazioni esistenti non sono interessate a meno che un'applicazione ospitante non la attivi esplicitamente, e va richiamata **dopo** che l'odontogramma è stato montato (il ripristino ridisegna il DOM live tramite `importStatus()`):
+
+```ts
+import {
+  enablePersistence, disablePersistence,
+  clearPersistedState, isPersistenceEnabled,
+} from "react-advanced-odontogram";
+
+enablePersistence({
+  key: "my-app-odontogram",   // predefinito: "react-advanced-odontogram"
+  includePlan: true,          // persiste anche il piano; predefinito: false
+  onError: (err) => console.error("odontogram persistence:", err),
+});
+```
+
+| Funzione | Descrizione |
+|---|---|
+| `enablePersistence(options?)` | Ripristina un caso salvato in precedenza (se presente) tramite `importStatus()`, quindi salva l'odontogramma di stato su `localStorage` a ogni cambiamento di stato. Idempotente — richiamarla di nuovo sostituisce la sottoscrizione/le opzioni precedenti. **Deve essere richiamata dopo che l'odontogramma è stato montato.** |
+| `disablePersistence()` | Interrompe la persistenza; la voce salvata resta invariata. |
+| `clearPersistedState()` | Rimuove la voce salvata per la chiave attiva (o predefinita). |
+| `isPersistenceEnabled()` | `true` mentre una sottoscrizione ai cambiamenti di stato è attiva. |
+
+**`PersistenceOptions`:**
+
+| Campo | Tipo | Predefinito | Descrizione |
+|---|---|---|---|
+| `key` | `string` | `"react-advanced-odontogram"` | La chiave `localStorage`. |
+| `includePlan` | `boolean` | `false` | Persiste anche il piano (il campo `plan` del payload). |
+| `onError` | `(err: Error) => void` | — | Richiamata su qualsiasi errore di archiviazione/parsing invece di `console.warn`. |
+
+Note: non viene letto né scritto nulla su `localStorage` a meno che `enablePersistence()` non venga richiamata; un limite di sicurezza di 4 MB salta un salvataggio troppo grande (segnalato tramite `onError`/`console.warn`) invece di generare un'eccezione; ogni errore di archiviazione/JSON — quota superata, un iframe bloccato, dati salvati corrotti o non riconosciuti, ecc. — viene intercettato e segnalato. Questo modulo non genera mai eccezioni.
+
+Nota: l'attivazione della persistenza ripristina il caso salvato tramite `importStatus()`, sostituendo il caso corrente — incluso un piano in corso se il payload salvato non ne contiene uno. Attivare la persistenza all'avvio (subito dopo il montaggio), non a metà sessione.
+
+Nota: il payload persistito può includere dati identificativi del paziente (nome del paziente, data dell'esame) in chiaro nel `localStorage`. Se si registrano tali dati, assicurarsi di una protezione a livello di dispositivo o cancellarli con `clearPersistedState()` quando opportuno.
 
 ### 💾 Formato di esportazione/importazione dello stato
-L'esportazione crea un file JSON (versione `2.20`; le importazioni accettano anche le versioni legacy `1.4` e da `2.0` a `2.19` e vengono migrate automaticamente) contenente:
+L'esportazione crea un file JSON (versione `2.22`; le importazioni accettano anche le versioni legacy `1.4` e da `2.0` a `2.21` e vengono migrate automaticamente) contenente:
 
 **Campi globali:**
 - `wisdomVisible` - denti del giudizio visibili
@@ -612,6 +734,7 @@ L'esportazione crea un file JSON (versione `2.20`; le importazioni accettano anc
 - `periapicalType` - sottotipo di lesione periapicale (none/granuloma/cyst), mostrato solo in presenza di parodontite apicale sintomatica/asintomatica; il vecchio valore `abscess` è ancora accettato in importazione
 - `resorptionType` - tipo di riassorbimento radicolare (none/internal/external-cervical)
 - `periImplant` - stato peri-implantare solo per impianti (none/mucositis/peri-implantitis-mild/-moderate/-severe), stadiazione del World Workshop 2018
+- `dxOverrides` - override della codifica diagnostica per dente (versione 2.21): un oggetto indicizzato per chiave di diagnosi ICD-10 → `add` | `suppress`, che forza l'attivazione di una diagnosi codificata nonostante l'assenza di un reperto corrispondente, o la sua disattivazione nonostante la presenza di uno; determina l'insieme codificato effettivo esportato come `Condition` FHIR
 - `endoResection` - flag apicectomia
 - `fissureSealing` - flag sigillante per solchi
 - `calculus` - flag tartaro
@@ -639,10 +762,12 @@ L'esportazione crea un file JSON (versione `2.20`; le importazioni accettano anc
 **Campo di livello superiore `plan` (versione 2.11+):**
 - `plan` - oggetto opzionale, con la stessa forma di `teeth` (i campi per dente sopra), che contiene il grafico del **piano** (trattamento post-operatorio previsto). Presente solo quando il grafico del piano è stato inizializzato (l'interruttore `Status | Plan` è stato commutato su Plan almeno una volta) E il suo contenuto differisce dal grafico dello stato — un'esportazione di solo stato lo omette interamente e resta identica byte per byte a un'esportazione precedente alla 2.11, a parte il numero di versione. In importazione, un `plan` assente cancella/deinizializza il grafico del piano (non fa mai risorgere un piano obsoleto rimasto da prima dell'importazione); un `plan` presente ripristina il grafico del piano insieme allo stato. Il grafico del piano può anche essere letto/scritto indipendentemente dall'importazione/esportazione tramite `getPlanChart()`/`setPlanChart()` (vedi API pubblica sopra), e `getStatusChart()` restituisce sempre il payload primario dello stato indipendentemente dalla modalità di grafico attiva.
 
-**Oggetto di livello superiore `case` (versione 2.17+, ampliato in 2.18, 2.19 e 2.20):**
-- `case` - oggetto opzionale di metadati a livello di caso — NON è per dente né a doppio stato (lo stesso oggetto è condiviso tra il grafico dello stato e quello del piano, rispecchiando la chiave `globals` di livello superiore). Contiene l'età del paziente (`age`, 0-120), lo stato di fumatore (`smokingStatus`: unknown/never/former/current, con `cigarettesPerDay` 0-99), lo stato diabetico (`diabetesStatus`: unknown/none/present, con `hba1c` 3.0-20.0), due statistiche riassuntive dell'esito parodontale (`toothLossPerio` 0-32 e `maxRblPercent` 0-100), le sovrascritture cliniche della classificazione parodontale 2017 (`diagnosisOverride`/`stageOverride`/`gradeOverride`/`extentOverride`), e tre campi di identità del caso — `patientName` (stringa troncata o `null`), `patientDob` (`YYYY-MM-DD` o `null`) e `examDate` (`YYYY-MM-DD` o `null`) — usati esclusivamente nell'intestazione del report PDF e in nessun altro punto; nessuno dei tre fa parte dell'esportazione FHIR. Viene serializzato omettendo i campi vuoti, e l'intero oggetto `case` è assente quando tutti i suoi campi sono al valore predefinito. Viene gestito tramite `getCaseMeta()`/`resetCaseMeta()` e i singoli setter (vedi API pubblica sopra).
+**Oggetto di livello superiore `case` (versione 2.17+, ampliato in 2.18, 2.19, 2.20 e 2.22):**
+- `case` - oggetto opzionale di metadati a livello di caso — NON è per dente né a doppio stato (lo stesso oggetto è condiviso tra il grafico dello stato e quello del piano, rispecchiando la chiave `globals` di livello superiore). Contiene l'età del paziente (`age`, 0-120), lo stato di fumatore (`smokingStatus`: unknown/never/former/current, con `cigarettesPerDay` 0-99), lo stato diabetico (`diabetesStatus`: unknown/none/present, con `hba1c` 3.0-20.0), due statistiche riassuntive dell'esito parodontale (`toothLossPerio` 0-32 e `maxRblPercent` 0-100), le sovrascritture cliniche della classificazione parodontale 2017 (`diagnosisOverride`/`stageOverride`/`gradeOverride`/`extentOverride`), e tre campi di identità del caso — `patientName` (stringa troncata o `null`), `patientDob` (`YYYY-MM-DD` o `null`) e `examDate` (`YYYY-MM-DD` o `null`) — usati esclusivamente nell'intestazione del report PDF e in nessun altro punto; nessuno dei tre fa parte dell'esportazione FHIR; e (versione 2.22) `caseConditions` — diagnosi del caso/regionali (malocclusione e ATM K07, cisti orali K09, malattie delle ghiandole salivari K11, stomatite e mucosa orale K12/K13, anomalie dello sviluppo a livello di arcata K00), ciascuna associata a una lateralità (non specificato / sinistro / destro / bilaterale). Viene serializzato omettendo i campi vuoti, e l'intero oggetto `case` è assente quando tutti i suoi campi sono al valore predefinito. Viene gestito tramite `getCaseMeta()`/`resetCaseMeta()` e i singoli setter (vedi API pubblica sopra).
 
 ### 🖨️ Esportazione
+`exportFhir()` produce un Bundle pulito per i validatori HL7: ogni voce porta un `id` deterministico e un `fullUrl` assoluto (nessun segnaposto `urn:uuid`), e il Bundle incorpora il CodeSystem proprio del motore in modo che i suoi codici locali siano risolvibili durante la validazione (pubblicato anche come `fhir/CodeSystem-odontogram.json` nel repository; omettibile con `includeCodeSystem: false`).
+
 Oltre all'esportazione propria dell'odontogramma in Stato JSON / FHIR / PNG / JPG / SVG, il **grafico parodontale** ha un proprio percorso di esportazione:
 - **SVG/PNG/JPG parodontale:** `exportPerioSvg()` / `exportPerioImage("png"|"jpg")` renderizzano il grafico parodontale completo (grafica dentale + righe numeriche + la classificazione 2017) come un unico SVG vettoriale autonomo (`buildPerioSvg()`), indipendente dal DOM montato di `PerioChart`. Le tre voci del menu di esportazione sono disabilitate ogni volta che `hasAnyPerioData()` è falso (un grafico vuoto non ha nulla di parodontale da esportare).
 - **Report PDF:** la voce "PDF report…" del menu di esportazione apre `ExportOptionsModal` — una finestra di dialogo delle impostazioni (campi nome paziente + data di nascita + data esame, collegati direttamente ai metadati del caso, con la data esame che ha come valore predefinito la data odierna; caselle di spunta per sezione: dati paziente, odontogramma, descrizione odontogramma, note individuali — disabilitata quando nessun dente ha una nota — stato parodontale, descrizione parodontale) prima di chiamare `exportPdf(opts)`. I campi di identità vuoti ricadono su valori segnaposto ("John Doe" / "1980-01-01") in modo che l'esportazione riesca sempre. Il PDF viene assemblato in modo nativo jsPDF — testo vettoriale tramite `.text()`, immagini rasterizzate di denti/grafico parodontale tramite `.addImage()` — **senza alcuna dipendenza da svg2pdf.js**. La sezione delle note individuali viene saltata automaticamente quando nessun dente ha una nota, e le due sezioni parodontali ogni volta che `hasAnyPerioData()` è falso, indipendentemente dalle caselle di spunta della finestra di dialogo.
@@ -655,7 +780,7 @@ Oltre all'esportazione propria dell'odontogramma in Stato JSON / FHIR / PNG / JP
 - `src/plugin.ts` - tipo `OdontogramPlugin`, `PluginLayer`, `getQuadrant()`, priorità z-index `LAYER_Z`
 - `src/theme.ts` - tipo `OdontogramThemeConfig` e utilità `applyThemeConfig()`
 - `src/status_extras.ts` - 34 template di restauro predefiniti (ponti, protesi, costruzioni su barra)
-- `src/i18n/` - traduzioni (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR) e hook i18n
+- `src/i18n/` - traduzioni (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) e hook i18n
 - `src/utils/numbering.ts` - conversione della numerazione FDI, Universal, Palmer
 - `src/registry/` - registro dichiarativo degli assi clinici: mappature dei campi FHIR, attivazione di clear-set SVG/flag booleani, matrice tipo×materiale del restauro, elenchi di opzioni UI (unica fonte di verità che genera esportazione/importazione, FHIR e interfaccia dei selettori)
 - `src/fhir/` - esportazione/importazione HL7 FHIR R4: `toFhir.ts`/`fromFhir.ts`, sistemi di codici, mappature dei campi, primitive
@@ -664,7 +789,7 @@ Oltre all'esportazione propria dell'odontogramma in Stato JSON / FHIR / PNG / JP
 - `src/perioExport.ts` - `buildPerioSvg()`: il grafico parodontale completo come un unico SVG vettoriale autonomo
 - `src/perioPdf.ts` - l'assemblatore puro del report jsPDF di `exportPdf()` (`assemblePdf`)
 - `src/ExportOptionsModal.tsx` - la finestra di dialogo delle impostazioni di esportazione "PDF report…"
-- `src/__tests__/` + `src/registry/__tests__/` - suite di test Vitest (1704 test superati, 1 saltato, in 163 file)
+- `src/__tests__/` + `src/registry/__tests__/` - un'ampia suite di test automatizzati Vitest
 - `src/assets/teeth-svgs/` - template SVG dentali (6 file: incisivi, canini, premolari, molari + viste occlusali)
 - `src/assets/icon-svgs/` - SVG delle icone della barra degli strumenti (5 file)
 
@@ -683,18 +808,44 @@ Oltre all'esportazione propria dell'odontogramma in Stato JSON / FHIR / PNG / JP
 - I denti decidui dispongono di un set ridotto di materiali disponibili (nessuna otturazione in amalgama, nessun trattamento endodontico con perni).
 - I denti con impianto dispongono di un diverso set di opzioni per corona/abutment rispetto ai denti naturali.
 
+### 🔒 Note sulla sicurezza
+
+- **I plugin vengono eseguiti come codice fidato.** Il valore restituito da `renderSvg()` di un plugin viene inserito nell'SVG dell'odontogramma live. Quell'output viene sanificato con [DOMPurify](https://github.com/cure53/DOMPurify) (profilo SVG, più `svgFilters`) prima dell'inserimento — `<script>`, `<iframe>`, `<object>`, `<embed>` e `<foreignObject>` sono vietati a priori, e un output completamente malevolo viene scartato invece di essere renderizzato parzialmente. Questo riduce il raggio d'azione di un plugin compromesso o difettoso, ma i plugin dovrebbero comunque essere caricati solo da fonti attendibili — la sanificazione è una rete di sicurezza, non un sostituto della verifica.
+- **Content-Security-Policy.** La **build di produzione** della demo inserisce questa policy tramite un tag `<meta http-equiv="Content-Security-Policy">` (il server di sviluppo non è interessato):
+
+  ```
+  default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'
+  ```
+
+  Le applicazioni ospitanti che integrano `OdontogramShell` dovrebbero impostare la propria CSP adatta al loro deployment — il componente non ne inserisce una quando è usato come libreria.
+
 ### 📖 Come citare
 
 Se utilizzi questo modulo nel tuo lavoro, per favore citalo.
 
-**Questa versione (v1.49.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v1.49.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Questa versione (v2.4.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Tutte le versioni (DOI concettuale):** https://doi.org/10.5281/zenodo.21156787
 
 > Il DOI concettuale per tutte le versioni riportato sopra rimanda sempre alla release
 > archiviata più recente; un DOI specifico per versione viene assegnato a ogni release
-> quando viene archiviata su Zenodo. Finché la v1.49.0 non sarà archiviata, citarla
+> quando viene archiviata su Zenodo. Finché la v2.4.0 non sarà archiviata, citarla
 > tramite il DOI concettuale.
 
 I metadati di citazione leggibili dalla macchina si trovano in [`CITATION.cff`](../CITATION.cff).
+
+## 🙌 Crediti
+
+React Advanced Odontogram è creato e mantenuto da Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)), creatore e sviluppatore principale dell'intero motore. Con il prezioso aiuto dei collaboratori elencati di seguito. Grazie a tutti coloro che hanno contribuito.
+
+**Contributori**
+
+- [@odontodev](https://github.com/odontodev): idratazione dello stato e API del ciclo di vita, impostazioni delle otturazioni come props controllate, setter idempotenti e schede comprimibili
+- [@JulianoBazzi](https://github.com/JulianoBazzi): traduzione in portoghese brasiliano
+- [@yassine-bhn](https://github.com/yassine-bhn): traduzione in francese e l'anatomia misurata proposta
+- [@saegerdirk-star](https://github.com/saegerdirk-star): anatomia dentale misurata e il generatore di denti, oltre alla proposta di interfaccia componibile
+
+**Realizzato con** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) e [Tailwind CSS](https://tailwindcss.com).
+
+I contributi sono benvenuti. Apri una pull request su GitHub e verrai accreditato qui. Se il progetto ti è utile, per favore [mettici una stella su GitHub](https://github.com/ZoliQua/React-Odontogram-Modul).

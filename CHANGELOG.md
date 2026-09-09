@@ -222,6 +222,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is byte-identical. The remaining validator messages are terminology-server
   `validate-code` timeouts on the engine's own (unpublished) CodeSystem — expected
   for a local code system, not a defect. Reported by @BabuBahir.
+- **Dental diagnosis coding: verified the ICD-10-CM + SNOMED codes.** Corrected two
+  provisional SNOMED concept IDs (pulpitis → 32620007, peri-implantitis →
+  699422003) and added a SNOMED concept for peri-implant mucositis (699684005),
+  and fixed the ICD-10-CM tooth-fracture display title; all ICD-10-CM codes were
+  confirmed against ICD-10-CM 2026 and the SNOMED concepts against SNOMED CT
+  International (CSIRO Ontoserver).
+- **FHIR Condition ICD-10 code for the molar-incisor pattern.** A molar-incisor
+  periodontitis emitted `K05.2` with a "Acute periodontitis" display, which is
+  the WHO ICD-10 meaning of K05.2 (an unrelated diagnosis; the ICD-10-CM
+  "aggressive periodontitis" meaning does not belong on an R4/WHO bundle). It now
+  emits `K05.3` (Chronic periodontitis) like every other periodontitis; the
+  molar-incisor pattern is still carried by the periodontal-extent stage entry.
+- **Plugin `customStates` isolation between the status and plan charts.** An
+  object-valued plugin state was shared by reference across the two charts (they
+  are cloned via `serializeState` -> `hydrateState`, which passed `customStates`
+  by reference), so mutating it in one leaked into the other. Object values are
+  now deep-copied on hydrate.
 
 ### Changed
 
@@ -260,26 +277,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   underlying chart finding (so the glyph appears on the tooth and it derives/exports
   normally) instead of only tagging the coded layer. Plain caries stays authored per
   surface in the Caries UI. Suppressing a derived diagnosis remains coded-layer only.
-
-### Fixed
-
-- **Dental diagnosis coding: verified the ICD-10-CM + SNOMED codes.** Corrected two
-  provisional SNOMED concept IDs (pulpitis → 32620007, peri-implantitis →
-  699422003) and added a SNOMED concept for peri-implant mucositis (699684005),
-  and fixed the ICD-10-CM tooth-fracture display title; all ICD-10-CM codes were
-  confirmed against ICD-10-CM 2026 and the SNOMED concepts against SNOMED CT
-  International (CSIRO Ontoserver).
-- **FHIR Condition ICD-10 code for the molar-incisor pattern.** A molar-incisor
-  periodontitis emitted `K05.2` with a "Acute periodontitis" display, which is
-  the WHO ICD-10 meaning of K05.2 (an unrelated diagnosis; the ICD-10-CM
-  "aggressive periodontitis" meaning does not belong on an R4/WHO bundle). It now
-  emits `K05.3` (Chronic periodontitis) like every other periodontitis; the
-  molar-incisor pattern is still carried by the periodontal-extent stage entry.
-- **Plugin `customStates` isolation between the status and plan charts.** An
-  object-valued plugin state was shared by reference across the two charts (they
-  are cloned via `serializeState` -> `hydrateState`, which passed `customStates`
-  by reference), so mutating it in one leaked into the other. Object values are
-  now deep-copied on hydrate.
 
 ### Security
 

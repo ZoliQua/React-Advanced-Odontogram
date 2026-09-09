@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+</p>
+
 # 🦷 React Advanced Odontogram
 
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -15,7 +19,8 @@
 An interactive, SVG-based **dental odontogram (dental chart) editor** for **React + TypeScript** — with a full **periodontal charting module**, multi-surface caries/restorations, endodontic/prosthetic states, FDI/Universal/Palmer numbering, **HL7 FHIR R4** export/import, optional ICDAS scoring, and a 12-language UI.
 
 🔗 **Live demo:** https://react-odontogram-modul.vercel.app/ \
-📚 **API docs:** https://zoliqua.github.io/React-Odontogram-Modul/
+📚 **API docs:** https://zoliqua.github.io/React-Odontogram-Modul/ \
+🅰️ **Angular version:** an official Angular port, [Angular Advanced Odontogram](https://github.com/ZoliQua/Angular-Advanced-Odontogram) (`angular-advanced-odontogram` on npm), is available — JSON and FHIR R4 exports round-trip between the two libraries.
 
 ![Odontogram editor preview](https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/lang/screenshot_en_odontogram.png)
 
@@ -72,6 +77,10 @@ Per-site probing depth, gingival margin, bleeding on probing (+ suppuration) at 
 - 🩺 Full periodontal module (see above) + 2017 classification
 - 🔗 **HL7 FHIR R4** export/import; JSON export/import with migrations
 - 🧬 **Standards-based diagnosis coding** — WHO ICD-10 always on, per-tooth & case/regional diagnoses, selectable national packs (BNO-10, US ICD-10-CM), an opt-in SNOMED CT overlay, and full FHIR `Condition` export/import round-trip
+- 🩺 **Diagnoses card, revised:** every per-tooth diagnosis row shows the ICD-10 code first (`K04.0 Pulpitis`) and rows are sorted by code. Each row has an **exclude** toggle (drops the diagnosis from the FHIR export but keeps it on the chart) and a **delete** (×) that removes the diagnosis *and* its finding on the tooth. Adding a diagnosis from the picker writes the underlying chart finding, so the glyph appears at once.
+- 🗂️ **Case / regional diagnoses pop-up:** the whole-mouth and regional diagnoses (jaw anomalies, cysts, salivary and mucosal conditions…) moved out of the periodontal sidebar into their own dialog, opened from the **Diagnoses** button beside the Odontogram / Periodontal-status toggle; its picker is code-first and code-sorted.
+- 🇭🇺 **BNO-10 pack:** the Hungarian display strings are now the official NEAK BNO-10 titles, and the pack uses the standard ICD-10 system URI (BNO-X is identical to WHO ICD-10).
+- ✅ **HL7-validator-clean FHIR export:** every Bundle entry carries a deterministic `id` and an absolute `fullUrl` (no `urn:uuid` placeholders), and the Bundle embeds the engine's own **CodeSystem** so its local codes resolve during validation; the same CodeSystem is published in the repository as `fhir/CodeSystem-odontogram.json` (pass `includeCodeSystem: false` in the FHIR export options to omit it).
 - 🖼️ PNG / JPG / SVG chart export and a customizable, **multilingual PDF report** (jsPDF, lazy-loaded) — colour themes, a grouped dentition-summary table, a periodontal chart/description, and bundled Unicode fonts so every UI language (incl. Hungarian accents, Cyrillic, Arabic RTL and Chinese) renders correctly
 - 🔢 FDI / Universal / Palmer numbering · 🌐 12 UI languages (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR, Arabic RTL) · 🎨 theming via `--odon-*` CSS variables · 🧩 plugin system · ⌨️ keyboard accessibility
 
@@ -83,4 +92,4 @@ Per-language guides are linked at the top of this file. Full API reference (Type
 
 ## 📄 License & citation
 
-MIT © Zoltán Dul. If you use this software in research, please cite it — see [`CITATION.cff`](CITATION.cff) and the [Zenodo record](https://doi.org/10.5281/zenodo.21156787).
+MIT © [Zoltán Dul](https://www.linkedin.com/in/zoltandul/). If you use this software in research, please cite it — see [`CITATION.cff`](CITATION.cff) and the [Zenodo record](https://doi.org/10.5281/zenodo.21156787).

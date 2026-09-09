@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+</p>
+
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -242,6 +246,10 @@ Or load it with a client-only dynamic import: `dynamic(() => import("./Odontogra
 - 🌍 National coding packs (Settings → Diagnosis coding): overlay a national code system on the WHO ICD-10 base — BNO-10 (Hungarian, localized displays; keeps the WHO code) or US ICD-10-CM (remapped codes, e.g. the K07 dentofacial range → M26). Adding another country's pack is a small `CodingPack` entry — see `CODING_PACKS.md`.
 - 🔬 SNOMED CT overlay (Settings → SNOMED CT, opt-in, off by default): adds a SNOMED CT coding alongside the WHO and any national-pack coding, and codes the peri-implant findings that have no WHO ICD-10 code. The ICD-10-CM and SNOMED concept IDs are reference/best-effort — verify against the official ICD-10-CM tabular list / SNOMED CT browser before clinical use.
 - 🔁 FHIR Condition round-trip: diagnoses export as FHIR `Condition` resources (tooth-linked, plus patient-level case conditions with a laterality bodySite) alongside the Observations, and import reconstructs them — the case conditions directly, and the per-tooth add/suppress overrides by diffing the imported Conditions against the re-derived chart.
+- 🩺 **Diagnoses card, revised:** every per-tooth diagnosis row shows the ICD-10 code first (`K04.0 Pulpitis`) and rows are sorted by code. Each row has an **exclude** toggle (drops the diagnosis from the FHIR export but keeps it on the chart) and a **delete** (×) that removes the diagnosis *and* its finding on the tooth. Adding a diagnosis from the picker writes the underlying chart finding, so the glyph appears at once.
+- 🗂️ **Case / regional diagnoses pop-up:** the whole-mouth and regional diagnoses (jaw anomalies, cysts, salivary and mucosal conditions…) moved out of the periodontal sidebar into their own dialog, opened from the **Diagnoses** button beside the Odontogram / Periodontal-status toggle; its picker is code-first and code-sorted.
+- 🇭🇺 **BNO-10 pack:** the Hungarian display strings are now the official NEAK BNO-10 titles, and the pack uses the standard ICD-10 system URI (BNO-X is identical to WHO ICD-10).
+- ✅ **HL7-validator-clean FHIR export:** every Bundle entry carries a deterministic `id` and an absolute `fullUrl` (no `urn:uuid` placeholders), and the Bundle embeds the engine's own **CodeSystem** so its local codes resolve during validation; the same CodeSystem is published in the repository as `fhir/CodeSystem-odontogram.json` (pass `includeCodeSystem: false` in the FHIR export options to omit it).
 - 🧰 Unified topbar icon row with a tabbed Settings modal (General / Panels / Tooth details / Caries / Pulpa / Notes / Periodontal — numbering, notes, panel visibility, ICDAS, caries-depth toggle, root/radiographic caries granularity, pulp detail level, tooth wear/discoloration detail level, tooth information)
 - 🗂️ Settings → "Panels" tab: independently show/hide the Statuses and Orthodontics whole-mouth summary panels
 - 🦷🩺 Settings → "Periodontal" tab: 16 per-index show/hide toggles for the perio-chart rows (grouped pocket/hygiene/mucogingival/support/peri-implant — PD/GM/CAL/BOP, plaque, PI, GI, CEJ visibility, root concavity, KG, GT, furcation, mobility, Miller class, mPI, mBI), each with a description, plus a translated-vs-canonical index-name display option (canonical = a fixed English/Latin scientific name in every UI language; tooltips always stay localized regardless of this setting). Both are app-level preferences (like `perioViewMode`) — never part of the export payload
@@ -251,7 +259,7 @@ Or load it with a client-only dynamic import: `dynamic(() => import("./Odontogra
 - 🗂️ Consolidated Export dropdown (Status JSON / FHIR / PNG / JPG)
 - 📥 Import dropdown with FHIR import (round-trips exported Bundles)
 - ⏳ Progress overlay during image export
-- 🎓 12-step interactive intro tour
+- 🎓 18-step interactive intro tour
 - 🔢 Three numbering systems (FDI, Universal, Palmer)
 - 🌐 I18n — 12 UI languages (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) with a language switcher; Arabic renders the UI right-to-left with the dental/perio charts pinned left-to-right (machine-translated, native-speaker review pending for AR/ZH/FR)
 - 🌗 Dark mode support with toggle button (standalone or controlled by parent app)
@@ -550,6 +558,9 @@ npm run test:coverage  # Coverage report
 ```
 
 ### 📖 API Documentation
+
+🅰️ **Angular version:** an official Angular port, [Angular Advanced Odontogram](https://github.com/ZoliQua/Angular-Advanced-Odontogram) (`angular-advanced-odontogram` on npm), is available — JSON and FHIR R4 exports round-trip between the two libraries.
+
 ```bash
 npm run docs           # Generate TypeDoc docs in docs/
 ```
@@ -649,7 +660,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `exportPdf(opts)` | Download a jsPDF-native PDF report (`{patientData, odontogramChart, odontogramDescription, individualNotes, perioStatus, perioDescription}`, each section optional) — vector text plus raster tooth/perio-chart images; the individual-notes section auto-skips when no tooth has a note, and the two perio sections auto-skip whenever `hasAnyPerioData()` is false, regardless of `opts` |
 | `importFhirBundle(input)` | Import a FHIR R4 Bundle (object or JSON string) produced by this module |
 | `setImportFormat(format)` | Set the next file import's parser — `"status"` or `"fhir"` |
-| `startIntroTour()` | Launch the 12-step interactive intro tour |
+| `startIntroTour()` | Launch the 18-step interactive intro tour |
 
 ### 💾 State persistence (localStorage)
 
@@ -755,6 +766,8 @@ The export creates a JSON file (version `2.22`; imports also accept legacy `1.4`
 - `case` - optional object holding case-level (not per-tooth) metadata, shared by both the status and plan charts (mirrors the top-level `globals` key). Omit-when-empty: absent entirely when every field is at its default, so a case-less export stays byte-identical apart from the version number. Fields (each omitted when at its default): `age`; `smokingStatus` (+ `cigarettesPerDay`); `diabetesStatus` (+ `hba1c`); `toothLossPerio`; `maxRblPercent`; the four 2017-classification per-axis clinician overrides `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`; (version 2.19) `patientName` / `examDate`; and (version 2.20) `patientDob`; and (version 2.22) `caseConditions` — case/regional diagnoses (malocclusion & TMJ K07, oral cysts K09, salivary-gland disease K11, stomatitis & oral mucosa K12/K13, arch-level developmental K00), each mapped to a laterality (unspecified / left / right / bilateral). It feeds the periodontal staging/grading classification and the PDF report header; read/written via `getCaseMeta()` and the `setCase*` setters (see Public API above). Patient name, date of birth and exam date are chart-identity metadata only — they are **not** part of the FHIR export.
 
 ### 🖨️ Export
+`exportFhir()` is HL7-validator-clean: every Bundle entry carries a deterministic `id` and an absolute `fullUrl` (no `urn:uuid` placeholders), and the Bundle embeds the engine's own CodeSystem so its local codes resolve during validation (also published as `fhir/CodeSystem-odontogram.json`; pass `includeCodeSystem: false` to omit it).
+
 Beyond the odontogram's own Status JSON / FHIR / PNG / JPG / SVG export, the **periodontal chart** has its own export path:
 - **Perio SVG/PNG/JPG:** `exportPerioSvg()` / `exportPerioImage("png"|"jpg")` render the full perio chart (tooth graphics + numeric rows + the 2017 classification) as one standalone vector SVG (`buildPerioSvg()`), independent of the mounted `PerioChart` DOM. The three export-menu items are disabled whenever `hasAnyPerioData()` is false (a blank chart has nothing perio to export).
 - **PDF report:** the export menu's "PDF report…" item opens `ExportOptionsModal` — a settings dialog (patient name + date of birth + exam date fields, wired straight to the case metadata, with exam date defaulting to today; section checkboxes: patient data, odontogram chart, odontogram description, individual notes — disabled when no tooth has a note — perio status, perio description) before calling `exportPdf(opts)`. Empty identity fields fall back to placeholders ("John Doe" / "1980-01-01") so export always succeeds. The PDF is assembled jsPDF-natively — vector text via `.text()`, raster tooth/perio-chart images via `.addImage()` — with **no svg2pdf.js dependency**. The individual-notes section is auto-skipped when no tooth has a note, and the two perio sections whenever `hasAnyPerioData()` is false, regardless of the dialog's checkboxes.

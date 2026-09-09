@@ -24,11 +24,20 @@ function perioAvailable(): boolean {
   return !!document.getElementById("appViewToggle");
 }
 
+/** The case/regional-diagnoses step targets its own launch-bar button, which is
+ *  present whenever the perio chart is enabled — in toggle AND popup mode — so it
+ *  is gated on the button itself rather than on the view toggle. */
+function caseDiagnosesAvailable(): boolean {
+  return !!document.getElementById("openCaseDiagnosesBtn");
+}
+
 export const TOUR_STEPS: TourStep[] = [
   { selector: "#toothGrid, .tooth-grid", titleKey: "intro.tooth.title",     textKey: "intro.tooth.text",     view: "odontogram" },
   { selector: "#cariesSection",          titleKey: "intro.caries.title",    textKey: "intro.caries.text",    view: "odontogram" },
   { selector: "#pulpEndoSelect",         titleKey: "intro.pulp.title",      textKey: "intro.pulp.text",      view: "odontogram" },
   { selector: "#rootPeriodontiumSection",titleKey: "intro.rootCanal.title", textKey: "intro.rootCanal.text", view: "odontogram" },
+  { selector: "#diagnosesSection",       titleKey: "intro.diagnoses.title", textKey: "intro.diagnoses.text", view: "odontogram" },
+  { selector: "#openCaseDiagnosesBtn",   titleKey: "intro.caseDiagnoses.title", textKey: "intro.caseDiagnoses.text", view: "odontogram", available: caseDiagnosesAvailable },
   { selector: "#toothSelect",            titleKey: "intro.implant.title",   textKey: "intro.implant.text",   view: "odontogram" },
   { selector: "#fillingSection",         titleKey: "intro.filling.title",   textKey: "intro.filling.text",   view: "odontogram" },
   { selector: "#restorationSelect",      titleKey: "intro.crown.title",     textKey: "intro.crown.text",     view: "odontogram" },

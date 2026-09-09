@@ -97,7 +97,7 @@ describe("buildFhirBundle: every entry is identified (HL7 validator bdl-15 / val
     expect(patient.fullUrl).toBe(PLACEHOLDER_PATIENT_FULLURL);
     expect(patient.fullUrl).toBe(`${FHIR_BASE}/Patient/odontogram-subject`);
     for (const e of bundle.entry) {
-      if (e.resource.resourceType === "Patient") continue;
+      if (e.resource.resourceType === "Patient" || e.resource.resourceType === "CodeSystem") continue; // a CodeSystem has no subject
       expect(e.resource.subject?.reference).toBe(PLACEHOLDER_PATIENT_FULLURL);
     }
   });
@@ -113,6 +113,7 @@ describe("buildFhirBundle: every entry is identified (HL7 validator bdl-15 / val
     expect(bundle.entry.some((e: any) => e.resource.resourceType === "Patient")).toBe(false);
     for (const e of bundle.entry) {
       expect(typeof e.fullUrl).toBe("string");
+      if (e.resource.resourceType === "CodeSystem") continue; // no subject on a CodeSystem
       expect(e.resource.subject?.reference).toBe("Patient/abc-123");
     }
   });

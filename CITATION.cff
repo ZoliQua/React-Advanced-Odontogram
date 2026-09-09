@@ -8,8 +8,8 @@ abstract: >-
   prosthetic and periodontal states, FDI/Universal/Palmer tooth numbering,
   HL7 FHIR R4 export/import, optional ICDAS II caries scoring, and a user
   interface localized in nine languages.
-version: 2.2.0
-date-released: 2026-08-06
+version: 2.5.0
+date-released: 2026-09-10
 url: "https://react-odontogram-modul.vercel.app/"
 repository-code: "https://github.com/ZoliQua/React-Odontogram-Modul"
 license: MIT

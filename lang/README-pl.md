@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+</p>
+
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -242,6 +246,10 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 - 🌍 Krajowe pakiety kodowania (Ustawienia → System kodowania diagnoz): nakłada krajowy system kodowania na podstawę WHO ICD-10 — BNO-10 (węgierski, zlokalizowane wyświetlanie; zachowuje kod WHO) lub US ICD-10-CM (przemapowane kody, np. zakres dentofacjalny K07 → M26). Dodanie pakietu dla kolejnego kraju to niewielki wpis `CodingPack` — zobacz `CODING_PACKS.md`.
 - 🔬 Warstwa SNOMED CT (Ustawienia → SNOMED CT, opcjonalna, domyślnie wyłączona): dodaje kodowanie SNOMED CT obok kodowania WHO i ewentualnego krajowego pakietu oraz koduje wyniki periimplantologiczne, które nie mają kodu WHO ICD-10. Kody ICD-10-CM i identyfikatory pojęć SNOMED mają charakter referencyjny/orientacyjny — przed użyciem klinicznym zweryfikuj je względem oficjalnej listy tabelarycznej ICD-10-CM / przeglądarki SNOMED CT.
 - 🔁 Dwukierunkowa wymiana FHIR Condition: diagnozy są eksportowane jako zasoby FHIR `Condition` (powiązane z zębem, a także stany na poziomie przypadku pacjenta z polem `bodySite` określającym lateralizację) obok obserwacji, a import je odtwarza — stany przypadku bezpośrednio, a nadpisania dodania/pominięcia dla poszczególnych zębów przez porównanie (diff) zaimportowanych zasobów Condition z ponownie wyprowadzonym wykresem.
+- 🩺 **Karta Diagnozy, zmieniona:** każdy wiersz diagnozy dla zęba pokazuje najpierw kod ICD-10 (`K04.0 Pulpitis`), a wiersze są sortowane wg kodu. Każdy wiersz ma przełącznik **wyklucz** (usuwa diagnozę z eksportu FHIR, ale pozostawia ją na wykresie) i przycisk **usuń** (×), który usuwa diagnozę *oraz* odpowiadający jej wynik na zębie. Dodanie diagnozy z selektora zapisuje też leżący u jej podstaw wynik na wykresie, więc symbol pojawia się od razu.
+- 🗂️ **Okno diagnoz przypadku/regionalnych:** diagnozy obejmujące całą jamę ustną i regionalne (anomalie szczękowe, torbiele, schorzenia ślinianek i błony śluzowej…) przeniesiono z paska bocznego periodontalnego do osobnego okna dialogowego, otwieranego przyciskiem **Diagnozy** obok przełącznika Odontogram / Status periodontalny; jego selektor jest sortowany wg kodu, z kodem na pierwszym miejscu.
+- 🇭🇺 **Pakiet BNO-10:** węgierskie teksty wyświetlane to teraz oficjalne nazwy BNO-10 NEAK, a pakiet używa standardowego URI systemu ICD-10 (BNO-X jest identyczny z ICD-10 WHO).
+- ✅ **Eksport FHIR czysty dla walidatorów HL7:** każdy wpis w Bundle nosi deterministyczny `id` i bezwzględny `fullUrl` (bez zastępczych `urn:uuid`), a Bundle osadza własny **CodeSystem** silnika, dzięki czemu jego lokalne kody dają się rozwiązać podczas walidacji; ten sam CodeSystem jest publikowany w repozytorium jako `fhir/CodeSystem-odontogram.json` (przekaż `includeCodeSystem: false` w opcjach eksportu FHIR, aby go pominąć).
 - 🧰 Ujednolicony wiersz ikon paska górnego z zakładkowym oknem modalnym Ustawień (Ogólne / Panele / Szczegóły zęba / Próchnica / Miazga / Notatki / Periodontologia — numeracja, notatki, widoczność paneli, ICDAS, przełącznik głębokości próchnicy, szczegółowość próchnicy korzenia/radiologicznej, poziom szczegółowości miazgi, poziom szczegółowości starcia/przebarwienia zęba, informacje o zębach)
 - 🗂️ Zakładka Ustawienia → „Panele”: niezależne pokazywanie/ukrywanie paneli podsumowania Statusów i Ortodoncji dla całej jamy ustnej
 - 🦷🩺 Zakładka Ustawienia → „Periodontologia”: 16 przełączników pokazywania/ukrywania na indeks dla wierszy odontogramu periodontalnego (zgrupowanych: kieszonka/higiena/śluzówkowo-dziąsłowe/podparcie/okołowszczepowe — PD/GM/CAL/BOP, płytka, PI, GI, widoczność CEJ, konkawność korzenia, KG, GT, furkacja, ruchomość, klasa Millera, mPI, mBI), każdy z własnym opisem, oraz opcja wyświetlania nazw indeksów przetłumaczonych vs. kanonicznych (kanoniczna = stała naukowa nazwa angielska/łacińska w każdym języku interfejsu; etykietki zawsze pozostają zlokalizowane niezależnie od tego ustawienia). Oba są preferencjami na poziomie aplikacji (jak `perioViewMode`) — nigdy nie stanowią części ładunku eksportu
@@ -251,7 +259,7 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 - 🗂️ Skonsolidowane menu Eksportu (Status JSON / FHIR / PNG / JPG)
 - 📥 Menu Importu z importem FHIR (zwrotne wczytywanie wyeksportowanych Bundli)
 - ⏳ Nakładka postępu podczas eksportu obrazu
-- 🎓 12-krokowy interaktywny samouczek wprowadzający
+- 🎓 18-krokowy interaktywny samouczek wprowadzający
 - 🔢 Trzy systemy numeracji (FDI, Universal, Palmer)
 - 🌐 I18n — 12 języków interfejsu (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) z przełącznikiem języka; arabski wyświetla interfejs od prawej do lewej, a wykresy zębowe/periodontologiczne pozostają od lewej do prawej (tłumaczenie maszynowe, weryfikacja przez rodzimego użytkownika dla AR/ZH/FR w toku)
 - 🌗 Obsługa trybu ciemnego z przyciskiem przełączania (samodzielny lub kontrolowany przez aplikację nadrzędną)
@@ -550,6 +558,9 @@ npm run test:coverage  # Raport pokrycia
 ```
 
 ### 📖 Dokumentacja API
+
+🅰️ **Wersja Angular:** dostępny jest oficjalny port dla Angulara, [Angular Advanced Odontogram](https://github.com/ZoliQua/Angular-Advanced-Odontogram) (`angular-advanced-odontogram` w npm) — eksporty JSON i FHIR R4 są wymienne między obiema bibliotekami.
+
 ```bash
 npm run docs           # Generuj dokumentację TypeDoc w docs/
 ```
@@ -649,7 +660,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `exportPdf(opts)` | Pobierz raport PDF natywny dla jsPDF (`{patientData, odontogramChart, odontogramDescription, individualNotes, perioStatus, perioDescription}`, każda sekcja opcjonalna) — tekst wektorowy plus rastrowe obrazy zęba/wykresu periodontalnego; sekcja notatek indywidualnych jest automatycznie pomijana, gdy żaden ząb nie ma notatki, a obie sekcje periodontalne są automatycznie pomijane, gdy `hasAnyPerioData()` zwraca false, niezależnie od `opts` |
 | `importFhirBundle(input)` | Zaimportuj pakiet FHIR R4 Bundle (obiekt lub ciąg JSON) wygenerowany przez ten moduł |
 | `setImportFormat(format)` | Ustaw parser dla następnego importu pliku — `"status"` lub `"fhir"` |
-| `startIntroTour()` | Uruchom 12-krokowy interaktywny samouczek wprowadzający |
+| `startIntroTour()` | Uruchom 18-krokowy interaktywny samouczek wprowadzający |
 
 ### 💾 Trwałość stanu (localStorage)
 
@@ -755,6 +766,8 @@ Eksport tworzy plik JSON (wersja `2.22`; import akceptuje też starsze wersje `1
 - `case` - opcjonalny obiekt przechowujący metadane na poziomie przypadku (nie na ząb), współdzielone zarówno przez wykres statusu, jak i planu (odzwierciedla klucz najwyższego poziomu `globals`). Pomijany, gdy pusty: całkowicie nieobecny, gdy każde pole ma wartość domyślną, dzięki czemu eksport bez przypadku pozostaje identyczny co do bajtu poza numerem wersji. Pola (każde pomijane, gdy ma wartość domyślną): `age`; `smokingStatus` (+ `cigarettesPerDay`); `diabetesStatus` (+ `hba1c`); `toothLossPerio`; `maxRblPercent`; cztery przeceny klinicysty na oś klasyfikacji z 2017 r. — `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`; (wersja 2.19) `patientName` / `examDate`; oraz (wersja 2.20) `patientDob`; oraz (wersja 2.22) `caseConditions` — diagnozy na poziomie przypadku/regionu (wada zgryzu i zaburzenie stawu skroniowo-żuchwowego K07, torbiele jamy ustnej K09, choroby gruczołów ślinowych K11, zapalenie jamy ustnej i błony śluzowej K12/K13, rozwojowe anomalie łuku zębowego K00), z których każda jest przypisana do strony (nieokreślona / lewa / prawa / obustronna). Zasila klasyfikację stopnia/klasy periodontalnej oraz nagłówek raportu PDF; odczytywane/zapisywane za pomocą `getCaseMeta()` oraz metod `setCase*` (zob. Publiczne API powyżej). Imię i nazwisko pacjenta, data urodzenia oraz data badania to wyłącznie metadane tożsamości wykresu — **nie** są częścią eksportu FHIR.
 
 ### 🖨️ Eksport
+`exportFhir()` tworzy Bundle czysty dla walidatorów HL7: każdy wpis nosi deterministyczny `id` i bezwzględny `fullUrl` (bez zastępczych `urn:uuid`), a Bundle osadza własny CodeSystem silnika, dzięki czemu jego lokalne kody dają się rozwiązać podczas walidacji (publikowany też jako `fhir/CodeSystem-odontogram.json` w repozytorium; można go pominąć przez `includeCodeSystem: false`).
+
 Poza własnym eksportem Status JSON / FHIR / PNG / JPG / SVG odontogramu, **wykres periodontalny** ma własną ścieżkę eksportu:
 - **Perio SVG/PNG/JPG:** `exportPerioSvg()` / `exportPerioImage("png"|"jpg")` renderują pełny wykres periodontalny (grafika zębów + wiersze liczbowe + klasyfikacja z 2017 r.) jako jeden samodzielny wektorowy SVG (`buildPerioSvg()`), niezależnie od zamontowanego DOM `PerioChart`. Trzy pozycje menu eksportu są wyłączone, gdy `hasAnyPerioData()` zwraca false (pusty wykres nie ma nic periodontalnego do wyeksportowania).
 - **Raport PDF:** pozycja menu eksportu „Raport PDF…” otwiera `ExportOptionsModal` — okno dialogowe ustawień (pola imienia pacjenta, daty urodzenia i daty badania, połączone bezpośrednio z metadanymi przypadku, przy czym data badania domyślnie ustawiana jest na dzisiejszą; pola wyboru sekcji: dane pacjenta, odontogram, opis odontogramu, notatki indywidualne — wyłączone, gdy żaden ząb nie ma notatki — status periodontalny, opis periodontalny) przed wywołaniem `exportPdf(opts)`. Puste pola tożsamości zastępowane są wartościami domyślnymi („John Doe” / „1980-01-01”), dzięki czemu eksport zawsze się powiedzie. PDF jest składany natywnie w jsPDF — tekst wektorowy za pomocą `.text()`, rastrowe obrazy zęba/wykresu periodontalnego za pomocą `.addImage()` — **bez zależności od svg2pdf.js**. Sekcja notatek indywidualnych jest automatycznie pomijana, gdy żaden ząb nie ma notatki, a obie sekcje periodontalne — gdy `hasAnyPerioData()` zwraca false, niezależnie od pól wyboru w oknie dialogowym.

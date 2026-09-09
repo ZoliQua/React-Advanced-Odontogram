@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+</p>
+
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -244,6 +248,10 @@ export default function OdontogramClient() {
 - 🌍 国家代码包（设置 → 诊断编码系统）：在 WHO ICD-10 基础编码之上叠加国家代码体系——BNO-10（匈牙利，本地化显示；保留 WHO 编码）或 US ICD-10-CM（重新映射的编码，例如 K07 牙颌面范围 → M26）。添加另一个国家的代码包只需一个小型 `CodingPack` 条目——参见 `CODING_PACKS.md`。
 - 🔬 SNOMED CT 叠加编码（设置 → SNOMED CT，可选启用，默认关闭）：在 WHO 编码及任何国家代码包编码基础上同时添加 SNOMED CT 编码，并为没有 WHO ICD-10 编码的种植体周发现提供编码。ICD-10-CM 与 SNOMED 概念 ID 仅供参考/尽力而为——临床使用前请对照官方 ICD-10-CM 列表 / SNOMED CT 浏览器核实。
 - 🔁 FHIR Condition 往返：诊断以 FHIR `Condition` 资源导出（按牙位关联，另外还有带侧别 bodySite 的患者层面病例状况），与 Observation 一同导出；导入时会重新构建这些内容——病例状况直接重建，按牙位的添加/抑制覆盖项则通过比对导入的 Condition 与重新推导的图表得出。
+- 🩺 **诊断卡片，全新改版：** 每一行按牙位的诊断都先显示 ICD-10 编码（如 `K04.0 Pulpitis`），各行按编码排序。每一行都有一个**排除**开关（将诊断从 FHIR 导出中移除，但保留在图表上）和一个**删除**（×）按钮（同时移除该诊断及其在牙位上的对应临床发现）。从选择器中添加诊断时会同步写入底层的图表临床发现，图符会立即出现。
+- 🗂️ **病例/区域性诊断弹窗：** 全口及区域性诊断（颌骨异常、囊肿、唾液腺及黏膜相关病症等）已从牙周侧栏移出，改为独立对话框，通过 Odontogram / Periodontal Status 切换开关旁的**诊断**按钮打开；其选择器以编码为先并按编码排序。
+- 🇭🇺 **BNO-10 编码包：** 匈牙利语显示文本现已改为 NEAK 官方 BNO-10 名称，且该编码包使用标准 ICD-10 系统 URI（BNO-X 与 WHO ICD-10 完全一致）。
+- ✅ **符合 HL7 校验器要求的干净 FHIR 导出：** 每个 Bundle 条目都带有确定性的 `id` 和绝对 `fullUrl`（不再使用 `urn:uuid` 占位符），且 Bundle 内嵌了引擎自身的 **CodeSystem**，以便校验时能正确解析其本地编码；同一个 CodeSystem 也作为 `fhir/CodeSystem-odontogram.json` 发布在代码仓库中（在 FHIR 导出选项中传入 `includeCodeSystem: false` 可将其省略）。
 - 🧰 统一的顶部工具栏图标行，配合带标签页的设置弹窗（常规 / 面板 / 牙齿详情 / 龋齿 / 牙髓 / 备注 / 牙周——编号方式、备注、面板可见性、ICDAS、龋齿深度开关、根面龋/影像学龋损粒度、牙髓详情级别、牙齿磨耗/变色详情级别、牙齿信息）
 - 🗂️ 设置 →“面板”标签页：可独立显示/隐藏全口“状态”摘要面板和“正畸”摘要面板
 - 🦷🩺 设置 →“牙周”标签页：针对牙周图表各行的 16 个按指标显示/隐藏开关（按牙周袋/口腔卫生/膜龈/支持组织/种植体周分组——PD/GM/CAL/BOP、菌斑、PI、GI、CEJ 可见性、根面凹陷、KG、GT、根分叉、松动度、Miller 分级、mPI、mBI），每项均附说明，另附一个“译文名称 vs. 规范名称”显示选项（规范名称 = 在所有界面语言下均固定使用的英文/拉丁文学术名称；无论此设置如何，提示信息始终保持本地化）。两者均为应用级偏好设置（与 `perioViewMode` 相同）——从不作为导出数据的一部分
@@ -253,7 +261,7 @@ export default function OdontogramClient() {
 - 🗂️ 合并的导出下拉菜单（状态 JSON / FHIR / PNG / JPG）
 - 📥 带 FHIR 导入功能的导入下拉菜单（可回读已导出的 Bundle）
 - ⏳ 图像导出过程中的进度浮层
-- 🎓 12 步交互式新手导览
+- 🎓 18 步交互式新手导览
 - 🔢 三种牙位编号系统（FDI、通用编号法、Palmer）
 - 🌐 国际化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR），支持语言切换
 - 🌗 支持深色模式，附带切换按钮（独立控制或由父应用控制）
@@ -552,6 +560,9 @@ npm run test:coverage  # 覆盖率报告
 ```
 
 ### 📖 API 文档
+
+🅰️ **Angular 版本：** 现已提供官方的 Angular 移植版 [Angular Advanced Odontogram](https://github.com/ZoliQua/Angular-Advanced-Odontogram)（npm 包名 `angular-advanced-odontogram`）——JSON 与 FHIR R4 导出可在两个库之间互相导入导出。
+
 ```bash
 npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 ```
@@ -651,7 +662,7 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `exportPdf(opts)` | 下载一份 jsPDF 原生生成的 PDF 报告（`{patientData, odontogramChart, odontogramDescription, individualNotes, perioStatus, perioDescription}`，各区块均为可选）——矢量文字加栅格化的牙齿/牙周图表图像；只要没有任何牙齿记录备注，“个别备注”区块就会自动跳过；只要 `hasAnyPerioData()` 为 false，两个牙周区块也会自动跳过，二者均与 `opts` 设置无关 |
 | `importFhirBundle(input)` | 导入由本模块生成的 FHIR R4 Bundle（对象或 JSON 字符串） |
 | `setImportFormat(format)` | 设置下一次文件导入所用的解析器——`"status"` 或 `"fhir"` |
-| `startIntroTour()` | 启动 12 步交互式新手导览 |
+| `startIntroTour()` | 启动 18 步交互式新手导览 |
 
 ### 💾 状态持久化（localStorage）
 
@@ -757,6 +768,8 @@ enablePersistence({
 - `case` - 可选对象，保存病例级（非按牙位）元数据，由现状图表和计划图表共享（与顶层的 `globals` 键类似）。空值省略：当所有字段均为默认值时该字段完全不出现，因此无病例数据的导出除版本号外保持逐字节一致。各字段（在默认值时均被省略）：`age`（年龄）；`smokingStatus`（吸烟状况，+ `cigarettesPerDay`）；`diabetesStatus`（糖尿病状况，+ `hba1c`）；`toothLossPerio`（牙周炎致失牙数）；`maxRblPercent`（最大影像学骨吸收百分比）；2017 年分类的四个按轴临床医生覆盖值 `diagnosisOverride` / `stageOverride` / `gradeOverride` / `extentOverride`；以及（版本 2.19）`patientName` / `examDate`；以及（版本 2.20）`patientDob`；以及（版本 2.22）`caseConditions`——病例/区域性诊断（错颌畸形与颞下颌关节紊乱 K07、口腔囊肿 K09、唾液腺疾病 K11、口炎与口腔黏膜疾病 K12/K13，以及牙弓层面的发育异常 K00），均映射到一个侧别（未指定 / 左侧 / 右侧 / 双侧）。该字段用于牙周分期/分级分类及 PDF 报告标题；通过 `getCaseMeta()` 及 `setCase*` 系列设置函数读写（见上文“公共 API”）。患者姓名、出生日期与检查日期仅为图表身份标识元数据——**不**属于 FHIR 导出的一部分。
 
 ### 🖨️ 导出
+`exportFhir()` 生成的 Bundle 符合 HL7 校验器要求：每个条目都带有确定性的 `id` 和绝对 `fullUrl`（不使用 `urn:uuid` 占位符），且 Bundle 内嵌了引擎自身的 CodeSystem 以便校验时正确解析其本地编码（该 CodeSystem 同时以 `fhir/CodeSystem-odontogram.json` 的形式发布在代码仓库中；可通过 `includeCodeSystem: false` 省略）。
+
 除了牙位图自身的状态 JSON / FHIR / PNG / JPG / SVG 导出外，**牙周图表**还拥有自己的一套导出路径：
 - **牙周图 SVG/PNG/JPG：** `exportPerioSvg()` / `exportPerioImage("png"|"jpg")` 将完整的牙周图表（牙齿图形 + 数值行 + 2017 年分类结果）渲染为一份独立的矢量 SVG（`buildPerioSvg()`），不依赖已挂载的 `PerioChart` DOM。只要 `hasAnyPerioData()` 为 false（空白图表没有可导出的牙周数据），这三个导出菜单项就会被禁用。
 - **PDF 报告：** 导出菜单中的“PDF report…”（PDF 报告……）项会先打开 `ExportOptionsModal`——一个设置弹窗（患者姓名 + 出生日期 + 检查日期字段，直接绑定到病例元数据，检查日期默认为当天；区块复选框：患者数据、牙位图、牙位图说明、个别备注——未有任何牙齿记录备注时禁用——牙周状态、牙周描述），然后再调用 `exportPdf(opts)`。身份信息字段留空时会回退为占位符（“John Doe” / “1980-01-01”），确保导出始终成功。该 PDF 采用 jsPDF 原生方式组装——矢量文字通过 `.text()`，栅格化的牙齿/牙周图表图像通过 `.addImage()`——**不依赖 svg2pdf.js**。当没有任何牙齿记录备注时，“个别备注”区块会自动跳过；只要 `hasAnyPerioData()` 为 false，两个牙周区块也会自动跳过，二者均与弹窗中的复选框状态无关。

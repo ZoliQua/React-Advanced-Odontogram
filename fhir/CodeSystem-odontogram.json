@@ -1,0 +1,1195 @@
+{
+  "resourceType": "CodeSystem",
+  "id": "odontogram",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+  "version": "2.5.0",
+  "name": "ReactAdvancedOdontogramLocalCodes",
+  "title": "React Advanced Odontogram — engine-local codes",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "Engine-local codes emitted by the React Advanced Odontogram FHIR export: finding types (Observation.code), enum values (valueCodeableConcept / component codes), periodontal-panel component and qualifier codes, 2017-classification stage summaries and case-condition laterality. Displays are language-neutral English and match the export verbatim; a repeated value code carries its alternative displays as designations. Plugin-defined `custom-state:<pluginId>` codes are open-ended and intentionally not enumerated.",
+  "caseSensitive": true,
+  "content": "complete",
+  "count": 218,
+  "concept": [
+    {
+      "code": "abfraction",
+      "display": "Abfraction (cervical stress lesion)",
+      "definition": "Value of axis group \"wearCervical\""
+    },
+    {
+      "code": "abrasion",
+      "display": "Abrasion (mechanical cervical wear)",
+      "definition": "Value of axis group \"wearCervical\""
+    },
+    {
+      "code": "abscess",
+      "display": "Periapical abscess",
+      "definition": "Value of axis group \"periapicalType\""
+    },
+    {
+      "code": "active",
+      "display": "Active root caries",
+      "definition": "Value of axis group \"rootCaries\""
+    },
+    {
+      "code": "active-cavitated",
+      "display": "Active cavitated root caries",
+      "definition": "Value of axis group \"rootCaries\""
+    },
+    {
+      "code": "acute-apical-abscess",
+      "display": "Acute apical abscess",
+      "definition": "Value of axis group \"apicalDx\""
+    },
+    {
+      "code": "amalgam",
+      "display": "Amalgam filling",
+      "definition": "Value of axis group \"fillingMaterial\""
+    },
+    {
+      "code": "apical-diagnosis",
+      "display": "Apical diagnosis (AAE)",
+      "definition": "Finding type (Observation.code) — axis \"apicalDx\""
+    },
+    {
+      "code": "apicoectomy",
+      "display": "Apicoectomy / root resection",
+      "definition": "Finding type (Observation.code) — axis \"endoResection\""
+    },
+    {
+      "code": "arrested",
+      "display": "Arrested root caries",
+      "definition": "Value of axis group \"rootCaries\""
+    },
+    {
+      "code": "asymptomatic-apical-periodontitis",
+      "display": "Asymptomatic apical periodontitis",
+      "definition": "Value of axis group \"apicalDx\""
+    },
+    {
+      "code": "attrition",
+      "display": "Attrition (tooth-to-tooth wear)",
+      "definition": "Value of axis group \"wearEdge\""
+    },
+    {
+      "code": "band",
+      "display": "Orthodontic band",
+      "definition": "Value of axis group \"orthoAppliance\""
+    },
+    {
+      "code": "bar",
+      "display": "Bar attachment",
+      "definition": "Value of axis group \"prosthesis\""
+    },
+    {
+      "code": "bar-denture",
+      "display": "Bar overdenture",
+      "definition": "Value of axis group \"prosthesis\""
+    },
+    {
+      "code": "bracket",
+      "display": "Fixed bracket",
+      "definition": "Value of axis group \"orthoAppliance\""
+    },
+    {
+      "code": "bridge",
+      "display": "Bridge unit",
+      "definition": "Value of axis group \"restorationType\""
+    },
+    {
+      "code": "bridge-pillar",
+      "display": "Bridge abutment (pillar)",
+      "definition": "Finding type (Observation.code) — axis \"bridgePillar\""
+    },
+    {
+      "code": "broken",
+      "display": "Broken tooth",
+      "definition": "Value of axis group \"toothSubstrate\""
+    },
+    {
+      "code": "broken-distal",
+      "display": "Distal fracture",
+      "definition": "Finding type (Observation.code) — axis \"brokenDistal\""
+    },
+    {
+      "code": "broken-incisal",
+      "display": "Incisal fracture",
+      "definition": "Finding type (Observation.code) — axis \"brokenIncisal\""
+    },
+    {
+      "code": "broken-mesial",
+      "display": "Mesial fracture",
+      "definition": "Finding type (Observation.code) — axis \"brokenMesial\""
+    },
+    {
+      "code": "buccal",
+      "display": "Buccal surface",
+      "definition": "Value of axis group \"fillingSurfaces\""
+    },
+    {
+      "code": "calculus",
+      "display": "Dental calculus",
+      "definition": "Finding type (Observation.code) — axis \"calculus\""
+    },
+    {
+      "code": "caries",
+      "display": "Dental caries",
+      "definition": "Finding type (Observation.code) — axis \"caries\""
+    },
+    {
+      "code": "caries-buccal",
+      "display": "Buccal caries",
+      "definition": "Value of axis group \"caries\""
+    },
+    {
+      "code": "caries-distal",
+      "display": "Distal caries",
+      "definition": "Value of axis group \"caries\""
+    },
+    {
+      "code": "caries-lingual",
+      "display": "Lingual caries",
+      "definition": "Value of axis group \"caries\""
+    },
+    {
+      "code": "caries-mesial",
+      "display": "Mesial caries",
+      "definition": "Value of axis group \"caries\""
+    },
+    {
+      "code": "caries-occlusal",
+      "display": "Occlusal caries",
+      "definition": "Value of axis group \"caries\""
+    },
+    {
+      "code": "caries-subcrown",
+      "display": "Subcrown caries",
+      "definition": "Value of axis group \"caries\""
+    },
+    {
+      "code": "cars-0",
+      "display": "CARS score 0",
+      "definition": "Recurrent-caries (CARS) score on a filled surface — caries component scoring coding"
+    },
+    {
+      "code": "cars-1",
+      "display": "CARS score 1",
+      "definition": "Recurrent-caries (CARS) score on a filled surface — caries component scoring coding"
+    },
+    {
+      "code": "cars-2",
+      "display": "CARS score 2",
+      "definition": "Recurrent-caries (CARS) score on a filled surface — caries component scoring coding"
+    },
+    {
+      "code": "cars-3",
+      "display": "CARS score 3",
+      "definition": "Recurrent-caries (CARS) score on a filled surface — caries component scoring coding"
+    },
+    {
+      "code": "cars-4",
+      "display": "CARS score 4",
+      "definition": "Recurrent-caries (CARS) score on a filled surface — caries component scoring coding"
+    },
+    {
+      "code": "cars-5",
+      "display": "CARS score 5",
+      "definition": "Recurrent-caries (CARS) score on a filled surface — caries component scoring coding"
+    },
+    {
+      "code": "cars-6",
+      "display": "CARS score 6",
+      "definition": "Recurrent-caries (CARS) score on a filled surface — caries component scoring coding"
+    },
+    {
+      "code": "cej-visibility",
+      "display": "CEJ visibility",
+      "definition": "Finding type (Observation.code) — axis \"cejVisibility\""
+    },
+    {
+      "code": "chronic-apical-abscess",
+      "display": "Chronic apical abscess",
+      "definition": "Value of axis group \"apicalDx\""
+    },
+    {
+      "code": "composite",
+      "display": "Composite filling",
+      "definition": "Value of axis group \"fillingMaterial\""
+    },
+    {
+      "code": "condensing-osteitis",
+      "display": "Condensing osteitis",
+      "definition": "Value of axis group \"apicalDx\""
+    },
+    {
+      "code": "contact-distal",
+      "display": "Distal contact issue",
+      "definition": "Finding type (Observation.code) — axis \"contactDistal\""
+    },
+    {
+      "code": "contact-mesial",
+      "display": "Mesial contact issue",
+      "definition": "Finding type (Observation.code) — axis \"contactMesial\""
+    },
+    {
+      "code": "crown",
+      "display": "Crown",
+      "definition": "Value of axis group \"restorationType\""
+    },
+    {
+      "code": "crown-leakage",
+      "display": "Crown marginal leakage",
+      "definition": "Finding type (Observation.code) — axis \"crownLeakage\""
+    },
+    {
+      "code": "crown-needed",
+      "display": "Crown needed",
+      "definition": "Finding type (Observation.code) — axis \"crownNeeded\""
+    },
+    {
+      "code": "crown-replace-planned",
+      "display": "Planned crown replacement",
+      "definition": "Finding type (Observation.code) — axis \"crownReplace\""
+    },
+    {
+      "code": "crownprep",
+      "display": "Prepared for crown",
+      "definition": "Value of axis group \"toothSubstrate\""
+    },
+    {
+      "code": "cyst",
+      "display": "Radicular cyst",
+      "definition": "Value of axis group \"periapicalType\""
+    },
+    {
+      "code": "D1",
+      "display": "Dentin, outer third (D1)",
+      "definition": "Value of axis group \"radiographicDepth\""
+    },
+    {
+      "code": "D2",
+      "display": "Dentin, middle third (D2)",
+      "definition": "Value of axis group \"radiographicDepth\""
+    },
+    {
+      "code": "D3",
+      "display": "Dentin, inner third (D3)",
+      "definition": "Value of axis group \"radiographicDepth\""
+    },
+    {
+      "code": "deep",
+      "display": "Deep root concavity",
+      "definition": "Value of axis group \"rootConcavity\""
+    },
+    {
+      "code": "detectable",
+      "display": "CEJ detectable",
+      "definition": "Value of axis group \"cejVisibility\""
+    },
+    {
+      "code": "distal",
+      "display": "Distal surface",
+      "definition": "Value of axis group \"fillingSurfaces\"; Value of axis group \"orthoDrift\"",
+      "designation": [
+        {
+          "value": "Distal drift"
+        }
+      ]
+    },
+    {
+      "code": "E1",
+      "display": "Enamel, outer half (E1)",
+      "definition": "Value of axis group \"radiographicDepth\""
+    },
+    {
+      "code": "E2",
+      "display": "Enamel, inner half (E2)",
+      "definition": "Value of axis group \"radiographicDepth\""
+    },
+    {
+      "code": "edentulous",
+      "display": "Edentulous (whole mouth)",
+      "definition": "Whole-mouth finding (Observation.code)"
+    },
+    {
+      "code": "emax",
+      "display": "Lithium disilicate (e.max)",
+      "definition": "Value of axis group \"restorationMaterial\""
+    },
+    {
+      "code": "endo-filling",
+      "display": "Root canal filling",
+      "definition": "Value of axis group \"endo\""
+    },
+    {
+      "code": "endo-filling-incomplete",
+      "display": "Incomplete root canal filling",
+      "definition": "Value of axis group \"endo\""
+    },
+    {
+      "code": "endo-glass-pin",
+      "display": "Glass fiber post",
+      "definition": "Value of axis group \"endo\""
+    },
+    {
+      "code": "endo-medical-filling",
+      "display": "Endodontic medical filling",
+      "definition": "Value of axis group \"endo\""
+    },
+    {
+      "code": "endo-metal-pin",
+      "display": "Metal post",
+      "definition": "Value of axis group \"endo\""
+    },
+    {
+      "code": "endodontic-status",
+      "display": "Endodontic status",
+      "definition": "Finding type (Observation.code) — axis \"endo\""
+    },
+    {
+      "code": "erosion",
+      "display": "Erosion (chemical/acid wear)",
+      "definition": "Value of axis group \"wearEdge\"; Value of axis group \"wearCervical\""
+    },
+    {
+      "code": "extent-generalized",
+      "display": "Generalized",
+      "definition": "Condition.stage.summary (2017 periodontitis extent)"
+    },
+    {
+      "code": "extent-localized",
+      "display": "Localized",
+      "definition": "Condition.stage.summary (2017 periodontitis extent)"
+    },
+    {
+      "code": "extent-molar-incisor",
+      "display": "Molar-incisor pattern",
+      "definition": "Condition.stage.summary (2017 periodontitis extent)"
+    },
+    {
+      "code": "external-cervical",
+      "display": "External cervical root resorption",
+      "definition": "Value of axis group \"resorptionType\""
+    },
+    {
+      "code": "extraction-planned",
+      "display": "Planned extraction",
+      "definition": "Finding type (Observation.code) — axis \"extractionPlan\""
+    },
+    {
+      "code": "extraction-wound",
+      "display": "Extraction wound",
+      "definition": "Finding type (Observation.code) — axis \"extractionWound\""
+    },
+    {
+      "code": "extrinsic",
+      "display": "Extrinsic staining",
+      "definition": "Value of axis group \"discoloration\""
+    },
+    {
+      "code": "extrusion",
+      "display": "Extrusion",
+      "definition": "Value of axis group \"orthoVertical\""
+    },
+    {
+      "code": "filling-defect",
+      "display": "Filling defect",
+      "definition": "Finding type (Observation.code)"
+    },
+    {
+      "code": "fissure-sealing",
+      "display": "Fissure sealing",
+      "definition": "Finding type (Observation.code) — axis \"fissureSealing\""
+    },
+    {
+      "code": "fluorosis",
+      "display": "Dental fluorosis",
+      "definition": "Value of axis group \"discoloration\""
+    },
+    {
+      "code": "fracture",
+      "display": "Fractured / chipped filling",
+      "definition": "Value of axis group \"fillingDefect\""
+    },
+    {
+      "code": "furcation-entrance:buccal",
+      "display": "Buccal",
+      "definition": "Qualifier / component code — furcation entrance (component bodySite qualifier)"
+    },
+    {
+      "code": "furcation-entrance:distal",
+      "display": "Distal",
+      "definition": "Qualifier / component code — furcation entrance (component bodySite qualifier)"
+    },
+    {
+      "code": "furcation-entrance:lingual",
+      "display": "Lingual",
+      "definition": "Qualifier / component code — furcation entrance (component bodySite qualifier)"
+    },
+    {
+      "code": "furcation-entrance:mesial",
+      "display": "Mesial",
+      "definition": "Qualifier / component code — furcation entrance (component bodySite qualifier)"
+    },
+    {
+      "code": "gangraena-pulpae",
+      "display": "Gangraena pulpae",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "gic",
+      "display": "Glass ionomer cement filling",
+      "definition": "Value of axis group \"fillingMaterial\""
+    },
+    {
+      "code": "gingival-index-loe-silness",
+      "display": "Gingival index (Löe-Silness)",
+      "definition": "Periodontal-panel component code"
+    },
+    {
+      "code": "gingival-thickness",
+      "display": "Gingival thickness",
+      "definition": "Finding type (Observation.code) — axis \"gingivalThickness\""
+    },
+    {
+      "code": "gold",
+      "display": "Gold",
+      "definition": "Value of axis group \"restorationMaterial\""
+    },
+    {
+      "code": "grade-A",
+      "display": "Grade A",
+      "definition": "Condition.stage.summary (2017 periodontitis grade)"
+    },
+    {
+      "code": "grade-B",
+      "display": "Grade B",
+      "definition": "Condition.stage.summary (2017 periodontitis grade)"
+    },
+    {
+      "code": "grade-C",
+      "display": "Grade C",
+      "definition": "Condition.stage.summary (2017 periodontitis grade)"
+    },
+    {
+      "code": "gradia",
+      "display": "Indirect composite (Gradia)",
+      "definition": "Value of axis group \"restorationMaterial\""
+    },
+    {
+      "code": "granuloma",
+      "display": "Periapical granuloma",
+      "definition": "Value of axis group \"periapicalType\""
+    },
+    {
+      "code": "healing-abutment",
+      "display": "Healing abutment",
+      "definition": "Value of axis group \"prosthesis\""
+    },
+    {
+      "code": "hyperaemia-pulpae",
+      "display": "Hyperaemia pulpae",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "i",
+      "display": "Miller Class I",
+      "definition": "Value of axis group \"millerClass\""
+    },
+    {
+      "code": "ii",
+      "display": "Miller Class II",
+      "definition": "Value of axis group \"millerClass\""
+    },
+    {
+      "code": "iii",
+      "display": "Miller Class III",
+      "definition": "Value of axis group \"millerClass\""
+    },
+    {
+      "code": "implant",
+      "display": "Dental implant",
+      "definition": "Value of axis group \"toothSelection\""
+    },
+    {
+      "code": "inflammation",
+      "display": "Inflammation",
+      "definition": "Value of axis group \"mods\""
+    },
+    {
+      "code": "inlay",
+      "display": "Inlay",
+      "definition": "Value of axis group \"restorationType\""
+    },
+    {
+      "code": "internal",
+      "display": "Internal root resorption",
+      "definition": "Value of axis group \"resorptionType\""
+    },
+    {
+      "code": "intrusion",
+      "display": "Intrusion",
+      "definition": "Value of axis group \"orthoVertical\""
+    },
+    {
+      "code": "irreversible-pulpitis",
+      "display": "Irreversible pulpitis",
+      "definition": "Value of axis group \"pulpDx\""
+    },
+    {
+      "code": "iv",
+      "display": "Miller Class IV",
+      "definition": "Value of axis group \"millerClass\""
+    },
+    {
+      "code": "keratinized-gingiva-width",
+      "display": "Keratinized gingiva width",
+      "definition": "Periodontal-panel component code"
+    },
+    {
+      "code": "laterality:bilateral",
+      "display": "Bilateral",
+      "definition": "Qualifier / component code — case-condition laterality (Condition.bodySite)"
+    },
+    {
+      "code": "laterality:left",
+      "display": "Left",
+      "definition": "Qualifier / component code — case-condition laterality (Condition.bodySite)"
+    },
+    {
+      "code": "laterality:right",
+      "display": "Right",
+      "definition": "Qualifier / component code — case-condition laterality (Condition.bodySite)"
+    },
+    {
+      "code": "laterality:unspecified",
+      "display": "Unspecified laterality",
+      "definition": "Qualifier / component code — case-condition laterality (Condition.bodySite)"
+    },
+    {
+      "code": "lingual",
+      "display": "Lingual surface",
+      "definition": "Value of axis group \"fillingSurfaces\""
+    },
+    {
+      "code": "locator",
+      "display": "Locator attachment",
+      "definition": "Value of axis group \"prosthesis\""
+    },
+    {
+      "code": "locator-denture",
+      "display": "Locator overdenture",
+      "definition": "Value of axis group \"prosthesis\""
+    },
+    {
+      "code": "m1",
+      "display": "Mobility grade 1",
+      "definition": "Value of axis group \"mobility\""
+    },
+    {
+      "code": "m2",
+      "display": "Mobility grade 2",
+      "definition": "Value of axis group \"mobility\""
+    },
+    {
+      "code": "m3",
+      "display": "Mobility grade 3",
+      "definition": "Value of axis group \"mobility\""
+    },
+    {
+      "code": "marginal",
+      "display": "Marginal defect (overhang / deficient margin)",
+      "definition": "Value of axis group \"fillingDefect\""
+    },
+    {
+      "code": "medium",
+      "display": "Medium gingival phenotype",
+      "definition": "Value of axis group \"gingivalThickness\""
+    },
+    {
+      "code": "mesial",
+      "display": "Mesial surface",
+      "definition": "Value of axis group \"fillingSurfaces\"; Value of axis group \"orthoDrift\"",
+      "designation": [
+        {
+          "value": "Mesial drift"
+        }
+      ]
+    },
+    {
+      "code": "metal",
+      "display": "Full-cast metal",
+      "definition": "Value of axis group \"restorationMaterial\""
+    },
+    {
+      "code": "metal-ceramic",
+      "display": "Metal-ceramic (PFM)",
+      "definition": "Value of axis group \"restorationMaterial\""
+    },
+    {
+      "code": "mild",
+      "display": "Mild root concavity",
+      "definition": "Value of axis group \"rootConcavity\""
+    },
+    {
+      "code": "milktooth",
+      "display": "Primary (deciduous) tooth",
+      "definition": "Value of axis group \"toothSelection\""
+    },
+    {
+      "code": "miller-recession-class",
+      "display": "Miller recession class",
+      "definition": "Finding type (Observation.code) — axis \"millerClass\""
+    },
+    {
+      "code": "missing-gap-closed",
+      "display": "Closed gap (missing tooth)",
+      "definition": "Finding type (Observation.code) — axis \"missingClosed\""
+    },
+    {
+      "code": "mobility",
+      "display": "Mobility",
+      "definition": "Value of axis group \"mods\""
+    },
+    {
+      "code": "mod-bleeding-index-mombelli",
+      "display": "Modified sulcus bleeding index (Mombelli)",
+      "definition": "Periodontal-panel component code (implants)"
+    },
+    {
+      "code": "mod-plaque-index-mombelli",
+      "display": "Modified plaque index (Mombelli)",
+      "definition": "Periodontal-panel component code (implants)"
+    },
+    {
+      "code": "mucositis",
+      "display": "Peri-implant mucositis",
+      "definition": "Value of axis group \"periImplant\""
+    },
+    {
+      "code": "natural",
+      "display": "Natural substrate",
+      "definition": "Value of axis group \"toothSubstrate\""
+    },
+    {
+      "code": "necrosis",
+      "display": "Pulp necrosis",
+      "definition": "Value of axis group \"pulpDx\""
+    },
+    {
+      "code": "necrosis-pulpae",
+      "display": "Necrosis pulpae",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "no-tooth-after-extraction",
+      "display": "Missing after extraction",
+      "definition": "Value of axis group \"toothSelection\""
+    },
+    {
+      "code": "none",
+      "display": "No tooth status",
+      "definition": "Value of axis group \"toothSelection\"; Value of axis group \"endo\"; Value of axis group \"fillingMaterial\"; Value of axis group \"prosthesis\"; Value of axis group \"mobility\"; Value of axis group \"periapicalType\"; Value of axis group \"restorationType\"; Value of axis group \"restorationMaterial\"; Value of axis group \"pulpLatin\"; Value of axis group \"resorptionType\"; Value of axis group \"wearEdge\"; Value of axis group \"wearCervical\"; Value of axis group \"discoloration\"; Value of axis group \"orthoAppliance\"; Value of axis group \"orthoDrift\"; Value of axis group \"orthoVertical\"; Value of axis group \"rootCaries\"; Value of axis group \"cejVisibility\"; Value of axis group \"rootConcavity\"; Value of axis group \"millerClass\"; Value of axis group \"periImplant\"; Value of axis group \"radiographicDepth\"; Value of axis group \"fillingDefect\"",
+      "designation": [
+        {
+          "value": "No endodontic treatment"
+        },
+        {
+          "value": "No filling"
+        },
+        {
+          "value": "No prosthesis"
+        },
+        {
+          "value": "No mobility"
+        },
+        {
+          "value": "No periapical lesion"
+        },
+        {
+          "value": "No restoration"
+        },
+        {
+          "value": "No material"
+        },
+        {
+          "value": "No Latin pulp subtype"
+        },
+        {
+          "value": "No root resorption"
+        },
+        {
+          "value": "No incisal/occlusal wear"
+        },
+        {
+          "value": "No cervical wear"
+        },
+        {
+          "value": "No discoloration"
+        },
+        {
+          "value": "No orthodontic appliance"
+        },
+        {
+          "value": "No drift"
+        },
+        {
+          "value": "No vertical malposition"
+        },
+        {
+          "value": "No root caries"
+        },
+        {
+          "value": "CEJ visibility not assessed"
+        },
+        {
+          "value": "No root concavity"
+        },
+        {
+          "value": "No recession class assigned"
+        },
+        {
+          "value": "Peri-implant health"
+        },
+        {
+          "value": "No radiographic caries depth recorded"
+        },
+        {
+          "value": "No filling defect"
+        }
+      ]
+    },
+    {
+      "code": "nonvital",
+      "display": "Non-vital (pulp-death) darkening",
+      "definition": "Value of axis group \"discoloration\""
+    },
+    {
+      "code": "normal",
+      "display": "Normal pulp",
+      "definition": "Value of axis group \"pulpDx\"; Value of axis group \"apicalDx\"",
+      "designation": [
+        {
+          "value": "No apical pathology"
+        }
+      ]
+    },
+    {
+      "code": "not-detectable",
+      "display": "CEJ not detectable",
+      "definition": "Value of axis group \"cejVisibility\""
+    },
+    {
+      "code": "occlusal",
+      "display": "Occlusal surface",
+      "definition": "Value of axis group \"fillingSurfaces\""
+    },
+    {
+      "code": "onlay",
+      "display": "Onlay",
+      "definition": "Value of axis group \"restorationType\""
+    },
+    {
+      "code": "other",
+      "display": "Other / unknown discoloration",
+      "definition": "Value of axis group \"discoloration\""
+    },
+    {
+      "code": "parapulpal-pin",
+      "display": "Parapulpal pin",
+      "definition": "Finding type (Observation.code) — axis \"parapulpalPin\""
+    },
+    {
+      "code": "parodontal",
+      "display": "Periodontal involvement",
+      "definition": "Value of axis group \"mods\""
+    },
+    {
+      "code": "peri-implant-status",
+      "display": "Peri-implant status",
+      "definition": "Finding type (Observation.code) — axis \"periImplant\""
+    },
+    {
+      "code": "peri-implantitis-mild",
+      "display": "Peri-implantitis, mild bone loss",
+      "definition": "Value of axis group \"periImplant\""
+    },
+    {
+      "code": "peri-implantitis-moderate",
+      "display": "Peri-implantitis, moderate bone loss",
+      "definition": "Value of axis group \"periImplant\""
+    },
+    {
+      "code": "peri-implantitis-severe",
+      "display": "Peri-implantitis, severe bone loss",
+      "definition": "Value of axis group \"periImplant\""
+    },
+    {
+      "code": "periapical-lesion-type",
+      "display": "Periapical lesion type",
+      "definition": "Finding type (Observation.code) — axis \"periapicalType\""
+    },
+    {
+      "code": "perio-bop",
+      "display": "Bleeding on probing",
+      "definition": "Periodontal-panel component code"
+    },
+    {
+      "code": "perio-site:B",
+      "display": "Buccal",
+      "definition": "Qualifier / component code — probing site (component bodySite qualifier)"
+    },
+    {
+      "code": "perio-site:DB",
+      "display": "Disto-buccal",
+      "definition": "Qualifier / component code — probing site (component bodySite qualifier)"
+    },
+    {
+      "code": "perio-site:DL",
+      "display": "Disto-lingual",
+      "definition": "Qualifier / component code — probing site (component bodySite qualifier)"
+    },
+    {
+      "code": "perio-site:L",
+      "display": "Lingual/palatal",
+      "definition": "Qualifier / component code — probing site (component bodySite qualifier)"
+    },
+    {
+      "code": "perio-site:MB",
+      "display": "Mesio-buccal",
+      "definition": "Qualifier / component code — probing site (component bodySite qualifier)"
+    },
+    {
+      "code": "perio-site:ML",
+      "display": "Mesio-lingual",
+      "definition": "Qualifier / component code — probing site (component bodySite qualifier)"
+    },
+    {
+      "code": "periodontal-diagnosis:gingivitis",
+      "display": "gingivitis",
+      "definition": "2017-classification periodontal diagnosis (Condition.code local coding)"
+    },
+    {
+      "code": "periodontal-diagnosis:health",
+      "display": "health",
+      "definition": "2017-classification periodontal diagnosis (Condition.code local coding)"
+    },
+    {
+      "code": "periodontal-diagnosis:periodontitis",
+      "display": "periodontitis",
+      "definition": "2017-classification periodontal diagnosis (Condition.code local coding)"
+    },
+    {
+      "code": "periodontal-extent",
+      "display": "Periodontal extent",
+      "definition": "Condition.stage.type"
+    },
+    {
+      "code": "periodontal-grade",
+      "display": "Periodontal grade",
+      "definition": "Condition.stage.type"
+    },
+    {
+      "code": "periodontal-stage",
+      "display": "Periodontal stage",
+      "definition": "Condition.stage.type"
+    },
+    {
+      "code": "plaque-index-silness-loe",
+      "display": "Plaque index (Silness-Löe)",
+      "definition": "Periodontal-panel component code"
+    },
+    {
+      "code": "plaque-surface",
+      "display": "Dental plaque present",
+      "definition": "Periodontal-panel component code (O'Leary surface)"
+    },
+    {
+      "code": "plaque-surface:buccal",
+      "display": "Buccal",
+      "definition": "Qualifier / component code — O'Leary surface of a plaque / PI / GI / mPI / mBI component (bodySite qualifier)"
+    },
+    {
+      "code": "plaque-surface:distal",
+      "display": "Distal",
+      "definition": "Qualifier / component code — O'Leary surface of a plaque / PI / GI / mPI / mBI component (bodySite qualifier)"
+    },
+    {
+      "code": "plaque-surface:lingual",
+      "display": "Lingual",
+      "definition": "Qualifier / component code — O'Leary surface of a plaque / PI / GI / mPI / mBI component (bodySite qualifier)"
+    },
+    {
+      "code": "plaque-surface:mesial",
+      "display": "Mesial",
+      "definition": "Qualifier / component code — O'Leary surface of a plaque / PI / GI / mPI / mBI component (bodySite qualifier)"
+    },
+    {
+      "code": "prosthesis-type",
+      "display": "Prosthesis / attachment",
+      "definition": "Finding type (Observation.code) — axis \"prosthesis\""
+    },
+    {
+      "code": "pulp-diagnosis",
+      "display": "Pulp diagnosis (AAE)",
+      "definition": "Finding type (Observation.code) — axis \"pulpDx\""
+    },
+    {
+      "code": "pulp-diagnosis-latin",
+      "display": "Pulp diagnosis (Latin, practical)",
+      "definition": "Finding type (Observation.code) — axis \"pulpLatin\""
+    },
+    {
+      "code": "pulpa-sana",
+      "display": "Pulpa sana",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "pulpitis-acuta-purulenta",
+      "display": "Pulpitis acuta purulenta",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "pulpitis-acuta-serosa",
+      "display": "Pulpitis acuta serosa",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "pulpitis-chronica-clausa",
+      "display": "Pulpitis chronica clausa",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "pulpitis-chronica-hyperplastica",
+      "display": "Pulpitis chronica hyperplastica (pulpa-polyp)",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "pulpitis-chronica-ulcerosa",
+      "display": "Pulpitis chronica ulcerosa (aperta)",
+      "definition": "Value of axis group \"pulpLatin\""
+    },
+    {
+      "code": "radiographic-caries-depth",
+      "display": "Radiographic caries depth",
+      "definition": "Finding type (Observation.code)"
+    },
+    {
+      "code": "radix",
+      "display": "Root remnant (radix)",
+      "definition": "Value of axis group \"toothSubstrate\""
+    },
+    {
+      "code": "removable-full",
+      "display": "Full removable denture",
+      "definition": "Value of axis group \"prosthesis\""
+    },
+    {
+      "code": "removable-partial",
+      "display": "Partial removable denture",
+      "definition": "Value of axis group \"prosthesis\""
+    },
+    {
+      "code": "restoration",
+      "display": "Dental restoration",
+      "definition": "Finding type (Observation.code) — axis \"fillingMaterial\""
+    },
+    {
+      "code": "restoration-material",
+      "display": "Restoration material",
+      "definition": "Finding type (Observation.code) — axis \"restorationMaterial\""
+    },
+    {
+      "code": "restoration-type",
+      "display": "Restoration type",
+      "definition": "Finding type (Observation.code) — axis \"restorationType\""
+    },
+    {
+      "code": "reversible-pulpitis",
+      "display": "Reversible pulpitis",
+      "definition": "Value of axis group \"pulpDx\""
+    },
+    {
+      "code": "root-caries",
+      "display": "Root caries",
+      "definition": "Finding type (Observation.code) — axis \"rootCaries\""
+    },
+    {
+      "code": "root-concavity",
+      "display": "Root concavity",
+      "definition": "Finding type (Observation.code) — axis \"rootConcavity\""
+    },
+    {
+      "code": "root-resorption-type",
+      "display": "Root resorption type",
+      "definition": "Finding type (Observation.code) — axis \"resorptionType\""
+    },
+    {
+      "code": "site:buccal",
+      "display": "Buccal",
+      "definition": "Qualifier / component code — keratinized-gingiva width is a single buccal measurement (component bodySite qualifier)"
+    },
+    {
+      "code": "smoking-current",
+      "display": "Current smoker",
+      "definition": "Tobacco smoking status value (evidence Observation)"
+    },
+    {
+      "code": "smoking-former",
+      "display": "Former smoker",
+      "definition": "Tobacco smoking status value (evidence Observation)"
+    },
+    {
+      "code": "smoking-never",
+      "display": "Never smoker",
+      "definition": "Tobacco smoking status value (evidence Observation)"
+    },
+    {
+      "code": "stage-I",
+      "display": "Stage I",
+      "definition": "Condition.stage.summary (2017 periodontitis stage)"
+    },
+    {
+      "code": "stage-II",
+      "display": "Stage II",
+      "definition": "Condition.stage.summary (2017 periodontitis stage)"
+    },
+    {
+      "code": "stage-III",
+      "display": "Stage III",
+      "definition": "Condition.stage.summary (2017 periodontitis stage)"
+    },
+    {
+      "code": "stage-IV",
+      "display": "Stage IV",
+      "definition": "Condition.stage.summary (2017 periodontitis stage)"
+    },
+    {
+      "code": "symptomatic-apical-periodontitis",
+      "display": "Symptomatic apical periodontitis",
+      "definition": "Value of axis group \"apicalDx\""
+    },
+    {
+      "code": "telescope",
+      "display": "Telescopic crown",
+      "definition": "Value of axis group \"restorationMaterial\""
+    },
+    {
+      "code": "temporary",
+      "display": "Temporary filling",
+      "definition": "Value of axis group \"fillingMaterial\"; Value of axis group \"restorationMaterial\"",
+      "designation": [
+        {
+          "value": "Temporary"
+        }
+      ]
+    },
+    {
+      "code": "tetracycline",
+      "display": "Tetracycline staining",
+      "definition": "Value of axis group \"discoloration\""
+    },
+    {
+      "code": "thick",
+      "display": "Thick gingival phenotype",
+      "definition": "Value of axis group \"gingivalThickness\""
+    },
+    {
+      "code": "thin",
+      "display": "Thin gingival phenotype",
+      "definition": "Value of axis group \"gingivalThickness\""
+    },
+    {
+      "code": "tooth-base",
+      "display": "Present tooth",
+      "definition": "Value of axis group \"toothSelection\""
+    },
+    {
+      "code": "tooth-discoloration",
+      "display": "Tooth discoloration",
+      "definition": "Finding type (Observation.code) — axis \"discoloration\""
+    },
+    {
+      "code": "tooth-mobility",
+      "display": "Tooth mobility",
+      "definition": "Finding type (Observation.code) — axis \"mobility\""
+    },
+    {
+      "code": "tooth-modifier",
+      "display": "Tooth modifier",
+      "definition": "Finding type (Observation.code) — axis \"mods\""
+    },
+    {
+      "code": "tooth-note",
+      "display": "Tooth note",
+      "definition": "Finding type (Observation.code)"
+    },
+    {
+      "code": "tooth-ortho-appliance",
+      "display": "Orthodontic appliance",
+      "definition": "Finding type (Observation.code) — axis \"orthoAppliance\""
+    },
+    {
+      "code": "tooth-ortho-drift",
+      "display": "Orthodontic drift",
+      "definition": "Finding type (Observation.code) — axis \"orthoDrift\""
+    },
+    {
+      "code": "tooth-ortho-rotation",
+      "display": "Tooth rotation",
+      "definition": "Finding type (Observation.code) — axis \"orthoRotation\""
+    },
+    {
+      "code": "tooth-ortho-vertical",
+      "display": "Vertical malposition",
+      "definition": "Finding type (Observation.code) — axis \"orthoVertical\""
+    },
+    {
+      "code": "tooth-status",
+      "display": "Tooth status",
+      "definition": "Finding type (Observation.code) — axis \"toothSelection\""
+    },
+    {
+      "code": "tooth-substrate",
+      "display": "Tooth substrate",
+      "definition": "Finding type (Observation.code) — axis \"toothSubstrate\""
+    },
+    {
+      "code": "tooth-under-gum",
+      "display": "Tooth under gum",
+      "definition": "Value of axis group \"toothSelection\""
+    },
+    {
+      "code": "tooth-wear-cervical",
+      "display": "Cervical wear",
+      "definition": "Finding type (Observation.code) — axis \"wearCervical\""
+    },
+    {
+      "code": "tooth-wear-edge",
+      "display": "Incisal/occlusal wear",
+      "definition": "Finding type (Observation.code) — axis \"wearEdge\""
+    },
+    {
+      "code": "unknown",
+      "display": "Gingival thickness not assessed",
+      "definition": "Value of axis group \"gingivalThickness\""
+    },
+    {
+      "code": "veneer",
+      "display": "Veneer",
+      "definition": "Value of axis group \"restorationType\""
+    },
+    {
+      "code": "wear",
+      "display": "Worn / deficient filling material",
+      "definition": "Value of axis group \"fillingDefect\""
+    },
+    {
+      "code": "zircon",
+      "display": "Zirconia",
+      "definition": "Value of axis group \"restorationMaterial\""
+    }
+  ]
+}

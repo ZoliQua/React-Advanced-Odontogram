@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+</p>
+
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.4.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -242,6 +246,10 @@ Vagy töltsd be egy kizárólag kliensoldali dinamikus importtal: `dynamic(() =>
 - 🌍 Nemzeti kódcsomagok (Beállítások → Diagnózis kódrendszer): egy nemzeti kódrendszert helyez a WHO ICD-10 alap fölé — BNO-10 (magyar, lokalizált megjelenítés; megtartja a WHO kódot) vagy US ICD-10-CM (átleképzett kódok, pl. a K07 dentofaciális tartomány → M26). Egy újabb ország csomagjának hozzáadása egy apró `CodingPack` bejegyzés — lásd a `CODING_PACKS.md` fájlt.
 - 🔬 SNOMED CT réteg (Beállítások → SNOMED CT, opcionálisan bekapcsolható, alapértelmezetten kikapcsolva): a WHO és bármely nemzeti kódcsomag kódolása mellé SNOMED CT kódolást is hozzáad, és kódolja azokat a peri-implantáris leleteket is, amelyeknek nincs WHO ICD-10 kódjuk. Az ICD-10-CM és SNOMED fogalomazonosítók referencia jellegűek, legjobb tudás szerintiek — klinikai használat előtt ellenőrizze őket a hivatalos ICD-10-CM táblázatos listával / SNOMED CT böngészővel szemben.
 - 🔁 FHIR Condition oda-vissza konverzió: a diagnózisok FHIR `Condition` erőforrásként exportálódnak (fogankénti kötésű, valamint páciensszintű eseti állapotok egy oldalasítást jelző `bodySite` mezővel) az Observation-ök mellett, importáláskor pedig visszaépülnek — az eseti állapotok közvetlenül, a fogankénti hozzáadás/elnyomás felülbírálások pedig az importált Condition-ök és az újra levezetett diagram összevetésével (diff).
+- 🩺 **Megújított Diagnózisok kártya:** minden fogankénti diagnózis-sor elöl mutatja az ICD-10 kódot (`K04.0 Pulpitis`), és a sorok kód szerint vannak rendezve. Minden sorhoz tartozik egy **kizárás** kapcsoló (kiveszi a diagnózist a FHIR exportból, de a diagramon marad) és egy **törlés** (×) gomb, amely a diagnózist *és* a hozzá tartozó leletet is eltávolítja a fogról. A választóból hozzáadott diagnózis megírja a mögöttes diagram-leletet is, így a jel azonnal megjelenik.
+- 🗂️ **Eseti / regionális diagnózisok felugró ablaka:** a teljes szájüregre és régiókra vonatkozó diagnózisok (állcsonti rendellenességek, ciszták, nyálmirigy- és nyálkahártya-elváltozások…) kikerültek a parodontális oldalsávból egy önálló párbeszédablakba, amely az Odontogram / Parodontális státusz váltó melletti **Diagnózisok** gombbal nyitható meg; a választója kód szerint rendezett és kód-elsőbbségű.
+- 🇭🇺 **BNO-10 csomag:** a magyar megjelenítési szövegek immár a hivatalos NEAK BNO-10 megnevezések, és a csomag a szabványos ICD-10 rendszer-URI-t használja (a BNO-X megegyezik a WHO ICD-10-zel).
+- ✅ **HL7-validátor-tiszta FHIR export:** minden Bundle-bejegyzés determinisztikus `id`-t és abszolút `fullUrl`-t kap (nincs `urn:uuid` helyőrző), és a Bundle tartalmazza a motor saját **CodeSystem**-jét, hogy a helyi kódjai validáláskor feloldhatók legyenek; ugyanez a CodeSystem a repóban is közzé van téve `fhir/CodeSystem-odontogram.json` néven (a `includeCodeSystem: false` beállítással a FHIR export opciói között kihagyható).
 - 🧰 Egységes ikon-fejléc sor lapozott (tabos) Beállítások ablakkal (Általános / Panelek / Fogadatok / Caries / Pulpa / Jegyzetek / Periodontal — számozás, jegyzetek, panel-láthatóság, ICDAS, szuvasodás-mélység kapcsoló, gyökér-/radiológiai szuvasodás részletezettség, pulpa részletezettségi szint, fogkopás/elszíneződés részletezettségi szint, fogadatok)
 - 🗂️ Beállítások → "Panelek" fül: a teljes szájüreg Státusz és Ortodoncia összegző panelek egymástól függetlenül elrejthetők/megjeleníthetők
 - 🦷🩺 Beállítások → "Periodontal" fül: 16 index-szintű mutatás/elrejtés kapcsoló a parodontális diagram soraihoz (csoportosítva: tasak/higiénia/mukogingivális/tartás/peri-implantáris — PD/GM/CAL/BOP, plakk, PI, GI, CEJ láthatóság, gyökér-konkavitás, KG, GT, furkáció, mobilitás, Miller-osztály, mPI, mBI), mindegyik saját leírással, valamint egy fordított-vs-kanonikus index-név megjelenítési opcióval (kanonikus = egy rögzített angol/latin tudományos név minden UI-nyelven; a tooltipek ettől a beállítástól függetlenül mindig lokalizáltak maradnak). Mindkettő alkalmazás-szintű beállítás (mint a `perioViewMode`) — sosem része az export payloadnak
@@ -251,7 +259,7 @@ Vagy töltsd be egy kizárólag kliensoldali dinamikus importtal: `dynamic(() =>
 - 🗂️ Egységes Export legördülő menü (Státusz JSON / FHIR / PNG / JPG)
 - 📥 Import legördülő menü FHIR importtal (visszatölti az exportált Bundle-öket)
 - ⏳ Folyamatjelző overlay a képexport alatt
-- 🎓 12 lépéses interaktív bemutató túra
+- 🎓 18 lépéses interaktív bemutató túra
 - 🔢 Három számozási rendszer (FDI, Universal, Palmer)
 - 🌐 I18n — 12 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) nyelvváltóval; az arab a felületet jobbról balra rendereli, a fog-/parodontális diagramokat balról jobbra rögzítve (gépi fordítás, anyanyelvi lektorálás az AR/ZH/FR nyelveknél még várat magára)
 - 🌗 Sötét mód támogatás váltógombbal (önálló vagy szülő alkalmazás által vezérelt)
@@ -550,6 +558,9 @@ npm run test:coverage  # Lefedettségi jelentés
 ```
 
 ### 📖 API Dokumentáció
+
+🅰️ **Angular verzió:** elérhető egy hivatalos Angular port, az [Angular Advanced Odontogram](https://github.com/ZoliQua/Angular-Advanced-Odontogram) (`angular-advanced-odontogram` néven az npm-en) — a JSON és FHIR R4 exportok kölcsönösen visszatölthetők a két könyvtár között.
+
 ```bash
 npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 ```
@@ -649,7 +660,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `exportPdf(opts)` | Egy jsPDF-natív PDF jelentés letöltése (`{patientData, odontogramChart, odontogramDescription, individualNotes, perioStatus, perioDescription}`, mindegyik szekció opcionális) — vektoros szöveg plusz raszterizált fog-/parodontális diagram képek; az egyedi megjegyzések szekció automatikusan kimarad, ha egyetlen fogon sincs megjegyzés, a két parodontális szekció pedig akkor, amikor a `hasAnyPerioData()` hamis, függetlenül az `opts`-tól |
 | `importFhirBundle(input)` | A modul által készített FHIR R4 Bundle importálása (objektum vagy JSON szöveg) |
 | `setImportFormat(format)` | A következő fájlimport értelmezőjének beállítása — `"status"` vagy `"fhir"` |
-| `startIntroTour()` | A 12 lépéses interaktív bemutató túra indítása |
+| `startIntroTour()` | A 18 lépéses interaktív bemutató túra indítása |
 
 ### 💾 Állapotmentés (localStorage)
 
@@ -755,6 +766,8 @@ Az export egy JSON fájlt hoz létre (`2.22` verziójú; az importálás tovább
 - `case` - opcionális, eset-szintű metaadat objektum — NEM fogankénti és NEM kettős állapotú (ugyanaz az objektum osztott a státusz és a terv diagram között, a felső szintű `globals` payload kulcsot tükrözve). Tartalmazza a páciens életkorát (`age`, 0-120), a dohányzási státuszt (`smokingStatus`: unknown/never/former/current, `cigarettesPerDay` 0-99 értékkel), a diabétesz-státuszt (`diabetesStatus`: unknown/none/present, `hba1c` 3.0-20.0 értékkel), két parodontális kimenet-összegző mutatót (`toothLossPerio` 0-32 és `maxRblPercent` 0-100), a 2017-es parodontális klasszifikáció klinikusi felülbírálásait (`diagnosisOverride`/`stageOverride`/`gradeOverride`/`extentOverride`), valamint három eset-azonosító mezőt — (2.19-es verziótól) `patientName` (körbevágott szöveg vagy `null`) / `examDate` (`ÉÉÉÉ-HH-NN` vagy `null`); és (2.20-as verziótól) `patientDob` (`ÉÉÉÉ-HH-NN` vagy `null`) — amelyeket kizárólag a PDF jelentés fejléce használ, máshol nem; egyik sem része a FHIR exportnak. Emellett (2.22-es verziótól) tartalmazza a `caseConditions` mezőt is — eset-/regionális diagnózisok (maloklúzió és állkapocsízületi (TMJ) rendellenesség K07, szájüregi ciszták K09, nyálmirigy-betegségek K11, stomatitis és szájnyálkahártya-elváltozások K12/K13, fogazati fejlődési rendellenességek K00), mindegyik oldaliság szerint besorolva (nem meghatározott / bal / jobb / kétoldali). Az üres mezők kihagyásával szerializálódik, és a teljes `case` objektum hiányzik, ha minden mezője az alapértékén van. A `getCaseMeta()`/`resetCaseMeta()` és az egyedi setterek kezelik (lásd a Nyilvános API-t fentebb).
 
 ### 🖨️ Export
+Az `exportFhir()` HL7-validátor-tiszta Bundle-t készít: minden bejegyzés determinisztikus `id`-t és abszolút `fullUrl`-t kap (nincs `urn:uuid` helyőrző), és a Bundle tartalmazza a motor saját CodeSystem-jét, hogy a helyi kódjai validáláskor feloldhatók legyenek (ugyanez `fhir/CodeSystem-odontogram.json` néven a repóban is elérhető; a `includeCodeSystem: false` beállítással kihagyható).
+
 Az odontogram saját Státusz JSON / FHIR / PNG / JPG / SVG exportján túl a **parodontális diagramnak** saját export útvonala van:
 - **Parodontális SVG/PNG/JPG:** az `exportPerioSvg()` / `exportPerioImage("png"|"jpg")` a teljes parodontális diagramot (fog-grafikák + számsorok + a 2017-es klasszifikáció) egyetlen önálló vektoros SVG-ként rendereli (`buildPerioSvg()`), a beágyazott `PerioChart` DOM-tól függetlenül. A három export-menüpont le van tiltva, amikor a `hasAnyPerioData()` hamis (egy üres diagramnak nincs mit exportálnia parodontálisan).
 - **PDF jelentés:** az export menü "PDF report…" pontja megnyitja az `ExportOptionsModal`-t — egy beállítás-ablakot (páciensnév + születési dátum + vizsgálati dátum mezők, közvetlenül az eset metaadatokhoz kötve, a vizsgálati dátum alapértelmezetten a mai napra áll; szekció-jelölőnégyzetek: páciens adatok, odontogram diagram, odontogram leírás, egyedi megjegyzések — letiltva, ha egyetlen fogon sincs megjegyzés —, parodontális státusz, parodontális leírás), mielőtt meghívná az `exportPdf(opts)`-ot. Az üres azonosító mezők helyettesítő értékre esnek vissza ("John Doe" / "1980-01-01"), így az export mindig sikeres. A PDF jsPDF-natívan épül fel — vektoros szöveg `.text()`-tel, raszterizált fog-/parodontális diagram képek `.addImage()`-dzsel — **svg2pdf.js függőség nélkül**. Az egyedi megjegyzések szekció automatikusan kimarad, ha egyetlen fogon sincs megjegyzés, a két parodontális szekció pedig akkor, amikor a `hasAnyPerioData()` hamis, függetlenül az ablak jelölőnégyzeteitől.
@@ -826,7 +839,7 @@ A géppel olvasható hivatkozási metaadatok a [`CITATION.cff`](../CITATION.cff)
 
 ## 📄 License
 
-Created with ❤️ by Zoltan Dul (2026)
+Created with ❤️ by [Zoltan Dul](https://www.linkedin.com/in/zoltandul/) (2026)
 Released under the MIT License.
 
 ## 🙌 Köszönet

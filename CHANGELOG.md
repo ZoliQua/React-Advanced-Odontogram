@@ -7,7 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-09-10
+
 ### Added
+
+- **Engine CodeSystem embedded in the FHIR export (issue #23 follow-up).** The
+  Bundle now carries the engine's own `CodeSystem` resource (canonical
+  `…/fhir/CodeSystem/odontogram`, placed right after the Patient) enumerating
+  every code the export can emit under the local system — finding types taken
+  straight from the clinical-axis registry, every enum value (repeated bare codes
+  such as `none`/`mesial`/`temporary` are merged, their alternative displays kept
+  as designations), the periodontal panel/index/qualifier codes, the 2017 stage/
+  grade/extent summaries and case-condition laterality. Validators can therefore
+  resolve the local codes from the Bundle itself instead of timing out on an
+  unpublished system. Opt out with `includeCodeSystem: false` in the FHIR export
+  options. The same resource is published as `fhir/CodeSystem-odontogram.json`
+  (`npm run fhir:codesystem` regenerates it; a test keeps it in step with the
+  generator, and a maximal-export test proves every emitted local code is
+  covered). Plugin-defined `custom-state:<pluginId>` codes stay open-ended by
+  design.
+- **Guided tour: Diagnoses steps.** Two new tour steps introduce the per-tooth
+  Diagnoses card and the Case / regional diagnoses pop-up button (18 steps in
+  total), in all 12 UI languages.
+- **README refresh in all 12 languages:** the project logo at the top, a pointer
+  to the official Angular port (Angular Advanced Odontogram) under the API-docs
+  link, the author linked to LinkedIn in the license section, and the 2.5.0
+  features (Diagnoses card controls, the case-diagnoses pop-up, the official
+  NEAK BNO-10 titles, the validator-clean FHIR export with the embedded
+  CodeSystem).
 
 - **Dental diagnosis coding (DX-0 foundation).** Charted findings now export as
   FHIR `Condition` resources with a WHO ICD-10 base coding, plus an optional

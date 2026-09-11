@@ -1,0 +1,19 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-all",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-all",
+  "version": "2.5.0",
+  "name": "OdontogramAll",
+  "title": "Odontogram — all engine-local codes",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "Every concept of the React Advanced Odontogram CodeSystem (intensional include of the whole code system).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram"
+      }
+    ]
+  }
+}

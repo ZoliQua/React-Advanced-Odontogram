@@ -41,7 +41,7 @@ export function buildCaseConditionCode(key: CaseConditionKey, pack?: CodingPack,
  *  "unspecified") rides on a `bodySite` engine-local code (SNOMED body-structure
  *  in DX-6). No tooth/FDI bodySite — these are not tooth-linked. */
 export function appendCaseConditions(bundle: Bundle, payload: OdontogramExportPayload, options: FhirExportOptions = {}): void {
-  const caseRaw = (payload && typeof payload === "object" ? (payload as { case?: unknown }).case : undefined) as Record<string, unknown> | undefined;
+  const caseRaw = (payload && typeof payload === "object" ? payload.case : undefined) as Record<string, unknown> | undefined;
   const conds = caseRaw?.caseConditions as Record<string, unknown> | undefined;
   if (!conds || typeof conds !== "object") return;
   const subjectRef = options.subject ?? PLACEHOLDER_PATIENT_FULLURL;

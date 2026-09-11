@@ -186,6 +186,10 @@ export interface OdontogramExportPayload {
     stageOverride?: string;
     gradeOverride?: string;
     extentOverride?: string;
+    /** Case-level (whole-mouth / regional) diagnoses: key -> laterality
+     *  (`unspecified` | `left` | `right` | `bilateral`). Serialized omit-when-empty
+     *  by `CaseMeta`; produced by the FHIR importer from case Conditions (DX-3b/7). */
+    caseConditions?: Record<string, string>;
   };
 }
 

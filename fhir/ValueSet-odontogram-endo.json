@@ -1,0 +1,45 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-endo",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-endo",
+  "version": "2.5.0",
+  "name": "OdontogramEndo",
+  "title": "Odontogram — endo values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"endo\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No endodontic treatment"
+          },
+          {
+            "code": "endo-medical-filling",
+            "display": "Endodontic medical filling"
+          },
+          {
+            "code": "endo-filling",
+            "display": "Root canal filling"
+          },
+          {
+            "code": "endo-filling-incomplete",
+            "display": "Incomplete root canal filling"
+          },
+          {
+            "code": "endo-glass-pin",
+            "display": "Glass fiber post"
+          },
+          {
+            "code": "endo-metal-pin",
+            "display": "Metal post"
+          }
+        ]
+      }
+    ]
+  }
+}

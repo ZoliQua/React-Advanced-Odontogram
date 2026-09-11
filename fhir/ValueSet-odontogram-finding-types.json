@@ -1,0 +1,213 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-finding-types",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-finding-types",
+  "version": "2.5.0",
+  "name": "OdontogramFindingTypes",
+  "title": "Odontogram — finding types",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The Observation.code concepts of the engine's FHIR export: one per clinical-axis registry entry plus the hand-emitted whole-mouth and per-surface finding types.",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "tooth-status",
+            "display": "Tooth status"
+          },
+          {
+            "code": "endodontic-status",
+            "display": "Endodontic status"
+          },
+          {
+            "code": "tooth-substrate",
+            "display": "Tooth substrate"
+          },
+          {
+            "code": "restoration-type",
+            "display": "Restoration type"
+          },
+          {
+            "code": "restoration-material",
+            "display": "Restoration material"
+          },
+          {
+            "code": "prosthesis-type",
+            "display": "Prosthesis / attachment"
+          },
+          {
+            "code": "tooth-mobility",
+            "display": "Tooth mobility"
+          },
+          {
+            "code": "caries",
+            "display": "Dental caries"
+          },
+          {
+            "code": "tooth-modifier",
+            "display": "Tooth modifier"
+          },
+          {
+            "code": "calculus",
+            "display": "Dental calculus"
+          },
+          {
+            "code": "periapical-lesion-type",
+            "display": "Periapical lesion type"
+          },
+          {
+            "code": "restoration",
+            "display": "Dental restoration"
+          },
+          {
+            "code": "apicoectomy",
+            "display": "Apicoectomy / root resection"
+          },
+          {
+            "code": "fissure-sealing",
+            "display": "Fissure sealing"
+          },
+          {
+            "code": "contact-mesial",
+            "display": "Mesial contact issue"
+          },
+          {
+            "code": "contact-distal",
+            "display": "Distal contact issue"
+          },
+          {
+            "code": "broken-mesial",
+            "display": "Mesial fracture"
+          },
+          {
+            "code": "broken-incisal",
+            "display": "Incisal fracture"
+          },
+          {
+            "code": "broken-distal",
+            "display": "Distal fracture"
+          },
+          {
+            "code": "parapulpal-pin",
+            "display": "Parapulpal pin"
+          },
+          {
+            "code": "bridge-pillar",
+            "display": "Bridge abutment (pillar)"
+          },
+          {
+            "code": "extraction-wound",
+            "display": "Extraction wound"
+          },
+          {
+            "code": "extraction-planned",
+            "display": "Planned extraction"
+          },
+          {
+            "code": "crown-replace-planned",
+            "display": "Planned crown replacement"
+          },
+          {
+            "code": "crown-needed",
+            "display": "Crown needed"
+          },
+          {
+            "code": "missing-gap-closed",
+            "display": "Closed gap (missing tooth)"
+          },
+          {
+            "code": "crown-leakage",
+            "display": "Crown marginal leakage"
+          },
+          {
+            "code": "pulp-diagnosis",
+            "display": "Pulp diagnosis (AAE)"
+          },
+          {
+            "code": "pulp-diagnosis-latin",
+            "display": "Pulp diagnosis (Latin, practical)"
+          },
+          {
+            "code": "apical-diagnosis",
+            "display": "Apical diagnosis (AAE)"
+          },
+          {
+            "code": "root-resorption-type",
+            "display": "Root resorption type"
+          },
+          {
+            "code": "tooth-wear-edge",
+            "display": "Incisal/occlusal wear"
+          },
+          {
+            "code": "tooth-wear-cervical",
+            "display": "Cervical wear"
+          },
+          {
+            "code": "tooth-discoloration",
+            "display": "Tooth discoloration"
+          },
+          {
+            "code": "tooth-ortho-appliance",
+            "display": "Orthodontic appliance"
+          },
+          {
+            "code": "tooth-ortho-drift",
+            "display": "Orthodontic drift"
+          },
+          {
+            "code": "tooth-ortho-vertical",
+            "display": "Vertical malposition"
+          },
+          {
+            "code": "tooth-ortho-rotation",
+            "display": "Tooth rotation"
+          },
+          {
+            "code": "root-caries",
+            "display": "Root caries"
+          },
+          {
+            "code": "cej-visibility",
+            "display": "CEJ visibility"
+          },
+          {
+            "code": "root-concavity",
+            "display": "Root concavity"
+          },
+          {
+            "code": "gingival-thickness",
+            "display": "Gingival thickness"
+          },
+          {
+            "code": "miller-recession-class",
+            "display": "Miller recession class"
+          },
+          {
+            "code": "peri-implant-status",
+            "display": "Peri-implant status"
+          },
+          {
+            "code": "edentulous",
+            "display": "Edentulous (whole mouth)"
+          },
+          {
+            "code": "radiographic-caries-depth",
+            "display": "Radiographic caries depth"
+          },
+          {
+            "code": "filling-defect",
+            "display": "Filling defect"
+          },
+          {
+            "code": "tooth-note",
+            "display": "Tooth note"
+          }
+        ]
+      }
+    ]
+  }
+}

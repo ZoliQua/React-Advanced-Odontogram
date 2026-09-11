@@ -1,0 +1,45 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-restorationType",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-restorationType",
+  "version": "2.5.0",
+  "name": "OdontogramRestorationType",
+  "title": "Odontogram — restorationType values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"restorationType\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No restoration"
+          },
+          {
+            "code": "crown",
+            "display": "Crown"
+          },
+          {
+            "code": "inlay",
+            "display": "Inlay"
+          },
+          {
+            "code": "onlay",
+            "display": "Onlay"
+          },
+          {
+            "code": "veneer",
+            "display": "Veneer"
+          },
+          {
+            "code": "bridge",
+            "display": "Bridge unit"
+          }
+        ]
+      }
+    ]
+  }
+}

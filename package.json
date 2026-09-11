@@ -57,7 +57,7 @@
     "parity:capture": "PARITY_CAPTURE=1 vitest run src/__tests__/parity/capture.test.ts",
     "docs": "typedoc",
     "prepublishOnly": "npm run build:lib",
-    "fhir:codesystem": "FHIR_CODESYSTEM_WRITE=1 vitest run src/__tests__/fhir-codesystem.test.ts"
+    "fhir:codesystem": "FHIR_CODESYSTEM_WRITE=1 vitest run src/__tests__/fhir-codesystem.test.ts src/__tests__/fhir-valuesets.test.ts"
   },
   "peerDependencies": {
     "react": "^18 || ^19",

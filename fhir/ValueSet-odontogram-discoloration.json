@@ -1,0 +1,45 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-discoloration",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-discoloration",
+  "version": "2.5.0",
+  "name": "OdontogramDiscoloration",
+  "title": "Odontogram — discoloration values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"discoloration\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No discoloration"
+          },
+          {
+            "code": "tetracycline",
+            "display": "Tetracycline staining"
+          },
+          {
+            "code": "fluorosis",
+            "display": "Dental fluorosis"
+          },
+          {
+            "code": "nonvital",
+            "display": "Non-vital (pulp-death) darkening"
+          },
+          {
+            "code": "extrinsic",
+            "display": "Extrinsic staining"
+          },
+          {
+            "code": "other",
+            "display": "Other / unknown discoloration"
+          }
+        ]
+      }
+    ]
+  }
+}

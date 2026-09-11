@@ -1,0 +1,37 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-wearCervical",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-wearCervical",
+  "version": "2.5.0",
+  "name": "OdontogramWearCervical",
+  "title": "Odontogram — wearCervical values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"wearCervical\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No cervical wear"
+          },
+          {
+            "code": "abrasion",
+            "display": "Abrasion (mechanical cervical wear)"
+          },
+          {
+            "code": "abfraction",
+            "display": "Abfraction (cervical stress lesion)"
+          },
+          {
+            "code": "erosion",
+            "display": "Erosion (chemical/acid wear)"
+          }
+        ]
+      }
+    ]
+  }
+}

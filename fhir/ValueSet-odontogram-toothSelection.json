@@ -1,0 +1,45 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-toothSelection",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-toothSelection",
+  "version": "2.5.0",
+  "name": "OdontogramToothSelection",
+  "title": "Odontogram — toothSelection values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"toothSelection\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No tooth status"
+          },
+          {
+            "code": "tooth-base",
+            "display": "Present tooth"
+          },
+          {
+            "code": "milktooth",
+            "display": "Primary (deciduous) tooth"
+          },
+          {
+            "code": "implant",
+            "display": "Dental implant"
+          },
+          {
+            "code": "tooth-under-gum",
+            "display": "Tooth under gum"
+          },
+          {
+            "code": "no-tooth-after-extraction",
+            "display": "Missing after extraction"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-periImplant",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-periImplant",
+  "version": "2.5.0",
+  "name": "OdontogramPeriImplant",
+  "title": "Odontogram — periImplant values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"periImplant\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "Peri-implant health"
+          },
+          {
+            "code": "mucositis",
+            "display": "Peri-implant mucositis"
+          },
+          {
+            "code": "peri-implantitis-mild",
+            "display": "Peri-implantitis, mild bone loss"
+          },
+          {
+            "code": "peri-implantitis-moderate",
+            "display": "Peri-implantitis, moderate bone loss"
+          },
+          {
+            "code": "peri-implantitis-severe",
+            "display": "Peri-implantitis, severe bone loss"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-gingivalThickness",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-gingivalThickness",
+  "version": "2.5.0",
+  "name": "OdontogramGingivalThickness",
+  "title": "Odontogram — gingivalThickness values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"gingivalThickness\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "unknown",
+            "display": "Gingival thickness not assessed"
+          },
+          {
+            "code": "thin",
+            "display": "Thin gingival phenotype"
+          },
+          {
+            "code": "medium",
+            "display": "Medium gingival phenotype"
+          },
+          {
+            "code": "thick",
+            "display": "Thick gingival phenotype"
+          }
+        ]
+      }
+    ]
+  }
+}

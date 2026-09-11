@@ -1,0 +1,37 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-rootCaries",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-rootCaries",
+  "version": "2.5.0",
+  "name": "OdontogramRootCaries",
+  "title": "Odontogram — rootCaries values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"rootCaries\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No root caries"
+          },
+          {
+            "code": "active",
+            "display": "Active root caries"
+          },
+          {
+            "code": "arrested",
+            "display": "Arrested root caries"
+          },
+          {
+            "code": "active-cavitated",
+            "display": "Active cavitated root caries"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-apicalDx",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-apicalDx",
+  "version": "2.5.0",
+  "name": "OdontogramApicalDx",
+  "title": "Odontogram — apicalDx values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"apicalDx\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "normal",
+            "display": "No apical pathology"
+          },
+          {
+            "code": "symptomatic-apical-periodontitis",
+            "display": "Symptomatic apical periodontitis"
+          },
+          {
+            "code": "asymptomatic-apical-periodontitis",
+            "display": "Asymptomatic apical periodontitis"
+          },
+          {
+            "code": "acute-apical-abscess",
+            "display": "Acute apical abscess"
+          },
+          {
+            "code": "chronic-apical-abscess",
+            "display": "Chronic apical abscess"
+          },
+          {
+            "code": "condensing-osteitis",
+            "display": "Condensing osteitis"
+          }
+        ]
+      }
+    ]
+  }
+}

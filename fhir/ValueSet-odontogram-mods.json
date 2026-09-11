@@ -1,0 +1,33 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-mods",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-mods",
+  "version": "2.5.0",
+  "name": "OdontogramMods",
+  "title": "Odontogram — mods values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"mods\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "inflammation",
+            "display": "Inflammation"
+          },
+          {
+            "code": "parodontal",
+            "display": "Periodontal involvement"
+          },
+          {
+            "code": "mobility",
+            "display": "Mobility"
+          }
+        ]
+      }
+    ]
+  }
+}

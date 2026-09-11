@@ -35,6 +35,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   codes: an ICD-10-CM-coded Bundle (including the refined K02.5x/6x codes) and
   SNOMED-coded tooth Conditions map back to their diagnosis keys. Import-only
   change: export, payload (2.22) and every golden are unchanged.
+- **SNOMED CT slots filled for the whole diagnosis catalog.** 48 of the 50
+  previously unset slots now carry a SNOMED CT International concept — every
+  tooth-level key (e.g. chronic periodontitis 5689008, symptomatic / asymptomatic
+  periapical periodontitis 718053009 / 718052004, osteitis condensans 55413008,
+  dental calculus 17552000, abrasion of tooth 47222000, acquired absence of
+  single tooth 109674000) and 26 of the 28 case-level keys (e.g. TMJ disorder
+  41888000, sialolithiasis 28826002, recurrent aphthous stomatitis 722781002,
+  ulcerative stomatitis 450005 for oral mucositis, leukoplakia of oral mucosa
+  414603003). Each concept was picked from a CSIRO Ontoserver search and verified
+  by `$lookup` to be active, in the International core module and carrying the
+  expected FSN; the suite re-checks the Verhoeff check digit and the
+  International partition of every id. Two keys stay deliberately unset because
+  no International umbrella concept exists: jaw-size anomaly (K07.0) and
+  dentofacial functional abnormalities (K07.5). The SNOMED overlay remains
+  opt-in (Settings → General), so default exports and every golden are unchanged.
+- **Typed `case` payload block.** `OdontogramExportPayload.case` now declares
+  `caseConditions`, removing the last untyped casts on the export/import path.
+- **ValueSets and a loadable FHIR package.** The repository's `fhir/` folder is
+  now a FHIR NPM package (`package.json` + `.index.json`, name
+  `react-advanced-odontogram.fhir`, FHIR 4.0.1) holding the CodeSystem plus
+  generated ValueSets: one explicit ValueSet per clinical-axis value group (the
+  bare value codes are shared across groups, so each group lists its own codes
+  with the display that group uses), a finding-type ValueSet (every
+  `Observation.code` the export emits) and an intensional all-codes ValueSet.
+  Load it into a validator with `-ig ./fhir`. `npm run fhir:codesystem`
+  regenerates every file; tests keep them in step with the code and prove each
+  ValueSet concept is a CodeSystem concept with a matching display.
 
 ## [2.5.0] - 2026-09-10
 

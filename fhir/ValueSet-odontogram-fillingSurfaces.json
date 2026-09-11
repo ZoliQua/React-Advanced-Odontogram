@@ -1,0 +1,41 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-fillingSurfaces",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-fillingSurfaces",
+  "version": "2.5.0",
+  "name": "OdontogramFillingSurfaces",
+  "title": "Odontogram — fillingSurfaces values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"fillingSurfaces\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "buccal",
+            "display": "Buccal surface"
+          },
+          {
+            "code": "lingual",
+            "display": "Lingual surface"
+          },
+          {
+            "code": "mesial",
+            "display": "Mesial surface"
+          },
+          {
+            "code": "distal",
+            "display": "Distal surface"
+          },
+          {
+            "code": "occlusal",
+            "display": "Occlusal surface"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-pulpLatin",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-pulpLatin",
+  "version": "2.5.0",
+  "name": "OdontogramPulpLatin",
+  "title": "Odontogram — pulpLatin values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"pulpLatin\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No Latin pulp subtype"
+          },
+          {
+            "code": "pulpa-sana",
+            "display": "Pulpa sana"
+          },
+          {
+            "code": "hyperaemia-pulpae",
+            "display": "Hyperaemia pulpae"
+          },
+          {
+            "code": "pulpitis-acuta-serosa",
+            "display": "Pulpitis acuta serosa"
+          },
+          {
+            "code": "pulpitis-acuta-purulenta",
+            "display": "Pulpitis acuta purulenta"
+          },
+          {
+            "code": "pulpitis-chronica-clausa",
+            "display": "Pulpitis chronica clausa"
+          },
+          {
+            "code": "pulpitis-chronica-ulcerosa",
+            "display": "Pulpitis chronica ulcerosa (aperta)"
+          },
+          {
+            "code": "pulpitis-chronica-hyperplastica",
+            "display": "Pulpitis chronica hyperplastica (pulpa-polyp)"
+          },
+          {
+            "code": "necrosis-pulpae",
+            "display": "Necrosis pulpae"
+          },
+          {
+            "code": "gangraena-pulpae",
+            "display": "Gangraena pulpae"
+          }
+        ]
+      }
+    ]
+  }
+}

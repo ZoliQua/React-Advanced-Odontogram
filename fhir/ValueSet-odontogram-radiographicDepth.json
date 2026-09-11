@@ -1,0 +1,45 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-radiographicDepth",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-radiographicDepth",
+  "version": "2.5.0",
+  "name": "OdontogramRadiographicDepth",
+  "title": "Odontogram — radiographicDepth values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"radiographicDepth\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No radiographic caries depth recorded"
+          },
+          {
+            "code": "E1",
+            "display": "Enamel, outer half (E1)"
+          },
+          {
+            "code": "E2",
+            "display": "Enamel, inner half (E2)"
+          },
+          {
+            "code": "D1",
+            "display": "Dentin, outer third (D1)"
+          },
+          {
+            "code": "D2",
+            "display": "Dentin, middle third (D2)"
+          },
+          {
+            "code": "D3",
+            "display": "Dentin, inner third (D3)"
+          }
+        ]
+      }
+    ]
+  }
+}

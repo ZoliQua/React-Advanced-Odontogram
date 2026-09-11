@@ -1,0 +1,37 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-fillingDefect",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-fillingDefect",
+  "version": "2.5.0",
+  "name": "OdontogramFillingDefect",
+  "title": "Odontogram — fillingDefect values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"fillingDefect\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No filling defect"
+          },
+          {
+            "code": "marginal",
+            "display": "Marginal defect (overhang / deficient margin)"
+          },
+          {
+            "code": "fracture",
+            "display": "Fractured / chipped filling"
+          },
+          {
+            "code": "wear",
+            "display": "Worn / deficient filling material"
+          }
+        ]
+      }
+    ]
+  }
+}

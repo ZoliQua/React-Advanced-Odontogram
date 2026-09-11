@@ -1,0 +1,45 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-caries",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-caries",
+  "version": "2.5.0",
+  "name": "OdontogramCaries",
+  "title": "Odontogram — caries values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"caries\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "caries-subcrown",
+            "display": "Subcrown caries"
+          },
+          {
+            "code": "caries-buccal",
+            "display": "Buccal caries"
+          },
+          {
+            "code": "caries-lingual",
+            "display": "Lingual caries"
+          },
+          {
+            "code": "caries-mesial",
+            "display": "Mesial caries"
+          },
+          {
+            "code": "caries-distal",
+            "display": "Distal caries"
+          },
+          {
+            "code": "caries-occlusal",
+            "display": "Occlusal caries"
+          }
+        ]
+      }
+    ]
+  }
+}

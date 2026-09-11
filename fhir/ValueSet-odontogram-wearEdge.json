@@ -1,0 +1,33 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-wearEdge",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-wearEdge",
+  "version": "2.5.0",
+  "name": "OdontogramWearEdge",
+  "title": "Odontogram — wearEdge values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"wearEdge\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No incisal/occlusal wear"
+          },
+          {
+            "code": "attrition",
+            "display": "Attrition (tooth-to-tooth wear)"
+          },
+          {
+            "code": "erosion",
+            "display": "Erosion (chemical/acid wear)"
+          }
+        ]
+      }
+    ]
+  }
+}

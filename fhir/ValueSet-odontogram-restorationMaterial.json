@@ -1,0 +1,57 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-restorationMaterial",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-restorationMaterial",
+  "version": "2.5.0",
+  "name": "OdontogramRestorationMaterial",
+  "title": "Odontogram — restorationMaterial values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"restorationMaterial\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No material"
+          },
+          {
+            "code": "emax",
+            "display": "Lithium disilicate (e.max)"
+          },
+          {
+            "code": "gold",
+            "display": "Gold"
+          },
+          {
+            "code": "gradia",
+            "display": "Indirect composite (Gradia)"
+          },
+          {
+            "code": "zircon",
+            "display": "Zirconia"
+          },
+          {
+            "code": "metal",
+            "display": "Full-cast metal"
+          },
+          {
+            "code": "metal-ceramic",
+            "display": "Metal-ceramic (PFM)"
+          },
+          {
+            "code": "telescope",
+            "display": "Telescopic crown"
+          },
+          {
+            "code": "temporary",
+            "display": "Temporary"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-toothSubstrate",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-toothSubstrate",
+  "version": "2.5.0",
+  "name": "OdontogramToothSubstrate",
+  "title": "Odontogram — toothSubstrate values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"toothSubstrate\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "natural",
+            "display": "Natural substrate"
+          },
+          {
+            "code": "radix",
+            "display": "Root remnant (radix)"
+          },
+          {
+            "code": "broken",
+            "display": "Broken tooth"
+          },
+          {
+            "code": "crownprep",
+            "display": "Prepared for crown"
+          }
+        ]
+      }
+    ]
+  }
+}

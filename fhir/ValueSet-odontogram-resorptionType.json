@@ -1,0 +1,33 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-resorptionType",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-resorptionType",
+  "version": "2.5.0",
+  "name": "OdontogramResorptionType",
+  "title": "Odontogram — resorptionType values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"resorptionType\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No root resorption"
+          },
+          {
+            "code": "internal",
+            "display": "Internal root resorption"
+          },
+          {
+            "code": "external-cervical",
+            "display": "External cervical root resorption"
+          }
+        ]
+      }
+    ]
+  }
+}

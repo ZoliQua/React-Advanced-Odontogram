@@ -1,0 +1,41 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-fillingMaterial",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-fillingMaterial",
+  "version": "2.5.0",
+  "name": "OdontogramFillingMaterial",
+  "title": "Odontogram — fillingMaterial values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"fillingMaterial\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No filling"
+          },
+          {
+            "code": "amalgam",
+            "display": "Amalgam filling"
+          },
+          {
+            "code": "composite",
+            "display": "Composite filling"
+          },
+          {
+            "code": "gic",
+            "display": "Glass ionomer cement filling"
+          },
+          {
+            "code": "temporary",
+            "display": "Temporary filling"
+          }
+        ]
+      }
+    ]
+  }
+}

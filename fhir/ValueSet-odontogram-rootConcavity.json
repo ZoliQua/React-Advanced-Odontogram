@@ -1,0 +1,33 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-rootConcavity",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-rootConcavity",
+  "version": "2.5.0",
+  "name": "OdontogramRootConcavity",
+  "title": "Odontogram — rootConcavity values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"rootConcavity\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No root concavity"
+          },
+          {
+            "code": "mild",
+            "display": "Mild root concavity"
+          },
+          {
+            "code": "deep",
+            "display": "Deep root concavity"
+          }
+        ]
+      }
+    ]
+  }
+}

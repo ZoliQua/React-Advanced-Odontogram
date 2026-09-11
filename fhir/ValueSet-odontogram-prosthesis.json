@@ -1,0 +1,53 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-prosthesis",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-prosthesis",
+  "version": "2.5.0",
+  "name": "OdontogramProsthesis",
+  "title": "Odontogram — prosthesis values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"prosthesis\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No prosthesis"
+          },
+          {
+            "code": "healing-abutment",
+            "display": "Healing abutment"
+          },
+          {
+            "code": "locator",
+            "display": "Locator attachment"
+          },
+          {
+            "code": "locator-denture",
+            "display": "Locator overdenture"
+          },
+          {
+            "code": "bar",
+            "display": "Bar attachment"
+          },
+          {
+            "code": "bar-denture",
+            "display": "Bar overdenture"
+          },
+          {
+            "code": "removable-partial",
+            "display": "Partial removable denture"
+          },
+          {
+            "code": "removable-full",
+            "display": "Full removable denture"
+          }
+        ]
+      }
+    ]
+  }
+}

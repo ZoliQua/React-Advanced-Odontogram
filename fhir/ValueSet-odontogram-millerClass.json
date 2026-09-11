@@ -1,0 +1,41 @@
+{
+  "resourceType": "ValueSet",
+  "id": "odontogram-millerClass",
+  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-millerClass",
+  "version": "2.5.0",
+  "name": "OdontogramMillerClass",
+  "title": "Odontogram — millerClass values",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Zoltán Dul",
+  "description": "The allowed values of the engine's \"millerClass\" axis (engine-local codes; the display is the one this axis uses).",
+  "compose": {
+    "include": [
+      {
+        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "concept": [
+          {
+            "code": "none",
+            "display": "No recession class assigned"
+          },
+          {
+            "code": "i",
+            "display": "Miller Class I"
+          },
+          {
+            "code": "ii",
+            "display": "Miller Class II"
+          },
+          {
+            "code": "iii",
+            "display": "Miller Class III"
+          },
+          {
+            "code": "iv",
+            "display": "Miller Class IV"
+          }
+        ]
+      }
+    ]
+  }
+}

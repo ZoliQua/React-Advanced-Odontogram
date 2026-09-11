@@ -24,6 +24,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the SNOMED base concepts are unchanged. No payload change (2.22). Titles are
   verbatim from icd.who.int (2019), the NLM ICD-10-CM tables and the NEAK
   BNO-10 törzs.
+- **FHIR import: periodontal round-trip and external-bundle tolerance (DX-9).**
+  The importer now reads the LOINC 74029-0 periodontal panels back into each
+  tooth's perio record — probing depth, gingival margin (reconstructed from CAL,
+  so negative/pseudopocket values survive), BOP, furcation, O'Leary plaque, the
+  PI/GI and implant mPI/mBI indices and keratinized-gingiva width — plus the
+  smoking-status and HbA1c evidence Observations into the case block; perio data
+  therefore round-trips through FHIR, not only JSON (suppuration is not exported
+  and stays JSON-only). Conditions are recognised beyond our own ids and WHO
+  codes: an ICD-10-CM-coded Bundle (including the refined K02.5x/6x codes) and
+  SNOMED-coded tooth Conditions map back to their diagnosis keys. Import-only
+  change: export, payload (2.22) and every golden are unchanged.
 
 ## [2.5.0] - 2026-09-10
 

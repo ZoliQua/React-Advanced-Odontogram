@@ -39,10 +39,10 @@ type Any = any;
 /** LOINC (Logical Observation Identifiers Names and Codes) system URL.
  *  Local to this module: perio is the only export currently using LOINC —
  *  every other finding in this engine uses the engine-local LOCAL_SYSTEM only. */
-const LOINC_SYSTEM = "http://loinc.org";
+export const LOINC_SYSTEM = "http://loinc.org"; // exported: shared by importPerio.ts (DX-9)
 
 /** Verified LOINC codes, used exactly as specified. */
-const LOINC = {
+export const LOINC = {
   panel: { code: "74029-0", display: "Periodontal panel" },
   pd: { code: "32910-2", display: "Probing depth" },
   recession: { code: "32911-0", display: "Gingival recession" },
@@ -124,7 +124,7 @@ function localConcept(code: string, display: string): CodeableConcept {
  * validator, whereas `component.extension` is legal on any R4 BackboneElement
  * and this specific URL is HL7's official backport of the exact same field.
  */
-const COMPONENT_BODYSITE_EXTENSION_URL =
+export const COMPONENT_BODYSITE_EXTENSION_URL =
   "http://hl7.org/fhir/5.0/StructureDefinition/extension-Observation.component.bodySite";
 
 /**

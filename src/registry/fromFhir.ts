@@ -164,8 +164,8 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
     ensureTooth(teeth, toothId).dxOverrides = ov;
   }
   const payload: OdontogramExportPayload = { version: "2.20", globals, teeth };
-  const caseBlock: Record<string, unknown> = { ...perio.case };
+  const caseBlock: NonNullable<OdontogramExportPayload["case"]> = { ...perio.case };
   if (Object.keys(caseConditions).length > 0) caseBlock.caseConditions = caseConditions;
-  if (Object.keys(caseBlock).length > 0) (payload as { case?: unknown }).case = caseBlock;
+  if (Object.keys(caseBlock).length > 0) payload.case = caseBlock;
   return payload;
 }

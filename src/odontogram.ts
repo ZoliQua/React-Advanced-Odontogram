@@ -12,6 +12,7 @@ import type { FhirExportOptions } from "./fhir/types";
 import { resolveCodingPack } from "./dx/packs";
 import { DX_CODES, type DiagnosisKey } from "./dx/codes";
 import { deriveDentalDiagnoses, isNaturalPresent } from "./dx/derive";
+import { refineWho } from "./dx/refine";
 import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_CASE_KEY, VALID_LATERALITY, type CaseConditionKey, type Laterality } from "./dx/caseCodes";
 import { allClearLayers } from "./registry/svgLayers";
 import { applyFlagLayers, buildFlagCtx } from "./registry/svgActivate";
@@ -3166,12 +3167,15 @@ export function getToothDiagnoses(toothNo: number): ToothDiagnosis[] {
   const payload = { teeth: { [String(toothNo)]: serializeState(state) } };
   const derived = deriveDentalDiagnoses(payload);
   const overrides: Map<string, string> | undefined = state.dxOverrides;
-  const list: ToothDiagnosis[] = derived.map((d) => ({
-    key: d.key,
-    icd10: DX_CODES[d.key].icd10 ?? null,
-    icd10Display: DX_CODES[d.key].icd10Display,
-    source: overrides?.get(d.key) === "add" ? "added" : "derived",
-  }));
+  const list: ToothDiagnosis[] = derived.map((d) => {
+    const who = refineWho(d.key, d.detail); // DX-8: e.g. caries -> K02.1 Caries of dentine
+    return {
+      key: d.key,
+      icd10: who.icd10,
+      icd10Display: who.display,
+      source: overrides?.get(d.key) === "add" ? "added" : "derived",
+    };
+  });
   return list.sort((a, b) => (a.icd10 ?? "￿").localeCompare(b.icd10 ?? "￿"));
 }
 
@@ -3214,14 +3218,14 @@ export function getActiveDiagnoses(): ActiveDiagnoses {
   // with whether it's currently suppressed.
   const rawRec: Record<string, unknown> = { ...serializeState(state) };
   delete rawRec.dxOverrides;
-  const rawKeys = deriveDentalDiagnoses({ teeth: { [String(activeTooth)]: rawRec } }).map((d) => d.key as string);
-  const rawSet = new Set(rawKeys);
+  const rawItems = deriveDentalDiagnoses({ teeth: { [String(activeTooth)]: rawRec } });
+  const rawSet = new Set(rawItems.map((d) => d.key as string));
 
-  const rows: ActiveDiagnosisRow[] = rawKeys.map((key) => ({
-    key,
-    icd10: DX_CODES[key as DiagnosisKey].icd10 ?? "", // all catalog keys are coded; ?? is an unreachable type guard
+  const rows: ActiveDiagnosisRow[] = rawItems.map((d) => ({
+    key: d.key,
+    icd10: refineWho(d.key, d.detail).icd10 ?? "", // DX-8 refined code; all catalog keys are coded
     source: "derived",
-    suppressed: overrides?.get(key) === "suppress",
+    suppressed: overrides?.get(d.key) === "suppress",
   }));
   if(overrides){
     for(const [key, mode] of overrides){

@@ -2,10 +2,52 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { DX_CODES, type DiagnosisKey } from "./codes";
+import type { CariesDetail, CariesDepth, CariesSurfaceType } from "./refine";
 
 export interface DerivedDiagnosis {
   toothNo: string;
   key: DiagnosisKey;
+  /** DX-8: code-refinement detail — present on `caries` only (depth/surface, see
+   *  {@link deriveCariesDetail}); absent on every other key. */
+  detail?: CariesDetail;
+}
+
+const RADIO_DEPTH: Record<string, CariesDepth> = { E1: "enamel", E2: "enamel", D1: "dentine", D2: "dentine", D3: "dentine" };
+const DEPTH_RANK: Record<CariesDepth, number> = { enamel: 1, dentine: 2 };
+
+/**
+ * DX-8 — the most severe caries involvement on a tooth, for ICD refinement.
+ * Per carious surface (`caries` ids `caries-<surface>`): radiographic depth
+ * first (E1/E2 → enamel, D1–D3 → dentine), else the ICDAS severity
+ * (`cariesSeverity` 1–3 → enamel, 4–6 → dentine; 0/absent → unknown). The tooth
+ * takes the deepest involvement (dentine > enamel > unknown); the surface type
+ * is pit-and-fissure when an occlusal surface is among the deepest, else smooth
+ * (mesial/distal/buccal/lingual/subcrown). One Condition per tooth, so one
+ * detail per tooth. Pure; tolerant of malformed maps.
+ */
+export function deriveCariesDetail(rec: Record<string, unknown>): CariesDetail {
+  const ids = Array.isArray(rec.caries) ? rec.caries : [];
+  const radio = rec.radiographicDepth && typeof rec.radiographicDepth === "object" ? rec.radiographicDepth as Record<string, unknown> : {};
+  const sev = rec.cariesSeverity && typeof rec.cariesSeverity === "object" ? rec.cariesSeverity as Record<string, unknown> : {};
+  let best: CariesDepth | null = null;
+  let bestSurfaces: string[] = [];
+  const surfaces: string[] = [];
+  for (const id of ids) {
+    if (typeof id !== "string") continue;
+    const surface = id.startsWith("caries-") ? id.slice("caries-".length) : id;
+    surfaces.push(surface);
+    let depth: CariesDepth | null = RADIO_DEPTH[String(radio[surface])] ?? null;
+    if (!depth) {
+      const s = sev[surface];
+      if (typeof s === "number" && Number.isFinite(s)) depth = s >= 4 ? "dentine" : s >= 1 ? "enamel" : null;
+    }
+    if (!depth) continue;
+    if (!best || DEPTH_RANK[depth] > DEPTH_RANK[best]) { best = depth; bestSurfaces = [surface]; }
+    else if (depth === best) bestSurfaces.push(surface);
+  }
+  const pool = best ? bestSurfaces : surfaces;
+  const surface: CariesSurfaceType | null = pool.length === 0 ? null : pool.includes("occlusal") ? "pit-fissure" : "smooth";
+  return { depth: best, surface };
 }
 
 const ABSENT = new Set(["implant", "none", "tooth-under-gum", "no-tooth-after-extraction"]);
@@ -113,7 +155,10 @@ export function deriveDentalDiagnoses(payload: unknown): DerivedDiagnosis[] {
       if (rec.brokenMesial || rec.brokenIncisal || rec.brokenDistal) add("toothFracture");
     }
     applyDxOverrides(keys, rec.dxOverrides as Record<string, unknown> | undefined, natural);
-    for (const key of keys) out.push({ toothNo, key });
+    for (const key of keys) {
+      if (key === "caries") out.push({ toothNo, key, detail: deriveCariesDetail(rec) }); // DX-8 refinement detail
+      else out.push({ toothNo, key });
+    }
   }
   return out;
 }

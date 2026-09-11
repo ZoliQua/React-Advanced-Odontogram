@@ -36,6 +36,7 @@ import { buildPerioSvg } from "./perioExport";
 import { resetTemplateCache as resetPerioTemplateCache } from "./perioGraphic";
 import { assemblePdf, PDF_PALETTES, DEFAULT_PDF_THEME, type PdfExportOptions, type PdfAssembleData, type PdfDocLike, type PdfColorTheme } from "./perioPdf";
 import { TEMPLATES, TOOTH_TEMPLATE, ANATOMY_PROFILES, CLASSIC_PROFILE, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
+import { notifyStateChange, setPostNotifyHook } from "./state/notify";
 // Re-exported so the public API surface is unchanged by the extraction.
 export { TEMPLATES, TOOTH_TEMPLATE };
 export { CLASSIC_CEJ_Y, CLASSIC_IMPLANT_CEJ_Y, CLASSIC_MILKTOOTH_CEJ_Y } from "./anatomy/profiles";
@@ -1017,37 +1018,10 @@ export function getCariesDepthEnabled(): boolean { return cariesDepthEnabled; }
 
 let i18nUnsubscribe: (() => void) | null = null;
 
-// ---- State-change subscription ----
-// Listeners are notified after any change to tooth state (edits, edentulous
-// toggle, import), so consumers like the "tooth information" panel can refresh.
-const stateChangeListeners = new Set<() => void>();
-
-/**
- * Subscribe to odontogram state changes. The callback runs after any tooth
- * state edit, the edentulous toggle, or an import.
- *
- * @param cb - Callback invoked on each change.
- * @returns An unsubscribe function.
- */
-export function onStateChange(cb: () => void): () => void {
-  stateChangeListeners.add(cb);
-  return () => { stateChangeListeners.delete(cb); };
-}
-
-function notifyStateChange(){
-  for(const cb of stateChangeListeners){
-    try{ cb(); }
-    catch(e){ console.error("odontogram state-change listener failed", e); }
-  }
-  // Redraw the multi-tooth bridge overlay after per-tooth renders settle.
-  // notifyStateChange() is synchronous and is always invoked at the END of a
-  // mutation batch (single edit, edentulous toggle, import, init), so tile
-  // geometry is current by this point. renderBridgeOverlay is internally
-  // guarded, but wrap defensively so a geometry hiccup can never break state
-  // notification.
-  try{ updateBridgeOverlay(); }
-  catch(e){ console.error("odontogram bridge overlay render failed", e); }
-}
+// ---- State-change subscription (extracted to ./state/notify) ----
+// onStateChange is re-exported so the public API surface is unchanged; the
+// bridge-overlay redraw is installed as the after-listeners hook below.
+export { onStateChange } from "./state/notify";
 
 /** Read a tooth's state as the minimal shape the bridge overlay consumes. */
 function bridgeStateFor(toothNo: number): BridgeToothState | undefined {
@@ -1059,6 +1033,9 @@ function updateBridgeOverlay(){
   const grid = $("#toothGrid") as HTMLElement | null;
   renderBridgeOverlay({ grid, getState: bridgeStateFor, materialColor: defaultMaterialColor });
 }
+
+// Preserve the original notify order: every listener first, overlay redraw last.
+setPostNotifyHook(updateBridgeOverlay);
 
 // ---- Bridge overlay resize handling ----
 let bridgeOverlayResizeObserver: ResizeObserver | null = null;

@@ -4,7 +4,8 @@
 import { DX_CODES, type DiagnosisKey } from "../dx/codes";
 import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_CASE_KEY, VALID_LATERALITY, type CaseConditionKey, type Laterality } from "../dx/caseCodes";
 import { deriveDentalDiagnoses } from "../dx/derive";
-import { ICD10_SYSTEM, LOCAL_SYSTEM } from "./codesystems";
+import { ICD10CM_PACK } from "../dx/packs";
+import { ICD10_SYSTEM, LOCAL_SYSTEM, SNOMED_SYSTEM } from "./codesystems";
 
 /** Tooth-level add/suppress catalog — MUST equal odontogram.ts `TOOTH_LEVEL_DX_KEYS`
  *  (drift-guarded by a test). Derived locally to avoid a fromFhir -> odontogram.ts
@@ -31,16 +32,34 @@ interface CondLike {
   bodySite?: Array<{ coding?: Array<{ system?: string; code?: string } | null | undefined> }>;
 }
 
-const icd10Of = (c: CondLike): string | undefined =>
-  c.code?.coding?.find((x) => !!x && x.system === ICD10_SYSTEM && typeof x.code === "string")?.code;
+const codeOf = (c: CondLike, system: string): string | undefined =>
+  c.code?.coding?.find((x) => !!x && x.system === system && typeof x.code === "string")?.code;
 
-/** WHO code → key: exact match first, then the 3-character category (DX-8 emits
- *  refined subcodes such as K02.1 for `caries`; exact keys like K02.2/K02.3 keep
- *  winning because they are looked up before the category fallback). */
+/** Code → key: exact match first, then the 3-character category (DX-8 emits
+ *  refined subcodes such as K02.1 / K02.52 for `caries`; exact keys like
+ *  K02.2/K02.3 keep winning because they are looked up before the fallback). */
 function lookup<K>(map: Map<string, K>, code: string | undefined): K | undefined {
   if (!code) return undefined;
   return map.get(code) ?? map.get(code.split(".")[0]);
 }
+
+// DX-9 external-bundle tolerance: reverse maps for ICD-10-CM (from the CM pack)
+// and SNOMED CT (from the catalog), consulted after WHO ICD-10.
+const CM_TO_DX_KEY = new Map<string, DiagnosisKey>();
+for (const [k, v] of Object.entries(ICD10CM_PACK.codes ?? {})) if (v) CM_TO_DX_KEY.set(v.code, k as DiagnosisKey);
+const CM_TO_CASE_KEY = new Map<string, CaseConditionKey>();
+for (const [k, v] of Object.entries(ICD10CM_PACK.caseCodes ?? {})) if (v) CM_TO_CASE_KEY.set(v.code, k as CaseConditionKey);
+const SNOMED_TO_DX_KEY = new Map<string, DiagnosisKey>();
+for (const k of Object.keys(DX_CODES) as DiagnosisKey[]) { const s = DX_CODES[k].snomed; if (s) SNOMED_TO_DX_KEY.set(s, k); }
+
+/** A tooth-level Condition's diagnosis key from its codings: WHO ICD-10 → ICD-10-CM → SNOMED CT. */
+const dxKeyOf = (c: CondLike): DiagnosisKey | undefined =>
+  lookup(ICD10_TO_DX_KEY, codeOf(c, ICD10_SYSTEM))
+  ?? lookup(CM_TO_DX_KEY, codeOf(c, ICD10CM_PACK.system))
+  ?? SNOMED_TO_DX_KEY.get(codeOf(c, SNOMED_SYSTEM) ?? "");
+/** A case-level Condition's key from its codings: WHO ICD-10 → ICD-10-CM. */
+const caseKeyOf = (c: CondLike): CaseConditionKey | undefined =>
+  lookup(ICD10_TO_CASE_KEY, codeOf(c, ICD10_SYSTEM)) ?? lookup(CM_TO_CASE_KEY, codeOf(c, ICD10CM_PACK.system));
 
 export interface ImportedDiagnoses {
   caseConditions: Record<string, Laterality>;
@@ -63,7 +82,7 @@ export function importDiagnosisConditions(entries: unknown, teeth: Record<string
     let key: string | undefined;
     const m = /^odontogram-case-([A-Za-z]+)$/.exec(id);
     if (m && VALID_CASE_KEY.has(m[1] as CaseConditionKey)) key = m[1];
-    else { const mapped = lookup(ICD10_TO_CASE_KEY, icd10Of(c)); if (mapped) key = mapped; }
+    else { const mapped = caseKeyOf(c); if (mapped) key = mapped; }
     if (!key) continue;
     let lat: Laterality = "unspecified";
     const local = c.bodySite?.[0]?.coding?.find(
@@ -82,7 +101,7 @@ export function importDiagnosisConditions(entries: unknown, teeth: Record<string
     const m = /^odontogram-dx-([A-Za-z]+)-(\d+)$/.exec(id);
     if (m) { key = m[1]; tooth = m[2]; }
     else {
-      const k = lookup(ICD10_TO_DX_KEY, icd10Of(c));
+      const k = dxKeyOf(c);
       const fdi = c.bodySite?.[0]?.coding?.find((x) => !!x && typeof x.code === "string" && /^\d{2}$/.test(x.code))?.code;
       if (k && fdi) { key = k; tooth = fdi; }
     }

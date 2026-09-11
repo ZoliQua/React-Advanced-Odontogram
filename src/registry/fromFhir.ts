@@ -7,6 +7,7 @@ import { AXES } from "./axes";
 import type { ClinicalAxis } from "./types";
 import { deciduousToFdi } from "../fhir/iso3950";
 import { importDiagnosisConditions } from "../fhir/importConditions";
+import { importPerioObservations } from "../fhir/importPerio";
 
 // Reverse lookup: finding code -> axis.
 const BY_FINDING: Record<string, ClinicalAxis> = {};
@@ -153,6 +154,9 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
     for (const surf of Object.keys(rec.secondaryCaries)) delete rec.cariesSeverity[surf];
     if (Object.keys(rec.cariesSeverity).length === 0) delete rec.cariesSeverity;
   }
+  // DX-9: the LOINC periodontal panels (per-tooth perio record) and the
+  // smoking/HbA1c evidence Observations (case block).
+  const perio = importPerioObservations(entries, teeth);
   // DX-7: reconstruct the diagnosis layer from Condition resources — case
   // conditions (direct) + per-tooth dxOverrides (diff vs the re-derived chart).
   const { caseConditions, dxOverridesByTooth } = importDiagnosisConditions(entries, teeth);
@@ -160,6 +164,8 @@ export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPa
     ensureTooth(teeth, toothId).dxOverrides = ov;
   }
   const payload: OdontogramExportPayload = { version: "2.20", globals, teeth };
-  if (Object.keys(caseConditions).length > 0) (payload as { case?: unknown }).case = { caseConditions };
+  const caseBlock: Record<string, unknown> = { ...perio.case };
+  if (Object.keys(caseConditions).length > 0) caseBlock.caseConditions = caseConditions;
+  if (Object.keys(caseBlock).length > 0) (payload as { case?: unknown }).case = caseBlock;
   return payload;
 }

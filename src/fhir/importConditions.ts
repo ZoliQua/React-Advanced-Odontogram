@@ -34,6 +34,14 @@ interface CondLike {
 const icd10Of = (c: CondLike): string | undefined =>
   c.code?.coding?.find((x) => !!x && x.system === ICD10_SYSTEM && typeof x.code === "string")?.code;
 
+/** WHO code → key: exact match first, then the 3-character category (DX-8 emits
+ *  refined subcodes such as K02.1 for `caries`; exact keys like K02.2/K02.3 keep
+ *  winning because they are looked up before the category fallback). */
+function lookup<K>(map: Map<string, K>, code: string | undefined): K | undefined {
+  if (!code) return undefined;
+  return map.get(code) ?? map.get(code.split(".")[0]);
+}
+
 export interface ImportedDiagnoses {
   caseConditions: Record<string, Laterality>;
   dxOverridesByTooth: Record<string, Record<string, "add" | "suppress">>;
@@ -55,7 +63,7 @@ export function importDiagnosisConditions(entries: unknown, teeth: Record<string
     let key: string | undefined;
     const m = /^odontogram-case-([A-Za-z]+)$/.exec(id);
     if (m && VALID_CASE_KEY.has(m[1] as CaseConditionKey)) key = m[1];
-    else { const code = icd10Of(c); const mapped = code ? ICD10_TO_CASE_KEY.get(code) : undefined; if (mapped) key = mapped; }
+    else { const mapped = lookup(ICD10_TO_CASE_KEY, icd10Of(c)); if (mapped) key = mapped; }
     if (!key) continue;
     let lat: Laterality = "unspecified";
     const local = c.bodySite?.[0]?.coding?.find(
@@ -74,7 +82,7 @@ export function importDiagnosisConditions(entries: unknown, teeth: Record<string
     const m = /^odontogram-dx-([A-Za-z]+)-(\d+)$/.exec(id);
     if (m) { key = m[1]; tooth = m[2]; }
     else {
-      const code = icd10Of(c); const k = code ? ICD10_TO_DX_KEY.get(code) : undefined;
+      const k = lookup(ICD10_TO_DX_KEY, icd10Of(c));
       const fdi = c.bodySite?.[0]?.coding?.find((x) => !!x && typeof x.code === "string" && /^\d{2}$/.test(x.code))?.code;
       if (k && fdi) { key = k; tooth = fdi; }
     }

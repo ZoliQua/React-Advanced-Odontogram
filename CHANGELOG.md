@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Data-driven ICD code specificity (DX-8).** The exported codes now follow
+  the chart data instead of staying flat per diagnosis. Caries: the radiographic
+  depth (E1/E2 → enamel, D1–D3 → dentine), or the ICDAS severity as a fallback
+  (1–3 → enamel, 4–6 → dentine), refines WHO `K02` to `K02.0` Caries limited to
+  enamel / `K02.1` Caries of dentine (BNO-10 shows the NEAK titles), and ICD-10-CM
+  `K02.9` to `K02.51/.52` (pit-and-fissure = occlusal) or `K02.61/.62` (smooth
+  surfaces) by surface × depth; one Condition per tooth carrying the deepest
+  involvement. Chronic periodontitis: the 2017 stage (I/II/III–IV → slight/
+  moderate/severe) and extent (localized incl. molar-incisor / generalized)
+  refine ICD-10-CM `K05.30` to `K05.311`–`K05.329`; WHO and BNO-10 keep `K05.3`
+  (no subcodes there). The Diagnoses card, tooltip and summary show the refined
+  code, the importer maps refined subcodes back to their key, Condition ids and
+  the SNOMED base concepts are unchanged. No payload change (2.22). Titles are
+  verbatim from icd.who.int (2019), the NLM ICD-10-CM tables and the NEAK
+  BNO-10 törzs.
+
 ## [2.5.0] - 2026-09-10
 
 ### Added

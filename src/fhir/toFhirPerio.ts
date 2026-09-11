@@ -703,7 +703,9 @@ export function appendPerioCondition(bundle: Bundle, payload: OdontogramExportPa
   // K05.2 ("aggressive periodontitis") does not belong on an R4/WHO ICD-10
   // bundle. The pattern is carried by the periodontal-extent stage entry instead.
   const dxKey = final.diagnosis === "gingivitis" ? "gingivitis" : "periodontitis";
-  const code = buildConditionCode(dxKey, options.codingPack, options.snomed);
+  // DX-8: the 2017 stage/extent refine the ICD-10-CM code (K05.3xx); WHO/BNO stay K05.3.
+  const code = buildConditionCode(dxKey, options.codingPack, options.snomed,
+    dxKey === "periodontitis" ? { stage: final.stage, extent: final.extent } : undefined);
   if (!code) return; // gingivitis/periodontitis are always coded; defensive guard for the nullable return
 
   const condition: Condition = {

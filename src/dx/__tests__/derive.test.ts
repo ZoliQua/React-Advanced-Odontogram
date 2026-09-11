@@ -4,9 +4,10 @@ import { applyDxOverrides, deriveDentalDiagnoses } from "../derive";
 describe("deriveDentalDiagnoses (DX-0: caries)", () => {
   it("derives one caries diagnosis per tooth that has any carious surface", () => {
     const payload = { teeth: { "16": { caries: ["occlusal"] }, "21": { caries: [] }, "26": { caries: ["mesial", "distal"] } } };
+    // DX-8: `caries` items carry a refinement detail (depth unknown here; surface type from the ids).
     expect(deriveDentalDiagnoses(payload)).toEqual([
-      { toothNo: "16", key: "caries" },
-      { toothNo: "26", key: "caries" },
+      { toothNo: "16", key: "caries", detail: { depth: null, surface: "pit-fissure" } },
+      { toothNo: "26", key: "caries", detail: { depth: null, surface: "smooth" } },
     ]);
   });
   it("returns [] for no teeth / no caries / malformed input", () => {

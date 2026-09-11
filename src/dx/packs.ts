@@ -3,6 +3,7 @@
 
 import type { DiagnosisKey } from "./codes";
 import type { CaseConditionKey } from "./caseCodes";
+import { refineCm, type DxDetail } from "./refine";
 
 /**
  * A national code overlay. `translation` packs keep the WHO codes and only
@@ -18,6 +19,10 @@ export interface CodingPack {
   caseDisplays?: Partial<Record<CaseConditionKey, string>>;
   codes?: Partial<Record<DiagnosisKey, { code: string; display: string }>>;
   caseCodes?: Partial<Record<CaseConditionKey, { code: string; display: string }>>;
+  /** DX-8: translation-pack displays keyed by a REFINED WHO code (e.g. `K02.1`)
+   *  that `refineWho` may emit instead of the key's flat code. Falls back to
+   *  `displays[key]` when absent. */
+  refinedDisplays?: Record<string, string>;
 }
 
 // BNO-10 (Hungarian ICD-10). The Hungarian codes are identical to WHO ICD-10
@@ -59,6 +64,11 @@ export const BNO10_PACK: CodingPack = {
     toothLoss: "A fogak elvesztése baleset, foghúzás vagy localis periodontalis betegség következtében",
     retainedRoot: "Visszamaradt foggyökér",
     toothFracture: "A fogak törése",
+  },
+  // DX-8 refined WHO codes (NEAK törzs K020/K021). K05.3 has no BNO subcodes.
+  refinedDisplays: {
+    "K02.0": "A zománcra korlátozódó szuvasodás",
+    "K02.1": "A dentin szuvasodása",
   },
   caseDisplays: {
     jawSizeAnomaly: "Az állcsontok lényegesebb nagyságbeli rendellenességei",
@@ -191,10 +201,13 @@ export function packCoding(
   key: DiagnosisKey,
   baseCode: string,
   baseDisplay: string,
+  detail?: DxDetail,
 ): { system: string; code: string; display: string } | null {
   if (pack.kind === "modification") {
-    const m = pack.codes?.[key];
+    // DX-8: a data-refined CM code first (K02.5x/6x, K05.3xx), else the flat remap.
+    const m = refineCm(key, detail) ?? pack.codes?.[key];
     return m ? { system: pack.system, code: m.code, display: m.display } : null;
   }
-  return { system: pack.system, code: baseCode, display: pack.displays?.[key] ?? baseDisplay };
+  // Translation: same (possibly refined) code; display per refined code, else per key.
+  return { system: pack.system, code: baseCode, display: pack.refinedDisplays?.[baseCode] ?? pack.displays?.[key] ?? baseDisplay };
 }

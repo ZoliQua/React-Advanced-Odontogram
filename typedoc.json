@@ -8,7 +8,17 @@
     "src/utils/numbering.ts",
     "src/status_extras.ts",
     "src/theme.ts",
-    "src/plugin.ts"
+    "src/plugin.ts",
+    "src/SettingsModal.tsx",
+    "src/OdontogramContext.tsx",
+    "src/perioClassification.ts",
+    "src/perioPdf.ts",
+    "src/dx/packs.ts",
+    "src/dx/codes.ts",
+    "src/dx/caseCodes.ts",
+    "src/dx/refine.ts",
+    "src/fhir/types.ts",
+    "src/anatomy/profiles.ts"
   ],
   "out": "docs",
   "name": "React Advanced Odontogram",

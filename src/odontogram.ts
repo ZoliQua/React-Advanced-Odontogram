@@ -35,6 +35,12 @@ import { assemblePdf, PDF_PALETTES, DEFAULT_PDF_THEME, type PdfExportOptions, ty
 import { TEMPLATES, TOOTH_TEMPLATE, ANATOMY_PROFILES, CLASSIC_PROFILE, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
 import { notifyStateChange, setPostNotifyHook } from "./state/notify";
 import { caseMeta, getCaseMeta, resetCaseMeta, caseMetaIsEmpty, serializeCaseMeta, hydrateCaseMeta, caseContextSummaryFragment, caseDiagnosesSummaryFragment } from "./state/caseMeta";
+// ---- Dual-chart core (extracted to ./state/chart) ----
+// `toothState` is a LIVE BINDING for the active chart; only setActiveChartMode rebinds it.
+import { charts, toothState, chartMode, planInitialized, getChartMode, setActiveChartMode, setPlanInitialized, cloneChart, type ChartMode } from "./state/chart";
+// Re-exported so the public API surface is unchanged by the extraction.
+export { getChartMode } from "./state/chart";
+export type { ChartMode };
 // ---- Tooth-state payload contract (extracted to ./state/payload) ----
 // Re-exported so the public API surface is unchanged by the extraction.
 export {
@@ -261,35 +267,14 @@ function svgGetById(root: Any, id: Any){
 // The Map key is typed `Any` (not `number`) deliberately: several call sites
 // pass an untyped `Set`/array element (e.g. `selectedTeeth`, declared `Set()`
 // with no type param) as the key, so typing the key `number` would reject them.
-const charts: Record<"status" | "plan", Map<Any, Any>> = {
-  status: new Map(),
-  plan: new Map(),
-};
-let toothState = charts.status; // active-chart ALIAS — reassigned by setChartMode()
-export type ChartMode = "status" | "plan";
-let chartMode: ChartMode = "status";
 
 // ---- Case-level metadata object (extracted to ./state/caseMeta) ----
 // Re-exported so the public API surface is unchanged by the extraction.
 export {
   getCaseConditions, getCaseMeta, resetCaseMeta, setCaseAge, setCaseCondition, setCigarettesPerDay, setDiabetesStatus, setDiagnosisOverride, setExamDate, setExtentOverride, setGradeOverride, setHba1c, setMaxRblPercent, setPatientDob, setPatientName, setSmokingStatus, setStageOverride, setToothLossPerio,
 } from "./state/caseMeta";
-// Plan chart is lazily deep-cloned from status the FIRST time plan mode is
-// entered; subsequent entries reuse whatever is already in charts.plan (so
-// plan edits are never silently overwritten by re-cloning from status).
-let planInitialized = false;
 
-/** Current active chart mode ("status" | "plan"). */
-export function getChartMode(): ChartMode { return chartMode; }
 
-/** Deep-copy every tooth from `src` into `dst` via the proven
- *  serializeState/hydrateState round-trip, so the two charts never share
- *  Sets/Maps/objects (mutating one tooth's state can never leak into the
- *  other chart's copy). */
-function cloneChart(src: Map<Any, Any>, dst: Map<Any, Any>): void {
-  dst.clear();
-  for(const [n, s] of src) dst.set(n, hydrateState(serializeState(s)));
-}
 
 // ---- Status->plan edit gate + propagation ---------------------------------
 // The set of teeth that have been EXPLICITLY edited while `chartMode === "plan"`.
@@ -478,12 +463,11 @@ export function setChartMode(mode: ChartMode): void {
   if(mode === chartMode) return;
   if(mode === "plan" && !planInitialized){
     cloneChart(charts.status, charts.plan);
-    planInitialized = true;
+    setPlanInitialized(true);
     // A freshly-cloned plan exactly matches status -> no plan-edits yet.
     planEditedTeeth.clear();
   }
-  chartMode = mode;
-  toothState = charts[mode];
+  setActiveChartMode(mode);
   // Full repaint-all, reused verbatim from importStatus()'s post-populate loop.
   for(const toothNo of ALL_TEETH){
     applyStateToSvg(toothNo);
@@ -3841,11 +3825,10 @@ export function __getPlanStateForTest(toothNo: number): Record<string, unknown> 
 export function __resetChartStateForTest(): void {
   charts.status.clear();
   charts.plan.clear();
-  planInitialized = false;
+  setPlanInitialized(false);
   planEditedTeeth.clear();
   pendingDualStateConfirm = null;
-  chartMode = "status";
-  toothState = charts.status;
+  setActiveChartMode("status");
   resetCaseMeta();
   collapsedCards = {};
 }
@@ -5913,7 +5896,7 @@ export function setPlanChart(payload: Any): void {
     const raw = teeth[toothNo];
     charts.plan.set(toothNo, hydrateState(raw, inferLegacySecondaryCaries));
   }
-  planInitialized = true;
+  setPlanInitialized(true);
   // Replacing the plan chart wholesale resets any runtime plan-edits.
   planEditedTeeth.clear();
   // Drop any pending dual-state confirm — its deferred `applyFn` was captured
@@ -8238,10 +8221,10 @@ function hydrateImportedCharts(data: Any): void {
       const raw = data.plan[toothNo];
       charts.plan.set(toothNo, hydrateState(raw, inferLegacySecondaryCaries));
     }
-    planInitialized = true;
+    setPlanInitialized(true);
   }else{
     charts.plan.clear();
-    planInitialized = false;
+    setPlanInitialized(false);
   }
   // An import replaces the whole case — a freshly imported plan carries no
   // runtime plan-edits (they are never serialized), so drop any stale marks
@@ -8275,8 +8258,7 @@ function hydrateImportedCharts(data: Any): void {
  * separate, directly-testable function; see its docstring above).
  */
 function resetActiveChartToStatusAfterImport(): void {
-  chartMode = "status";
-  toothState = charts.status;
+  setActiveChartMode("status");
 }
 
 export function importStatus(data: Any){
@@ -9082,11 +9064,10 @@ export function destroyOdontogram(){
   // clean.
   charts.status.clear();
   charts.plan.clear();
-  planInitialized = false;
+  setPlanInitialized(false);
   planEditedTeeth.clear();
   pendingDualStateConfirm = null;
-  chartMode = "status";
-  toothState = charts.status;
+  setActiveChartMode("status");
   resetCaseMeta();
   toothSvgRoot.clear();
   toothTile.clear();

@@ -9,6 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.6.0] - 2026-09-14
 
+### Changed
+
+- **The measured tooth anatomy is now loaded on demand — and `setToothAnatomy()`
+  is async.** The measured ("candidate anatomy") artwork is ~1.1 MB of inlined
+  SVG for an opt-in profile, and it was in the main bundle whether you used it
+  or not. It now lives in its own module (`anatomy/measured`), pulled in by a
+  dynamic import the first time the profile is selected: the main chunk drops
+  from about 2.96 MB to 1.82 MB (-39%), and an app that stays on the classic
+  anatomy never downloads the rest.
+
+  The one API consequence: **`setToothAnatomy(v)` returns a `Promise<void>`**
+  instead of `void`, because it resolves the artwork *before* flipping the
+  profile flag — that is what keeps `activeAnatomyProfile()` synchronous for
+  every render path. If you call it and then rebuild the grid yourself, await it
+  first:
+
+  ```ts
+  await setToothAnatomy("measured");
+  rebuildGrid();
+  ```
+
+  Calling it without awaiting still switches the profile; only code that
+  immediately depends on the new artwork needs the `await`. The bundled
+  Settings UI already does this.
+
 ### Added
 
 - **Data-driven ICD code specificity (DX-8).** The exported codes now follow

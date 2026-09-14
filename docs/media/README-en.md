@@ -451,7 +451,7 @@ Or load it with a client-only dynamic import: `dynamic(() => import("./Odontogra
 Opened from the topbar gear icon; a focus-trapped, ARIA `dialog` with a tabbed layout (Esc/backdrop-click to close, arrow keys to switch tabs). All settings are session-level UI state only, unless noted — none of them mutate per-tooth data or the export payload.
 
 - **General:** numbering system (FDI/Universal/Palmer), language, dark/light theme, tooth-information panel visibility
-- **Odontogram:** tooth anatomy profile (`classic` default / `measured`) — `measured` renders nine literature-measured tooth templates in a two-arch, per-tooth-width layout; switchable at runtime, no effect on the classic default
+- **Odontogram:** tooth anatomy profile (`classic` default / `measured`) — `measured` renders nine literature-measured tooth templates in a two-arch, per-tooth-width layout; switchable at runtime, no effect on the classic default; its artwork is a separate chunk, fetched only when you switch to it, so the classic default costs nothing
 - **Panels:** independently show/hide the whole-mouth Statuses card and the Orthodontics card (both default visible)
 - **Tooth details:** wear detail level and discoloration detail level (simple/complex, each default complex), surface notation (simple/full, default full)
 - **Caries:** ICDAS II scoring toggle (`enableIcdas`), caries-depth toggle (`cariesDepthEnabled`), root-caries granularity (`rootCariesMode`: simple/severity), secondary/CARS granularity (`secondaryCariesMode`: simple/standard/full), radiographic-depth granularity (`radiographicDepthMode`: off/threeLevel/detailed) — the former separate "Secondary caries" tab is merged into this one, with the CARS control positioned directly above radiographic depth

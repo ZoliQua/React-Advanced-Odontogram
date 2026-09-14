@@ -31,7 +31,7 @@ import {
 import { buildPerioSvg } from "./perioExport";
 import { resetTemplateCache as resetPerioTemplateCache } from "./perioGraphic";
 import { assemblePdf, PDF_PALETTES, DEFAULT_PDF_THEME, type PdfExportOptions, type PdfAssembleData, type PdfDocLike, type PdfColorTheme } from "./perioPdf";
-import { TEMPLATES, TOOTH_TEMPLATE, ALL_TEETH, isUpperTooth, activeAnatomyProfile, applyToothAnatomy, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
+import { TEMPLATES, TOOTH_TEMPLATE, ALL_TEETH, isUpperTooth, activeAnatomyProfile, applyToothAnatomy, getToothAnatomy, ensureMeasuredProfile, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
 export { isUpperTooth } from "./anatomy/profiles";
 // Re-exported so the public API surface is unchanged by the extraction.
 export { getToothAnatomy, activeAnatomyProfile } from "./anatomy/profiles";
@@ -83,14 +83,15 @@ export { CLASSIC_CEJ_Y, CLASSIC_IMPLANT_CEJ_Y, CLASSIC_MILKTOOTH_CEJ_Y } from ".
 export type { ToothAnatomy, AnatomyProfile };
 
 /** Switch the tooth-anatomy profile. No-op (does not notify) if unchanged.
- *  Invalidates the perio-chart template cache so that chart re-parses the new
- *  profile's templates on its next load (the odontogram grid is rebuilt by the
- *  caller via `rebuildGrid()`). */
-/** Switch the tooth-anatomy profile. No-op (does not notify) if unchanged.
- *  Invalidates the perio-chart template cache so that chart re-parses the new
- *  profile's templates on its next load (the odontogram grid is rebuilt by the
- *  caller via `rebuildGrid()`). */
-export function setToothAnatomy(v: ToothAnatomy): void {
+ *  ASYNC since 2.6.0: the measured artwork is code-split, so selecting it first
+ *  awaits its chunk — the profile is always loaded before the flag flips, which
+ *  keeps `activeAnatomyProfile()` synchronous for every render path. Await this
+ *  before calling `rebuildGrid()`, or the grid rebuilds on the old profile.
+ *  Also invalidates the perio-chart template cache so that chart re-parses the
+ *  new profile's templates on its next load. */
+export async function setToothAnatomy(v: ToothAnatomy): Promise<void> {
+  if(v === getToothAnatomy()) return;
+  if(v === "measured") await ensureMeasuredProfile();
   if(!applyToothAnatomy(v)) return;
   resetPerioTemplateCache();
   notifyStateChange();

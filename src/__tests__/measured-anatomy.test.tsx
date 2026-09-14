@@ -42,21 +42,21 @@ function installDomStubs() {
   }
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   installDomStubs();
   cleanup();
   document.body.innerHTML = "";
   __resetChartStateForTest();
   // The anatomy profile is module-level session state (NOT part of chart reset);
   // pin it classic before each case so tests don't leak into one another.
-  setToothAnatomy("classic");
+  await setToothAnatomy("classic");
   setPerioViewMode("toggle");
   setNumberingSystem("FDI");
 });
 
-afterEach(() => {
+afterEach(async () => {
   // Never leave the measured profile selected for other test files.
-  setToothAnatomy("classic");
+  await setToothAnatomy("classic");
   cleanup();
 });
 
@@ -71,7 +71,7 @@ async function waitForGrid() {
  *  Settings `onToothAnatomy` handler does (setToothAnatomy + rebuildGrid). */
 async function switchAnatomy(v: "classic" | "measured") {
   await act(async () => {
-    setToothAnatomy(v);
+    await setToothAnatomy(v);
     await rebuildGrid();
   });
 }

@@ -754,9 +754,9 @@ export function OdontogramProvider({
     toothAnatomy,
     onToothAnatomy: (v) => {
       setToothAnatomyState(v);
-      setToothAnatomy(v);
-      // Re-render the grid so the new profile's layout/artwork takes effect.
-      void rebuildGrid();
+      // setToothAnatomy is async since 2.6.0 (the measured artwork is a lazily
+      // loaded chunk); the grid must not rebuild until the profile is in place.
+      void setToothAnatomy(v).then(() => rebuildGrid());
     },
     selectionColor,
     onSelectionColor: (v) => setSelectionColor(v),

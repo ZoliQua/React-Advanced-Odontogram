@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -68,7 +68,7 @@ import {
 
 ![Full-mouth periodontal chart](https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/lang/screenshot_en_perio.png)
 
-Per-site probing depth, gingival margin, bleeding on probing (+ suppuration) at the six standard sites, with derived CAL, recession and whole-mouth %BOP; a graphical full-mouth perio chart (CEJ line, mm guide grid, pocket/margin curve, anatomical diamond index tiles), 2017 staging/grading, and per-site FHIR export (LOINC periodontal panel `74029-0`). Available as an `Odontogram | Periodontal Status` view toggle and as a separately-invocable `PerioChart` component.
+Per-site probing depth, gingival margin, bleeding on probing (+ suppuration) at the six standard sites, with derived CAL, recession and whole-mouth %BOP; a graphical full-mouth perio chart (CEJ line, mm guide grid, pocket/margin curve, anatomical diamond index tiles), 2017 staging/grading, and per-site FHIR export (LOINC periodontal panel `74029-0`). Available as an `Odontogram | Periodontal Status` view toggle and as a separately-invocable `PerioChart` component. Periodontal data now round-trips through FHIR import too, not only through the JSON payload — suppuration is the one exception and stays JSON-only.
 
 ## ✨ Highlights
 
@@ -81,6 +81,10 @@ Per-site probing depth, gingival margin, bleeding on probing (+ suppuration) at 
 - 🗂️ **Case / regional diagnoses pop-up:** the whole-mouth and regional diagnoses (jaw anomalies, cysts, salivary and mucosal conditions…) moved out of the periodontal sidebar into their own dialog, opened from the **Diagnoses** button beside the Odontogram / Periodontal-status toggle; its picker is code-first and code-sorted.
 - 🇭🇺 **BNO-10 pack:** the Hungarian display strings are now the official NEAK BNO-10 titles, and the pack uses the standard ICD-10 system URI (BNO-X is identical to WHO ICD-10).
 - ✅ **HL7-validator-clean FHIR export:** every Bundle entry carries a deterministic `id` and an absolute `fullUrl` (no `urn:uuid` placeholders), and the Bundle embeds the engine's own **CodeSystem** so its local codes resolve during validation; the same CodeSystem is published in the repository as `fhir/CodeSystem-odontogram.json` (pass `includeCodeSystem: false` in the FHIR export options to omit it).
+- 🎯 **ICD codes that follow the chart (data-driven specificity).** Caries depth comes from the radiographic depth when it is charted (E1/E2 → enamel, D1–D3 → dentine) and falls back to the ICDAS severity (1–3 → enamel, 4–6 → dentine), refining WHO `K02` to `K02.0` / `K02.1` and ICD-10-CM `K02.9` to `K02.51/.52` (pit-and-fissure) or `K02.61/.62` (smooth surface) by surface × depth. Chronic periodontitis takes its ICD-10-CM code from the 2017 stage and extent (`K05.311`–`K05.329`). One Condition per tooth, carrying the deepest involvement.
+- 🔄 **Periodontal data round-trips through FHIR.** The importer reads the LOINC 74029-0 periodontal panels back into each tooth — probing depth, gingival margin (reconstructed from CAL, so pseudopocket values survive), BOP, furcation, O'Leary plaque, the PI/GI and implant mPI/mBI indices and keratinized-gingiva width — plus the smoking-status and HbA1c evidence Observations. Conditions coded only in ICD-10-CM or SNOMED CT are recognised too, so a foreign bundle imports what it can.
+- 🧬 **SNOMED CT for the whole diagnosis catalog.** 48 of the 50 slots now carry a verified SNOMED CT International concept (active, core module, matching FSN). Two stay deliberately unset because SNOMED International has no umbrella concept for them: jaw-size anomaly (K07.0) and dentofacial functional abnormalities (K07.5). The SNOMED overlay remains opt-in in Settings.
+- 📦 **A loadable FHIR terminology package.** The repository's `fhir/` folder is a FHIR NPM package (`react-advanced-odontogram.fhir`, FHIR 4.0.1) holding the engine CodeSystem plus generated ValueSets — one per clinical-axis value group, one for the finding types and an all-codes set. Point a validator at it with `-ig ./fhir`.
 - 🖼️ PNG / JPG / SVG chart export and a customizable, **multilingual PDF report** (jsPDF, lazy-loaded) — colour themes, a grouped dentition-summary table, a periodontal chart/description, and bundled Unicode fonts so every UI language (incl. Hungarian accents, Cyrillic, Arabic RTL and Chinese) renders correctly
 - 🔢 FDI / Universal / Palmer numbering · 🌐 12 UI languages (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR, Arabic RTL) · 🎨 theming via `--odon-*` CSS variables · 🧩 plugin system · ⌨️ keyboard accessibility
 

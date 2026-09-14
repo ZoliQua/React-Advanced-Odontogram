@@ -5,12 +5,12 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
-[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 
 ---
@@ -250,6 +250,10 @@ Alebo ho načítajte pomocou dynamického importu iba na strane klienta: `dynami
 - 🗂️ **Vyskakovacie okno prípadových/regionálnych diagnóz:** celoústne a regionálne diagnózy (čeľustné anomálie, cysty, ochorenia slinných žliaz a sliznice…) sa presunuli z parodontálneho bočného panela do vlastného dialógu, ktorý sa otvára tlačidlom **Diagnózy** vedľa prepínača Odontogram / Parodontálny stav; jeho výber je zoradený podľa kódu, s kódom na prvom mieste.
 - 🇭🇺 **Balík BNO-10:** zobrazené maďarské texty sú teraz oficiálne názvy BNO-10 podľa NEAK a balík používa štandardné URI systému ICD-10 (BNO-X je zhodné s ICD-10 WHO).
 - ✅ **Export FHIR čistý pre validátory HL7:** každý záznam v Bundle nesie deterministické `id` a absolútnu `fullUrl` (žiadne zástupné `urn:uuid`), a Bundle obsahuje vlastný **CodeSystem** enginu, aby sa jeho lokálne kódy dali pri validácii vyriešiť; rovnaký CodeSystem je publikovaný v repozitári ako `fhir/CodeSystem-odontogram.json` (odovzdaním `includeCodeSystem: false` v možnostiach exportu FHIR ho možno vynechať).
+- 🎯 **ICD kódy, ktoré sledujú kartu (na dátach založená špecifickosť).** Hĺbka kazu vychádza z rádiografickej hĺbky, ak je zaznamenaná (E1/E2 → sklovina, D1–D3 → dentín), inak sa použije závažnosť ICDAS ako záloha (1–3 → sklovina, 4–6 → dentín); tým sa WHO kód `K02` spresňuje na `K02.0` / `K02.1` a ICD-10-CM kód `K02.9` na `K02.51/.52` (jamky a fisúry) alebo `K02.61/.62` (hladká plocha) podľa plochy × hĺbky. Chronická parodontitída získava svoj ICD-10-CM kód zo štádia a rozsahu podľa klasifikácie 2017 (`K05.311`–`K05.329`). Jedna Condition na zub, nesúca najhlbšie postihnutie.
+- 🔄 **Parodontálne údaje sa teraz vracajú aj cez FHIR.** Import načíta parodontálne panely LOINC 74029-0 späť do každého zuba — hĺbka sondáže, gingiválny okraj (rekonštruovaný z CAL, takže hodnoty pseudovačku prežijú), BOP, furkácia, plak podľa O'Learyho, indexy PI/GI a implantátové mPI/mBI, a šírka keratinizovanej gingívy — plus dôkazové Observation o stave fajčenia a HbA1c. Rozpoznávajú sa aj Condition kódované iba v ICD-10-CM alebo SNOMED CT, takže cudzí bundle importuje, čo dokáže.
+- 🧬 **SNOMED CT pre celý katalóg diagnóz.** 48 z 50 pozícií teraz nesie overený koncept SNOMED CT International (aktívny, v core module, so zodpovedajúcim FSN). Dve zostávajú zámerne neobsadené, pretože SNOMED International pre ne nemá zastrešujúci koncept: anomália veľkosti čeľuste (K07.0) a dentofaciálne funkčné poruchy (K07.5). Prekrytie SNOMED zostáva voliteľné v Nastaveniach.
+- 📦 **Načítateľný balík terminológie FHIR.** Priečinok `fhir/` v repozitári je NPM balík FHIR (`react-advanced-odontogram.fhir`, FHIR 4.0.1) obsahujúci CodeSystem enginu a generované ValueSet — po jednom pre každú skupinu hodnôt klinickej osi, jeden pre typy nálezov a jeden súhrnný so všetkými kódmi. Nasmerujte naň validátor pomocou `-ig ./fhir`.
 - 🧰 Zjednotená lišta ikon v hornej časti so záložkovým modálnym oknom Nastavenia (Všeobecné / Panely / Detaily zuba / Kaz / Dreň / Poznámky / Periodontálne — číslovanie, poznámky, viditeľnosť panelov, ICDAS, prepínač hĺbky kazu, podrobnosť kazu koreňa/rádiografického kazu, úroveň podrobnosti drene, úroveň podrobnosti opotrebenia/zafarbenia zuba, informácie o zuboch)
 - 🗂️ Nastavenia → záložka „Panely": nezávisle zobraziť/skryť panely súhrnu za celé ústa Stavy a Ortodoncia
 - 🦷🩺 Nastavenia → záložka „Periodontálne": 16 prepínačov zobraziť/skryť pre jednotlivé indexy riadkov parodontálneho grafu (zoskupené Vrecko/Hygiena/Mukogingválne/Podpora/Peri-implantátové — PD/GM/CAL/BOP, plak, PI, GI, viditeľnosť CEJ, koreňová konkavita, KG, GT, furkácia, mobilita, Millerova trieda, mPI, mBI), každý s vlastným popisom, plus možnosť zobrazenia názvov indexov preložené vs. kanonické (kanonický = pevný anglicko-latinský vedecký názov vo všetkých jazykoch rozhrania; tooltipy zostávajú vždy lokalizované bez ohľadu na toto nastavenie). Obe sú preferencie na úrovni aplikácie (podobne ako `perioViewMode`) — nikdy nie sú súčasťou exportného payloadu
@@ -767,6 +771,8 @@ Export vytvorí súbor JSON (verzia `2.22`; import tiež akceptuje staršie verz
 
 ### 🖨️ Export
 `exportFhir()` vytvára Bundle čistý pre validátory HL7: každý záznam nesie deterministické `id` a absolútnu `fullUrl` (žiadne zástupné `urn:uuid`), a Bundle obsahuje vlastný CodeSystem enginu, aby sa jeho lokálne kódy dali pri validácii vyriešiť (publikovaný aj ako `fhir/CodeSystem-odontogram.json` v repozitári; možno ho vynechať pomocou `includeCodeSystem: false`).
+
+Parodontálne údaje sa teraz vracajú aj cez FHIR import, nielen cez JSON payload: `importFhirBundle()` načíta parodontálne panely LOINC `74029-0` späť do parodontálneho záznamu každého zuba — hĺbka sondáže, gingiválny okraj (rekonštruovaný z CAL, takže hodnoty pseudovačku prežijú), BOP, furkácia, plak podľa O'Learyho, indexy PI/GI a implantátové mPI/mBI, a šírka keratinizovanej gingívy — plus dôkazové Observation o stave fajčenia a HbA1c na úrovni prípadu. Supurácia je jedinou výnimkou: zostáva iba v JSON, keďže nie je súčasťou exportu FHIR.
 
 Okrem vlastného exportu odontogramu Stav JSON / FHIR / PNG / JPG / SVG má **parodontálny graf** vlastnú exportnú cestu:
 - **Parodontálny SVG/PNG/JPG:** `exportPerioSvg()` / `exportPerioImage("png"|"jpg")` vykresľujú celý parodontálny graf (grafika zubov + číselné riadky + klasifikácia 2017) ako jeden samostatný vektorový SVG (`buildPerioSvg()`), nezávisle od pripojeného DOM komponentu `PerioChart`. Tieto tri položky exportnej ponuky sú deaktivované, keď je `hasAnyPerioData()` false (prázdny graf nemá čo parodontálne exportovať).

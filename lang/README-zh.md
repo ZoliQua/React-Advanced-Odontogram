@@ -5,12 +5,12 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.5.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
-[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 
 ---
@@ -252,6 +252,10 @@ export default function OdontogramClient() {
 - 🗂️ **病例/区域性诊断弹窗：** 全口及区域性诊断（颌骨异常、囊肿、唾液腺及黏膜相关病症等）已从牙周侧栏移出，改为独立对话框，通过 Odontogram / Periodontal Status 切换开关旁的**诊断**按钮打开；其选择器以编码为先并按编码排序。
 - 🇭🇺 **BNO-10 编码包：** 匈牙利语显示文本现已改为 NEAK 官方 BNO-10 名称，且该编码包使用标准 ICD-10 系统 URI（BNO-X 与 WHO ICD-10 完全一致）。
 - ✅ **符合 HL7 校验器要求的干净 FHIR 导出：** 每个 Bundle 条目都带有确定性的 `id` 和绝对 `fullUrl`（不再使用 `urn:uuid` 占位符），且 Bundle 内嵌了引擎自身的 **CodeSystem**，以便校验时能正确解析其本地编码；同一个 CodeSystem 也作为 `fhir/CodeSystem-odontogram.json` 发布在代码仓库中（在 FHIR 导出选项中传入 `includeCodeSystem: false` 可将其省略）。
+- 🎯 **随图表变化的 ICD 编码（数据驱动的精细度）。** 龋齿深度优先取自已记录的影像学深度（E1/E2 → 釉质，D1–D3 → 牙本质），若未记录则回退到 ICDAS 严重程度（1–3 → 釉质，4–6 → 牙本质），据此将 WHO `K02` 细化为 `K02.0` / `K02.1`，将 ICD-10-CM `K02.9` 按表面 × 深度细化为 `K02.51/.52`（点隙裂沟）或 `K02.61/.62`（光滑面）。慢性牙周炎的 ICD-10-CM 编码则取自 2017 年分期与受累范围（`K05.311`–`K05.329`）。每颗牙只生成一个 Condition，取其中最深的受累程度。
+- 🔄 **牙周数据现在可通过 FHIR 双向往返。** 导入功能会将 LOINC 74029-0 牙周面板数据重新读入每颗牙——探诊深度、龈缘位置（由 CAL 反推得出，因此假性牙周袋数值也能保留）、BOP、根分叉、O'Leary 菌斑、PI/GI 及种植体 mPI/mBI 指标，以及角化龈宽度——还有吸烟状态和 HbA1c 的证据性 Observation。仅以 ICD-10-CM 或 SNOMED CT 编码的 Condition 同样可被识别，因此外部 Bundle 能导入多少算多少。
+- 🧬 **诊断目录已基本配齐 SNOMED CT。** 50 个诊断位中已有 48 个带有经核实的 SNOMED CT International 概念（处于激活状态、位于 core 模块、且 FSN 匹配）。仍有两个刻意保持未设置，因为 SNOMED International 并没有对应的总括概念：颌骨大小异常（K07.0）和牙颌面功能性异常（K07.5）。SNOMED 叠加编码在设置中依旧是可选项。
+- 📦 **可加载的 FHIR 术语包。** 代码仓库中的 `fhir/` 目录本身就是一个 FHIR NPM 包（`react-advanced-odontogram.fhir`，FHIR 4.0.1），内含引擎的 CodeSystem 以及自动生成的多个 ValueSet——每个临床轴取值组各一个、一个用于发现类型、外加一个全编码汇总集。用 `-ig ./fhir` 把校验器指向它即可。
 - 🧰 统一的顶部工具栏图标行，配合带标签页的设置弹窗（常规 / 面板 / 牙齿详情 / 龋齿 / 牙髓 / 备注 / 牙周——编号方式、备注、面板可见性、ICDAS、龋齿深度开关、根面龋/影像学龋损粒度、牙髓详情级别、牙齿磨耗/变色详情级别、牙齿信息）
 - 🗂️ 设置 →“面板”标签页：可独立显示/隐藏全口“状态”摘要面板和“正畸”摘要面板
 - 🦷🩺 设置 →“牙周”标签页：针对牙周图表各行的 16 个按指标显示/隐藏开关（按牙周袋/口腔卫生/膜龈/支持组织/种植体周分组——PD/GM/CAL/BOP、菌斑、PI、GI、CEJ 可见性、根面凹陷、KG、GT、根分叉、松动度、Miller 分级、mPI、mBI），每项均附说明，另附一个“译文名称 vs. 规范名称”显示选项（规范名称 = 在所有界面语言下均固定使用的英文/拉丁文学术名称；无论此设置如何，提示信息始终保持本地化）。两者均为应用级偏好设置（与 `perioViewMode` 相同）——从不作为导出数据的一部分
@@ -769,6 +773,8 @@ enablePersistence({
 
 ### 🖨️ 导出
 `exportFhir()` 生成的 Bundle 符合 HL7 校验器要求：每个条目都带有确定性的 `id` 和绝对 `fullUrl`（不使用 `urn:uuid` 占位符），且 Bundle 内嵌了引擎自身的 CodeSystem 以便校验时正确解析其本地编码（该 CodeSystem 同时以 `fhir/CodeSystem-odontogram.json` 的形式发布在代码仓库中；可通过 `includeCodeSystem: false` 省略）。
+
+牙周数据现在也可以通过 FHIR 导入双向往返，而不仅限于 JSON 数据负载：`importFhirBundle()` 会将 LOINC `74029-0` 牙周面板数据重新读入每颗牙的牙周记录——探诊深度、龈缘位置（由 CAL 反推得出，因此假性牙周袋数值也能保留）、BOP、根分叉、O'Leary 菌斑、PI/GI 及种植体 mPI/mBI 指标，以及角化龈宽度——还有病例层面吸烟状态和 HbA1c 的证据性 Observation。唯一的例外是溢脓：它仍只存在于 JSON 中，因为并未纳入 FHIR 导出。
 
 除了牙位图自身的状态 JSON / FHIR / PNG / JPG / SVG 导出外，**牙周图表**还拥有自己的一套导出路径：
 - **牙周图 SVG/PNG/JPG：** `exportPerioSvg()` / `exportPerioImage("png"|"jpg")` 将完整的牙周图表（牙齿图形 + 数值行 + 2017 年分类结果）渲染为一份独立的矢量 SVG（`buildPerioSvg()`），不依赖已挂载的 `PerioChart` DOM。只要 `hasAnyPerioData()` 为 false（空白图表没有可导出的牙周数据），这三个导出菜单项就会被禁用。

@@ -21,7 +21,7 @@
 //     deterministic in vitest/jsdom.
 //
 // No per-tooth pointer handlers here — this is read-only chart artwork.
-import { activeAnatomyProfile } from "./odontogram";
+import { activeAnatomyProfile } from "./anatomy/profiles";
 
 // Per-template CEJ baseline anchors now live on the active `AnatomyProfile`
 // (`odontogram.ts`), so the perio chart tracks the selected tooth anatomy. The
@@ -37,7 +37,7 @@ export {
   CLASSIC_CEJ_Y as CEJ_Y,
   CLASSIC_IMPLANT_CEJ_Y as IMPLANT_CEJ_Y,
   CLASSIC_MILKTOOTH_CEJ_Y as MILKTOOTH_CEJ_Y,
-} from "./odontogram";
+} from "./anatomy/profiles";
 
 // The union of every template tooth any anatomy profile can supply. The classic
 // profile realizes only 11/13/14/16; the measured profile adds 12/15/17/31/46.

@@ -913,3 +913,31 @@ export function clampKg(mm: unknown): number | null {
   if(!Number.isFinite(n)) return null;
   return Math.max(0, Math.min(15, Math.round(n)));
 }
+
+// ---- Pure tooth-state predicates (shared by the engine and the perio API) ----
+export function isUnderGum(sel: Any){
+  return sel === "tooth-under-gum";
+}
+
+export function isExtraction(sel: Any){
+  return sel === "no-tooth-after-extraction";
+}
+
+// #perioRow gate. Periodontal probing applies only to a tooth actually present
+// in the mouth chairside — missing/implant/under-gum/
+// extraction-socket teeth have no probing site to chart at all, so (unlike
+// mobilityRowHidden, which stays visible-but-disabled for some of those) this
+// hides the whole row outright. `!isToothPresent(sel)` covers BOTH "none"
+// (missing) and "implant" in one check; isUnderGum/isExtraction carve out the
+// remaining two non-present-but-not-"none" selections.
+export function perioRowHidden(s: Any): boolean {
+  const sel = s?.toothSelection;
+  return !isToothPresent(sel) || isUnderGum(sel) || isExtraction(sel);
+}
+
+// Canonical 6-site periodontal probing order — buccal row (mesio-buccal,
+// buccal, disto-buccal), then lingual/palatal row (mesio-lingual,
+// lingual/palatal, disto-lingual). Shared verbatim by the data core, the UI
+// charting grid, and FHIR mapping, which key their per-site controls to this
+// exact array order.
+export type PerioSite = typeof PERIO_SITES[number];

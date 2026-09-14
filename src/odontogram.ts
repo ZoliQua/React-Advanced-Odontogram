@@ -31,12 +31,29 @@ import {
 import { buildPerioSvg } from "./perioExport";
 import { resetTemplateCache as resetPerioTemplateCache } from "./perioGraphic";
 import { assemblePdf, PDF_PALETTES, DEFAULT_PDF_THEME, type PdfExportOptions, type PdfAssembleData, type PdfDocLike, type PdfColorTheme } from "./perioPdf";
-import { TEMPLATES, TOOTH_TEMPLATE, ANATOMY_PROFILES, CLASSIC_PROFILE, ALL_TEETH, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
+import { TEMPLATES, TOOTH_TEMPLATE, ALL_TEETH, isUpperTooth, activeAnatomyProfile, applyToothAnatomy, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
+export { isUpperTooth } from "./anatomy/profiles";
+// Re-exported so the public API surface is unchanged by the extraction.
+export { getToothAnatomy, activeAnatomyProfile } from "./anatomy/profiles";
 import { notifyStateChange, setPostNotifyHook } from "./state/notify";
 import { caseMeta, getCaseMeta, resetCaseMeta, caseMetaIsEmpty, serializeCaseMeta, hydrateCaseMeta, caseContextSummaryFragment, caseDiagnosesSummaryFragment } from "./state/caseMeta";
 // ---- Dual-chart core (extracted to ./state/chart) ----
 // `toothState` is a LIVE BINDING for the active chart; only setActiveChartMode rebinds it.
 import { charts, toothState, chartMode, planInitialized, getChartMode, setActiveChartMode, setPlanInitialized, cloneChart, type ChartMode } from "./state/chart";
+// ---- Tooth numbering (extracted to ./state/numbering) ----
+export { formatToothLabel } from "./state/numbering";
+import { numberingSystem, applyNumberingSystem, getDisplayedToothNumber, formatToothLabel } from "./state/numbering";
+// Pure tooth-state predicates + the 6-site type now live with the payload contract.
+import { isUnderGum, isExtraction, perioRowHidden, type PerioSite } from "./state/payload";
+export type { PerioSite } from "./state/payload";
+// Active-chart readers the perio chart/export need moved in with the perio API.
+export { isPerioRowHidden, isToothImplant, getPerioToothKind, getToothMobility } from "./state/perio";
+import { getToothMobility } from "./state/perio";
+// ---- Perio display settings (extracted to ./state/perioSettings) ----
+// Re-exported so the public API surface is unchanged by the extraction.
+export { getPerioIndexNameMode, getPerioRowVisibility, setPerioIndexNameMode, setPerioRowVisibility } from "./state/perioSettings";
+export type { PerioIndexNameMode, PerioRowId } from "./state/perioSettings";
+
 // ---- Pulp/apical diagnosis authoring (extracted to ./state/pulpApical) ----
 // Re-exported so the public API surface is unchanged by the extraction.
 export {
@@ -65,32 +82,20 @@ export { TEMPLATES, TOOTH_TEMPLATE };
 export { CLASSIC_CEJ_Y, CLASSIC_IMPLANT_CEJ_Y, CLASSIC_MILKTOOTH_CEJ_Y } from "./anatomy/profiles";
 export type { ToothAnatomy, AnatomyProfile };
 
-// Session-only selected anatomy (mirrors `perioViewMode`): a module `let` +
-// getter/setter that notifies on change. NOT part of the export payload — never
-// referenced by `collectExportPayload`/`getPlanChart`/hydrate.
-let toothAnatomy: ToothAnatomy = "classic";
-
-/** Current tooth-anatomy profile selector. Defaults to `"classic"`. */
-export function getToothAnatomy(): ToothAnatomy {
-  return toothAnatomy;
-}
-
+/** Switch the tooth-anatomy profile. No-op (does not notify) if unchanged.
+ *  Invalidates the perio-chart template cache so that chart re-parses the new
+ *  profile's templates on its next load (the odontogram grid is rebuilt by the
+ *  caller via `rebuildGrid()`). */
 /** Switch the tooth-anatomy profile. No-op (does not notify) if unchanged.
  *  Invalidates the perio-chart template cache so that chart re-parses the new
  *  profile's templates on its next load (the odontogram grid is rebuilt by the
  *  caller via `rebuildGrid()`). */
 export function setToothAnatomy(v: ToothAnatomy): void {
-  if(v === toothAnatomy) return;
-  toothAnatomy = v;
+  if(!applyToothAnatomy(v)) return;
   resetPerioTemplateCache();
   notifyStateChange();
 }
 
-/** The active `AnatomyProfile` per the current flag; falls back to classic for
- *  any profile not (yet) realized in the registry. */
-export function activeAnatomyProfile(): AnatomyProfile {
-  return ANATOMY_PROFILES[toothAnatomy] ?? CLASSIC_PROFILE;
-}
 
 
 const MILKTOOTH_BLOCKED = new Set([16,17,18,26,27,28,36,37,38,46,47,48]);
@@ -117,13 +122,6 @@ export function isAnteriorTooth(toothNo: number): boolean {
   return ANTERIOR_TEETH.has(toothNo);
 }
 
-// Arch helper (upper vs. lower jaw) — quadrants 1/2 (permanent upper) and 5/6
-// (milk upper) are "upper"; 3/4 (permanent lower) and 7/8 (milk lower) are
-// "lower". Drives the full-mode lingual->palatal swap.
-export function isUpperTooth(toothNo: number): boolean {
-  const q = Math.floor(toothNo / 10);
-  return q === 1 || q === 2 || q === 5 || q === 6;
-}
 
 // Furcation entrance set for a given tooth, by FDI POSITION (`toothNo % 10`) +
 // quadrant. Deliberately position-based only — it does NOT gate on whether the
@@ -171,12 +169,6 @@ const PROSTHESIS_SUMMARY_KEY: Record<string, string> = {
   "removable-full": "prosthesis.type.removableFull",
 };
 
-// Canonical 6-site periodontal probing order — buccal row (mesio-buccal,
-// buccal, disto-buccal), then lingual/palatal row (mesio-lingual,
-// lingual/palatal, disto-lingual). Shared verbatim by the data core, the UI
-// charting grid, and FHIR mapping, which key their per-site controls to this
-// exact array order.
-export type PerioSite = typeof PERIO_SITES[number];
 
 
 // ---- DOM helpers ----
@@ -511,7 +503,6 @@ let showBase = true;
 let occlusalVisible = true;
 let showHealthyPulp = true;
 let suppressEdentulousSync = false;
-let numberingSystem: NumberingSystem = "FDI";
 let readOnly = false;
 let notesEnabled = false;
 /** Per-card collapse state: maps a card id to collapsed (true) / expanded (false).
@@ -964,40 +955,12 @@ export function __syncPeriImplantVisibilityForTest(periImplantRow: Element | nul
   syncPeriImplantVisibility(periImplantRow, modsContainer, toothSelection);
 }
 
-function isUnderGum(sel: Any){
-  return sel === "tooth-under-gum";
-}
 
-function isExtraction(sel: Any){
-  return sel === "no-tooth-after-extraction";
-}
 
-// #perioRow gate. Periodontal probing applies only to a tooth actually present
-// in the mouth chairside — missing/implant/under-gum/
-// extraction-socket teeth have no probing site to chart at all, so (unlike
-// mobilityRowHidden, which stays visible-but-disabled for some of those) this
-// hides the whole row outright. `!isToothPresent(sel)` covers BOTH "none"
-// (missing) and "implant" in one check; isUnderGum/isExtraction carve out the
-// remaining two non-present-but-not-"none" selections.
-function perioRowHidden(s: Any): boolean {
-  const sel = s?.toothSelection;
-  return !isToothPresent(sel) || isUnderGum(sel) || isExtraction(sel);
-}
 export function __perioRowHiddenForTest(s: Record<string, unknown>): boolean {
   return perioRowHidden(s);
 }
 
-// A milk tooth is stored under its permanent FDI number but DISPLAYED with the
-// deciduous quadrant digit (1->5, 2->6, 3->7, 4->8), so e.g. permanent 11 shows
-// as 51. Non-milk teeth display their own number unchanged.
-function getDisplayedToothNumber(toothNo: Any){
-  const s = toothState.get(toothNo);
-  if(!s || s.toothSelection !== "milktooth") return toothNo;
-  const firstDigit = Math.floor(toothNo / 10);
-  const secondDigit = toothNo % 10;
-  const mappedFirst = firstDigit === 1 ? 5 : firstDigit === 2 ? 6 : firstDigit === 3 ? 7 : 8;
-  return mappedFirst * 10 + secondDigit;
-}
 
 function updateToothTileNumber(toothNo: Any){
   const tiles = toothTile.get(toothNo);
@@ -5953,49 +5916,6 @@ export function prevPerioCell(cur: { toothNo: number; site: string; row: "pd" | 
 // outside odontogram.ts and can't reach the private `toothState` map,
 // `perioRowHidden`, or `applyToSelected` directly.
 
-/** Whether tooth `toothNo`'s periodontal probing sites are chartable on the
- *  active chart — the SAME gate {@link perioRowHidden} applies to the
- *  tooth-info panel's `#perioRow` (missing/implant/under-gum/extraction-
- *  socket teeth have no probing site to chart). The full-mouth perio-chart
- *  overlay grid disables a tooth's entire column (site cells +
- *  mobility cell) on this same predicate — a tooth never touched (no stored
- *  state yet) reads as present/chartable, mirroring every other per-tooth
- *  default read here. */
-export function isPerioRowHidden(toothNo: number): boolean {
-  return perioRowHidden(toothState.get(toothNo));
-}
-
-/** Whether tooth `toothNo` is an implant on the ACTIVE chart (status/plan
- *  aware, reading the SAME `toothState` the perio number rows read). The
- *  graphical Dental Chart (`PerioChart` / `perioGraphic.ts`) uses this to draw
- *  the implant fixture artwork (`#implant-base`) in place of the natural
- *  `#tooth-base` for an implant tooth — a read-only presentation concern,
- *  outside the tooth-info panel, so like `isPerioRowHidden`/`getToothMobility`
- *  above it needs a small public read since it can't reach `toothState`
- *  directly. A never-touched tooth defaults to non-implant. */
-export function isToothImplant(toothNo: number): boolean {
-  return toothState.get(toothNo)?.toothSelection === "implant";
-}
-
-/** The perio-chart artwork kind for a tooth, read from the ACTIVE chart so the
- *  perio graphic tracks the odontogram.
- *  A missing tooth (`none`) or an extraction socket renders no crown; a milk
- *  tooth uses the deciduous artwork; an implant uses the fixture body. Injected
- *  into the arch builders (`buildBuccalArchSvg`/`buildPalatalArchSvg`) by both
- *  `PerioChart` (UI) and `buildPerioSvg` (PDF), so the two stay in sync. */
-export function getPerioToothKind(toothNo: number): "missing" | "milktooth" | "implant" | "normal" {
-  const sel = toothState.get(toothNo)?.toothSelection;
-  if(sel === "implant") return "implant";
-  if(sel === "milktooth") return "milktooth";
-  if(sel === "none" || sel === "no-tooth-after-extraction") return "missing";
-  return "normal";
-}
-
-/** Read tooth `toothNo`'s Miller mobility grade from the active chart
- *  ("none" for a never-touched tooth, matching {@link defaultState}). */
-export function getToothMobility(toothNo: number): string {
-  return toothState.get(toothNo)?.mobility ?? "none";
-}
 
 /**
  * Set tooth `toothNo`'s Miller mobility grade on the active chart from
@@ -6104,77 +6024,6 @@ export function getSnomedEnabled(): boolean {
 export function setSnomedEnabled(v: boolean): void {
   if (v === snomedEnabled) return;
   snomedEnabled = v;
-  notifyStateChange();
-}
-
-// ---- Settings -> Periodontal tab app-level preferences ----
-// Two session-level UI preferences (no payload/FHIR change), mirroring the
-// `perioViewMode` precedent immediately above: a module `let` + getter +
-// setter that calls `notifyStateChange()`. Neither is part of the tooth
-// state, so neither is ever serialized (`collectExportPayload`/
-// `getPlanChart`/hydrate never reference these). `perioRowVisibility` drives
-// which perio-chart index rows the Dental Chart renders; `perioIndexNameMode`
-// drives whether index row labels show the localized name or a static
-// English/Latin canonical name. Both are wired into the Settings -> Periodontal
-// tab via `SettingsState` in `SettingsModal.tsx`.
-
-/** The 16 toggleable periodontal index rows the Dental Chart can show/hide. */
-export type PerioRowId =
-  | "plaque"
-  | "bop"
-  | "cal"
-  | "gm"
-  | "pd"
-  | "furcation"
-  | "mobility"
-  | "cej"
-  | "rootConcavity"
-  | "pi"
-  | "gi"
-  | "mpi"
-  | "mbi"
-  | "kg"
-  | "gt"
-  | "miller";
-
-const PERIO_ROW_IDS: readonly PerioRowId[] = [
-  "plaque", "bop", "cal", "gm", "pd", "furcation", "mobility", "cej",
-  "rootConcavity", "pi", "gi", "mpi", "mbi", "kg", "gt", "miller",
-];
-
-function defaultPerioRowVisibility(): Record<PerioRowId, boolean> {
-  const record = {} as Record<PerioRowId, boolean>;
-  for (const id of PERIO_ROW_IDS) record[id] = true;
-  return record;
-}
-
-let perioRowVisibility: Record<PerioRowId, boolean> = defaultPerioRowVisibility();
-
-/** Current per-index perio-chart row visibility. Defaults to all-visible. */
-export function getPerioRowVisibility(): Record<PerioRowId, boolean> {
-  return perioRowVisibility;
-}
-
-/** Show/hide one perio-chart index row. No-op (does not notify) if unchanged. */
-export function setPerioRowVisibility(id: PerioRowId, visible: boolean): void {
-  if(perioRowVisibility[id] === visible) return;
-  perioRowVisibility = { ...perioRowVisibility, [id]: visible };
-  notifyStateChange();
-}
-
-/** How perio-chart index row labels are rendered. */
-export type PerioIndexNameMode = "translated" | "canonical";
-let perioIndexNameMode: PerioIndexNameMode = "translated";
-
-/** Current perio index-name display mode. Defaults to `"translated"`. */
-export function getPerioIndexNameMode(): PerioIndexNameMode {
-  return perioIndexNameMode;
-}
-
-/** Switch the perio index-name display mode. No-op (does not notify) if unchanged. */
-export function setPerioIndexNameMode(mode: PerioIndexNameMode): void {
-  if(mode === perioIndexNameMode) return;
-  perioIndexNameMode = mode;
   notifyStateChange();
 }
 
@@ -7856,8 +7705,7 @@ function wireControls(){
  * @param system - The target {@link NumberingSystem}.
  */
 export function setNumberingSystem(system: NumberingSystem){
-  if(system === numberingSystem) return;
-  numberingSystem = system;
+  if(!applyNumberingSystem(system)) return;
   updateAllToothTileNumbers();
   updateActiveLabel();
 }
@@ -8148,15 +7996,6 @@ const SUMMARY_ROOT_CARIES_KEY: Record<string, string> = {
   arrested: "rootCaries.arrested",
   "active-cavitated": "rootCaries.activeCavitated",
 };
-/** Formats a tooth number for display using the active numbering system AND
- *  the milktooth display-remap ({@link getDisplayedToothNumber}) — the exact
- *  same formatting {@link getOdontogramSummary} uses for every tooth number
- *  it prints (permanent/missing lists, per-section entries, implants). Exported
- *  so the "What changes" box in App.tsx can label a {@link PlanChange.toothNo}
- *  identically, without duplicating the numbering/milktooth logic. */
-export function formatToothLabel(toothNo: number): string {
-  return toLabel(getDisplayedToothNumber(toothNo), numberingSystem);
-}
 
 /**
  * Build a human-readable, localized summary of the current odontogram state:

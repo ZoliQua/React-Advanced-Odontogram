@@ -5,7 +5,7 @@
  * Tooth-anatomy data — the inlined tooth-template SVG text, the classic
  * template/rotation maps, the per-template CEJ anchors and the `classic` /
  * `measured` profile registry, extracted from odontogram.ts (which keeps the
- * session flag `toothAnatomy` and its accessors). A PURE module: no module
+ * public `setToothAnatomy()`, which needs the DOM side). A PURE module: no module
  * state, no DOM, and no dependency back on odontogram.ts.
  *
  * odontogram.ts re-exports every name that was public before the extraction
@@ -263,3 +263,39 @@ export const ALL_TEETH = [
   18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28,
   48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38
 ];
+
+// Session-only selected anatomy (mirrors `perioViewMode`): a module `let` +
+// getter/setter that notifies on change. NOT part of the export payload — never
+// referenced by `collectExportPayload`/`getPlanChart`/hydrate.
+let toothAnatomy: ToothAnatomy = "classic";
+
+/** Current tooth-anatomy profile selector. Defaults to `"classic"`. */
+export function getToothAnatomy(): ToothAnatomy {
+  return toothAnatomy;
+}
+
+
+/** Set the selected anatomy, reporting whether it actually changed. The public
+ *  `setToothAnatomy()` in odontogram.ts calls this and then does what cannot
+ *  live here: invalidating the perio-chart template cache and notifying. Keeping
+ *  the flag WITH the profiles is what lets `perioGraphic.ts` read the active
+ *  profile without importing the engine back — it breaks a real import cycle. */
+export function applyToothAnatomy(v: ToothAnatomy): boolean {
+  if(v === toothAnatomy) return false;
+  toothAnatomy = v;
+  return true;
+}
+
+/** The active `AnatomyProfile` per the current flag; falls back to classic for
+ *  any profile not (yet) realized in the registry. */
+export function activeAnatomyProfile(): AnatomyProfile {
+  return ANATOMY_PROFILES[toothAnatomy] ?? CLASSIC_PROFILE;
+}
+
+// Arch helper (upper vs. lower jaw) — quadrants 1/2 (permanent upper) and 5/6
+// (milk upper) are "upper"; 3/4 (permanent lower) and 7/8 (milk lower) are
+// "lower". Drives the full-mode lingual->palatal swap.
+export function isUpperTooth(toothNo: number): boolean {
+  const q = Math.floor(toothNo / 10);
+  return q === 1 || q === 2 || q === 5 || q === 6;
+}

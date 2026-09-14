@@ -24,7 +24,7 @@ import { notifyStateChange } from "./notify";
 import {
   PERIO_SITES, VALID_CEJ_VISIBILITY, VALID_FURCATION_GRADE, VALID_GINGIVAL_THICKNESS,
   VALID_MILLER_CLASS, VALID_PLAQUE_SURFACE, VALID_ROOT_CONCAVITY,
-  clampKg, clampPerio, defaultState, furcationEntrances, isToothPresent,
+  clampKg, clampPerio, defaultState, furcationEntrances, isToothPresent, perioRowHidden,
 } from "./payload";
 import { ALL_TEETH } from "../anatomy/profiles";
 
@@ -932,3 +932,47 @@ export function classificationSummaryFragment(cls: PerioClassificationResult): s
   return parts.join(" · ");
 }
 
+// ---- Active-chart readers the perio chart and its exports need ----
+/** Whether tooth `toothNo`'s periodontal probing sites are chartable on the
+ *  active chart — the SAME gate {@link perioRowHidden} applies to the
+ *  tooth-info panel's `#perioRow` (missing/implant/under-gum/extraction-
+ *  socket teeth have no probing site to chart). The full-mouth perio-chart
+ *  overlay grid disables a tooth's entire column (site cells +
+ *  mobility cell) on this same predicate — a tooth never touched (no stored
+ *  state yet) reads as present/chartable, mirroring every other per-tooth
+ *  default read here. */
+export function isPerioRowHidden(toothNo: number): boolean {
+  return perioRowHidden(toothState.get(toothNo));
+}
+
+/** Whether tooth `toothNo` is an implant on the ACTIVE chart (status/plan
+ *  aware, reading the SAME `toothState` the perio number rows read). The
+ *  graphical Dental Chart (`PerioChart` / `perioGraphic.ts`) uses this to draw
+ *  the implant fixture artwork (`#implant-base`) in place of the natural
+ *  `#tooth-base` for an implant tooth — a read-only presentation concern,
+ *  outside the tooth-info panel, so like `isPerioRowHidden`/`getToothMobility`
+ *  above it needs a small public read since it can't reach `toothState`
+ *  directly. A never-touched tooth defaults to non-implant. */
+export function isToothImplant(toothNo: number): boolean {
+  return toothState.get(toothNo)?.toothSelection === "implant";
+}
+
+/** The perio-chart artwork kind for a tooth, read from the ACTIVE chart so the
+ *  perio graphic tracks the odontogram.
+ *  A missing tooth (`none`) or an extraction socket renders no crown; a milk
+ *  tooth uses the deciduous artwork; an implant uses the fixture body. Injected
+ *  into the arch builders (`buildBuccalArchSvg`/`buildPalatalArchSvg`) by both
+ *  `PerioChart` (UI) and `buildPerioSvg` (PDF), so the two stay in sync. */
+export function getPerioToothKind(toothNo: number): "missing" | "milktooth" | "implant" | "normal" {
+  const sel = toothState.get(toothNo)?.toothSelection;
+  if(sel === "implant") return "implant";
+  if(sel === "milktooth") return "milktooth";
+  if(sel === "none" || sel === "no-tooth-after-extraction") return "missing";
+  return "normal";
+}
+
+/** Read tooth `toothNo`'s Miller mobility grade from the active chart
+ *  ("none" for a never-touched tooth, matching {@link defaultState}). */
+export function getToothMobility(toothNo: number): string {
+  return toothState.get(toothNo)?.mobility ?? "none";
+}

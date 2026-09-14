@@ -36,29 +36,18 @@ import {
   type TemplateDocCache,
 } from "./perioGraphic";
 import {
-  isToothImplant,
-  getPerioToothKind,
+  getCejVisibility, getGingivalIndex, getGingivalThickness, getKeratinizedWidth, getMillerClass, getPeriImplantBleeding, getPeriImplantPlaque, getPerioToothKind, getPlaqueIndex, getRootConcavity, getToothCal, getToothFurcation, getToothMobility, getToothPerio, getToothPlaque, isPerioRowHidden, isToothImplant,
+} from "./state/perio";
+import {
   getPerioRowVisibility,
-  getToothPerio,
-  getToothCal,
-  isPerioRowHidden,
-  furcationEntrances,
-  getToothFurcation,
-  getToothPlaque,
-  getPlaqueIndex,
-  getGingivalIndex,
-  getPeriImplantPlaque,
-  getPeriImplantBleeding,
-  getCejVisibility,
-  getRootConcavity,
-  getKeratinizedWidth,
-  getGingivalThickness,
-  getMillerClass,
-  getToothMobility,
+} from "./state/perioSettings";
+import {
+  furcationEntrances, type PerioSite,
+} from "./state/payload";
+import {
   isUpperTooth,
-  formatToothLabel,
-  type PerioSite,
-} from "./odontogram";
+} from "./anatomy/profiles";
+import { formatToothLabel } from "./state/numbering";
 import { indexName } from "./perioIndexNames";
 import { t } from "./i18n/useI18n";
 

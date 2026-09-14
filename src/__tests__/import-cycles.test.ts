@@ -81,25 +81,23 @@ function findCycles(graph: Map<string, string[]>): string[][] {
 }
 
 /**
- * Cycles that PRE-DATE the odontogram.ts split. All three are runtime (value)
- * imports through the perio modules, which reach back into the engine for the
- * active anatomy profile, the index-name mode and the export entry point. They
- * work today only because none of those values is read at module-eval time —
- * fragile, but out of scope for the split. Frozen here so no NEW cycle can
- * appear; shrinking this list is a welcome separate change.
+ * The engine has NO circular imports. It got there by giving each shared thing
+ * an owner below the engine rather than reaching back up into it: the anatomy
+ * flag lives with the profiles, the perio display settings and the numbering
+ * notation have their own modules, and the tooth-state predicates sit with the
+ * payload contract. The two places that genuinely must call INTO the engine use
+ * an injected hook (setPostNotifyHook, setPluginIdsProvider, setToothEditGate).
+ *
+ * Keep it at zero: a cycle means a module can read a partially initialized
+ * import and get `undefined` at module-eval time, often only in the built
+ * bundle, not in tests.
  */
-const KNOWN_CYCLES = [
-  "odontogram.ts -> perioExport.ts -> odontogram.ts",
-  "odontogram.ts -> perioExport.ts -> perioGraphic.ts -> odontogram.ts",
-  "odontogram.ts -> perioExport.ts -> perioIndexNames.ts -> odontogram.ts",
-];
-
 describe("module graph", () => {
-  it("introduces no NEW circular import in src/", () => {
+  it("has no circular imports in src/", () => {
     const graph = buildGraph();
     expect(graph.size).toBeGreaterThan(40); // the walk actually found the tree
     const found = [...new Set(findCycles(graph).map((c) => c.join(" -> ")))].sort();
-    expect(found).toEqual([...KNOWN_CYCLES].sort());
+    expect(found).toEqual([]);
   });
 
   it("the modules extracted from odontogram.ts never import it back", () => {

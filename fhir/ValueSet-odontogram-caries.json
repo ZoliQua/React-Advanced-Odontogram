@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-caries",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-caries",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramCaries",
   "title": "Odontogram — caries values",
   "status": "active",

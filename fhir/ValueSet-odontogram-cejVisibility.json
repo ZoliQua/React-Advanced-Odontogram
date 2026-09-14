@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-cejVisibility",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-cejVisibility",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramCejVisibility",
   "title": "Odontogram — cejVisibility values",
   "status": "active",

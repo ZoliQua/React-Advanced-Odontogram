@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-pulpDx",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-pulpDx",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramPulpDx",
   "title": "Odontogram — pulpDx values",
   "status": "active",

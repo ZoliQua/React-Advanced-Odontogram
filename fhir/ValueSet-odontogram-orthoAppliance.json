@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-orthoAppliance",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-orthoAppliance",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramOrthoAppliance",
   "title": "Odontogram — orthoAppliance values",
   "status": "active",

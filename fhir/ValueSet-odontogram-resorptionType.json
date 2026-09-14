@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-resorptionType",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-resorptionType",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramResorptionType",
   "title": "Odontogram — resorptionType values",
   "status": "active",

@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-toothSelection",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-toothSelection",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramToothSelection",
   "title": "Odontogram — toothSelection values",
   "status": "active",

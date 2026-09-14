@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-endo",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-endo",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramEndo",
   "title": "Odontogram — endo values",
   "status": "active",

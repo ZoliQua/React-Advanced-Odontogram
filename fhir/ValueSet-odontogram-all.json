@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-all",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-all",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramAll",
   "title": "Odontogram — all engine-local codes",
   "status": "active",

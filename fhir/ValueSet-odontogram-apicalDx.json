@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-apicalDx",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-apicalDx",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramApicalDx",
   "title": "Odontogram — apicalDx values",
   "status": "active",

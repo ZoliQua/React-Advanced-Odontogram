@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-restorationMaterial",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-restorationMaterial",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramRestorationMaterial",
   "title": "Odontogram — restorationMaterial values",
   "status": "active",

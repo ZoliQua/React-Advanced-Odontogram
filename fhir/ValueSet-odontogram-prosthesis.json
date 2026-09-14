@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-prosthesis",
   "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-prosthesis",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "name": "OdontogramProsthesis",
   "title": "Odontogram — prosthesis values",
   "status": "active",

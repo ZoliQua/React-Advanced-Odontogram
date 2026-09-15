@@ -91,4 +91,32 @@ describe("measured anatomy: load ordering", () => {
     expect(getToothAnatomy()).toBe("measured");
     expect(activeAnatomyProfile().layout).toBe("twoArch");
   });
+
+  // The measured branch awaits a chunk, so a second selection can arrive while
+  // the first is still in flight. Whoever asked LAST must win: without a request
+  // token the in-flight "measured" applied itself on top of the newer "classic"
+  // and the user's last click was silently undone.
+  it("a selection issued during the load supersedes the one still in flight", async () => {
+    const pending = setToothAnatomy("measured");
+    await setToothAnatomy("classic");          // the user changes their mind mid-load
+    await pending;
+    expect(getToothAnatomy()).toBe("classic");
+    expect(activeAnatomyProfile().layout).toBe("uniform16");
+  });
+
+  it("the reverse order settles on measured", async () => {
+    await setToothAnatomy("measured");
+    const pending = setToothAnatomy("classic");
+    await setToothAnatomy("measured");
+    await pending;
+    expect(getToothAnatomy()).toBe("measured");
+    expect(activeAnatomyProfile().layout).toBe("twoArch");
+  });
+
+  it("re-selecting the profile already on its way in is a no-op, not a second switch", async () => {
+    const first = setToothAnatomy("measured");
+    await setToothAnatomy("measured");         // resolves immediately: same target
+    await first;
+    expect(getToothAnatomy()).toBe("measured");
+  });
 });

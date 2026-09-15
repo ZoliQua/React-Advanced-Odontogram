@@ -82,19 +82,56 @@ export { TEMPLATES, TOOTH_TEMPLATE };
 export { CLASSIC_CEJ_Y, CLASSIC_IMPLANT_CEJ_Y, CLASSIC_MILKTOOTH_CEJ_Y } from "./anatomy/profiles";
 export type { ToothAnatomy, AnatomyProfile };
 
-/** Switch the tooth-anatomy profile. No-op (does not notify) if unchanged.
+// The profile the most recent setToothAnatomy() call is switching TO, and a
+// monotonic request token. Selecting "measured" awaits a chunk, so a second
+// selection can arrive while the first is still in flight; the token lets the
+// superseded call bow out instead of applying a stale target on top of a newer
+// one (without it, "measured" then "classic" ended on measured).
+let anatomyRequest = 0;
+let anatomyTarget: ToothAnatomy | null = null;
+
+/** Switch the tooth-anatomy profile, and rebuild the chart onto it.
+ *
  *  ASYNC since 2.6.0: the measured artwork is code-split, so selecting it first
  *  awaits its chunk — the profile is always loaded before the flag flips, which
- *  keeps `activeAnatomyProfile()` synchronous for every render path. Await this
- *  before calling `rebuildGrid()`, or the grid rebuilds on the old profile.
- *  Also invalidates the perio-chart template cache so that chart re-parses the
- *  new profile's templates on its next load. */
+ *  keeps `activeAnatomyProfile()` synchronous for every render path. The grid is
+ *  then rebuilt HERE (a no-op until `initOdontogram()`), so the pre-2.6.0
+ *  `setToothAnatomy(v); rebuildGrid();` idiom stays correct without awaiting:
+ *  the caller's own rebuild may run early on the old profile, and this one puts
+ *  the grid right once the profile is in place.
+ *
+ *  No-op (does not notify) when the profile is already selected or already on
+ *  its way in. Never rejects: a chunk that fails to load is reported on the
+ *  console and leaves the current profile selected, so an un-awaited call can
+ *  never raise an unhandled rejection in a host app. Also invalidates the
+ *  perio-chart template cache so that chart re-parses the new profile's
+ *  templates on its next load.
+ *
+ *  `notifyStateChange()` fires only AFTER the rebuild, so a subscriber (the
+ *  React context mirrors this flag into `data-anatomy`) can never style a grid
+ *  that is still drawn on the other profile. */
 export async function setToothAnatomy(v: ToothAnatomy): Promise<void> {
-  if(v === getToothAnatomy()) return;
-  if(v === "measured") await ensureMeasuredProfile();
+  if(v === (anatomyTarget ?? getToothAnatomy())) return;
+  const token = ++anatomyRequest;
+  anatomyTarget = v;
+  if(v === "measured"){
+    try {
+      await ensureMeasuredProfile();
+    } catch(err) {
+      if(token === anatomyRequest) anatomyTarget = null;
+      console.error("odontogram: the measured tooth anatomy could not be loaded — staying on the current profile", err);
+      return;
+    }
+  }
+  if(token !== anatomyRequest) return;   // a later selection superseded this one
+  anatomyTarget = null;
   if(!applyToothAnatomy(v)) return;
   resetPerioTemplateCache();
-  notifyStateChange();
+  try {
+    await rebuildGrid();                 // no-op before initOdontogram()
+  } finally {
+    notifyStateChange();                 // must fire even if the rebuild threw
+  }
 }
 
 

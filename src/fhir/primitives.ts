@@ -75,6 +75,20 @@ export function localCode(cc: unknown): string | undefined {
   return hit?.code;
 }
 
+/** A syntactically valid tooth code: exactly two digits. Tooth codes (FDI
+ *  permanent 11-48, ISO 3950 deciduous, and the odd synthetic key) are always
+ *  numeric, so this stays lenient on the numeric range while REJECTING the
+ *  prototype-polluting keys an untrusted `bodySite` could carry — `"__proto__"`,
+ *  `"constructor"`, `"prototype"` are non-numeric and would otherwise reach
+ *  {@link ensureTooth} and pollute `Object.prototype`.
+ *
+ *  Lives here, next to {@link ensureTooth}, because EVERY importer that turns an
+ *  untrusted code into a `teeth` key needs the same guard — the registry path,
+ *  the periodontal panels and the diagnosis Conditions. */
+export function isToothCode(id: string): boolean {
+  return /^\d{2}$/.test(id);
+}
+
 export function ensureTooth(teeth: Record<string, ToothRecord>, id: string): ToothRecord {
   // Own-property check, NOT `!teeth[id]`: for a plain object `teeth["__proto__"]`
   // resolves to Object.prototype (truthy), so the naive guard would skip the

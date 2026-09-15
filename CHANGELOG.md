@@ -22,17 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The one API consequence: **`setToothAnatomy(v)` returns a `Promise<void>`**
   instead of `void`, because it resolves the artwork *before* flipping the
   profile flag — that is what keeps `activeAnatomyProfile()` synchronous for
-  every render path. If you call it and then rebuild the grid yourself, await it
-  first:
+  every render path. **The setter rebuilds the grid itself** once the profile is
+  in place, so the pre-2.6.0 idiom keeps working unchanged and un-awaited:
 
   ```ts
-  await setToothAnatomy("measured");
-  rebuildGrid();
+  setToothAnatomy("measured");   // the chart follows on its own
+  await setToothAnatomy("measured");   // …await only if your NEXT line depends on it
   ```
 
-  Calling it without awaiting still switches the profile; only code that
-  immediately depends on the new artwork needs the `await`. The bundled
-  Settings UI already does this.
+  Await it when the following statement reads the new artwork; otherwise a bare
+  call is enough, and it never rejects (see *Fixed* below).
 
 ### Added
 
@@ -89,6 +88,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Load it into a validator with `-ig ./fhir`. `npm run fhir:codesystem`
   regenerates every file; tests keep them in step with the code and prove each
   ValueSet concept is a CodeSystem concept with a matching display.
+
+### Fixed
+
+A full code review of this release found seven defects in the new interoperability
+and code-splitting work. All of them are fixed here, each with a regression test.
+
+- **The engine could not re-import its own refined ICD-10-CM codes.** The reverse
+  code→diagnosis map was built from a pack's flat codes only, so the DX-8 subcodes
+  the exporter itself emits (`K02.51`/`K02.52`/`K02.61`/`K02.62`, `K05.3xx`) came
+  back unrecognised — and, with any other recognised Condition in the bundle, the
+  tooth's real caries was turned into a false `suppress`. Every refined code now
+  carries its reverse entry, kept beside the table it inverts.
+- **One foreign Condition could wipe the whole chart's diagnoses.** The flag that
+  engages the add/suppress diff was set for *any* recognised diagnosis key, so a
+  single gingivitis or periodontitis Condition on one tooth (WHO `K05.1`, CM
+  `K05.10`, SNOMED `66383009`/`699422003`, …) silently suppressed every
+  rule-derived diagnosis on every *other* tooth. The diff now engages only for a
+  catalog diagnosis, or for the engine's own `odontogram-dx-*` ids.
+- **Milk-tooth diagnoses landed on a phantom tooth.** A tooth exported under its
+  ISO 3950 deciduous code (`55`) was imported under that code instead of the
+  permanent FDI storage key (`15`), creating a record that hydrate then dropped
+  and leaving the real tooth with a false `suppress`. The Condition importer now
+  maps deciduous codes the same way the registry and periodontal paths already
+  did, and validates the tooth part of an id before it can become a record key.
+- **Refuted, erroneous and resolved Conditions were imported as present
+  findings.** `verificationStatus` `refuted`/`entered-in-error` and
+  `clinicalStatus` `resolved` are now filtered out; absence of either element is
+  still accepted, so the engine's own bundles are unaffected.
+- **`parseFhirBundle()` could throw on a malformed bundle**, against its
+  never-throws contract: a foreign resource whose `coding` was an object rather
+  than an array reached an array method. All codings are now read defensively.
+- **A cancelled or erroneous periodontal Observation was imported**; the
+  importer now honours `Observation.status`.
+- **HbA1c was read without its unit.** An IFCC `mmol/mol` result (a normal 42)
+  was read as 42 %, clamped to the 20 % ceiling and turned a healthy patient into
+  grade C. The unit is now honoured: `%` as-is, `mmol/mol` converted via the NGSP
+  master equation, an unlabelled value accepted only where a percentage is
+  plausible, and an uninterpretable unit ignored rather than guessed.
+- **Switching the tooth anatomy during the chunk download is no longer racy.**
+  A selection issued while an earlier one was still loading could be undone by
+  the in-flight request; the latest selection now always wins. A chunk that fails
+  to load no longer poisons the profile for the rest of the session (the failed
+  load was cached forever), `setToothAnatomy()` stays on the current profile and
+  reports the failure on the console instead of rejecting, and the React layer no
+  longer applies the measured layout to a grid still drawn on the classic
+  profile — which collapsed the chart for the duration of the download.
 
 ## [2.5.0] - 2026-09-10
 

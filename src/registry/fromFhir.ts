@@ -2,7 +2,7 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import type { OdontogramExportPayload, ToothRecord } from "../fhir/types";
-import { localCode, ensureTooth } from "../fhir/primitives";
+import { localCode, ensureTooth, isToothCode } from "../fhir/primitives";
 import { AXES } from "./axes";
 import type { ClinicalAxis } from "./types";
 import { deciduousToFdi } from "../fhir/iso3950";
@@ -12,16 +12,6 @@ import { importPerioObservations } from "../fhir/importPerio";
 // Reverse lookup: finding code -> axis.
 const BY_FINDING: Record<string, ClinicalAxis> = {};
 for (const a of AXES) BY_FINDING[a.finding.local] = a;
-
-/** A syntactically valid tooth code: exactly two digits. Tooth codes (FDI
- *  permanent 11-48, ISO 3950 deciduous, and the odd synthetic key) are always
- *  numeric, so this stays lenient on the numeric range while REJECTING the
- *  prototype-polluting keys an untrusted `bodySite` could carry — `"__proto__"`,
- *  `"constructor"`, `"prototype"` are non-numeric and would otherwise reach
- *  {@link ensureTooth} and pollute `Object.prototype`. */
-function isToothCode(id: string): boolean {
-  return /^\d{2}$/.test(id);
-}
 
 /** Registry-driven inverse of buildFhirBundleFromRegistry: parse a FHIR bundle into an export payload. */
 export function parseFhirBundleFromRegistry(bundle: unknown): OdontogramExportPayload {

@@ -5,7 +5,10 @@ import { DX_CODES, type DiagnosisKey } from "../dx/codes";
 import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_CASE_KEY, VALID_LATERALITY, type CaseConditionKey, type Laterality } from "../dx/caseCodes";
 import { deriveDentalDiagnoses } from "../dx/derive";
 import { ICD10CM_PACK } from "../dx/packs";
+import { REFINED_CM_TO_KEY, REFINED_WHO_TO_KEY } from "../dx/refine";
 import { ICD10_SYSTEM, LOCAL_SYSTEM, SNOMED_SYSTEM } from "./codesystems";
+import { isToothCode } from "./primitives";
+import { deciduousToFdi } from "./iso3950";
 
 /** Tooth-level add/suppress catalog — MUST equal odontogram.ts `TOOTH_LEVEL_DX_KEYS`
  *  (drift-guarded by a test). Derived locally to avoid a fromFhir -> odontogram.ts
@@ -23,14 +26,46 @@ export const CATALOG: Set<string> = new Set(
 // undefined; Map.get() has no prototype-chain hazard.
 const ICD10_TO_DX_KEY = new Map<string, DiagnosisKey>();
 for (const k of Object.keys(DX_CODES) as DiagnosisKey[]) { const c = DX_CODES[k].icd10; if (c) ICD10_TO_DX_KEY.set(c, k); }
+// DX-8 refined WHO subcodes (K02.0/K02.1). The flat codes above are seeded first
+// and never overwritten, so an exact catalog code always wins.
+for (const [code, k] of REFINED_WHO_TO_KEY) if (!ICD10_TO_DX_KEY.has(code)) ICD10_TO_DX_KEY.set(code, k);
+
+/** Every known diagnosis key, catalog and non-catalog alike (Map/Set lookup, so
+ *  no prototype-chain hazard on an untrusted key from a Condition id). */
+const DX_KEYS: ReadonlySet<string> = new Set(Object.keys(DX_CODES));
 const ICD10_TO_CASE_KEY = new Map<string, CaseConditionKey>();
 for (const k of Object.keys(CASE_DX_CODES) as CaseConditionKey[]) ICD10_TO_CASE_KEY.set(CASE_DX_CODES[k].icd10, k);
+
+type StatusConcept = { coding?: Array<{ system?: string; code?: string } | null | undefined> } | undefined;
 
 interface CondLike {
   id?: unknown;
   code?: { coding?: Array<{ system?: string; code?: string } | null | undefined> };
   bodySite?: Array<{ coding?: Array<{ system?: string; code?: string } | null | undefined> }>;
+  clinicalStatus?: StatusConcept;
+  verificationStatus?: StatusConcept;
 }
+
+// A Condition the chart must NOT read as a present finding. The engine's own
+// export carries neither status element, so ABSENCE is always accepted; only an
+// explicit rejecting code filters the resource out.
+//   - verificationStatus: `refuted` (asserted NOT to be present) and
+//     `entered-in-error` (the record is a mistake).
+//   - clinicalStatus: `resolved` (was present, no longer is).
+// `inactive`/`remission` are deliberately NOT rejected: for a dental finding
+// they are ambiguous (arrested caries is inactive yet still charted), and
+// dropping a Condition here also flips the tooth to a `suppress` override, so
+// the tolerant reading is the safer one.
+const REJECTED_VERIFICATION_STATUS: ReadonlySet<string> = new Set(["refuted", "entered-in-error"]);
+const REJECTED_CLINICAL_STATUS: ReadonlySet<string> = new Set(["resolved"]);
+
+const statusHasAny = (cc: StatusConcept, rejected: ReadonlySet<string>): boolean =>
+  Array.isArray(cc?.coding) && cc.coding.some((x) => !!x && typeof x.code === "string" && rejected.has(x.code));
+
+/** Whether a Condition asserts a finding that is currently present. */
+const isAssertedPresent = (c: CondLike): boolean =>
+  !statusHasAny(c.verificationStatus, REJECTED_VERIFICATION_STATUS)
+  && !statusHasAny(c.clinicalStatus, REJECTED_CLINICAL_STATUS);
 
 const codeOf = (c: CondLike, system: string): string | undefined =>
   c.code?.coding?.find((x) => !!x && x.system === system && typeof x.code === "string")?.code;
@@ -47,6 +82,11 @@ function lookup<K>(map: Map<string, K>, code: string | undefined): K | undefined
 // and SNOMED CT (from the catalog), consulted after WHO ICD-10.
 const CM_TO_DX_KEY = new Map<string, DiagnosisKey>();
 for (const [k, v] of Object.entries(ICD10CM_PACK.codes ?? {})) if (v) CM_TO_DX_KEY.set(v.code, k as DiagnosisKey);
+// DX-8 refined CM subcodes (K02.51/52/61/62, K05.30, K05.3xx). Unlike WHO, the
+// 3-character fallback in `lookup()` cannot reach these: the CM map is keyed by
+// the pack's flat codes (K02.9, K05.30), never by the "K02" category — so
+// without this seed the engine does not recognise ITS OWN refined export.
+for (const [code, k] of REFINED_CM_TO_KEY) if (!CM_TO_DX_KEY.has(code)) CM_TO_DX_KEY.set(code, k);
 const CM_TO_CASE_KEY = new Map<string, CaseConditionKey>();
 for (const [k, v] of Object.entries(ICD10CM_PACK.caseCodes ?? {})) if (v) CM_TO_CASE_KEY.set(v.code, k as CaseConditionKey);
 const SNOMED_TO_DX_KEY = new Map<string, DiagnosisKey>();
@@ -73,6 +113,7 @@ export function importDiagnosisConditions(entries: unknown, teeth: Record<string
   const conditions: CondLike[] = Array.isArray(entries)
     ? entries.map((e) => (e as { resource?: unknown })?.resource).filter((r): r is CondLike =>
         !!r && typeof r === "object" && (r as { resourceType?: string }).resourceType === "Condition")
+      .filter(isAssertedPresent)
     : [];
   if (conditions.length === 0) return { caseConditions, dxOverridesByTooth };
 
@@ -99,14 +140,33 @@ export function importDiagnosisConditions(entries: unknown, teeth: Record<string
     const id = typeof c.id === "string" ? c.id : "";
     let key: string | undefined; let tooth: string | undefined;
     const m = /^odontogram-dx-([A-Za-z]+)-(\d+)$/.exec(id);
-    if (m) { key = m[1]; tooth = m[2]; }
-    else {
+    // `ours`: the id follows the engine's own export convention, so the bundle
+    // demonstrably carries OUR diagnosis section even when this particular
+    // Condition is a non-catalog key.
+    const ours = m !== null && DX_KEYS.has(m[1]);
+    if (m) {
+      // The id's tooth part is `(\d+)` — validate it before it can become a
+      // `teeth` key (a 3-digit or otherwise bogus id must not create a record).
+      if (isToothCode(m[2])) { key = m[1]; tooth = m[2]; }
+    } else {
       const k = dxKeyOf(c);
-      const fdi = c.bodySite?.[0]?.coding?.find((x) => !!x && typeof x.code === "string" && /^\d{2}$/.test(x.code))?.code;
+      // A milk tooth is EXPORTED under its ISO 3950 deciduous code (55), while
+      // the chart stores it under the permanent FDI key (15). Without this
+      // mapping the override lands on a phantom "55" record (dropped by
+      // hydrate) and tooth 15 gets a false `suppress`. The registry path and
+      // the perio panels already map here.
+      const raw = c.bodySite?.[0]?.coding?.find((x) => !!x && typeof x.code === "string" && isToothCode(x.code))?.code;
+      const fdi = raw ? (deciduousToFdi(raw) ?? raw) : undefined;
       if (k && fdi) { key = k; tooth = fdi; }
     }
     if (!key || !tooth) continue;
-    sawDentalSection = true;                 // Safeguard B: our diagnosis section is present
+    // Safeguard B: the override diff engages only once the bundle has shown a
+    // Condition we can actually interpret — a CATALOG diagnosis, or one of our
+    // own `odontogram-dx-*` ids. Setting it for ANY recognised key let a single
+    // foreign gingivitis/periodontitis Condition (WHO K05.1, CM K05.10, SNOMED
+    // 66383009/699422003 …) on one tooth turn every rule-derived diagnosis on
+    // every OTHER tooth into a false `suppress`.
+    if (ours || CATALOG.has(key)) sawDentalSection = true;
     if (!CATALOG.has(key)) continue;          // Safeguard A: catalog-only
     (effective[tooth] ??= new Set()).add(key);
   }

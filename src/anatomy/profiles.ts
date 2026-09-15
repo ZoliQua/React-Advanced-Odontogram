@@ -140,10 +140,15 @@ export const CLASSIC_PROFILE: AnatomyProfile = {
 let measuredProfile: AnatomyProfile | null = null;
 let measuredLoad: Promise<AnatomyProfile> | null = null;
 
-/** Load the measured profile — once; concurrent calls share the same promise. */
+/** Load the measured profile — once; concurrent calls share the same promise.
+ *  A FAILED load (offline, a chunk missing from the deploy) releases the cached
+ *  promise so the next selection retries: caching the rejection would make the
+ *  measured profile permanently unusable until a page reload. */
 export function ensureMeasuredProfile(): Promise<AnatomyProfile> {
   if(measuredProfile) return Promise.resolve(measuredProfile);
-  measuredLoad ??= import("./measured").then((m) => (measuredProfile = m.MEASURED_PROFILE));
+  measuredLoad ??= import("./measured")
+    .then((m) => (measuredProfile = m.MEASURED_PROFILE))
+    .catch((err) => { measuredLoad = null; throw err; });
   return measuredLoad;
 }
 

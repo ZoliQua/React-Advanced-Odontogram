@@ -76,7 +76,6 @@ import {
   setFillingMaterialAvailability,
   getToothAnatomy,
   setToothAnatomy,
-  rebuildGrid,
 } from "./odontogram";
 import type {
   OdontogramSummary,
@@ -753,10 +752,15 @@ export function OdontogramProvider({
     onScreenToothNumberSize: (v) => setScreenNumberSize(v),
     toothAnatomy,
     onToothAnatomy: (v) => {
-      setToothAnatomyState(v);
-      // setToothAnatomy is async since 2.6.0 (the measured artwork is a lazily
-      // loaded chunk); the grid must not rebuild until the profile is in place.
-      void setToothAnatomy(v).then(() => rebuildGrid());
+      // React state is deliberately NOT set optimistically here, and the grid is
+      // NOT rebuilt here. setToothAnatomy is async since 2.6.0 (the measured
+      // artwork is a lazily loaded chunk); it rebuilds the grid itself and only
+      // then notifies, and the `onStateChange` mirror above is what flips
+      // `toothAnatomy`. Setting the state up front instead put `data-anatomy=
+      // "measured"` (and its two-arch CSS) on a grid still drawn on the classic
+      // profile for the whole download, collapsing the layout — and left the UI
+      // permanently out of step with the engine if the chunk never arrived.
+      void setToothAnatomy(v);
     },
     selectionColor,
     onSelectionColor: (v) => setSelectionColor(v),

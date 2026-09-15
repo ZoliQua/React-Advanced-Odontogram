@@ -96,3 +96,29 @@ export function refineCm(key: DiagnosisKey, detail?: DxDetail): { code: string; 
   }
   return null;
 }
+
+/**
+ * The INVERSE of the refinement above: every refined code this module can emit,
+ * mapped back to its diagnosis key.
+ *
+ * `refineWho`/`refineCm` are one-way — key + detail produce a code — but an
+ * importer sees only the code. The flat reverse maps an importer can build from
+ * `DX_CODES` / a pack's `codes` contain the UNREFINED codes only (`K02`,
+ * `K02.9`, `K05.30`), so without this table the engine cannot recognise its own
+ * DX-8 output on the way back in: a bundle we exported as `K02.52` would be read
+ * as "not one of ours" and, with another recognised Condition present, turn the
+ * tooth's real caries into a false `suppress`.
+ *
+ * Kept HERE, beside the tables it inverts, so a new refined code cannot be added
+ * without its reverse entry appearing with it.
+ */
+export const REFINED_WHO_TO_KEY: ReadonlyMap<string, DiagnosisKey> = new Map<string, DiagnosisKey>(
+  Object.values(WHO_CARIES).map((r) => [r.code, "caries"]),
+);
+export const REFINED_CM_TO_KEY: ReadonlyMap<string, DiagnosisKey> = new Map<string, DiagnosisKey>([
+  ...Object.values(CM_CARIES).flatMap(
+    (byDepth) => Object.values(byDepth).map((r): [string, DiagnosisKey] => [r.code, "caries"]),
+  ),
+  [CM_PERIO_UNSPECIFIED.code, "periodontitis"] as [string, DiagnosisKey],
+  ...Object.keys(CM_PERIO).map((code): [string, DiagnosisKey] => [code, "periodontitis"]),
+]);

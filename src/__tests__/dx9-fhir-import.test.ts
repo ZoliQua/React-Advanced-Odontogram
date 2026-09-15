@@ -88,9 +88,15 @@ describe("DX-9: external-bundle tolerance for Conditions", () => {
   const teeth = { "11": { toothSelection: "tooth-base", caries: ["caries-occlusal"], cariesSeverity: { occlusal: 4 } } };
 
   it("an ICD-10-CM-only tooth Condition maps to its key (exact and DX-8 refined codes)", () => {
+    // A SECOND caried tooth is the discriminator: `{}` for tooth 11 alone is
+    // also what an UNRECOGNISED code produces, so the assertion has to be made
+    // where a recognised code changes the answer — once the diagnosis section is
+    // engaged, tooth 16's derived caries becomes a `suppress`.
+    const twoTeeth = { ...teeth, "16": { toothSelection: "tooth-base", caries: ["caries-occlusal"], cariesSeverity: { occlusal: 4 } } };
     for (const code of ["K02.9", "K02.52", "K02.61"]) {
-      const r = importDiagnosisConditions([cond(ICD10CM_PACK.system, code, fdi("11"))], teeth);
+      const r = importDiagnosisConditions([cond(ICD10CM_PACK.system, code, fdi("11"))], twoTeeth);
       expect(r.dxOverridesByTooth["11"] ?? {}).toEqual({});           // recognised as caries -> no override
+      expect(r.dxOverridesByTooth["16"], `${code} was not recognised`).toEqual({ caries: "suppress" });
     }
     const add = importDiagnosisConditions([cond(ICD10CM_PACK.system, "K08.409", fdi("11"))], teeth); // CM tooth loss
     expect(add.dxOverridesByTooth["11"]).toMatchObject({ toothLoss: "add", caries: "suppress" });

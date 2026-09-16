@@ -18,13 +18,14 @@ import {
   setPerioViewMode,
   setToothAnatomy,
   getToothAnatomy,
-  rebuildGrid,
   getStatusChart,
 } from "../odontogram";
 
-// Real init/build under jsdom is heavy and each case rebuilds the grid two or
-// three times (profile switches); give the file generous headroom.
-vi.setConfig({ testTimeout: 30000, hookTimeout: 30000 });
+// Real init/build under jsdom is heavy and each case rebuilds the grid once or
+// twice (profile switches). A CI runner is several times slower than a dev
+// machine, so the headroom is generous on purpose: the suite is inherently slow,
+// and a timeout here should mean "something hung", not "the runner was busy".
+vi.setConfig({ testTimeout: 60000, hookTimeout: 60000 });
 
 // jsdom lacks matchMedia (isTouchDevice) and ResizeObserver (bridge-overlay /
 // perio fill-scale); stub both so a REAL initOdontogram()/buildGrid() runs
@@ -67,12 +68,16 @@ async function waitForGrid() {
   });
 }
 
-/** Switch the active anatomy profile and rebuild the grid, exactly the way the
- *  Settings `onToothAnatomy` handler does (setToothAnatomy + rebuildGrid). */
+/** Switch the active anatomy profile, exactly the way the Settings
+ *  `onToothAnatomy` handler does. Since 2.6.0 that is the setter ALONE:
+ *  `setToothAnatomy` resolves the profile's artwork and then rebuilds the grid
+ *  itself. Calling `rebuildGrid()` after it as well (what this helper used to
+ *  do, back when the handler did) is not wrong, just a second full rebuild of
+ *  the heaviest thing in this file — which is what pushed the suite past its
+ *  timeout on CI. */
 async function switchAnatomy(v: "classic" | "measured") {
   await act(async () => {
     await setToothAnatomy(v);
-    await rebuildGrid();
   });
 }
 

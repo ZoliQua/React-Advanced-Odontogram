@@ -35,6 +35,7 @@ import {
   prevPerioCell,
   getPerioOverlayLayer,
   setPerioOverlayLayer,
+  getToothAnatomy,
   getPlaqueIndex,
   setPlaqueIndex,
   getGingivalIndex,
@@ -1549,6 +1550,13 @@ export default function PerioChart({
   // the real value is read in the `active`-gated effect below (never at module
   // eval), keeping the partial-mock tests unaffected.
   const [overlayLayer, setOverlayLayer] = useState<PerioOverlayLayer>("none");
+  // The tooth-anatomy profile, mirrored so the template-cache effect below can
+  // depend on it. The two profiles have DIFFERENT template sets (the measured
+  // one adds 12/15/17/31/46), and `archCacheRef` holds documents parsed from
+  // whichever profile was active when the chart loaded: switching profiles with
+  // the chart open otherwise redrew measured positions out of classic
+  // documents, dropping half the teeth from the arch.
+  const [anatomy, setAnatomy] = useState(() => getToothAnatomy());
 
   const fullResync = useCallback(() => {
     const registry = registryRef.current;
@@ -2162,7 +2170,7 @@ export default function PerioChart({
       resizeObserver?.disconnect();
       archCacheRef.current = null;
     };
-  }, [active]);
+  }, [active, anatomy]);
 
   // Mirror the module-level overlay-layer flag into React state so the
   // switcher's active button + header read-out re-render on change.
@@ -2175,6 +2183,15 @@ export default function PerioChart({
     setOverlayLayer(getPerioOverlayLayer());
     const unsubscribe = onStateChange(() => setOverlayLayer(getPerioOverlayLayer()));
     return unsubscribe;
+  }, [active]);
+
+  // Same mirror for the anatomy profile. `setToothAnatomy` notifies AFTER the
+  // profile is in place, so this lands once and the effect below re-parses the
+  // new profile's templates.
+  useEffect(() => {
+    if (!active) return;
+    setAnatomy(getToothAnatomy());
+    return onStateChange(() => setAnatomy(getToothAnatomy()));
   }, [active]);
 
   const onKeyDown = useCallback(

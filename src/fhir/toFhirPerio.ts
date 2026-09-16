@@ -619,6 +619,19 @@ const SMOKING_OBS_ID = "odontogram-perio-smoking-observation";
 const SMOKING_OBS_FULLURL = fhirFullUrl("Observation", SMOKING_OBS_ID);
 const HBA1C_OBS_ID = "odontogram-perio-hba1c-observation";
 const HBA1C_OBS_FULLURL = fhirFullUrl("Observation", HBA1C_OBS_ID);
+const DIABETES_OBS_ID = "odontogram-perio-diabetes-observation";
+const DIABETES_OBS_FULLURL = fhirFullUrl("Observation", DIABETES_OBS_ID);
+
+/** Diabetes status. Engine-local codes: the case block's three-valued
+ *  `unknown`/`none`/`present` is not a registered LOINC answer list, and the
+ *  project does not hardcode unverified external codes (same policy as per-site
+ *  BOP and the O'Leary plaque surfaces). */
+const DIABETES_STATUS_CONCEPT: Record<"none" | "present", { code: string; display: string }> = {
+  none: { code: "diabetes-none", display: "No diabetes mellitus" },
+  present: { code: "diabetes-present", display: "Diabetes mellitus present" },
+};
+const DIABETES_OBS_CODE = { code: "diabetes-status", display: "Diabetes mellitus status" };
+const CIGARETTES_COMPONENT_CODE = { code: "cigarettes-per-day", display: "Cigarettes per day" };
 
 const SMOKING_STATUS_CONCEPT: Record<"never" | "former" | "current", { code: string; display: string }> = {
   never: { code: "smoking-never", display: "Never smoker" },
@@ -629,11 +642,35 @@ const SMOKING_STATUS_CONCEPT: Record<"never" | "former" | "current", { code: str
 /** Whole-case (not tooth-specific) smoking-status evidence Observation,
  *  LOINC 72166-2. `baseObservation` sets a per-tooth `bodySite` (FDI) that
  *  doesn't apply to a case-level finding, so it's stripped afterward. */
-function buildSmokingObservation(subjectRef: string, status: "never" | "former" | "current"): Observation {
+function buildSmokingObservation(
+  subjectRef: string,
+  status: "never" | "former" | "current",
+  cigarettesPerDay?: number,
+): Observation {
   const obs = baseObservation(subjectRef, "", loincConcept(LOINC.smokingStatus));
   delete obs.bodySite;
   obs.id = SMOKING_OBS_ID;
   const entry = SMOKING_STATUS_CONCEPT[status];
+  obs.valueCodeableConcept = localConcept(entry.code, entry.display);
+  // The daily count rides as a component on the status it qualifies, so the two
+  // can never be separated. It feeds the 2017 GRADE, so losing it on a round
+  // trip silently downgraded the classification.
+  if (cigarettesPerDay !== undefined) {
+    obs.component = [{
+      code: localConcept(CIGARETTES_COMPONENT_CODE.code, CIGARETTES_COMPONENT_CODE.display),
+      valueInteger: cigarettesPerDay,
+    }];
+  }
+  return obs;
+}
+
+/** Whole-case diabetes-status evidence Observation. See
+ *  {@link buildSmokingObservation} re: the stripped `bodySite`. */
+function buildDiabetesObservation(subjectRef: string, status: "none" | "present"): Observation {
+  const obs = baseObservation(subjectRef, "", localConcept(DIABETES_OBS_CODE.code, DIABETES_OBS_CODE.display));
+  delete obs.bodySite;
+  obs.id = DIABETES_OBS_ID;
+  const entry = DIABETES_STATUS_CONCEPT[status];
   obs.valueCodeableConcept = localConcept(entry.code, entry.display);
   return obs;
 }
@@ -692,10 +729,45 @@ const K05_EXTENT_DISPLAY: Record<Exclude<PerioExtent, "na">, string> = {
  */
 export function appendPerioCondition(bundle: Bundle, payload: OdontogramExportPayload, options: FhirExportOptions = {}): void {
   const final = computeFinalClassification(payload);
-  if (final.diagnosis === "health") return;
-
   const subjectRef = options.subject ?? PLACEHOLDER_PATIENT_FULLURL;
-  if (!bundle.entry) bundle.entry = [];
+  // The entry array is created only when there is actually something to push,
+  // so a bundle this function contributes nothing to is left byte-identical.
+  const entries = () => (bundle.entry ??= []);
+
+  const caseRaw = (payload && typeof payload === "object" ? payload.case : undefined) as
+    | Record<string, unknown>
+    | undefined;
+
+  // The risk factors are charted case data in their own right, NOT an artefact
+  // of having a diagnosis. Building them before any early return is what lets a
+  // periodontally HEALTHY patient's smoking/diabetes/HbA1c survive the round
+  // trip: gated behind the Condition, they were dropped for every healthy case
+  // and the case block came back empty.
+  const smokingStatus = caseRaw?.smokingStatus as string | undefined;
+  const cigarettes = caseRaw?.cigarettesPerDay;
+  const smokingEvidence =
+    VALID_SMOKING_STATUS.has(smokingStatus as string) && smokingStatus !== "unknown"
+      ? buildSmokingObservation(
+          subjectRef,
+          smokingStatus as "never" | "former" | "current",
+          isFiniteNumber(cigarettes) ? (cigarettes as number) : undefined,
+        )
+      : undefined;
+  const hba1cEvidence = isFiniteNumber(caseRaw?.hba1c) ? buildHba1cObservation(subjectRef, caseRaw!.hba1c as number) : undefined;
+  const diabetesStatus = caseRaw?.diabetesStatus;
+  const diabetesEvidence = diabetesStatus === "none" || diabetesStatus === "present"
+    ? buildDiabetesObservation(subjectRef, diabetesStatus)
+    : undefined;
+
+  /** Push the risk-factor Observations. Same relative order in every branch, so
+   *  a bundle's entry order stays deterministic. */
+  const pushEvidence = () => {
+    if (smokingEvidence) entries().push({ fullUrl: SMOKING_OBS_FULLURL, resource: smokingEvidence });
+    if (hba1cEvidence) entries().push({ fullUrl: HBA1C_OBS_FULLURL, resource: hba1cEvidence });
+    if (diabetesEvidence) entries().push({ fullUrl: DIABETES_OBS_FULLURL, resource: diabetesEvidence });
+  };
+
+  if (final.diagnosis === "health") { pushEvidence(); return; }
 
   // All periodontitis diagnoses use K05.3 (Chronic periodontitis). The
   // molar-incisor PATTERN is not a distinct WHO ICD-10 code: K05.2 is
@@ -706,7 +778,9 @@ export function appendPerioCondition(bundle: Bundle, payload: OdontogramExportPa
   // DX-8: the 2017 stage/extent refine the ICD-10-CM code (K05.3xx); WHO/BNO stay K05.3.
   const code = buildConditionCode(dxKey, options.codingPack, options.snomed,
     dxKey === "periodontitis" ? { stage: final.stage, extent: final.extent } : undefined);
-  if (!code) return; // gingivitis/periodontitis are always coded; defensive guard for the nullable return
+  // gingivitis/periodontitis are always coded; defensive guard for the nullable
+  // return — the risk factors still go out, they do not depend on the Condition.
+  if (!code) { pushEvidence(); return; }
 
   const condition: Condition = {
     resourceType: "Condition",
@@ -742,28 +816,16 @@ export function appendPerioCondition(bundle: Bundle, payload: OdontogramExportPa
   }
   if (stage.length > 0) condition.stage = stage;
 
-  const caseRaw = (payload && typeof payload === "object" ? payload.case : undefined) as
-    | Record<string, unknown>
-    | undefined;
-
-  // Build the evidence Observations (if applicable) BEFORE pushing anything,
-  // so `condition.evidence` can be set before the Condition itself is pushed
-  // — entry order in the bundle is then Condition, smoking, HbA1c (readable,
-  // and stable/deterministic regardless).
-  const smokingEvidence =
-    VALID_SMOKING_STATUS.has(caseRaw?.smokingStatus as string) && caseRaw?.smokingStatus !== "unknown"
-      ? buildSmokingObservation(subjectRef, caseRaw!.smokingStatus as "never" | "former" | "current")
-      : undefined;
-  const hba1cEvidence = isFiniteNumber(caseRaw?.hba1c) ? buildHba1cObservation(subjectRef, caseRaw!.hba1c as number) : undefined;
-
+  // Entry order: Condition, then the risk factors (readable, and stable /
+  // deterministic either way).
   const evidenceRefs: string[] = [];
   if (smokingEvidence) evidenceRefs.push(SMOKING_OBS_FULLURL);
   if (hba1cEvidence) evidenceRefs.push(HBA1C_OBS_FULLURL);
+  if (diabetesEvidence) evidenceRefs.push(DIABETES_OBS_FULLURL);
   if (evidenceRefs.length > 0) {
     condition.evidence = [{ detail: evidenceRefs.map((reference) => ({ reference })) }];
   }
 
-  bundle.entry.push({ fullUrl: CONDITION_FULLURL, resource: condition });
-  if (smokingEvidence) bundle.entry.push({ fullUrl: SMOKING_OBS_FULLURL, resource: smokingEvidence });
-  if (hba1cEvidence) bundle.entry.push({ fullUrl: HBA1C_OBS_FULLURL, resource: hba1cEvidence });
+  entries().push({ fullUrl: CONDITION_FULLURL, resource: condition });
+  pushEvidence();
 }

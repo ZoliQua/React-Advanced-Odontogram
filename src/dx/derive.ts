@@ -12,7 +12,14 @@ export interface DerivedDiagnosis {
   detail?: CariesDetail;
 }
 
-const RADIO_DEPTH: Record<string, CariesDepth> = { E1: "enamel", E2: "enamel", D1: "dentine", D2: "dentine", D3: "dentine" };
+// Map, NOT a plain object: `radiographicDepth` comes from a payload that a
+// caller may hand us unvalidated (`buildFhirBundle(payload)` is public), and a
+// plain-object lookup for a key like "constructor" returns an inherited
+// Object.prototype value instead of undefined — which then reached
+// `WHO_CARIES[thatFunction].code` and threw.
+const RADIO_DEPTH = new Map<string, CariesDepth>([
+  ["E1", "enamel"], ["E2", "enamel"], ["D1", "dentine"], ["D2", "dentine"], ["D3", "dentine"],
+]);
 const DEPTH_RANK: Record<CariesDepth, number> = { enamel: 1, dentine: 2 };
 
 /**
@@ -29,6 +36,13 @@ export function deriveCariesDetail(rec: Record<string, unknown>): CariesDetail {
   const ids = Array.isArray(rec.caries) ? rec.caries : [];
   const radio = rec.radiographicDepth && typeof rec.radiographicDepth === "object" ? rec.radiographicDepth as Record<string, unknown> : {};
   const sev = rec.cariesSeverity && typeof rec.cariesSeverity === "object" ? rec.cariesSeverity as Record<string, unknown> : {};
+  // Surfaces carrying a direct restoration — on these, `cariesSeverity` is a
+  // CARS (recurrent) score rather than an ICDAS depth. `Set` over the keys, so
+  // an untrusted key cannot reach the prototype chain.
+  const filled = new Set(
+    rec.fillingSurfaceMaterials && typeof rec.fillingSurfaceMaterials === "object"
+      ? Object.keys(rec.fillingSurfaceMaterials as Record<string, unknown>) : [],
+  );
   let best: CariesDepth | null = null;
   let bestSurfaces: string[] = [];
   const surfaces: string[] = [];
@@ -36,8 +50,18 @@ export function deriveCariesDetail(rec: Record<string, unknown>): CariesDetail {
     if (typeof id !== "string") continue;
     const surface = id.startsWith("caries-") ? id.slice("caries-".length) : id;
     surfaces.push(surface);
-    let depth: CariesDepth | null = RADIO_DEPTH[String(radio[surface])] ?? null;
-    if (!depth) {
+    let depth: CariesDepth | null = RADIO_DEPTH.get(String(radio[surface])) ?? null;
+    if (!depth && !filled.has(surface)) {
+      // The ICDAS severity is a DEPTH scale (1-3 enamel, 4-6 dentine) and only
+      // for a PRIMARY lesion. On a FILLED surface the very same field holds a
+      // CARS score, which grades a recurrent lesion's extent/activity, not how
+      // far it reaches — reading it as a depth claimed "limited to enamel"
+      // (K02.0 / K02.51 / K02.61) from a number that never said so. Worse, a
+      // legacy payload's hydrate INFERS the representative CARS score 3 for an
+      // unscored caried+filled surface, so a depth nobody ever assessed was
+      // exported as a definite one. With no radiographic depth, a recurrent
+      // lesion's depth is unknown — which is exactly what the unrefined K02
+      // means.
       const s = sev[surface];
       if (typeof s === "number" && Number.isFinite(s)) depth = s >= 4 ? "dentine" : s >= 1 ? "enamel" : null;
     }

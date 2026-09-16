@@ -54,8 +54,16 @@ export function setPlanInitialized(value: boolean): void {
 /** Deep-copy every tooth from `src` into `dst` via the proven
  *  serializeState/hydrateState round-trip, so the two charts never share
  *  Sets/Maps/objects (mutating one tooth's state can never leak into the
- *  other chart's copy). */
+ *  other chart's copy).
+ *
+ *  `inferLegacySecondaryCaries` is OFF: the source is a LIVE state that has
+ *  already been hydrated, so every severity it carries is deliberate. Leaving
+ *  the inference on (the hydrate default, meant for pre-2.3 payloads) made the
+ *  first switch to Plan mode invent a recurrent score on any caried+filled
+ *  surface the clinician had left unscored — the plan chart then silently
+ *  diverged from status, with `getPlanChanges()` reporting nothing.
+ *  `mirrorStatusToPlan()` in odontogram.ts passes `false` for the same reason. */
 export function cloneChart(src: Map<Any, Any>, dst: Map<Any, Any>): void {
   dst.clear();
-  for(const [n, s] of src) dst.set(n, hydrateState(serializeState(s)));
+  for(const [n, s] of src) dst.set(n, hydrateState(serializeState(s), false));
 }

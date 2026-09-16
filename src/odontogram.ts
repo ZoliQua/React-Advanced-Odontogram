@@ -1421,7 +1421,24 @@ export function __mobilityDisabledForTest(s: Record<string, unknown>): boolean {
   return mobilityDisabled(s);
 }
 
+/**
+ * The three-step VISUAL SEVERITY ramp an ICDAS code renders at: the caries
+ * layer's opacity (0.45 / 0.7 / 1.0), the `data-depth` bar/badge, and the
+ * coarse three-option picker offered when ICDAS mode is off (2/4/6).
+ *
+ * This is deliberately NOT the enamel-vs-dentine DEPTH axis the ICD codes are
+ * derived from, and the two must not be "aligned": the coding axis follows
+ * ICDAS itself (1-3 enamel, 4-6 dentine — code 3 is localized enamel breakdown
+ * with NO visible dentin), and lives in `deriveCariesDetail` (`dx/derive.ts`).
+ * The ramp groups 3 with 4 because a lesion with enamel breakdown reads as
+ * mid-severity on the chart, which is a display judgement, not a depth claim.
+ * A code-review pass flagged the divergence for ICDAS 3; it is intentional, and
+ * `icdas.test.ts` pins both mappings side by side so it stays visible.
+ */
 export function icdasTier(code: number): 1|2|3 { return code <= 2 ? 1 : code <= 4 ? 2 : 3; }
+/** The `data-depth` value for the {@link icdasTier} ramp. The middle value is
+ *  named "dentin" for historical reasons (it is the coarse picker's middle
+ *  option) — it is a severity bucket, not the exported depth. */
 export function icdasToThreeLevel(code: number): string { const t = icdasTier(code); return t === 3 ? "deep" : t === 2 ? "dentin" : "surface"; }
 
 export function getCariesDepthOptions(): Array<{ value: number; label: string; title?: string }>{

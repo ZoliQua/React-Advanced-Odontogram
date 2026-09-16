@@ -25,6 +25,7 @@ const SITES = ["MB", "B", "DB", "ML", "L", "DL"] as const;
 const ENTRANCES = ["mesial", "distal", "buccal", "lingual"] as const;
 const SURFACES = ["mesial", "distal", "buccal", "lingual"] as const;
 const SMOKING = new Set(["never", "former", "current"]);
+const DIABETES = new Set(["none", "present"]);
 
 type Coding = { system?: unknown; code?: unknown };
 type CC = { coding?: Array<Coding | null | undefined> } | undefined;
@@ -75,6 +76,8 @@ function hba1cPercent(q: { value?: unknown; unit?: unknown; code?: unknown } | u
 }
 
 const num = (v: unknown): number | undefined => (typeof v === "number" && Number.isFinite(v) ? v : undefined);
+/** A millimetre reading on the engine's integer scale (see the call site). */
+const mm = (v: unknown): number | undefined => { const n = num(v); return n === undefined ? undefined : Math.round(n); };
 /** A CodeableConcept's codings, or [] for anything else. `coding` is typed as an
  *  array but arrives from an UNTRUSTED bundle, where `code: { coding: {} }` is
  *  perfectly possible — calling `.some`/`.find` on that object throws, and this
@@ -96,7 +99,12 @@ function qualifier(comp: Component, prefix: string): string | undefined {
 }
 const inSet = <T extends string>(set: readonly T[], v: string | undefined): v is T => !!v && (set as readonly string[]).includes(v);
 
-export interface ImportedPerioCase { smokingStatus?: string; hba1c?: number }
+export interface ImportedPerioCase {
+  smokingStatus?: string;
+  cigarettesPerDay?: number;
+  diabetesStatus?: string;
+  hba1c?: number;
+}
 
 /** Parse the LOINC perio panels (+ the evidence Observations) of a Bundle's
  *  entries into `teeth` (mutated) and return the case-level fields found. */
@@ -112,6 +120,21 @@ export function importPerioObservations(entries: unknown, teeth: Record<string, 
     if (has(res.code, LOINC_SYSTEM, LOINC.smokingStatus.code)) {
       const v = localOf(res.valueCodeableConcept);
       if (v && v.startsWith("smoking-") && SMOKING.has(v.slice("smoking-".length))) out.case.smokingStatus = v.slice("smoking-".length);
+      // The daily count rides as a component on the status it qualifies.
+      for (const comp of res.component ?? []) {
+        if (!comp || localOf(comp.code) !== "cigarettes-per-day") continue;
+        const n = comp.valueInteger;
+        if (typeof n === "number" && Number.isInteger(n)) out.case.cigarettesPerDay = n;
+      }
+      continue;
+    }
+    // Diabetes status — an engine-local Observation code, so it is matched on
+    // the local system rather than LOINC. `derivePerioClassification` only
+    // consults HbA1c when the status is "present", so importing the HbA1c
+    // without this silently degraded the grade.
+    if (localOf(res.code) === "diabetes-status") {
+      const v = localOf(res.valueCodeableConcept);
+      if (v && DIABETES.has(v.slice("diabetes-".length))) out.case.diabetesStatus = v.slice("diabetes-".length);
       continue;
     }
     if (has(res.code, LOINC_SYSTEM, LOINC.hba1c.code)) {
@@ -135,7 +158,13 @@ export function importPerioObservations(entries: unknown, teeth: Record<string, 
 
     for (const comp of res.component ?? []) {
       if (!comp) continue;
-      const q = num(comp.valueQuantity?.value);
+      // Millimetre readings are ROUNDED to the engine's integer scale. A foreign
+      // chart that probes in half millimetres (PD 3.5) used to be forwarded
+      // verbatim, and `clampPerio` then rejected the non-integer with `null` —
+      // which un-charted the site and took its GM and BOP with it (the
+      // no-orphan rule). Rounding keeps the measurement; dropping it lost the
+      // site silently.
+      const q = mm(comp.valueQuantity?.value);
       const i = typeof comp.valueInteger === "number" && Number.isInteger(comp.valueInteger) ? comp.valueInteger : undefined;
       if (has(comp.code, LOINC_SYSTEM, LOINC.pd.code)) { const s = qualifier(comp, "perio-site:"); if (inSet(SITES, s) && q !== undefined) pd[s] = q; continue; }
       if (has(comp.code, LOINC_SYSTEM, LOINC.cal.code)) { const s = qualifier(comp, "perio-site:"); if (inSet(SITES, s) && q !== undefined) cal[s] = q; continue; }
@@ -158,25 +187,55 @@ export function importPerioObservations(entries: unknown, teeth: Record<string, 
     const anything = chartedSites.length > 0 || Object.keys(furcation).length > 0 || plaque.size > 0
       || Object.keys(pi).length > 0 || Object.keys(gi).length > 0 || Object.keys(mpi).length > 0 || Object.keys(mbi).length > 0 || kg !== undefined;
     if (!anything) continue; // a panel with nothing usable creates no tooth record
+    // A foreign exporter may split one tooth across SEVERAL 74029-0 panels (one
+    // per site, or one per index group). Every assignment below therefore MERGES
+    // into what an earlier panel already put on the record — a plain overwrite
+    // kept only the last panel's sites. The engine's own export emits one panel
+    // per tooth, so this path is foreign-bundle only.
     const record = ensureTooth(teeth, tooth) as Record<string, unknown>;
+    const mergeInto = (key: string, values: Record<string, number>) => {
+      if (Object.keys(values).length === 0) return;
+      const prev = record[key];
+      record[key] = { ...(prev && typeof prev === "object" ? prev as Record<string, number> : {}), ...values };
+    };
     if (chartedSites.length > 0) {
       const gm: Record<string, number> = {};
       for (const s of chartedSites) {
-        if (s in cal) gm[s] = cal[s] - pd[s];          // exact, incl. negative (pseudopocket)
-        else if (s in rec) gm[s] = rec[s];              // recession-only fallback (gm > 0)
+        // CAL is exported for EVERY charted site, with gm defaulting to 0 when
+        // the margin was never recorded, so a reconstructed 0 cannot be told
+        // apart from a measured 0 — and the engine treats them identically
+        // (`CAL = pd + (gm ?? 0)`). Omitting the zero keeps the GM input blank
+        // instead of turning "not recorded" into "measured 0 mm" on every
+        // round trip. Negative (pseudopocket) and positive (recession) values
+        // are real readings and are always kept.
+        const value = s in cal ? cal[s] - pd[s]         // exact, incl. negative (pseudopocket)
+          : s in rec ? rec[s]                            // recession-only fallback (gm > 0)
+          : undefined;
+        if (value !== undefined && value !== 0) gm[s] = value;
       }
-      const perio: Record<string, unknown> = { pd: Object.fromEntries(chartedSites.map((s) => [s, pd[s]])) };
-      if (Object.keys(gm).length) perio.gm = gm;
-      const bopSites = chartedSites.filter((s) => bop.has(s));
+      const prev = (record.perio && typeof record.perio === "object" ? record.perio : {}) as Record<string, unknown>;
+      const prevMap = (key: string): Record<string, number> =>
+        (prev[key] && typeof prev[key] === "object" ? prev[key] as Record<string, number> : {});
+      const perio: Record<string, unknown> = {
+        pd: { ...prevMap("pd"), ...Object.fromEntries(chartedSites.map((s) => [s, pd[s]])) },
+      };
+      const mergedGm = { ...prevMap("gm"), ...gm };
+      if (Object.keys(mergedGm).length) perio.gm = mergedGm;
+      const prevBop = Array.isArray(prev.bop) ? prev.bop as string[] : [];
+      const bopSites = [...new Set([...prevBop, ...chartedSites.filter((s) => bop.has(s))])];
       if (bopSites.length) perio.bop = bopSites;
       record.perio = perio;
     }
-    if (Object.keys(furcation).length) record.furcation = furcation;
-    if (plaque.size) record.plaque = SURFACES.filter((s) => plaque.has(s));
-    if (Object.keys(pi).length) record.pi = pi;
-    if (Object.keys(gi).length) record.gi = gi;
-    if (Object.keys(mpi).length) record.mpi = mpi;
-    if (Object.keys(mbi).length) record.mbi = mbi;
+    mergeInto("furcation", furcation);
+    if (plaque.size) {
+      const prev = Array.isArray(record.plaque) ? record.plaque as string[] : [];
+      const union = new Set([...prev, ...SURFACES.filter((s) => plaque.has(s))]);
+      record.plaque = SURFACES.filter((s) => union.has(s));
+    }
+    mergeInto("pi", pi);
+    mergeInto("gi", gi);
+    mergeInto("mpi", mpi);
+    mergeInto("mbi", mbi);
     if (kg !== undefined) record.kg = kg;
   }
   return out;

@@ -91,8 +91,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-A full code review of this release found seven defects in the new interoperability
-and code-splitting work. All of them are fixed here, each with a regression test.
+A full code review of this release found eighteen defects, across the new
+interoperability work, the code splitting, and the periodontal round trip. All of
+them are fixed here, each with a regression test.
+
+One further finding was examined and deliberately left as it is: the three-step
+visual severity ramp groups ICDAS 3 with 4, while the exported code follows ICDAS
+itself and calls 3 "limited to enamel". These are two different scales, not one
+scale used inconsistently, and both are now documented and pinned by a test.
 
 - **The engine could not re-import its own refined ICD-10-CM codes.** The reverse
   code→diagnosis map was built from a pack's flat codes only, so the DX-8 subcodes
@@ -126,6 +132,44 @@ and code-splitting work. All of them are fixed here, each with a regression test
   grade C. The unit is now honoured: `%` as-is, `mmol/mol` converted via the NGSP
   master equation, an unlabelled value accepted only where a percentage is
   plausible, and an uninterpretable unit ignored rather than guessed.
+- **A periodontally healthy patient's risk factors reached the bundle at all.**
+  Smoking status and HbA1c were emitted only as `evidence` of a periodontal
+  Condition, so a healthy case exported neither and the case block came back
+  empty on import. They are now exported as case data in their own right.
+- **Diabetes status and cigarettes/day are exported and imported.** Neither was
+  ever written to the bundle, and the 2017 grade only consults HbA1c when the
+  diabetes status says `present` — so a FHIR round trip silently degraded the
+  grade. Diabetes rides on its own evidence Observation, the daily count as a
+  component of the smoking-status Observation. Four engine-local concepts were
+  added to the published CodeSystem (218 → 222).
+- **A recurrent lesion no longer exports a depth nobody assessed.** On a filled
+  surface `cariesSeverity` holds a CARS score, which grades a recurrent lesion's
+  extent rather than how deep it reaches, and hydrate INFERS a representative
+  score for a legacy payload's unscored caried+filled surface. Both were read as
+  an ICDAS depth, exporting "Caries limited to enamel" (`K02.0` / `K02.51` /
+  `K02.61`) from a number that never said so. Depth on a recurrent lesion now
+  comes from the radiographic depth alone; with none, the code stays the
+  unrefined `K02`.
+- **The plan chart no longer diverges from status by itself.** The lazy
+  status→plan clone ran the hydrate with legacy inference ON, so the first
+  switch to Plan mode invented a recurrent score on any caried+filled surface
+  left unscored — different ICD codes per chart, with `getPlanChanges()`
+  reporting nothing.
+- **A SNOMED-only case-level Condition is recognised** on import, as the import
+  contract already promised.
+- **A foreign periodontal panel is read rather than discarded.** A half-
+  millimetre probing depth was forwarded verbatim and then rejected by the
+  integer clamp, which un-charted the site and took its margin and bleeding with
+  it; it is now rounded to the engine's millimetre scale. Several panels for the
+  same tooth (one per site, as some systems export) now merge instead of
+  overwriting each other.
+- **A gingival margin that was never recorded no longer comes back as 0.** CAL
+  is exported for every charted site with the margin defaulting to zero, so the
+  reconstruction turned "not recorded" into "measured 0 mm" on every round trip
+  and filled the chart's blank inputs with zeros.
+- **The periodontal chart follows a live anatomy switch.** It parses its own copy
+  of the tooth templates, and that copy outlived the profile: switching profiles
+  with the chart open kept drawing the previous profile's teeth.
 - **Switching the tooth anatomy during the chunk download is no longer racy.**
   A selection issued while an earlier one was still loading could be undone by
   the in-flight request; the latest selection now always wins. A chunk that fails

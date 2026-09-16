@@ -11,7 +11,7 @@
   "description": "Engine-local codes emitted by the React Advanced Odontogram FHIR export: finding types (Observation.code), enum values (valueCodeableConcept / component codes), periodontal-panel component and qualifier codes, 2017-classification stage summaries and case-condition laterality. Displays are language-neutral English and match the export verbatim; a repeated value code carries its alternative displays as designations. Plugin-defined `custom-state:<pluginId>` codes are open-ended and intentionally not enumerated.",
   "caseSensitive": true,
   "content": "complete",
-  "count": 218,
+  "count": 222,
   "concept": [
     {
       "code": "abfraction",
@@ -214,6 +214,11 @@
       "definition": "Value of axis group \"apicalDx\""
     },
     {
+      "code": "cigarettes-per-day",
+      "display": "Cigarettes per day",
+      "definition": "Tobacco smoking status component code (evidence Observation)"
+    },
+    {
       "code": "composite",
       "display": "Composite filling",
       "definition": "Value of axis group \"fillingMaterial\""
@@ -287,6 +292,21 @@
       "code": "detectable",
       "display": "CEJ detectable",
       "definition": "Value of axis group \"cejVisibility\""
+    },
+    {
+      "code": "diabetes-none",
+      "display": "No diabetes mellitus",
+      "definition": "Diabetes mellitus status value (evidence Observation)"
+    },
+    {
+      "code": "diabetes-present",
+      "display": "Diabetes mellitus present",
+      "definition": "Diabetes mellitus status value (evidence Observation)"
+    },
+    {
+      "code": "diabetes-status",
+      "display": "Diabetes mellitus status",
+      "definition": "Diabetes status evidence Observation code"
     },
     {
       "code": "distal",

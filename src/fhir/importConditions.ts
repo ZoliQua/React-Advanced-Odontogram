@@ -91,15 +91,23 @@ const CM_TO_CASE_KEY = new Map<string, CaseConditionKey>();
 for (const [k, v] of Object.entries(ICD10CM_PACK.caseCodes ?? {})) if (v) CM_TO_CASE_KEY.set(v.code, k as CaseConditionKey);
 const SNOMED_TO_DX_KEY = new Map<string, DiagnosisKey>();
 for (const k of Object.keys(DX_CODES) as DiagnosisKey[]) { const s = DX_CODES[k].snomed; if (s) SNOMED_TO_DX_KEY.set(s, k); }
+// DX-10 filled the case catalog's SNOMED slots, and the import contract
+// promises SNOMED recognition — without this map a SNOMED-only case Condition
+// (e.g. 41888000, temporomandibular joint disorder) was silently dropped.
+const SNOMED_TO_CASE_KEY = new Map<string, CaseConditionKey>();
+for (const k of Object.keys(CASE_DX_CODES) as CaseConditionKey[]) { const s = CASE_DX_CODES[k].snomed; if (s) SNOMED_TO_CASE_KEY.set(s, k); }
 
 /** A tooth-level Condition's diagnosis key from its codings: WHO ICD-10 → ICD-10-CM → SNOMED CT. */
 const dxKeyOf = (c: CondLike): DiagnosisKey | undefined =>
   lookup(ICD10_TO_DX_KEY, codeOf(c, ICD10_SYSTEM))
   ?? lookup(CM_TO_DX_KEY, codeOf(c, ICD10CM_PACK.system))
   ?? SNOMED_TO_DX_KEY.get(codeOf(c, SNOMED_SYSTEM) ?? "");
-/** A case-level Condition's key from its codings: WHO ICD-10 → ICD-10-CM. */
+/** A case-level Condition's key from its codings: WHO ICD-10 → ICD-10-CM →
+ *  SNOMED CT (the same precedence the tooth-level `dxKeyOf` uses). */
 const caseKeyOf = (c: CondLike): CaseConditionKey | undefined =>
-  lookup(ICD10_TO_CASE_KEY, codeOf(c, ICD10_SYSTEM)) ?? lookup(CM_TO_CASE_KEY, codeOf(c, ICD10CM_PACK.system));
+  lookup(ICD10_TO_CASE_KEY, codeOf(c, ICD10_SYSTEM))
+  ?? lookup(CM_TO_CASE_KEY, codeOf(c, ICD10CM_PACK.system))
+  ?? SNOMED_TO_CASE_KEY.get(codeOf(c, SNOMED_SYSTEM) ?? "");
 
 export interface ImportedDiagnoses {
   caseConditions: Record<string, Laterality>;

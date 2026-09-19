@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Advanced-Odontogram/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
 </p>
 
 # 🦷 React Advanced Odontogram
 
-[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
 [![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -52,7 +52,7 @@
 ---
 ![Одонтограмма — предпросмотр (русский)](screenshot_ru_odontogram.png)
 
-🔗 **Test URL:** https://react-odontogram-modul.vercel.app/
+🔗 **Test URL:** https://react-advanced-odontogram.vercel.app/
 
 ---
 
@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // управление
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // запустить обучающий тур
   // …и многие другие функции настроек setX/getX
@@ -265,7 +265,7 @@ export default function OdontogramClient() {
 - ⏳ Индикатор прогресса при экспорте изображения
 - 🎓 Интерактивное обучение из 18 шагов
 - 🔢 Три системы нумерации (FDI, Universal, Palmer)
-- 🌐 Интернационализация — 12 языков интерфейса (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) с переключателем языков; арабский отображает интерфейс справа налево, а зубные/пародонтологические карты закреплены слева направо (машинный перевод, проверка носителем языка для AR/ZH/FR ожидается)
+- 🌐 Интернационализация — 12 языков интерфейса (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) с переключателем языков; арабский отображает интерфейс справа налево, а зубные/пародонтологические карты закреплены слева направо (машинный перевод, проверка носителем языка для AR/ZH/FR ожидается); в основной бандл входит только английский — каждый другой язык — отдельный чанк, загружаемый при первом выборе
 - 🌗 Поддержка тёмного режима с кнопкой переключения (автономный или управляемый родительским приложением)
 - 🎨 Настраиваемая тема (`themeConfig` prop) с CSS-переменными (`--odon-*`)
 - 📱 Мобильный сенсорный интерфейс: всплывающее окно по касанию для масштабирования, контекстное меню по долгому нажатию, масштабирование жестом «щипок», сенсорные цели WCAG 44 пикселя, переключение зубной дуги
@@ -559,6 +559,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # Запустить весь набор тестов Vitest
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
+npm run test:e2e       # Browser tests (Playwright; once: npx playwright install chromium)
 ```
 
 ### 📖 Документация API
@@ -594,6 +595,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `destroyOdontogram()` | Очистка движка и удаление обработчиков событий |
 | `setNumberingSystem(system)` | Переключение между FDI, Universal, Palmer |
 | `clearSelection()` | Сброс выделения всех зубов |
+| `getSelectedTeeth()` | Выбранные в данный момент зубы (номера FDI) в порядке выбора |
 | `setOcclusalVisible(on)` | Включение/отключение окклюзионного вида |
 | `setWisdomVisible(on)` | Показать/скрыть зубы мудрости |
 | `setShowBase(on)` | Показать/скрыть слой кости |
@@ -850,8 +852,9 @@ React Advanced Odontogram создаётся и поддерживается Zol
 - [@odontodev](https://github.com/odontodev): гидратация состояния и API жизненного цикла, настройки пломб как управляемые props, идемпотентные сеттеры и сворачиваемые карточки
 - [@JulianoBazzi](https://github.com/JulianoBazzi): перевод на бразильский португальский
 - [@yassine-bhn](https://github.com/yassine-bhn): перевод на французский и предлагаемая измеренная анатомия
-- [@saegerdirk-star](https://github.com/saegerdirk-star): измеренная анатомия зуба и генератор зубов, а также предложение компонуемого интерфейса
+- [@saegerdirk-star](https://github.com/saegerdirk-star): измеренная анатомия зуба и генератор зубов, а также предложение компонуемого интерфейса; три исправления, перенесённые из их форка (данные пациента в PDF, ориентация зубов в пародонтограмме, скорость выбора)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): API выбора `getSelectedTeeth()`
 
 **Создано с помощью** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) и [Tailwind CSS](https://tailwindcss.com).
 
-Вклад приветствуется. Откройте pull request на GitHub, и вы будете указаны здесь. Если проект вам полезен, пожалуйста, [поставьте ему звезду на GitHub](https://github.com/ZoliQua/React-Odontogram-Modul).
+Вклад приветствуется. Откройте pull request на GitHub, и вы будете указаны здесь. Если проект вам полезен, пожалуйста, [поставьте ему звезду на GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

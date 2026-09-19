@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Advanced-Odontogram/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
 </p>
 
 # 🦷 React Advanced Odontogram
 
-[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
 [![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -54,7 +54,7 @@
 ---
 ![مخطط الأسنان – معاينة (العربية)](screenshot_ar_odontogram.png)
 
-🔗 **رابط الاختبار:** https://react-odontogram-modul.vercel.app/
+🔗 **رابط الاختبار:** https://react-advanced-odontogram.vercel.app/
 
 ---
 
@@ -136,7 +136,7 @@ import {
   setImportFormat,
   // control
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // launch the onboarding tour
   // …and many more setX/getX settings functions
@@ -267,7 +267,7 @@ export default function OdontogramClient() {
 - ⏳ طبقة تغطية للتقدم أثناء تصدير الصورة
 - 🎓 جولة تعريفية تفاعلية من 18 خطوة
 - 🔢 ثلاثة أنظمة ترقيم (FDI، العالمي، بالمر)
-- 🌐 دعم متعدد اللغات (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) مع مبدّل لغة
+- 🌐 دعم متعدد اللغات (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) مع مبدّل لغة؛ الإنجليزية وحدها مضمّنة في الحزمة الرئيسية — كل لغة أخرى جزء منفصل يُنزَّل عند اختيارها أول مرة
 - 🌗 دعم الوضع الداكن بزر تبديل (مستقل أو متحكَّم به من التطبيق الأصل)
 - 🎨 إعدادات سمة مخصصة (خاصية `themeConfig`) عبر خصائص CSS المخصصة (`--odon-*`)
 - 📱 تجربة لمس محسّنة للجوال: نافذة تكبير عند اللمس، قائمة سياق بالضغط المطوّل، تكبير بالقرص (Pinch-to-zoom)، أهداف لمس بحجم WCAG 44px، تنقل بتبديل القوس
@@ -561,6 +561,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # تشغيل مجموعة اختبارات Vitest الكاملة
 npm run test:watch     # وضع المراقبة
 npm run test:coverage  # تقرير التغطية
+npm run test:e2e       # اختبارات المتصفح (Playwright؛ مرة واحدة: npx playwright install chromium)
 ```
 
 ### 📖 توثيق واجهة برمجة التطبيقات
@@ -596,6 +597,7 @@ npm run docs           # توليد توثيق TypeDoc داخل docs/
 | `destroyOdontogram()` | تنظيف المحرك وإزالة مستمعي الأحداث |
 | `setNumberingSystem(system)` | التبديل بين FDI والعالمي وبالمر |
 | `clearSelection()` | إلغاء تحديد كل الأسنان |
+| `getSelectedTeeth()` | الأسنان المحددة حاليًا (أرقام FDI) بترتيب التحديد |
 | `setOcclusalVisible(on)` | تبديل إظهار المنظر الإطباقي |
 | `setWisdomVisible(on)` | إظهار/إخفاء أسنان العقل |
 | `setShowBase(on)` | إظهار/إخفاء طبقة العظم |
@@ -851,8 +853,9 @@ React Advanced Odontogram من إنشاء وصيانة Zoltan Dul ([@ZoliQua](ht
 - [@odontodev](https://github.com/odontodev): ترطيب الحالة وواجهة API لدورة الحياة، وإعدادات الحشوات كخصائص props مُتحكَّم بها، وأدوات ضبط idempotent، وبطاقات قابلة للطي
 - [@JulianoBazzi](https://github.com/JulianoBazzi): الترجمة إلى البرتغالية البرازيلية
 - [@yassine-bhn](https://github.com/yassine-bhn): الترجمة إلى الفرنسية والتشريح المقاس المقترح
-- [@saegerdirk-star](https://github.com/saegerdirk-star): تشريح الأسنان المقاس ومولّد الأسنان، إضافة إلى اقتراح الواجهة القابلة للتركيب
+- [@saegerdirk-star](https://github.com/saegerdirk-star): تشريح الأسنان المقاس ومولّد الأسنان، إضافة إلى اقتراح الواجهة القابلة للتركيب؛ وثلاثة إصلاحات مأخوذة من نسختهم (هوية المريض في PDF، اتجاه الأسنان في مخطط اللثة، سرعة التحديد)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): واجهة التحديد `getSelectedTeeth()`
 
 **مبني باستخدام** [jsPDF](https://github.com/parallax/jsPDF)، [DOMPurify](https://github.com/cure53/DOMPurify)، [React](https://react.dev)، [Vite](https://vite.dev)، [TypeScript](https://www.typescriptlang.org) و[Tailwind CSS](https://tailwindcss.com).
 
-المساهمات مرحّب بها. افتح pull request على GitHub وسيُذكر اسمك هنا. إذا كان المشروع مفيدًا لك، من فضلك [امنحه نجمة على GitHub](https://github.com/ZoliQua/React-Odontogram-Modul).
+المساهمات مرحّب بها. افتح pull request على GitHub وسيُذكر اسمك هنا. إذا كان المشروع مفيدًا لك، من فضلك [امنحه نجمة على GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

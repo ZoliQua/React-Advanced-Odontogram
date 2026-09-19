@@ -10,8 +10,8 @@ abstract: >-
   interface localized in nine languages.
 version: 2.6.0
 date-released: 2026-09-14
-url: "https://react-odontogram-modul.vercel.app/"
-repository-code: "https://github.com/ZoliQua/React-Odontogram-Modul"
+url: "https://react-advanced-odontogram.vercel.app/"
+repository-code: "https://github.com/ZoliQua/React-Advanced-Odontogram"
 license: MIT
 # Zenodo concept (all-versions) DOI — auto-resolves to the latest archived
 # release. Recommended for citing the software in general. A version-specific

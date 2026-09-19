@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Advanced-Odontogram/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
 </p>
 
 # 🦷 React Advanced Odontogram
 
-[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
 [![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -54,7 +54,7 @@
 ---
 ![牙位图 – 预览（简体中文）](screenshot_zh_odontogram.png)
 
-🔗 **测试地址：** https://react-odontogram-modul.vercel.app/
+🔗 **测试地址：** https://react-advanced-odontogram.vercel.app/
 
 ---
 
@@ -136,7 +136,7 @@ import {
   setImportFormat,
   // control
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // launch the onboarding tour
   // …and many more setX/getX settings functions
@@ -267,7 +267,7 @@ export default function OdontogramClient() {
 - ⏳ 图像导出过程中的进度浮层
 - 🎓 18 步交互式新手导览
 - 🔢 三种牙位编号系统（FDI、通用编号法、Palmer）
-- 🌐 国际化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR），支持语言切换
+- 🌐 国际化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR），支持语言切换；主包中只包含英语——其他每种语言都是单独的分块，首次选择时才下载
 - 🌗 支持深色模式，附带切换按钮（独立控制或由父应用控制）
 - 🎨 通过 CSS 自定义属性（`--odon-*`）实现的自定义主题配置（`themeConfig` 属性）
 - 📱 移动端触控体验：点按缩放弹出层、长按上下文菜单、双指缩放、符合 WCAG 标准的 44px 触控目标、牙弓切换导航
@@ -561,6 +561,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # 运行完整的 Vitest 测试套件
 npm run test:watch     # 监听模式
 npm run test:coverage  # 覆盖率报告
+npm run test:e2e       # 浏览器测试（Playwright；首次：npx playwright install chromium）
 ```
 
 ### 📖 API 文档
@@ -596,6 +597,7 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `destroyOdontogram()` | 清理引擎并移除事件监听器 |
 | `setNumberingSystem(system)` | 在 FDI、通用编号法、Palmer 之间切换 |
 | `clearSelection()` | 取消选择所有牙齿 |
+| `getSelectedTeeth()` | 当前选中的牙齿（FDI 编号），按选择顺序 |
 | `setOcclusalVisible(on)` | 切换咬合面视图的开/关 |
 | `setWisdomVisible(on)` | 显示/隐藏智齿 |
 | `setShowBase(on)` | 显示/隐藏骨组织层 |
@@ -850,8 +852,9 @@ React Advanced Odontogram 由 Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 - [@odontodev](https://github.com/odontodev): 状态注水和生命周期 API，作为受控 props 的充填设置，幂等的 setter 以及可折叠卡片
 - [@JulianoBazzi](https://github.com/JulianoBazzi): 巴西葡萄牙语翻译
 - [@yassine-bhn](https://github.com/yassine-bhn): 法语翻译以及提议的测量解剖结构
-- [@saegerdirk-star](https://github.com/saegerdirk-star): 测量的牙齿解剖结构和牙齿生成器，以及可组合接口的提案
+- [@saegerdirk-star](https://github.com/saegerdirk-star): 测量的牙齿解剖结构和牙齿生成器，以及可组合接口的提案；以及采纳自其分支的三项修复（PDF 中的患者身份、牙周图中的牙齿方向、选择速度）
+- [@sofia-cluadette](https://github.com/sofia-cluadette): `getSelectedTeeth()` 选择 API
 
 **基于** [jsPDF](https://github.com/parallax/jsPDF)、[DOMPurify](https://github.com/cure53/DOMPurify)、[React](https://react.dev)、[Vite](https://vite.dev)、[TypeScript](https://www.typescriptlang.org) 和 [Tailwind CSS](https://tailwindcss.com) 构建。
 
-欢迎贡献。在 GitHub 上开启一个 pull request，您的名字就会被记入此处。如果本项目对您有用，请[在 GitHub 上给它点亮星标](https://github.com/ZoliQua/React-Odontogram-Modul)。
+欢迎贡献。在 GitHub 上开启一个 pull request，您的名字就会被记入此处。如果本项目对您有用，请[在 GitHub 上给它点亮星标](https://github.com/ZoliQua/React-Advanced-Odontogram)。

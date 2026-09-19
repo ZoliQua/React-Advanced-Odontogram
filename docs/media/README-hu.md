@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Advanced-Odontogram/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
 </p>
 
 # 🦷 React Advanced Odontogram
 
-[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
 [![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -52,7 +52,7 @@ Ez a projekt egy interaktív, böngészőben futó odontogram szerkesztő, amely
 ---
 ![Odontogram – előnézet (magyar)](screenshot_hu_odontogram.png)
 
-🔗 **Test URL:** https://react-odontogram-modul.vercel.app/
+🔗 **Test URL:** https://react-advanced-odontogram.vercel.app/
 
 ---
 
@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // vezérlés
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // bemutató túra indítása
   // …és még sok további setX/getX beállítás függvény
@@ -265,7 +265,7 @@ Vagy töltsd be egy kizárólag kliensoldali dinamikus importtal: `dynamic(() =>
 - ⏳ Folyamatjelző overlay a képexport alatt
 - 🎓 18 lépéses interaktív bemutató túra
 - 🔢 Három számozási rendszer (FDI, Universal, Palmer)
-- 🌐 I18n — 12 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) nyelvváltóval; az arab a felületet jobbról balra rendereli, a fog-/parodontális diagramokat balról jobbra rögzítve (gépi fordítás, anyanyelvi lektorálás az AR/ZH/FR nyelveknél még várat magára)
+- 🌐 I18n — 12 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) nyelvváltóval; az arab a felületet jobbról balra rendereli, a fog-/parodontális diagramokat balról jobbra rögzítve (gépi fordítás, anyanyelvi lektorálás az AR/ZH/FR nyelveknél még várat magára); a fő csomagban csak az angol van — minden más nyelv külön chunk, amely az első kiválasztáskor töltődik le
 - 🌗 Sötét mód támogatás váltógombbal (önálló vagy szülő alkalmazás által vezérelt)
 - 🎨 Egyedi téma konfiguráció (`themeConfig` prop) CSS custom property-kkel (`--odon-*`)
 - 📱 Mobil érintéses UX: koppintásos nagyítós felugró, hosszú nyomás helyi menü, csípéses zoom, WCAG 44px érintési célpontok, fogív navigáció
@@ -559,6 +559,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # A teljes Vitest tesztcsomag futtatása
 npm run test:watch     # Figyelési mód
 npm run test:coverage  # Lefedettségi jelentés
+npm run test:e2e       # Böngészős tesztek (Playwright; egyszer: npx playwright install chromium)
 ```
 
 ### 📖 API Dokumentáció
@@ -594,6 +595,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `destroyOdontogram()` | Motor leállítása és eseménykezelők eltávolítása |
 | `setNumberingSystem(system)` | Váltás FDI, Universal, Palmer között |
 | `clearSelection()` | Összes fog kiválasztásának törlése |
+| `getSelectedTeeth()` | Az aktuálisan kijelölt fogak (FDI-számok), a kijelölés sorrendjében |
 | `setOcclusalVisible(on)` | Okkluzális nézet be/ki |
 | `setWisdomVisible(on)` | Bölcsességfogak mutatása/elrejtése |
 | `setShowBase(on)` | Csont réteg mutatása/elrejtése |
@@ -857,8 +859,9 @@ A React Advanced Odontogramot Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 - [@odontodev](https://github.com/odontodev): állapot hidratálás és életciklus API, tömésbeállítások vezérelt propként, idempotens setterek és összecsukható kártyák
 - [@JulianoBazzi](https://github.com/JulianoBazzi): brazil portugál fordítás
 - [@yassine-bhn](https://github.com/yassine-bhn): francia fordítás és a felmért anatómia jelöltje
-- [@saegerdirk-star](https://github.com/saegerdirk-star): felmért foganatómia és a foggenerátor, valamint a komponálható felület javaslata
+- [@saegerdirk-star](https://github.com/saegerdirk-star): felmért foganatómia és a foggenerátor, valamint a komponálható felület javaslata; három javítás a forkjából (betegazonosító adatok a PDF-ben, fogorientáció a parodontális diagramon, kijelölési sebesség)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): a `getSelectedTeeth()` kijelölési API
 
 **Felhasznált eszközök:** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) és [Tailwind CSS](https://tailwindcss.com).
 
-A hozzájárulásokat szívesen fogadjuk. Nyiss egy pull requestet a GitHubon, és itt feltüntetünk. Ha hasznosnak találod a projektet, kérlek [csillagozd a GitHubon](https://github.com/ZoliQua/React-Odontogram-Modul).
+A hozzájárulásokat szívesen fogadjuk. Nyiss egy pull requestet a GitHubon, és itt feltüntetünk. Ha hasznosnak találod a projektet, kérlek [csillagozd a GitHubon](https://github.com/ZoliQua/React-Advanced-Odontogram).

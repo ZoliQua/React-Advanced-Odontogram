@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Advanced-Odontogram/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
 </p>
 
 # 🦷 React Advanced Odontogram
 
-[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
 [![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -52,7 +52,7 @@ Este projeto é um editor de odontograma interativo, executado no navegador, que
 ---
 ![Odontograma – prévia (português)](screenshot_pt-br_odontogram.png)
 
-🔗 **URL de teste:** https://react-odontogram-modul.vercel.app/
+🔗 **URL de teste:** https://react-advanced-odontogram.vercel.app/
 
 ---
 
@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // control
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // launch the onboarding tour
   // …and many more setX/getX settings functions
@@ -265,7 +265,7 @@ Ou carregue-o com um dynamic import somente cliente: `dynamic(() => import("./Od
 - ⏳ Overlay de progresso durante a exportação de imagem
 - 🎓 Tour interativo de introdução em 18 passos
 - 🔢 Três sistemas de numeração (FDI, Universal, Palmer)
-- 🌐 I18n — 12 idiomas de interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) com um seletor de idioma; o árabe renderiza a interface da direita para a esquerda com os gráficos dentário/perio fixados da esquerda para a direita (tradução automática, revisão por falante nativo pendente para AR/ZH/FR)
+- 🌐 I18n — 12 idiomas de interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) com um seletor de idioma; o árabe renderiza a interface da direita para a esquerda com os gráficos dentário/perio fixados da esquerda para a direita (tradução automática, revisão por falante nativo pendente para AR/ZH/FR); só o inglês vai no pacote principal — cada outro idioma é um chunk separado, baixado na primeira vez que é selecionado
 - 🌗 Suporte a modo escuro com botão de alternância (autônomo ou controlado pela aplicação pai)
 - 🎨 Configuração de tema personalizada (prop `themeConfig`) com propriedades CSS personalizadas (`--odon-*`)
 - 📱 UX de toque para dispositivos móveis: popover de tocar-para-zoom, menu de contexto por pressão longa, pinça-para-zoom, alvos de toque WCAG de 44px, navegação por alternância de arcada
@@ -559,6 +559,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # Run the full Vitest suite
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
+npm run test:e2e       # Browser tests (Playwright; once: npx playwright install chromium)
 ```
 
 ### 📖 Documentação da API
@@ -594,6 +595,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `destroyOdontogram()` | Limpa o motor e remove os event listeners |
 | `setNumberingSystem(system)` | Alterna entre FDI, Universal, Palmer |
 | `clearSelection()` | Deseleciona todos os dentes |
+| `getSelectedTeeth()` | Dentes selecionados no momento (números FDI), na ordem de seleção |
 | `setOcclusalVisible(on)` | Liga/desliga a vista oclusal |
 | `setWisdomVisible(on)` | Mostra/oculta os dentes do siso |
 | `setShowBase(on)` | Mostra/oculta a camada de osso |
@@ -849,8 +851,9 @@ React Advanced Odontogram é criado e mantido por Zoltan Dul ([@ZoliQua](https:/
 - [@odontodev](https://github.com/odontodev): hidratação de estado e API de ciclo de vida, configurações de restaurações como props controladas, setters idempotentes e cartões recolhíveis
 - [@JulianoBazzi](https://github.com/JulianoBazzi): tradução para o português brasileiro
 - [@yassine-bhn](https://github.com/yassine-bhn): tradução para o francês e a anatomia medida proposta
-- [@saegerdirk-star](https://github.com/saegerdirk-star): anatomia dental medida e o gerador de dentes, além da proposta de interface componível
+- [@saegerdirk-star](https://github.com/saegerdirk-star): anatomia dental medida e o gerador de dentes, além da proposta de interface componível; três correções adotadas do seu fork (identidade do paciente no PDF, orientação dos dentes no periograma, velocidade de seleção)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): a API de seleção `getSelectedTeeth()`
 
 **Construído com** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) e [Tailwind CSS](https://tailwindcss.com).
 
-As contribuições são bem-vindas. Abra um pull request no GitHub e você será creditado aqui. Se o projeto for útil para você, por favor [dê uma estrela no GitHub](https://github.com/ZoliQua/React-Odontogram-Modul).
+As contribuições são bem-vindas. Abra um pull request no GitHub e você será creditado aqui. Se o projeto for útil para você, por favor [dê uma estrela no GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

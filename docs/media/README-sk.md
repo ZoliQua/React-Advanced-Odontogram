@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Advanced-Odontogram/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
 </p>
 
 # 🦷 React Advanced Odontogram
 
-[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
 [![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -52,7 +52,7 @@ Tento projekt je interaktívny, prehliadačovo orientovaný editor odontogramu, 
 ---
 ![Odontogram – náhľad (slovenčina)](screenshot_sk_odontogram.png)
 
-🔗 **Test URL:** https://react-odontogram-modul.vercel.app/
+🔗 **Test URL:** https://react-advanced-odontogram.vercel.app/
 
 ---
 
@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // ovládanie
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // spustenie úvodnej prehliadky
   // …a mnoho ďalších funkcií nastavení setX/getX
@@ -265,7 +265,7 @@ Alebo ho načítajte pomocou dynamického importu iba na strane klienta: `dynami
 - ⏳ Prekrytie priebehom počas exportu obrázka
 - 🎓 18-krokový interaktívny úvodný sprievodca
 - 🔢 Tri systémy číslovania (FDI, Universal, Palmer)
-- 🌐 I18n — 12 jazykov rozhrania (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) s prepínačom jazyka; arabčina vykresľuje rozhranie sprava doľava, pričom zubné/parodontálne grafy zostávajú zľava doprava (strojovo preložené, kontrola rodeným hovorcom pre AR/ZH/FR zatiaľ neprebehla)
+- 🌐 I18n — 12 jazykov rozhrania (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) s prepínačom jazyka; arabčina vykresľuje rozhranie sprava doľava, pričom zubné/parodontálne grafy zostávajú zľava doprava (strojovo preložené, kontrola rodeným hovorcom pre AR/ZH/FR zatiaľ neprebehla); v hlavnom balíku je len angličtina — každý ďalší jazyk je samostatný chunk, stiahnutý pri prvom výbere
 - 🌗 Podpora tmavého režimu s prepínacím tlačidlom (samostatný alebo riadený nadradenou aplikáciou)
 - 🎨 Vlastná konfigurácia témy (prop `themeConfig`) s CSS vlastnými vlastnosťami (`--odon-*`)
 - 📱 Mobilné dotykové UX: vyskakovacie okno pre priblíženie kliknutím, kontextová ponuka dlhým stlačením, priblíženie štipnutím, WCAG 44px dotykové ciele, navigácia prepínania oblúka
@@ -559,6 +559,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # Spustiť celý testovací balík Vitest
 npm run test:watch     # Sledovací režim
 npm run test:coverage  # Správa pokrytia
+npm run test:e2e       # Testy v prehliadači (Playwright; raz: npx playwright install chromium)
 ```
 
 ### 📖 Dokumentácia API
@@ -594,6 +595,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `destroyOdontogram()` | Vyčistiť modul a odstrániť poslucháčov udalostí |
 | `setNumberingSystem(system)` | Prepínanie medzi FDI, Universal, Palmer |
 | `clearSelection()` | Zrušiť výber všetkých zubov |
+| `getSelectedTeeth()` | Aktuálne vybrané zuby (čísla FDI) v poradí výberu |
 | `setOcclusalVisible(on)` | Prepínanie oklúzneho pohľadu zap/vyp |
 | `setWisdomVisible(on)` | Zobraziť/skryť zuby múdrosti |
 | `setShowBase(on)` | Zobraziť/skryť vrstvu kosti |
@@ -849,8 +851,9 @@ React Advanced Odontogram vytvára a spravuje Zoltan Dul ([@ZoliQua](https://git
 - [@odontodev](https://github.com/odontodev): hydratácia stavu a API životného cyklu, nastavenia výplní ako riadené props, idempotentné settery a zbaliteľné karty
 - [@JulianoBazzi](https://github.com/JulianoBazzi): preklad do brazílskej portugalčiny
 - [@yassine-bhn](https://github.com/yassine-bhn): preklad do francúzštiny a navrhovaná meraná anatómia
-- [@saegerdirk-star](https://github.com/saegerdirk-star): meraná anatómia zuba a generátor zubov, plus návrh skladateľného rozhrania
+- [@saegerdirk-star](https://github.com/saegerdirk-star): meraná anatómia zuba a generátor zubov, plus návrh skladateľného rozhrania; tri opravy prevzaté z ich forku (údaje pacienta v PDF, orientácia zubov v parodontálnom zázname, rýchlosť výberu)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): API výberu `getSelectedTeeth()`
 
 **Vytvorené pomocou** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) a [Tailwind CSS](https://tailwindcss.com).
 
-Príspevky sú vítané. Otvorte pull request na GitHub a budete tu uvedení. Ak je pre vás projekt užitočný, [pridajte mu hviezdu na GitHub](https://github.com/ZoliQua/React-Odontogram-Modul).
+Príspevky sú vítané. Otvorte pull request na GitHub a budete tu uvedení. Ak je pre vás projekt užitočný, [pridajte mu hviezdu na GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

@@ -559,6 +559,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # A teljes Vitest tesztcsomag futtatása
 npm run test:watch     # Figyelési mód
 npm run test:coverage  # Lefedettségi jelentés
+npm run test:e2e       # Böngészős tesztek (Playwright; egyszer: npx playwright install chromium)
 ```
 
 ### 📖 API Dokumentáció

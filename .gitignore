@@ -47,3 +47,8 @@ __pycache__/
 *.py[cod]
 
 
+
+# === Playwright (browser tests) ===
+playwright-report/
+test-results/
+blob-report/

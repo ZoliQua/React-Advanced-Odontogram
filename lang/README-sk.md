@@ -559,6 +559,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # Spustiť celý testovací balík Vitest
 npm run test:watch     # Sledovací režim
 npm run test:coverage  # Správa pokrytia
+npm run test:e2e       # Testy v prehliadači (Playwright; raz: npx playwright install chromium)
 ```
 
 ### 📖 Dokumentácia API

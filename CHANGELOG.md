@@ -232,6 +232,23 @@ over, and each carries a regression test.
   of them in the current panel. The labels are now gathered in one pass.
   Measured under jsdom: about 380 ms per click before, about 65 ms after.
 
+### CI
+
+- **Browser-level tests (Playwright).** The 2,200-odd unit tests all run under
+  jsdom, which has no layout engine and loads no chunks — so it could not see
+  the two regressions a code review found in this release's measured-anatomy
+  work. A small Playwright suite (`e2e/`, `npm run test:e2e`) now runs against
+  the production demo build in a real Chromium: both arches of the classic and
+  the measured chart laid out as one row each — including the moment while the
+  measured artwork downloads, where the chart used to collapse into a single
+  column; which language chunks are fetched, and when; that a language switch
+  keeps the current language on screen until the new one arrives; the Arabic
+  interface mirrored with the dental chart still left-to-right; and dark-mode
+  text contrast. The assertions are geometric and structural, never pixel
+  snapshots, so the suite gives the same answer on macOS and on the Linux CI
+  runner. Each test was checked against the regression it guards: reintroducing
+  it fails that test. It runs as a separate CI job, in parallel with the main one.
+
 ## [2.5.0] - 2026-09-10
 
 ### Added

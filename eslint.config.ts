@@ -18,6 +18,9 @@ export default defineConfig([
       "coverage/**",
       "node_modules/**",
       "**/*.tsbuildinfo",
+      "playwright-report/**",
+      "test-results/**",
+      "blob-report/**",
     ],
   },
   {

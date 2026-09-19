@@ -57,7 +57,8 @@
     "parity:capture": "PARITY_CAPTURE=1 vitest run src/__tests__/parity/capture.test.ts",
     "docs": "typedoc",
     "prepublishOnly": "npm run build:lib",
-    "fhir:codesystem": "FHIR_CODESYSTEM_WRITE=1 vitest run src/__tests__/fhir-codesystem.test.ts src/__tests__/fhir-valuesets.test.ts"
+    "fhir:codesystem": "FHIR_CODESYSTEM_WRITE=1 vitest run src/__tests__/fhir-codesystem.test.ts src/__tests__/fhir-valuesets.test.ts",
+    "test:e2e": "playwright test"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
@@ -70,6 +71,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@microsoft/api-extractor": "^7.58.12",
+    "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/fhir": "^0.0.44",

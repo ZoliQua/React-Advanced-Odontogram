@@ -559,6 +559,7 @@ setPluginState(11, "implant-brand", "Straumann");
 npm run test           # Run the full Vitest suite
 npm run test:watch     # Watch mode
 npm run test:coverage  # Coverage report
+npm run test:e2e       # Browser tests (Playwright; once: npx playwright install chromium)
 ```
 
 ### 📖 Documentação da API

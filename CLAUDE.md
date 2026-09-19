@@ -100,6 +100,7 @@ Each tooth has:
 - `npm run build` — production build (`tsc -b && vite build`)
 - `npm test` — run Vitest tests
 - `npm run test:coverage` — coverage report
+- `npm run test:e2e` — browser tests (Playwright, `e2e/`) against the production demo build: real CSS layout, chunk loading, RTL. Geometric/structural assertions only, never pixel snapshots (they differ between macOS and the Linux CI runner). First run needs `npx playwright install chromium`
 - `npx tsc -b --noEmit` — type check only
 
 ## Conventions

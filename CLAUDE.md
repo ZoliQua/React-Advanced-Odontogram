@@ -18,7 +18,7 @@
 - `src/plugin.ts` — plugin system for extending functionality
 - `src/status_extras.ts` — additional dental status types (bridges, implants, etc.)
 - `src/theme.ts` — theme configuration and CSS variable mapping
-- `src/i18n/translations.ts` — multilingual labels (HU, EN, DE, ES)
+- `src/i18n/locales/<code>.ts` — the UI strings, one file per language (12). Only `en.ts` is bundled statically; `src/i18n/loader.ts` fetches every other language on demand (`loadLanguage`), and `src/i18n/useI18n.ts` holds `t()` (synchronous) and `setI18nLanguage()` (loads first, switches second). `src/i18n/translations.ts` imports ALL locales and is for tests only — never import its value from app code (`i18n-lazy-load.test.ts` guards this)
 - `src/utils/numbering.ts` — tooth numbering systems (FDI, Universal, Palmer)
 - `src/assets/teeth-svgs/` — SVG templates for individual teeth (11-48)
 - `src/assets/icon-svgs/` — UI icons
@@ -104,7 +104,7 @@ Each tooth has:
 
 ## Conventions
 - Tooth IDs use FDI notation (11-48) as internal keys
-- All user-facing strings go through `src/i18n/translations.ts`
+- All user-facing strings go through `t()` and live in `src/i18n/locales/<code>.ts`; add a new key to EVERY locale file (`hu.ts` is the authoritative source)
 - SVG layers follow naming: `{toothId}_{surface}.svg`
 - State is serialized as JSON for storage/transfer
 - Read-only mode is supported via `readOnly` prop
@@ -117,11 +117,14 @@ Each tooth has:
   version in `package.json` and the README version badge for each release.
 - **English is the source of truth** for the README; translate the others from it.
 - Maintain a README for **every UI language the program supports** (currently
-  HU, EN, DE, ES, IT, SK, PL, RU, PT-BR, AR, ZH — see `Language` in
-  `src/i18n/translations.ts`). `README.md` holds English + Spanish; the rest live
+  HU, EN, DE, ES, IT, SK, PL, RU, PT-BR, AR, ZH, FR — see `Language` in
+  `src/i18n/languages.ts`). `README.md` holds English + Spanish; the rest live
   in `lang/README-<code>.md` (e.g. `lang/README-de.md`, `lang/README-pl.md`,
   `lang/README-ru.md`, `lang/README-ar.md`, `lang/README-zh.md`). When a new UI
-  language is added, add its README too and update every language switcher.
+  language is added: create `src/i18n/locales/<code>.ts`, add the code to
+  `Language` and `LANGUAGES` in `languages.ts`, give it a literal `import()` in
+  `LOADERS` (`loader.ts`) and an entry in the test-only `translations.ts` — then
+  add its README too and update every language switcher.
 - **RTL:** Arabic (`ar`) is the only RTL language. The document root `dir`
   attribute reacts to the active language (`rtl` for `ar`, `ltr` otherwise), so
   the whole UI mirrors; the dental chart (`#toothGrid`) and the periodontal

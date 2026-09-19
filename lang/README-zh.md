@@ -267,7 +267,7 @@ export default function OdontogramClient() {
 - ⏳ 图像导出过程中的进度浮层
 - 🎓 18 步交互式新手导览
 - 🔢 三种牙位编号系统（FDI、通用编号法、Palmer）
-- 🌐 国际化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR），支持语言切换
+- 🌐 国际化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR），支持语言切换；主包中只包含英语——其他每种语言都是单独的分块，首次选择时才下载
 - 🌗 支持深色模式，附带切换按钮（独立控制或由父应用控制）
 - 🎨 通过 CSS 自定义属性（`--odon-*`）实现的自定义主题配置（`themeConfig` 属性）
 - 📱 移动端触控体验：点按缩放弹出层、长按上下文菜单、双指缩放、符合 WCAG 标准的 44px 触控目标、牙弓切换导航

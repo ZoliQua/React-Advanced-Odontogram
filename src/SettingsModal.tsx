@@ -2,7 +2,7 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
-import type { Language } from "./i18n/translations";
+import type { Language } from "./i18n/languages";
 import type { NumberingSystem } from "./utils/numbering";
 import type {
   PulpDetailLevel,

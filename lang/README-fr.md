@@ -267,7 +267,7 @@ Ou chargez-le via un import dynamique côté client uniquement : `dynamic(() => 
 - ⏳ Superposition de progression pendant l'export d'image
 - 🎓 Visite guidée interactive en 18 étapes
 - 🔢 Trois systèmes de numérotation (FDI, Universel, Palmer)
-- 🌐 I18n — 12 langues d'interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) avec un sélecteur de langue ; l'arabe affiche l'interface de droite à gauche avec les schémas dentaire/parodontal épinglés de gauche à droite (traduction automatique, relecture par un locuteur natif en attente pour AR/ZH/FR)
+- 🌐 I18n — 12 langues d'interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) avec un sélecteur de langue ; l'arabe affiche l'interface de droite à gauche avec les schémas dentaire/parodontal épinglés de gauche à droite (traduction automatique, relecture par un locuteur natif en attente pour AR/ZH/FR); seul l'anglais est inclus dans le bundle principal — chaque autre langue est un chunk distinct, téléchargé la première fois qu'elle est sélectionnée
 - 🌗 Prise en charge du mode sombre avec bouton de bascule (autonome ou contrôlé par l'application parente)
 - 🎨 Configuration de thème personnalisée (prop `themeConfig`) avec des propriétés CSS personnalisées (`--odon-*`)
 - 📱 UX tactile mobile : popover tap-to-zoom, menu contextuel par appui long, pincer pour zoomer, cibles tactiles WCAG de 44 px, navigation par bascule d'arcade

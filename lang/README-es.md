@@ -265,7 +265,7 @@ O cárgalo con un import dinámico solo de cliente: `dynamic(() => import("./Odo
 - ⏳ Superposición de progreso durante la exportación de imagen
 - 🎓 Tour interactivo de introducción de 18 pasos
 - 🔢 Tres sistemas de numeración (FDI, Universal, Palmer)
-- 🌐 I18n — 12 idiomas de interfaz (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) con selector de idioma; el árabe muestra la interfaz de derecha a izquierda, con los odontogramas periodontal y dental fijados de izquierda a derecha (AR/ZH/FR son traducciones automáticas, pendientes de revisión por hablantes nativos)
+- 🌐 I18n — 12 idiomas de interfaz (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) con selector de idioma; el árabe muestra la interfaz de derecha a izquierda, con los odontogramas periodontal y dental fijados de izquierda a derecha (AR/ZH/FR son traducciones automáticas, pendientes de revisión por hablantes nativos); solo el inglés va en el paquete principal — cada otro idioma es un chunk aparte que se descarga la primera vez que se selecciona
 - 🌗 Modo oscuro con botón de alternancia (independiente o controlado por la aplicación principal)
 - 🎨 Configuración de tema personalizado (prop `themeConfig`) con CSS custom properties (`--odon-*`)
 - 📱 UX táctil móvil: popover de zoom al tocar, menú contextual con pulsación larga, zoom con pellizco, áreas táctiles WCAG 44px, navegación por arcada

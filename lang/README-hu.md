@@ -265,7 +265,7 @@ Vagy töltsd be egy kizárólag kliensoldali dinamikus importtal: `dynamic(() =>
 - ⏳ Folyamatjelző overlay a képexport alatt
 - 🎓 18 lépéses interaktív bemutató túra
 - 🔢 Három számozási rendszer (FDI, Universal, Palmer)
-- 🌐 I18n — 12 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) nyelvváltóval; az arab a felületet jobbról balra rendereli, a fog-/parodontális diagramokat balról jobbra rögzítve (gépi fordítás, anyanyelvi lektorálás az AR/ZH/FR nyelveknél még várat magára)
+- 🌐 I18n — 12 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) nyelvváltóval; az arab a felületet jobbról balra rendereli, a fog-/parodontális diagramokat balról jobbra rögzítve (gépi fordítás, anyanyelvi lektorálás az AR/ZH/FR nyelveknél még várat magára); a fő csomagban csak az angol van — minden más nyelv külön chunk, amely az első kiválasztáskor töltődik le
 - 🌗 Sötét mód támogatás váltógombbal (önálló vagy szülő alkalmazás által vezérelt)
 - 🎨 Egyedi téma konfiguráció (`themeConfig` prop) CSS custom property-kkel (`--odon-*`)
 - 📱 Mobil érintéses UX: koppintásos nagyítós felugró, hosszú nyomás helyi menü, csípéses zoom, WCAG 44px érintési célpontok, fogív navigáció

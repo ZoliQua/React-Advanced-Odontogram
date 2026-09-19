@@ -265,7 +265,7 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 - ⏳ Nakładka postępu podczas eksportu obrazu
 - 🎓 18-krokowy interaktywny samouczek wprowadzający
 - 🔢 Trzy systemy numeracji (FDI, Universal, Palmer)
-- 🌐 I18n — 12 języków interfejsu (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) z przełącznikiem języka; arabski wyświetla interfejs od prawej do lewej, a wykresy zębowe/periodontologiczne pozostają od lewej do prawej (tłumaczenie maszynowe, weryfikacja przez rodzimego użytkownika dla AR/ZH/FR w toku)
+- 🌐 I18n — 12 języków interfejsu (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) z przełącznikiem języka; arabski wyświetla interfejs od prawej do lewej, a wykresy zębowe/periodontologiczne pozostają od lewej do prawej (tłumaczenie maszynowe, weryfikacja przez rodzimego użytkownika dla AR/ZH/FR w toku); w głównym pakiecie jest tylko angielski — każdy inny język to osobny chunk, pobierany przy pierwszym wyborze
 - 🌗 Obsługa trybu ciemnego z przyciskiem przełączania (samodzielny lub kontrolowany przez aplikację nadrzędną)
 - 🎨 Konfiguracja niestandardowego motywu (właściwość `themeConfig`) z właściwościami niestandardowymi CSS (`--odon-*`)
 - 📱 Mobilny interfejs dotykowy: wyskakujące okno powiększenia przy dotknięciu, menu kontekstowe przy długim przytrzymaniu, powiększanie szczypnięciem, cele dotykowe WCAG 44px, nawigacja po łukach

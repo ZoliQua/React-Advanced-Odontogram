@@ -265,7 +265,7 @@ Alebo ho načítajte pomocou dynamického importu iba na strane klienta: `dynami
 - ⏳ Prekrytie priebehom počas exportu obrázka
 - 🎓 18-krokový interaktívny úvodný sprievodca
 - 🔢 Tri systémy číslovania (FDI, Universal, Palmer)
-- 🌐 I18n — 12 jazykov rozhrania (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) s prepínačom jazyka; arabčina vykresľuje rozhranie sprava doľava, pričom zubné/parodontálne grafy zostávajú zľava doprava (strojovo preložené, kontrola rodeným hovorcom pre AR/ZH/FR zatiaľ neprebehla)
+- 🌐 I18n — 12 jazykov rozhrania (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) s prepínačom jazyka; arabčina vykresľuje rozhranie sprava doľava, pričom zubné/parodontálne grafy zostávajú zľava doprava (strojovo preložené, kontrola rodeným hovorcom pre AR/ZH/FR zatiaľ neprebehla); v hlavnom balíku je len angličtina — každý ďalší jazyk je samostatný chunk, stiahnutý pri prvom výbere
 - 🌗 Podpora tmavého režimu s prepínacím tlačidlom (samostatný alebo riadený nadradenou aplikáciou)
 - 🎨 Vlastná konfigurácia témy (prop `themeConfig`) s CSS vlastnými vlastnosťami (`--odon-*`)
 - 📱 Mobilné dotykové UX: vyskakovacie okno pre priblíženie kliknutím, kontextová ponuka dlhým stlačením, priblíženie štipnutím, WCAG 44px dotykové ciele, navigácia prepínania oblúka

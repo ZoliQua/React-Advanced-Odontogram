@@ -91,8 +91,9 @@ import type {
   ToothAnatomy,
 } from "./odontogram";
 import { useI18n } from "./i18n/useI18n";
+import { isLanguageLoaded, loadLanguage } from "./i18n/loader";
 import type { SettingsState, ScreenToothSpacing, ScreenToothNumberSize, SelectionBorderStyle, FillingComplexity } from "./SettingsModal";
-import type { Language } from "./i18n/translations";
+import type { Language } from "./i18n/languages";
 import type { NumberingSystem } from "./utils/numbering";
 import { applyThemeConfig, type OdontogramThemeConfig } from "./theme";
 import type { OdontogramPlugin } from "./plugin";
@@ -344,8 +345,41 @@ export function useOdontogramUi(): OdontogramUiContextValue {
  * Owns all odontogram shell state, effects, and handlers and provides them to
  * composed surfaces + modals. Renders only the `.odontogram-root` wrapper around
  * `children` — no extra DOM node.
+ *
+ * Holds its first render until the requested `language` has loaded: every UI
+ * language but English is a lazily fetched chunk, and mounting before it
+ * arrives would paint the whole chart in the English fallback and then repaint
+ * it — a visible flash of the wrong language on every page load. English (and
+ * any language already loaded) renders on the very first pass, as before.
  */
-export function OdontogramProvider({
+export function OdontogramProvider(props: OdontogramProviderProps) {
+  const ready = useLanguageReady(props.language);
+  if(!ready) return null;
+  return <OdontogramProviderInner {...props} />;
+}
+
+/** Whether the provider may render yet. Gates the FIRST render only: once it
+ *  has been true it stays true, because returning `null` later would unmount
+ *  the whole chart — engine, selection and all — just to switch language. A
+ *  switch after mount is handled by `useI18n`, which keeps the previous
+ *  language on screen until the new one arrives.
+ *
+ *  A load that FAILS still opens the gate: rendering in the English fallback
+ *  beats rendering nothing forever, and `setI18nLanguage()` reports the error. */
+function useLanguageReady(language: Language | undefined): boolean {
+  const [ready, setReady] = useState(() => language === undefined || isLanguageLoaded(language));
+  useEffect(() => {
+    if(ready) return;
+    if(language === undefined || isLanguageLoaded(language)){ setReady(true); return; }
+    let cancelled = false;
+    const open = () => { if(!cancelled) setReady(true); };
+    loadLanguage(language).then(open, open);
+    return () => { cancelled = true; };
+  }, [language, ready]);
+  return ready;
+}
+
+function OdontogramProviderInner({
   children,
   language,
   onLanguageChange,

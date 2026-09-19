@@ -265,7 +265,7 @@ Or load it with a client-only dynamic import: `dynamic(() => import("./Odontogra
 - ⏳ Progress overlay during image export
 - 🎓 18-step interactive intro tour
 - 🔢 Three numbering systems (FDI, Universal, Palmer)
-- 🌐 I18n — 12 UI languages (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) with a language switcher; Arabic renders the UI right-to-left with the dental/perio charts pinned left-to-right (machine-translated, native-speaker review pending for AR/ZH/FR)
+- 🌐 I18n — 12 UI languages (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) with a language switcher; Arabic renders the UI right-to-left with the dental/perio charts pinned left-to-right (machine-translated, native-speaker review pending for AR/ZH/FR); only English ships in the main bundle — every other language is a separate chunk, fetched the first time it is selected
 - 🌗 Dark mode support with toggle button (standalone or controlled by parent app)
 - 🎨 Custom theme configuration (`themeConfig` prop) with CSS custom properties (`--odon-*`)
 - 📱 Mobile touch UX: tap-to-zoom popover, long-press context menu, pinch-to-zoom, WCAG 44px touch targets, arch toggle navigation

@@ -267,7 +267,7 @@ Oder laden Sie sie mit einem rein clientseitigen dynamischen Import: `dynamic(()
 - ⏳ Fortschrittsanzeige beim Bildexport
 - 🎓 18-stufige interaktive Einführungstour
 - 🔢 Drei Nummerierungssysteme (FDI, Universal, Palmer)
-- 🌐 I18n — 12 UI-Sprachen (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) mit Sprachumschalter; Arabisch stellt die Oberfläche von rechts nach links dar, wobei die Zahn-/Parodontalstatus-Charts von links nach rechts fixiert bleiben (AR/ZH/FR sind maschinell übersetzt, muttersprachliche Überprüfung ausstehend)
+- 🌐 I18n — 12 UI-Sprachen (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) mit Sprachumschalter; Arabisch stellt die Oberfläche von rechts nach links dar, wobei die Zahn-/Parodontalstatus-Charts von links nach rechts fixiert bleiben (AR/ZH/FR sind maschinell übersetzt, muttersprachliche Überprüfung ausstehend); nur Englisch ist im Hauptbundle enthalten — jede andere Sprache ist ein eigener Chunk, der bei der ersten Auswahl nachgeladen wird
 - 🌗 Dunkler Modus mit Umschalt-Button (eigenständig oder von der übergeordneten App gesteuert)
 - 🎨 Benutzerdefinierte Theme-Konfiguration (`themeConfig`-Prop) mit CSS Custom Properties (`--odon-*`)
 - 📱 Mobile Touch-UX: Tap-to-Zoom-Popover, Langes-Drücken-Kontextmenü, Pinch-to-Zoom, WCAG 44px Berührungsziele, Kieferbogen-Umschalter

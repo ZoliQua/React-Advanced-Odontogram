@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { useOdontogramUi } from "../OdontogramContext";
 import { startIntroTour } from "../tour";
 import { setImportFormat } from "../odontogram";
-import type { Language } from "../i18n/translations";
+import type { Language } from "../i18n/languages";
 // Brand logo — `?inline` forces a base64 data URI so it is bundled into the
 // library (self-contained, no runtime asset fetch).
 import brandLogoUrl from "../assets/react-module-logo.png?inline";

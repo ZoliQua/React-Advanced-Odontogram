@@ -265,7 +265,7 @@ Ou carregue-o com um dynamic import somente cliente: `dynamic(() => import("./Od
 - ⏳ Overlay de progresso durante a exportação de imagem
 - 🎓 Tour interativo de introdução em 18 passos
 - 🔢 Três sistemas de numeração (FDI, Universal, Palmer)
-- 🌐 I18n — 12 idiomas de interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) com um seletor de idioma; o árabe renderiza a interface da direita para a esquerda com os gráficos dentário/perio fixados da esquerda para a direita (tradução automática, revisão por falante nativo pendente para AR/ZH/FR)
+- 🌐 I18n — 12 idiomas de interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) com um seletor de idioma; o árabe renderiza a interface da direita para a esquerda com os gráficos dentário/perio fixados da esquerda para a direita (tradução automática, revisão por falante nativo pendente para AR/ZH/FR); só o inglês vai no pacote principal — cada outro idioma é um chunk separado, baixado na primeira vez que é selecionado
 - 🌗 Suporte a modo escuro com botão de alternância (autônomo ou controlado pela aplicação pai)
 - 🎨 Configuração de tema personalizada (prop `themeConfig`) com propriedades CSS personalizadas (`--odon-*`)
 - 📱 UX de toque para dispositivos móveis: popover de tocar-para-zoom, menu de contexto por pressão longa, pinça-para-zoom, alvos de toque WCAG de 44px, navegação por alternância de arcada

@@ -33,6 +33,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Await it when the following statement reads the new artwork; otherwise a bare
   call is enough, and it never rejects (see *Fixed* below).
 
+- **The UI languages are loaded on demand.** All twelve languages used to ship
+  in one 770 KB module that every app paid for, whichever language it showed.
+  Each language is now its own file (`src/i18n/locales/<code>.ts`); English —
+  the fallback, and the language the UI starts in — is the only one in the main
+  bundle, and every other is a separate chunk fetched the first time it is
+  selected. The main chunk is down to 1.15 MB from 1.78 MB (−36%; 331 KB
+  gzipped, from 508).
+
+  Nothing changes in the API, and nothing flashes: `<OdontogramShell
+  language="hu">` holds its first render until Hungarian has arrived, so the
+  chart is never painted in English first, and a switch while running keeps the
+  current language on screen until the new one is in — the chart is not
+  remounted. A language that fails to load is reported on the console and the
+  current one stays.
+
 ### Added
 
 - **`getSelectedTeeth()` — read the multi-tooth selection.** A host could clear

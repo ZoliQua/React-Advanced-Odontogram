@@ -1,7 +1,7 @@
 {
   "resourceType": "ValueSet",
   "id": "odontogram-mods",
-  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-mods",
+  "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-mods",
   "version": "2.6.0",
   "name": "OdontogramMods",
   "title": "Odontogram — mods values",
@@ -12,7 +12,7 @@
   "compose": {
     "include": [
       {
-        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
         "concept": [
           {
             "code": "inflammation",

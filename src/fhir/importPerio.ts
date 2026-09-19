@@ -1,8 +1,8 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import type { ToothRecord } from "./types";
-import { LOCAL_SYSTEM } from "./codesystems";
+import { isLocalSystem } from "./codesystems";
 import { ensureTooth, isToothCode } from "./primitives";
 import { deciduousToFdi } from "./iso3950";
 import { LOINC, LOINC_SYSTEM, COMPONENT_BODYSITE_EXTENSION_URL } from "./toFhirPerio";
@@ -87,7 +87,7 @@ const codingsOf = (cc: CC): Array<{ system?: unknown; code?: unknown } | null | 
 const has = (cc: CC, system: string, code: string): boolean =>
   codingsOf(cc).some((c) => !!c && c.system === system && c.code === code);
 const localOf = (cc: CC): string | undefined =>
-  codingsOf(cc).find((c) => !!c && c.system === LOCAL_SYSTEM && typeof c.code === "string")?.code as string | undefined;
+  codingsOf(cc).find((c) => !!c && isLocalSystem(c.system) && typeof c.code === "string")?.code as string | undefined;
 /** The engine-local qualifier (`perio-site:MB`, …) on a component's R4 backport bodySite extension. */
 function qualifier(comp: Component, prefix: string): string | undefined {
   for (const ext of comp.extension ?? []) {

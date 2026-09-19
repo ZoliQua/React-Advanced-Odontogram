@@ -5,231 +5,231 @@
       "filename": "CodeSystem-odontogram.json",
       "resourceType": "CodeSystem",
       "id": "odontogram",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-toothSelection.json",
       "resourceType": "ValueSet",
       "id": "odontogram-toothSelection",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-toothSelection",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-toothSelection",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-endo.json",
       "resourceType": "ValueSet",
       "id": "odontogram-endo",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-endo",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-endo",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-fillingMaterial.json",
       "resourceType": "ValueSet",
       "id": "odontogram-fillingMaterial",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-fillingMaterial",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-fillingMaterial",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-prosthesis.json",
       "resourceType": "ValueSet",
       "id": "odontogram-prosthesis",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-prosthesis",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-prosthesis",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-mobility.json",
       "resourceType": "ValueSet",
       "id": "odontogram-mobility",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-mobility",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-mobility",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-mods.json",
       "resourceType": "ValueSet",
       "id": "odontogram-mods",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-mods",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-mods",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-periapicalType.json",
       "resourceType": "ValueSet",
       "id": "odontogram-periapicalType",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-periapicalType",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-periapicalType",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-caries.json",
       "resourceType": "ValueSet",
       "id": "odontogram-caries",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-caries",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-caries",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-fillingSurfaces.json",
       "resourceType": "ValueSet",
       "id": "odontogram-fillingSurfaces",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-fillingSurfaces",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-fillingSurfaces",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-toothSubstrate.json",
       "resourceType": "ValueSet",
       "id": "odontogram-toothSubstrate",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-toothSubstrate",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-toothSubstrate",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-restorationType.json",
       "resourceType": "ValueSet",
       "id": "odontogram-restorationType",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-restorationType",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-restorationType",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-restorationMaterial.json",
       "resourceType": "ValueSet",
       "id": "odontogram-restorationMaterial",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-restorationMaterial",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-restorationMaterial",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-pulpDx.json",
       "resourceType": "ValueSet",
       "id": "odontogram-pulpDx",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-pulpDx",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-pulpDx",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-pulpLatin.json",
       "resourceType": "ValueSet",
       "id": "odontogram-pulpLatin",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-pulpLatin",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-pulpLatin",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-apicalDx.json",
       "resourceType": "ValueSet",
       "id": "odontogram-apicalDx",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-apicalDx",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-apicalDx",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-resorptionType.json",
       "resourceType": "ValueSet",
       "id": "odontogram-resorptionType",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-resorptionType",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-resorptionType",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-wearEdge.json",
       "resourceType": "ValueSet",
       "id": "odontogram-wearEdge",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-wearEdge",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-wearEdge",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-wearCervical.json",
       "resourceType": "ValueSet",
       "id": "odontogram-wearCervical",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-wearCervical",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-wearCervical",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-discoloration.json",
       "resourceType": "ValueSet",
       "id": "odontogram-discoloration",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-discoloration",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-discoloration",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-orthoAppliance.json",
       "resourceType": "ValueSet",
       "id": "odontogram-orthoAppliance",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-orthoAppliance",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-orthoAppliance",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-orthoDrift.json",
       "resourceType": "ValueSet",
       "id": "odontogram-orthoDrift",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-orthoDrift",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-orthoDrift",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-orthoVertical.json",
       "resourceType": "ValueSet",
       "id": "odontogram-orthoVertical",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-orthoVertical",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-orthoVertical",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-rootCaries.json",
       "resourceType": "ValueSet",
       "id": "odontogram-rootCaries",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-rootCaries",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-rootCaries",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-cejVisibility.json",
       "resourceType": "ValueSet",
       "id": "odontogram-cejVisibility",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-cejVisibility",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-cejVisibility",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-rootConcavity.json",
       "resourceType": "ValueSet",
       "id": "odontogram-rootConcavity",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-rootConcavity",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-rootConcavity",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-gingivalThickness.json",
       "resourceType": "ValueSet",
       "id": "odontogram-gingivalThickness",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-gingivalThickness",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-gingivalThickness",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-millerClass.json",
       "resourceType": "ValueSet",
       "id": "odontogram-millerClass",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-millerClass",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-millerClass",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-periImplant.json",
       "resourceType": "ValueSet",
       "id": "odontogram-periImplant",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-periImplant",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-periImplant",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-radiographicDepth.json",
       "resourceType": "ValueSet",
       "id": "odontogram-radiographicDepth",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-radiographicDepth",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-radiographicDepth",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-fillingDefect.json",
       "resourceType": "ValueSet",
       "id": "odontogram-fillingDefect",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-fillingDefect",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-fillingDefect",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-finding-types.json",
       "resourceType": "ValueSet",
       "id": "odontogram-finding-types",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-finding-types",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-finding-types",
       "version": "2.6.0"
     },
     {
       "filename": "ValueSet-odontogram-all.json",
       "resourceType": "ValueSet",
       "id": "odontogram-all",
-      "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-all",
+      "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-all",
       "version": "2.6.0"
     }
   ]

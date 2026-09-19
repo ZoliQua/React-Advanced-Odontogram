@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 // UI-3b Task 6 / 2.2.2: `assemblePdf()` — pure section-gating + tabular
@@ -36,7 +36,7 @@ const baseData = {
   footer: {
     disclaimer: "Not a certified medical diagnostic device.",
     generated: "Generated on 2026-08-08 09:00 with React Advanced Odontogram v2.2.1",
-    repoUrl: "https://github.com/ZoliQua/React-Odontogram-Modul",
+    repoUrl: "https://github.com/ZoliQua/React-Advanced-Odontogram",
     doi: "https://doi.org/10.5281/zenodo.21156787",
   },
   palette: PDF_PALETTES.blue,

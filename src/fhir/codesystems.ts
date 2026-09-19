@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 /**
@@ -13,9 +13,28 @@
  *   emitted as additional codings in the export; they are additive, never required.
  */
 
-/** Local CodeSystem canonical URL (engine-owned codes). */
+/** Local CodeSystem canonical URL (engine-owned codes). Every export uses it. */
 export const LOCAL_SYSTEM =
-  "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram";
+  "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram";
+
+/**
+ * Every canonical URL the engine's local codes have ever been EXPORTED under —
+ * the current one first. The project was renamed from React-Odontogram-Modul to
+ * React Advanced Odontogram in 2.6.0, which moved the canonical URL with it; a
+ * bundle exported before the rename carries the old one, and must keep
+ * importing exactly as it did. Readers match with {@link isLocalSystem}, never
+ * `=== LOCAL_SYSTEM`; the export side only ever writes `LOCAL_SYSTEM`.
+ */
+export const LOCAL_SYSTEMS: ReadonlySet<string> = new Set([
+  LOCAL_SYSTEM,
+  "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",   // before 2.6.0
+]);
+
+/** Whether a coding's `system` is the engine's local code system, under any of
+ *  the canonical URLs it has had. */
+export function isLocalSystem(system: unknown): boolean {
+  return typeof system === "string" && LOCAL_SYSTEMS.has(system);
+}
 
 /** ISO 3950 / FDI tooth designation system. */
 export const FDI_SYSTEM = "urn:iso:std:iso:3950";

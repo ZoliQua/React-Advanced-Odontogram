@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 // FIX 2 (a11y): the settings-modal tablist uses a roving tabindex, so without

@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { describe, it, expect } from "vitest";
@@ -40,7 +40,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
       {
         "entry": [
           {
-            "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
+            "fullUrl": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/Patient/odontogram-subject",
             "resource": {
               "id": "odontogram-subject",
               "resourceType": "Patient",
@@ -73,7 +73,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
                   {
                     "code": "tooth-note",
                     "display": "Tooth note",
-                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                    "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
                   },
                 ],
                 "text": "Tooth note",
@@ -86,7 +86,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "resourceType": "Observation",
               "status": "final",
               "subject": {
-                "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
+                "reference": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/Patient/odontogram-subject",
               },
             },
           },
@@ -99,7 +99,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
       {
         "entry": [
           {
-            "fullUrl": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
+            "fullUrl": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/Patient/odontogram-subject",
             "resource": {
               "id": "odontogram-subject",
               "resourceType": "Patient",
@@ -132,7 +132,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
                   {
                     "code": "custom-state:pluginA",
                     "display": "Custom state: pluginA",
-                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                    "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
                   },
                 ],
                 "text": "Custom state: pluginA",
@@ -140,7 +140,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "resourceType": "Observation",
               "status": "final",
               "subject": {
-                "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
+                "reference": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/Patient/odontogram-subject",
               },
               "valueString": "x",
             },
@@ -172,7 +172,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
                   {
                     "code": "custom-state:pluginB",
                     "display": "Custom state: pluginB",
-                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                    "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
                   },
                 ],
                 "text": "Custom state: pluginB",
@@ -180,7 +180,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "resourceType": "Observation",
               "status": "final",
               "subject": {
-                "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
+                "reference": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/Patient/odontogram-subject",
               },
               "valueQuantity": {
                 "value": 3,
@@ -214,7 +214,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
                   {
                     "code": "custom-state:pluginC",
                     "display": "Custom state: pluginC",
-                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                    "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
                   },
                 ],
                 "text": "Custom state: pluginC",
@@ -222,7 +222,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
               "resourceType": "Observation",
               "status": "final",
               "subject": {
-                "reference": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject",
+                "reference": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/Patient/odontogram-subject",
               },
               "valueBoolean": true,
             },
@@ -262,7 +262,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
                   {
                     "code": "restoration-type",
                     "display": "Restoration type",
-                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                    "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
                   },
                 ],
                 "text": "Restoration type",
@@ -277,7 +277,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
                   {
                     "code": "crown",
                     "display": "Crown",
-                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                    "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
                   },
                 ],
                 "text": "Crown",
@@ -311,7 +311,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
                   {
                     "code": "restoration-material",
                     "display": "Restoration material",
-                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                    "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
                   },
                 ],
                 "text": "Restoration material",
@@ -326,7 +326,7 @@ describe("registry-driven toFhir matches the pre-rewrite engine", () => {
                   {
                     "code": "metal-ceramic",
                     "display": "Metal-ceramic (PFM)",
-                    "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+                    "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
                   },
                 ],
                 "text": "Metal-ceramic (PFM)",

@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { describe, it, expect } from "vitest";
@@ -84,7 +84,7 @@ describe("appendPerioCondition — periodontitis/gingivitis Condition (K05)", ()
     expect(conditions).toHaveLength(1);
     const c = conditions[0];
     expect(icdCode(c)).toBe("K05.3");
-    expect(c.subject?.reference).toBe("https://github.com/ZoliQua/React-Odontogram-Modul/fhir/Patient/odontogram-subject");
+    expect(c.subject?.reference).toBe("https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/Patient/odontogram-subject");
 
     const stageEntry = c.stage?.find((s) => s.summary?.coding?.some((co) => co.code === "stage-II"));
     expect(stageEntry).toBeDefined();

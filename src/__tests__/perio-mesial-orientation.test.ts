@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 // The periodontal chart must draw every tooth with its MESIAL side toward the
@@ -12,7 +12,7 @@
 // view read only `mirror` and ignored the 180° rotation every lower tooth carries,
 // so both lower quadrants were reversed. Each tooth looked plausible on its own;
 // only the pair read as swapped. A fix reported and made in a downstream fork
-// (saegerdirk-star/React-Odontogram-Modul, 2.29.2).
+// (saegerdirk-star/React-Advanced-Odontogram, 2.29.2).
 import { describe, it, expect, afterEach } from "vitest";
 import { getToothBaseGroupFromCache, loadTemplateCache } from "../perioGraphic";
 import { setToothAnatomy } from "../odontogram";

@@ -1,7 +1,7 @@
 {
   "resourceType": "ValueSet",
   "id": "odontogram-caries",
-  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-caries",
+  "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-caries",
   "version": "2.6.0",
   "name": "OdontogramCaries",
   "title": "Odontogram — caries values",
@@ -12,7 +12,7 @@
   "compose": {
     "include": [
       {
-        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
         "concept": [
           {
             "code": "caries-subcrown",

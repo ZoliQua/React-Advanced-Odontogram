@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 // DX-9 — FHIR import: periodontal round-trip (LOINC panel + evidence) and
@@ -73,7 +73,7 @@ describe("DX-9: periodontal round-trip through FHIR", () => {
     const junk = { resourceType: "Bundle", type: "collection", entry: [
       { resource: { resourceType: "Observation", code: { coding: [{ system: "http://loinc.org", code: "74029-0" }] }, component: [{ code: { coding: [{ system: "http://loinc.org", code: "32910-2" }] }, valueQuantity: { value: 5 } }] } },
       { resource: { resourceType: "Observation", code: { coding: [{ system: "http://loinc.org", code: "74029-0" }] }, bodySite: { coding: [{ code: "11" }] }, component: [
-        { code: { coding: [{ system: "http://loinc.org", code: "32910-2" }] }, valueQuantity: { value: "five" }, extension: [{ url: "http://hl7.org/fhir/5.0/StructureDefinition/extension-Observation.component.bodySite", valueCodeableConcept: { coding: [{ system: "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram", code: "perio-site:XX" }] } }] },
+        { code: { coding: [{ system: "http://loinc.org", code: "32910-2" }] }, valueQuantity: { value: "five" }, extension: [{ url: "http://hl7.org/fhir/5.0/StructureDefinition/extension-Observation.component.bodySite", valueCodeableConcept: { coding: [{ system: "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram", code: "perio-site:XX" }] } }] },
         null, {} ] } },
     ] };
     const out: any = parseFhirBundle(junk);

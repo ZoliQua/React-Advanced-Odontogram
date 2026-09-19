@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { describe, it, expect, vi, afterEach } from "vitest";
@@ -55,7 +55,7 @@ describe("CreditsModal", () => {
   it("has a Star on GitHub badge pointing at the repo", () => {
     render(<CreditsModal open t={t} onClose={() => {}} />);
     const star = screen.getByRole("link", { name: /credits\.star/ });
-    expect(star).toHaveAttribute("href", "https://github.com/ZoliQua/React-Odontogram-Modul");
+    expect(star).toHaveAttribute("href", "https://github.com/ZoliQua/React-Advanced-Odontogram");
   });
 
   it("closes on the close button and on Escape", () => {

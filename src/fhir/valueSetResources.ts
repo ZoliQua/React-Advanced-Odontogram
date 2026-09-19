@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import type { ValueSet } from "fhir/r4";
@@ -23,7 +23,7 @@ import { buildOdontogramCodeSystem, EXTRA_LOCAL_CODES } from "./codeSystemResour
  */
 
 export const PACKAGE_NAME = "react-advanced-odontogram.fhir";
-const REPO = "https://github.com/ZoliQua/React-Odontogram-Modul";
+const REPO = "https://github.com/ZoliQua/React-Advanced-Odontogram";
 
 const vsUrl = (id: string) => `${FHIR_BASE}/ValueSet/${id}`;
 const pascal = (s: string) => s.replace(/(^|[-_])(\w)/g, (_, __, c: string) => c.toUpperCase());

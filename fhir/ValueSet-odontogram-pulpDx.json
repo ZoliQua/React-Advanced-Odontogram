@@ -1,7 +1,7 @@
 {
   "resourceType": "ValueSet",
   "id": "odontogram-pulpDx",
-  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-pulpDx",
+  "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-pulpDx",
   "version": "2.6.0",
   "name": "OdontogramPulpDx",
   "title": "Odontogram — pulpDx values",
@@ -12,7 +12,7 @@
   "compose": {
     "include": [
       {
-        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
         "concept": [
           {
             "code": "normal",

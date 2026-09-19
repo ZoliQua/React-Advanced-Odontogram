@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { STATUS_EXTRAS } from "./status_extras";
@@ -6730,7 +6730,7 @@ function computeAge(dobIso: string, refIso: string): number | null {
  * which would print a plausible, invented age beside it.
  *
  * These used to default to "John Doe" / "1980-01-01" and print them as if real.
- * Reported and fixed in a downstream fork (saegerdirk-star/React-Odontogram-Modul,
+ * Reported and fixed in a downstream fork (saegerdirk-star/React-Advanced-Odontogram,
  * 2.29.1).
  */
 function pdfPatientRows(
@@ -6954,7 +6954,7 @@ export async function exportPdf(opts: PdfExportOptions): Promise<void> {
     const footer = {
       disclaimer: settings.showDisclaimer ? (settings.disclaimerText.trim() || t("pdf.disclaimer")) : "",
       generated: settings.showGenerator ? t("pdf.generatedWith", { date: genStamp, app: "React Advanced Odontogram", version: __APP_VERSION__ }) : "",
-      repoUrl: settings.showGenerator ? "https://github.com/ZoliQua/React-Odontogram-Modul" : "",
+      repoUrl: settings.showGenerator ? "https://github.com/ZoliQua/React-Advanced-Odontogram" : "",
       doi: settings.showGenerator ? "https://doi.org/10.5281/zenodo.21156787" : "",
     };
 
@@ -7980,7 +7980,7 @@ export function clearSelection(){
  * selection by re-reading this in its listener (to price a treatment for the
  * selected teeth, for example).
  *
- * Contributed in a downstream fork (sofia-cluadette/React-Odontogram-Modul).
+ * Contributed in a downstream fork (sofia-cluadette/React-Advanced-Odontogram).
  */
 export function getSelectedTeeth(): number[] {
   return Array.from(selectedTeeth) as number[];

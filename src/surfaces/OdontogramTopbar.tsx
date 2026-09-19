@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 //
 // Composable surface — the `<header className="topbar">` region.
@@ -190,7 +190,7 @@ export default function OdontogramTopbar() {
             </button>
           </div>
           {/* Star / view on GitHub. */}
-          <a id="btnGithubLink" className="btn-theme" href="https://github.com/ZoliQua/React-Odontogram-Modul" target="_blank" rel="noopener noreferrer" title={t("credits.github")} aria-label={t("credits.github")}>
+          <a id="btnGithubLink" className="btn-theme" href="https://github.com/ZoliQua/React-Advanced-Odontogram" target="_blank" rel="noopener noreferrer" title={t("credits.github")} aria-label={t("credits.github")}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.575.106.785-.25.785-.556 0-.274-.01-1-.016-1.965-3.198.695-3.874-1.541-3.874-1.541-.523-1.33-1.278-1.684-1.278-1.684-1.045-.714.08-.7.08-.7 1.155.082 1.763 1.186 1.763 1.186 1.027 1.76 2.695 1.252 3.352.957.104-.744.402-1.252.732-1.54-2.553-.29-5.238-1.277-5.238-5.686 0-1.256.448-2.283 1.184-3.088-.12-.29-.513-1.46.112-3.045 0 0 .966-.31 3.166 1.18a11.02 11.02 0 0 1 2.88-.388c.977.004 1.96.132 2.88.388 2.198-1.49 3.163-1.18 3.163-1.18.626 1.585.233 2.755.114 3.045.737.805 1.183 1.832 1.183 3.088 0 4.42-2.69 5.393-5.25 5.677.413.357.78 1.06.78 2.137 0 1.543-.014 2.787-.014 3.166 0 .309.206.669.79.555A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
           </a>
         </div>

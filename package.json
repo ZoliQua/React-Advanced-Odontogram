@@ -5,13 +5,13 @@
   "type": "module",
   "description": "Interactive, SVG-based dental odontogram (dental chart) editor for React + TypeScript — multi-surface caries/filling charting, endodontic/prosthetic/periodontal states, FDI/Universal/Palmer numbering, HL7 FHIR R4 export/import, and ICDAS scoring.",
   "author": "Zoltán Dul",
-  "homepage": "https://react-odontogram-modul.vercel.app/",
+  "homepage": "https://react-advanced-odontogram.vercel.app/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ZoliQua/React-Odontogram-Modul.git"
+    "url": "git+https://github.com/ZoliQua/React-Advanced-Odontogram.git"
   },
   "bugs": {
-    "url": "https://github.com/ZoliQua/React-Odontogram-Modul/issues"
+    "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/issues"
   },
   "keywords": [
     "odontogram",

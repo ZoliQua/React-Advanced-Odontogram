@@ -1,6 +1,6 @@
 # Composable UI — specification & implementation plan
 
-Design document for [issue #20](https://github.com/ZoliQua/React-Odontogram-Modul/issues/20)
+Design document for [issue #20](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/20)
 ("make the odontogram UI composable across host application layouts").
 
 Status: **draft — Tier 1 in progress**

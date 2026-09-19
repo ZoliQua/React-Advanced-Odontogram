@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { DX_CODES, type DiagnosisKey } from "../dx/codes";
@@ -6,7 +6,7 @@ import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_CASE_KEY, VALID_LATERALIT
 import { deriveDentalDiagnoses } from "../dx/derive";
 import { ICD10CM_PACK } from "../dx/packs";
 import { REFINED_CM_TO_KEY, REFINED_WHO_TO_KEY } from "../dx/refine";
-import { ICD10_SYSTEM, LOCAL_SYSTEM, SNOMED_SYSTEM } from "./codesystems";
+import { ICD10_SYSTEM, SNOMED_SYSTEM, isLocalSystem } from "./codesystems";
 import { isToothCode } from "./primitives";
 import { deciduousToFdi } from "./iso3950";
 
@@ -135,7 +135,7 @@ export function importDiagnosisConditions(entries: unknown, teeth: Record<string
     if (!key) continue;
     let lat: Laterality = "unspecified";
     const local = c.bodySite?.[0]?.coding?.find(
-      (x) => !!x && x.system === LOCAL_SYSTEM && typeof x.code === "string" && x.code.startsWith("laterality:"))?.code;
+      (x) => !!x && isLocalSystem(x.system) && typeof x.code === "string" && x.code.startsWith("laterality:"))?.code;
     if (local) { const v = local.slice("laterality:".length); if (VALID_LATERALITY.has(v as Laterality)) lat = v as Laterality; }
     if (!LATERALIZABLE_CASE_KEYS.has(key as CaseConditionKey)) lat = "unspecified";
     caseConditions[key] = lat;

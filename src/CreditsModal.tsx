@@ -1,4 +1,4 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { useCallback, useEffect, useRef, useId } from "react";
@@ -9,7 +9,7 @@ type TFn = (key: string, params?: Record<string, string | number>) => string;
 const FOCUSABLE =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-const REPO_URL = "https://github.com/ZoliQua/React-Odontogram-Modul";
+const REPO_URL = "https://github.com/ZoliQua/React-Advanced-Odontogram";
 
 /** The creator / lead developer, called out separately from the contributors. */
 const CREATOR = { handle: "ZoliQua", descKey: "credits.contrib.zoliqua" };

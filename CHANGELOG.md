@@ -11,6 +11,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **The project is now React Advanced Odontogram — repository included.** The
+  GitHub repository moved from `ZoliQua/React-Odontogram-Modul` to
+  [`ZoliQua/React-Advanced-Odontogram`](https://github.com/ZoliQua/React-Advanced-Odontogram)
+  (GitHub redirects the old address), the live demo to
+  <https://react-advanced-odontogram.vercel.app/>, and the API documentation to
+  <https://zoliqua.github.io/React-Advanced-Odontogram/> — the old documentation
+  address is **not** redirected. The npm package name is unchanged
+  (`react-advanced-odontogram`).
+
+  **The FHIR canonical URLs moved with the repository.** Every local code is now
+  exported under `https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram`,
+  and the bundle entries' `fullUrl`s, the ValueSets and the FHIR package use the
+  new base. A bundle exported by an earlier version — with the old
+  `…/React-Odontogram-Modul/…` canonical — still imports exactly as before: the
+  importer accepts both. An external system that keyed our local codes to the
+  old canonical URL needs to map it to the new one.
+
 - **The measured tooth anatomy is now loaded on demand — and `setToothAnatomy()`
   is async.** The measured ("candidate anatomy") artwork is ~1.1 MB of inlined
   SVG for an opt-in profile, and it was in the main bundle whether you used it
@@ -1546,18 +1563,18 @@ First stable release of the React Advanced Odontogram — an interactive, SVG-ba
 - Odontogram init lifecycle and import handling
 - Topbar toggle buttons duplicate click bindings
 
-[1.11.1]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.11.0...v1.11.1
-[1.11.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.10.0...v1.11.0
-[1.10.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.9.0...v1.10.0
-[1.9.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.8.0...v1.9.0
-[1.8.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.7.0...v1.8.0
-[1.7.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.6.0...v1.7.0
-[1.6.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.5.0...v1.6.0
-[1.5.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.2...v1.5.0
-[1.4.2]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.1...v1.4.2
-[1.4.1]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.4.0...v1.4.1
-[1.4.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.3.0...v1.4.0
-[1.3.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.2.0...v1.3.0
-[1.2.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/ZoliQua/React-Odontogram-Modul/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/ZoliQua/React-Odontogram-Modul/releases/tag/v1.0.0
+[1.11.1]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.11.0...v1.11.1
+[1.11.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.10.0...v1.11.0
+[1.10.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.9.0...v1.10.0
+[1.9.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.8.0...v1.9.0
+[1.8.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.7.0...v1.8.0
+[1.7.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.6.0...v1.7.0
+[1.6.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.5.0...v1.6.0
+[1.5.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.4.2...v1.5.0
+[1.4.2]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.4.1...v1.4.2
+[1.4.1]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.4.0...v1.4.1
+[1.4.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.3.0...v1.4.0
+[1.3.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/ZoliQua/React-Advanced-Odontogram/releases/tag/v1.0.0

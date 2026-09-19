@@ -1,7 +1,7 @@
 {
   "resourceType": "ValueSet",
   "id": "odontogram-finding-types",
-  "url": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/ValueSet/odontogram-finding-types",
+  "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-finding-types",
   "version": "2.6.0",
   "name": "OdontogramFindingTypes",
   "title": "Odontogram — finding types",
@@ -12,7 +12,7 @@
   "compose": {
     "include": [
       {
-        "system": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir/CodeSystem/odontogram",
+        "system": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
         "concept": [
           {
             "code": "tooth-status",

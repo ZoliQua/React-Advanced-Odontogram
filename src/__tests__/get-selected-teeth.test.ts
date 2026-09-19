@@ -1,10 +1,10 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 // `getSelectedTeeth()` — the public read of the multi-tooth selection. Until now
 // a host could clear the selection but not ask what it was; only the single
 // active tooth was readable. Contributed in a downstream fork
-// (sofia-cluadette/React-Odontogram-Modul).
+// (sofia-cluadette/React-Advanced-Odontogram).
 import { describe, it, expect, beforeEach } from "vitest";
 import * as App from "../App";
 import {

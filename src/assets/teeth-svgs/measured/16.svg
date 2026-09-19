@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<!-- Created by Zoltan Dul in 2026 - free to use with MIT license. Part of React Odontogram Modul - https://github.com/ZoliQua/React-Odontogram-Modul - SVG Version: 2.5.0 -->
+<!-- Created by Zoltan Dul in 2026 - free to use with MIT license. Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram - SVG Version: 2.5.0 -->
 <!-- toothgen: template=16 src=16 roots=3 apex=14.68 cej=49.57 occl=79.28 root_frac=0.5401 length=64.60 source="derived from Fig. 70a and Fig. 3" -->
 <svg data-tooth-template="16" data-root-count="3" xmlns="http://www.w3.org/2000/svg" id="molar_x5F_tooth" version="1.1" viewBox="0.0 0.0 42.9 87.3">
   <style>

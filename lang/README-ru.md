@@ -1,13 +1,13 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ZoliQua/React-Odontogram-Modul/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
+  <img src="https://raw.githubusercontent.com/ZoliQua/React-Advanced-Odontogram/main/src/assets/react-module-logo.png" alt="React Advanced Odontogram logo" width="160" />
 </p>
 
 # 🦷 React Advanced Odontogram
 
-[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Odontogram-Modul/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul)
+[![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
+[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Odontogram-Modul/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
 [![React](https://img.shields.io/badge/React-18%20%7C%2019-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
@@ -52,7 +52,7 @@
 ---
 ![Одонтограмма — предпросмотр (русский)](screenshot_ru_odontogram.png)
 
-🔗 **Test URL:** https://react-odontogram-modul.vercel.app/
+🔗 **Test URL:** https://react-advanced-odontogram.vercel.app/
 
 ---
 
@@ -857,4 +857,4 @@ React Advanced Odontogram создаётся и поддерживается Zol
 
 **Создано с помощью** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) и [Tailwind CSS](https://tailwindcss.com).
 
-Вклад приветствуется. Откройте pull request на GitHub, и вы будете указаны здесь. Если проект вам полезен, пожалуйста, [поставьте ему звезду на GitHub](https://github.com/ZoliQua/React-Odontogram-Modul).
+Вклад приветствуется. Откройте pull request на GitHub, и вы будете указаны здесь. Если проект вам полезен, пожалуйста, [поставьте ему звезду на GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

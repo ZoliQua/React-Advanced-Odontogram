@@ -5,12 +5,12 @@
   "fhirVersions": [
     "4.0.1"
   ],
-  "canonical": "https://github.com/ZoliQua/React-Odontogram-Modul/fhir",
+  "canonical": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir",
   "title": "React Advanced Odontogram — FHIR terminology",
   "description": "Engine-local CodeSystem and ValueSets of the React Advanced Odontogram FHIR export (dental charting: tooth status, restorations, caries, periodontal indices, diagnoses).",
   "author": "Zoltán Dul",
   "license": "MIT",
-  "url": "https://github.com/ZoliQua/React-Odontogram-Modul",
+  "url": "https://github.com/ZoliQua/React-Advanced-Odontogram",
   "dependencies": {
     "hl7.fhir.r4.core": "4.0.1"
   }

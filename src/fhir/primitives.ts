@@ -1,9 +1,10 @@
-// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Odontogram-Modul
+// Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import type { Bundle, CodeableConcept, Coding, Observation, ToothRecord } from "./types";
 import {
   LOCAL_SYSTEM,
+  isLocalSystem,
   FDI_SYSTEM,
   SNOMED_SYSTEM,
   SNOMED_CODES,
@@ -18,7 +19,7 @@ import {
  *  UUID (HL7 validator, issue #23) — so a readable, DETERMINISTIC https URL
  *  replaces the former `urn:uuid:<logical-id>` convention. Deterministic matters:
  *  the FHIR export is golden-tested, so no random UUIDs. */
-export const FHIR_BASE = "https://github.com/ZoliQua/React-Odontogram-Modul/fhir";
+export const FHIR_BASE = "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir";
 /** Absolute, deterministic `fullUrl` for a resource: `${FHIR_BASE}/${type}/${id}`. */
 export function fhirFullUrl(resourceType: string, id: string): string {
   return `${FHIR_BASE}/${resourceType}/${id}`;
@@ -71,7 +72,7 @@ export const baseObservation = (subjectRef: string, tooth: string, code: Codeabl
 export function localCode(cc: unknown): string | undefined {
   const coding = (cc as { coding?: Array<{ system?: string; code?: string }> } | undefined)?.coding;
   if (!Array.isArray(coding)) return undefined;
-  const hit = coding.find((c) => c?.system === LOCAL_SYSTEM && typeof c.code === "string");
+  const hit = coding.find((c) => isLocalSystem(c?.system) && typeof c.code === "string");
   return hit?.code;
 }
 

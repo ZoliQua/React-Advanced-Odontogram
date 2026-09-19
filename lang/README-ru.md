@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // управление
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // запустить обучающий тур
   // …и многие другие функции настроек setX/getX
@@ -594,6 +594,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `destroyOdontogram()` | Очистка движка и удаление обработчиков событий |
 | `setNumberingSystem(system)` | Переключение между FDI, Universal, Palmer |
 | `clearSelection()` | Сброс выделения всех зубов |
+| `getSelectedTeeth()` | Выбранные в данный момент зубы (номера FDI) в порядке выбора |
 | `setOcclusalVisible(on)` | Включение/отключение окклюзионного вида |
 | `setWisdomVisible(on)` | Показать/скрыть зубы мудрости |
 | `setShowBase(on)` | Показать/скрыть слой кости |
@@ -850,7 +851,8 @@ React Advanced Odontogram создаётся и поддерживается Zol
 - [@odontodev](https://github.com/odontodev): гидратация состояния и API жизненного цикла, настройки пломб как управляемые props, идемпотентные сеттеры и сворачиваемые карточки
 - [@JulianoBazzi](https://github.com/JulianoBazzi): перевод на бразильский португальский
 - [@yassine-bhn](https://github.com/yassine-bhn): перевод на французский и предлагаемая измеренная анатомия
-- [@saegerdirk-star](https://github.com/saegerdirk-star): измеренная анатомия зуба и генератор зубов, а также предложение компонуемого интерфейса
+- [@saegerdirk-star](https://github.com/saegerdirk-star): измеренная анатомия зуба и генератор зубов, а также предложение компонуемого интерфейса; три исправления, перенесённые из их форка (данные пациента в PDF, ориентация зубов в пародонтограмме, скорость выбора)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): API выбора `getSelectedTeeth()`
 
 **Создано с помощью** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) и [Tailwind CSS](https://tailwindcss.com).
 

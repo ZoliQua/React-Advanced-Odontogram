@@ -35,6 +35,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`getSelectedTeeth()` — read the multi-tooth selection.** A host could clear
+  the selection but never ask what it was; only the single active tooth was
+  readable. It returns the selected FDI numbers in the order they were added to
+  the selection, as a fresh array, and every selection change already fires
+  `onStateChange`, so a host can follow it from its listener. Contributed in a
+  downstream fork by [@sofia-cluadette](https://github.com/sofia-cluadette).
+
 - **Data-driven ICD code specificity (DX-8).** The exported codes now follow
   the chart data instead of staying flat per diagnosis. Caries: the radiographic
   depth (E1/E2 → enamel, D1–D3 → dentine), or the ICDAS severity as a fallback
@@ -178,6 +185,37 @@ scale used inconsistently, and both are now documented and pinned by a test.
   reports the failure on the console instead of rejecting, and the React layer no
   longer applies the measured layout to a grid still drawn on the classic
   profile — which collapsed the chart for the duration of the download.
+
+Three further defects were found by comparing the engine with a downstream fork
+by [@saegerdirk-star](https://github.com/saegerdirk-star), which had already
+fixed them there. Each was confirmed in this codebase before the fix was taken
+over, and each carries a regression test.
+
+- **The PDF report no longer invents who the patient is.** With no name or date
+  of birth on the case, the report printed "John Doe" and "1980-01-01" — plus an
+  age computed from that date — exactly like real data. A report that looks
+  complete while carrying a made-up date of birth is not an incomplete record
+  but a wrong one: nobody holding it can tell. A missing field now prints "not
+  specified" (the key already existed in all twelve languages and was never
+  used), the row stays so it reads as "not recorded", and an age is only ever
+  derived from a real date of birth. **The placeholder defaults are now empty**;
+  a host that wants a placeholder can still set one with
+  `setPdfSettings({ defaultName, defaultDob })` — it is printed, but never aged.
+  The exam date still falls back to today, which invents nothing about the
+  patient.
+- **The periodontal chart drew every lower tooth the wrong way round.** It read
+  only the template's `mirror` flag and ignored the 180° rotation every
+  lower-arch tooth carries, so in both lower quadrants mesial pointed away from
+  the midline — the opposite of the odontogram. Each tooth looked plausible on
+  its own and only the pair read as swapped, which is why it went unnoticed; the
+  upper arch has no rotation, so it was always right. Both anatomy profiles
+  were affected.
+- **A selection change is about six times faster.** Every click re-enables the
+  whole control panel, and each control's label was looked up with its own
+  document-wide query — through a tooth grid of some twenty thousand nodes —
+  including for the controls that have no such label at all, which is every one
+  of them in the current panel. The labels are now gathered in one pass.
+  Measured under jsdom: about 380 ms per click before, about 65 ms after.
 
 ## [2.5.0] - 2026-09-10
 

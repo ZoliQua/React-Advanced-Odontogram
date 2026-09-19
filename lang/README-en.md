@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // control
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // launch the onboarding tour
   // …and many more setX/getX settings functions
@@ -594,6 +594,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `destroyOdontogram()` | Clean up the engine and remove event listeners |
 | `setNumberingSystem(system)` | Switch between FDI, Universal, Palmer |
 | `clearSelection()` | Deselect all teeth |
+| `getSelectedTeeth()` | Currently selected teeth (FDI numbers), in selection order |
 | `setOcclusalVisible(on)` | Toggle occlusal view on/off |
 | `setWisdomVisible(on)` | Show/hide wisdom teeth |
 | `setShowBase(on)` | Show/hide bone layer |
@@ -849,7 +850,8 @@ React Advanced Odontogram is created and maintained by Zoltan Dul ([@ZoliQua](ht
 - [@odontodev](https://github.com/odontodev): state hydration and lifecycle API, fillings settings as controlled props, idempotent setters and collapsible cards
 - [@JulianoBazzi](https://github.com/JulianoBazzi): Brazilian Portuguese translation
 - [@yassine-bhn](https://github.com/yassine-bhn): French translation and the candidate measured anatomy
-- [@saegerdirk-star](https://github.com/saegerdirk-star): measured tooth anatomy and the tooth generator, plus the composable interface proposal
+- [@saegerdirk-star](https://github.com/saegerdirk-star): measured tooth anatomy and the tooth generator, plus the composable interface proposal; three fixes adopted from their fork (PDF patient identity, perio tooth orientation, selection speed)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): the `getSelectedTeeth()` selection API
 
 **Built with** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) and [Tailwind CSS](https://tailwindcss.com).
 

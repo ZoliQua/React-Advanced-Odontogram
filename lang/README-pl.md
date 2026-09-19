@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // sterowanie
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // uruchamia wprowadzającą wycieczkę
   // …i wiele innych funkcji ustawień setX/getX
@@ -594,6 +594,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `destroyOdontogram()` | Wyczyść silnik i usuń nasłuchiwacze zdarzeń |
 | `setNumberingSystem(system)` | Przełącz między FDI, Universal, Palmer |
 | `clearSelection()` | Odznacz wszystkie zęby |
+| `getSelectedTeeth()` | Aktualnie zaznaczone zęby (numery FDI), w kolejności zaznaczania |
 | `setOcclusalVisible(on)` | Włącz/wyłącz widok okluzyjny |
 | `setWisdomVisible(on)` | Pokaż/ukryj zęby mądrości |
 | `setShowBase(on)` | Pokaż/ukryj warstwę kości |
@@ -850,7 +851,8 @@ React Advanced Odontogram jest tworzony i utrzymywany przez Zoltan Dul ([@ZoliQu
 - [@odontodev](https://github.com/odontodev): hydratacja stanu i API cyklu życia, ustawienia wypełnień jako kontrolowane props, idempotentne settery i zwijane karty
 - [@JulianoBazzi](https://github.com/JulianoBazzi): tłumaczenie na brazylijski portugalski
 - [@yassine-bhn](https://github.com/yassine-bhn): tłumaczenie na francuski i proponowana zmierzona anatomia
-- [@saegerdirk-star](https://github.com/saegerdirk-star): zmierzona anatomia zęba i generator zębów, a także propozycja komponowalnego interfejsu
+- [@saegerdirk-star](https://github.com/saegerdirk-star): zmierzona anatomia zęba i generator zębów, a także propozycja komponowalnego interfejsu; trzy poprawki przejęte z ich forka (dane pacjenta w PDF, orientacja zębów na wykresie periodontologicznym, szybkość zaznaczania)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): API zaznaczania `getSelectedTeeth()`
 
 **Zbudowano przy użyciu** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) i [Tailwind CSS](https://tailwindcss.com).
 

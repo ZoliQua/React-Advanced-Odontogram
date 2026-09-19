@@ -285,8 +285,18 @@ export function getToothBaseGroupFromCache(
 
   // 2) Horizontal mirror for left/right mesial-distal correctness.
   //    matrix(-1 0 0 1 w 0): x' = -x + w = w - x; y unchanged.
+  //
+  //    The flip must equal the live odontogram's NET horizontal flip, and that
+  //    is `mirror XOR rot180`, not `mirror` alone: the live grid places every
+  //    lower-arch tooth with `rotate(180)` (see `rotate180` in odontogram.ts),
+  //    and a 180° rotation flips BOTH axes — its horizontal half cancels or
+  //    adds to `mirror`. Step 1 above only ever flips vertically, so reading
+  //    `mirror` alone left every lower tooth mirrored the wrong way round, with
+  //    mesial pointing AWAY from the midline in both lower quadrants. Each tooth
+  //    looked plausible on its own; only the pair read as swapped, which is why
+  //    it went unnoticed (the upper arch has rot 0, where both rules agree).
   const mirrorGroup = document.createElementNS(SVG_NS, "g") as unknown as SVGGElement;
-  if (map.mirror) {
+  if (map.mirror !== (map.rot === 180)) {
     mirrorGroup.setAttribute("data-perio-mirror", "1");
     mirrorGroup.setAttribute("transform", `matrix(-1 0 0 1 ${fmt(w)} 0)`);
   }

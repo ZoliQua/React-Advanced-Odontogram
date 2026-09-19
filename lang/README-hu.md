@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // vezérlés
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // bemutató túra indítása
   // …és még sok további setX/getX beállítás függvény
@@ -594,6 +594,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `destroyOdontogram()` | Motor leállítása és eseménykezelők eltávolítása |
 | `setNumberingSystem(system)` | Váltás FDI, Universal, Palmer között |
 | `clearSelection()` | Összes fog kiválasztásának törlése |
+| `getSelectedTeeth()` | Az aktuálisan kijelölt fogak (FDI-számok), a kijelölés sorrendjében |
 | `setOcclusalVisible(on)` | Okkluzális nézet be/ki |
 | `setWisdomVisible(on)` | Bölcsességfogak mutatása/elrejtése |
 | `setShowBase(on)` | Csont réteg mutatása/elrejtése |
@@ -857,7 +858,8 @@ A React Advanced Odontogramot Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 - [@odontodev](https://github.com/odontodev): állapot hidratálás és életciklus API, tömésbeállítások vezérelt propként, idempotens setterek és összecsukható kártyák
 - [@JulianoBazzi](https://github.com/JulianoBazzi): brazil portugál fordítás
 - [@yassine-bhn](https://github.com/yassine-bhn): francia fordítás és a felmért anatómia jelöltje
-- [@saegerdirk-star](https://github.com/saegerdirk-star): felmért foganatómia és a foggenerátor, valamint a komponálható felület javaslata
+- [@saegerdirk-star](https://github.com/saegerdirk-star): felmért foganatómia és a foggenerátor, valamint a komponálható felület javaslata; három javítás a forkjából (betegazonosító adatok a PDF-ben, fogorientáció a parodontális diagramon, kijelölési sebesség)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): a `getSelectedTeeth()` kijelölési API
 
 **Felhasznált eszközök:** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) és [Tailwind CSS](https://tailwindcss.com).
 

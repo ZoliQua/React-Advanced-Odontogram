@@ -136,7 +136,7 @@ import {
   setImportFormat,
   // control
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // launch the onboarding tour
   // …and many more setX/getX settings functions
@@ -596,6 +596,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `destroyOdontogram()` | Nettoie le moteur et retire les écouteurs d'événements |
 | `setNumberingSystem(system)` | Bascule entre FDI, Universal, Palmer |
 | `clearSelection()` | Désélectionne toutes les dents |
+| `getSelectedTeeth()` | Dents actuellement sélectionnées (numéros FDI), dans l'ordre de sélection |
 | `setOcclusalVisible(on)` | Active/désactive la vue occlusale |
 | `setWisdomVisible(on)` | Affiche/masque les dents de sagesse |
 | `setShowBase(on)` | Affiche/masque le calque d'os |
@@ -852,7 +853,8 @@ React Advanced Odontogram est créé et maintenu par Zoltan Dul ([@ZoliQua](http
 - [@odontodev](https://github.com/odontodev): hydratation de l'état et API de cycle de vie, réglages des obturations en tant que props contrôlées, setters idempotents et cartes repliables
 - [@JulianoBazzi](https://github.com/JulianoBazzi): traduction en portugais brésilien
 - [@yassine-bhn](https://github.com/yassine-bhn): traduction en français et l'anatomie mesurée proposée
-- [@saegerdirk-star](https://github.com/saegerdirk-star): anatomie dentaire mesurée et le générateur de dents, ainsi que la proposition d'interface composable
+- [@saegerdirk-star](https://github.com/saegerdirk-star): anatomie dentaire mesurée et le générateur de dents, ainsi que la proposition d'interface composable; trois corrections reprises de leur fork (identité du patient dans le PDF, orientation des dents dans le parodontogramme, vitesse de sélection)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): l'API de sélection `getSelectedTeeth()`
 
 **Construit avec** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) et [Tailwind CSS](https://tailwindcss.com).
 

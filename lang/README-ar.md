@@ -136,7 +136,7 @@ import {
   setImportFormat,
   // control
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // launch the onboarding tour
   // …and many more setX/getX settings functions
@@ -596,6 +596,7 @@ npm run docs           # توليد توثيق TypeDoc داخل docs/
 | `destroyOdontogram()` | تنظيف المحرك وإزالة مستمعي الأحداث |
 | `setNumberingSystem(system)` | التبديل بين FDI والعالمي وبالمر |
 | `clearSelection()` | إلغاء تحديد كل الأسنان |
+| `getSelectedTeeth()` | الأسنان المحددة حاليًا (أرقام FDI) بترتيب التحديد |
 | `setOcclusalVisible(on)` | تبديل إظهار المنظر الإطباقي |
 | `setWisdomVisible(on)` | إظهار/إخفاء أسنان العقل |
 | `setShowBase(on)` | إظهار/إخفاء طبقة العظم |
@@ -851,7 +852,8 @@ React Advanced Odontogram من إنشاء وصيانة Zoltan Dul ([@ZoliQua](ht
 - [@odontodev](https://github.com/odontodev): ترطيب الحالة وواجهة API لدورة الحياة، وإعدادات الحشوات كخصائص props مُتحكَّم بها، وأدوات ضبط idempotent، وبطاقات قابلة للطي
 - [@JulianoBazzi](https://github.com/JulianoBazzi): الترجمة إلى البرتغالية البرازيلية
 - [@yassine-bhn](https://github.com/yassine-bhn): الترجمة إلى الفرنسية والتشريح المقاس المقترح
-- [@saegerdirk-star](https://github.com/saegerdirk-star): تشريح الأسنان المقاس ومولّد الأسنان، إضافة إلى اقتراح الواجهة القابلة للتركيب
+- [@saegerdirk-star](https://github.com/saegerdirk-star): تشريح الأسنان المقاس ومولّد الأسنان، إضافة إلى اقتراح الواجهة القابلة للتركيب؛ وثلاثة إصلاحات مأخوذة من نسختهم (هوية المريض في PDF، اتجاه الأسنان في مخطط اللثة، سرعة التحديد)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): واجهة التحديد `getSelectedTeeth()`
 
 **مبني باستخدام** [jsPDF](https://github.com/parallax/jsPDF)، [DOMPurify](https://github.com/cure53/DOMPurify)، [React](https://react.dev)، [Vite](https://vite.dev)، [TypeScript](https://www.typescriptlang.org) و[Tailwind CSS](https://tailwindcss.com).
 

@@ -136,7 +136,7 @@ import {
   setImportFormat,
   // control
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // launch the onboarding tour
   // …and many more setX/getX settings functions
@@ -596,6 +596,7 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `destroyOdontogram()` | 清理引擎并移除事件监听器 |
 | `setNumberingSystem(system)` | 在 FDI、通用编号法、Palmer 之间切换 |
 | `clearSelection()` | 取消选择所有牙齿 |
+| `getSelectedTeeth()` | 当前选中的牙齿（FDI 编号），按选择顺序 |
 | `setOcclusalVisible(on)` | 切换咬合面视图的开/关 |
 | `setWisdomVisible(on)` | 显示/隐藏智齿 |
 | `setShowBase(on)` | 显示/隐藏骨组织层 |
@@ -850,7 +851,8 @@ React Advanced Odontogram 由 Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 - [@odontodev](https://github.com/odontodev): 状态注水和生命周期 API，作为受控 props 的充填设置，幂等的 setter 以及可折叠卡片
 - [@JulianoBazzi](https://github.com/JulianoBazzi): 巴西葡萄牙语翻译
 - [@yassine-bhn](https://github.com/yassine-bhn): 法语翻译以及提议的测量解剖结构
-- [@saegerdirk-star](https://github.com/saegerdirk-star): 测量的牙齿解剖结构和牙齿生成器，以及可组合接口的提案
+- [@saegerdirk-star](https://github.com/saegerdirk-star): 测量的牙齿解剖结构和牙齿生成器，以及可组合接口的提案；以及采纳自其分支的三项修复（PDF 中的患者身份、牙周图中的牙齿方向、选择速度）
+- [@sofia-cluadette](https://github.com/sofia-cluadette): `getSelectedTeeth()` 选择 API
 
 **基于** [jsPDF](https://github.com/parallax/jsPDF)、[DOMPurify](https://github.com/cure53/DOMPurify)、[React](https://react.dev)、[Vite](https://vite.dev)、[TypeScript](https://www.typescriptlang.org) 和 [Tailwind CSS](https://tailwindcss.com) 构建。
 

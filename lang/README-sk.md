@@ -134,7 +134,7 @@ import {
   setImportFormat,
   // ovládanie
   setReadOnly, getReadOnly,
-  clearSelection,
+  clearSelection, getSelectedTeeth,
   registerPlugins, setPluginState, getPluginState,
   startIntroTour,            // spustenie úvodnej prehliadky
   // …a mnoho ďalších funkcií nastavení setX/getX
@@ -594,6 +594,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `destroyOdontogram()` | Vyčistiť modul a odstrániť poslucháčov udalostí |
 | `setNumberingSystem(system)` | Prepínanie medzi FDI, Universal, Palmer |
 | `clearSelection()` | Zrušiť výber všetkých zubov |
+| `getSelectedTeeth()` | Aktuálne vybrané zuby (čísla FDI) v poradí výberu |
 | `setOcclusalVisible(on)` | Prepínanie oklúzneho pohľadu zap/vyp |
 | `setWisdomVisible(on)` | Zobraziť/skryť zuby múdrosti |
 | `setShowBase(on)` | Zobraziť/skryť vrstvu kosti |
@@ -849,7 +850,8 @@ React Advanced Odontogram vytvára a spravuje Zoltan Dul ([@ZoliQua](https://git
 - [@odontodev](https://github.com/odontodev): hydratácia stavu a API životného cyklu, nastavenia výplní ako riadené props, idempotentné settery a zbaliteľné karty
 - [@JulianoBazzi](https://github.com/JulianoBazzi): preklad do brazílskej portugalčiny
 - [@yassine-bhn](https://github.com/yassine-bhn): preklad do francúzštiny a navrhovaná meraná anatómia
-- [@saegerdirk-star](https://github.com/saegerdirk-star): meraná anatómia zuba a generátor zubov, plus návrh skladateľného rozhrania
+- [@saegerdirk-star](https://github.com/saegerdirk-star): meraná anatómia zuba a generátor zubov, plus návrh skladateľného rozhrania; tri opravy prevzaté z ich forku (údaje pacienta v PDF, orientácia zubov v parodontálnom zázname, rýchlosť výberu)
+- [@sofia-cluadette](https://github.com/sofia-cluadette): API výberu `getSelectedTeeth()`
 
 **Vytvorené pomocou** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) a [Tailwind CSS](https://tailwindcss.com).
 

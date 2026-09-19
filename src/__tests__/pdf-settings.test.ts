@@ -10,14 +10,17 @@ import { getPdfSettings, setPdfSettings } from "../odontogram";
 
 // Restore defaults after each test — module state leaks across tests otherwise.
 afterEach(() => {
-  setPdfSettings({ defaultName: "John Doe", defaultDob: "1980-01-01", showAge: true, dateFormat: "iso", colorTheme: "blue", showBone: true, showHealthyPulp: true, toothSpacing: "wide", border: false, borderThickness: "medium", borderColor: "#000000", toothNumberSize: "normal", includeOdontogramText: true, includeOdontogramTable: true, perioToothSpacing: "wide", perioShowEmptyRows: true, perioLabelPlacement: "center", perioFontSize: "normal", includePerioTable: true, includePerioAbbrev: true, showDisclaimer: true, disclaimerText: "", summaryGrouping: "jaw", showGenerator: true });
+  setPdfSettings({ defaultName: "", defaultDob: "", showAge: true, dateFormat: "iso", colorTheme: "blue", showBone: true, showHealthyPulp: true, toothSpacing: "wide", border: false, borderThickness: "medium", borderColor: "#000000", toothNumberSize: "normal", includeOdontogramText: true, includeOdontogramTable: true, perioToothSpacing: "wide", perioShowEmptyRows: true, perioLabelPlacement: "center", perioFontSize: "normal", includePerioTable: true, includePerioAbbrev: true, showDisclaimer: true, disclaimerText: "", summaryGrouping: "jaw", showGenerator: true });
 });
 
 describe("2.2.3: PDF settings state", () => {
   it("has sensible defaults", () => {
     const s = getPdfSettings();
-    expect(s.defaultName).toBe("John Doe");
-    expect(s.defaultDob).toBe("1980-01-01");
+    // No placeholder identity by default. These used to be "John Doe" and
+    // "1980-01-01", which the PDF printed as if they were the patient's — see
+    // pdf-patient-identity.test.ts. A host may still configure a placeholder.
+    expect(s.defaultName).toBe("");
+    expect(s.defaultDob).toBe("");
     expect(s.showAge).toBe(true);
     expect(s.dateFormat).toBe("iso");
     expect(s.colorTheme).toBe("blue");

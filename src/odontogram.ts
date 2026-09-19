@@ -4660,10 +4660,29 @@ function updateSelectionFilterButtons(){
   $("#btnSelectImplants")?.classList.toggle("is-hidden", !hasImplant);
 }
 
+/** Enable or disable the whole control panel — runs on EVERY selection change.
+ *
+ *  Each control's `label[for]` used to be looked up one by one
+ *  (`setDisabled` -> `getControlLabel`), and a control with an id but no such
+ *  label paid a `document.querySelector` over the entire tooth grid (twenty
+ *  thousand-odd nodes) — per control, per click. Measured under jsdom that was
+ *  ~340 ms of a ~390 ms selection change, spent finding labels that do not exist.
+ *  The labels are gathered in ONE pass over the `<label>` elements instead —
+ *  first match per `for` in document order, which is exactly what the per-control
+ *  `querySelector` returned — so the behaviour is unchanged and the cost no
+ *  longer scales with the grid. The hot-path idea came from a downstream fork
+ *  (saegerdirk-star, 3.1.1). */
 function setControlsEnabled(enabled: Any){
+  const labelFor = new Map<string, HTMLLabelElement>();
+  for(const label of Array.from(document.getElementsByTagName("label"))){
+    const target = label.htmlFor;
+    if(target && !labelFor.has(target)) labelFor.set(target, label);
+  }
   $$(".panel-body input, .panel-body select").forEach(el => {
     if(el.id === "statusExtraSelect") return;
-    setDisabled(el, !enabled);
+    el.disabled = !enabled;
+    const label = (el.closest ? el.closest("label") : null) ?? (el.id ? labelFor.get(el.id) : undefined);
+    if(label) label.style.display = el.disabled ? "none" : "";
   });
 }
 
@@ -6561,9 +6580,12 @@ export type PdfPerioFontSize = "small" | "normal" | "xlarge";
 export type PdfSummaryGrouping = "whole" | "jaw" | "quadrant" | "sextant";
 export interface PdfSettings {
   // --- General ---
-  /** Placeholder patient name when the case has none (default "John Doe"). */
+  /** Optional placeholder patient name, printed when the case has none. Empty
+   *  by default: the report then prints "not specified" (`pdf.field.notSpecified`)
+   *  rather than inventing a name. */
   defaultName: string;
-  /** Placeholder DOB (ISO `YYYY-MM-DD`) when the case has none. */
+  /** Optional placeholder DOB (ISO `YYYY-MM-DD`), printed when the case has
+   *  none. Empty by default, as above. No age is ever derived from it. */
   defaultDob: string;
   /** Show the patient's age (in parentheses) after the DOB. */
   showAge: boolean;
@@ -6624,8 +6646,12 @@ const VALID_PDF_PERIO_FONT_SIZE = new Set<PdfPerioFontSize>(["small", "normal", 
 const VALID_PDF_SUMMARY_GROUPING = new Set<PdfSummaryGrouping>(["whole", "jaw", "quadrant", "sextant"]);
 const HEX_COLOR = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const pdfSettings: PdfSettings = {
-  defaultName: "John Doe",
-  defaultDob: "1980-01-01",
+  // Empty on purpose. These defaulted to "John Doe" / "1980-01-01", and a report
+  // that looks complete while carrying an invented date of birth is not an
+  // incomplete record but a wrong one: whoever holds it cannot tell the date did
+  // not come from the patient ("John Doe" at least stands out; a date does not).
+  defaultName: "",
+  defaultDob: "",
   showAge: true,
   dateFormat: "iso",
   colorTheme: DEFAULT_PDF_THEME,
@@ -6690,6 +6716,45 @@ function computeAge(dobIso: string, refIso: string): number | null {
   if(r[1] < d[1] || (r[1] === d[1] && r[2] < d[2])) age--;
   return age >= 0 && age <= 200 ? age : null;
 }
+
+/**
+ * The PDF report's patient-identity rows: name, date of birth (+ age), exam date.
+ *
+ * An identity field the case does not have prints "not specified" — unless the
+ * host deliberately configured a placeholder in the PDF settings. The row stays
+ * either way: a missing row reads as "nothing here", a labelled empty one as
+ * "not recorded". The EXAM date is the one exception and still falls back to
+ * today: a report is produced today, which invents nothing about the patient.
+ *
+ * The age is computed from a REAL date of birth only — never from a placeholder,
+ * which would print a plausible, invented age beside it.
+ *
+ * These used to default to "John Doe" / "1980-01-01" and print them as if real.
+ * Reported and fixed in a downstream fork (saegerdirk-star/React-Odontogram-Modul,
+ * 2.29.1).
+ */
+function pdfPatientRows(
+  cm: { patientName: string | null; patientDob: string | null; examDate: string | null },
+  settings: Pick<PdfSettings, "defaultName" | "defaultDob" | "showAge" | "dateFormat">,
+  todayIso: string,
+): Array<{ label: string; value: string }> {
+  const notSpecified = t("pdf.field.notSpecified");
+  const placeholder = (v: string) => (v.trim() !== "" ? v : null);
+  const realName = (cm.patientName && cm.patientName.trim() !== "") ? cm.patientName : null;
+  const nameVal = realName ?? placeholder(settings.defaultName) ?? notSpecified;
+  const realDob = cm.patientDob ?? null;
+  const dobIso = realDob ?? placeholder(settings.defaultDob);
+  const examIso = cm.examDate ?? todayIso;
+  const dobDisp = dobIso ? formatPdfDate(dobIso, settings.dateFormat) : notSpecified;
+  const age = realDob ? computeAge(realDob, examIso) : null;
+  return [
+    { label: t("pdf.field.patientName"), value: nameVal },
+    { label: t("pdf.field.patientDob"), value: (settings.showAge && age !== null) ? `${dobDisp} (${age})` : dobDisp },
+    { label: t("pdf.field.examDate"), value: formatPdfDate(examIso, settings.dateFormat) },
+  ];
+}
+/** Test seam for {@link pdfPatientRows} (a real `exportPdf` needs jsPDF and a canvas). */
+export const __pdfPatientRowsForTest = pdfPatientRows;
 
 // Odontogram PDF-setting → concrete value maps.
 // Odontogram tooth-spacing → horizontal pack factor (1 = as laid out; <1 packs
@@ -6877,16 +6942,7 @@ export async function exportPdf(opts: PdfExportOptions): Promise<void> {
     const now = new Date();
     const pad2 = (n: number) => String(n).padStart(2, "0");
     const todayIsoStr = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
-    const nameVal = (cm.patientName && cm.patientName.trim() !== "") ? cm.patientName : settings.defaultName;
-    const dobIso = cm.patientDob ?? settings.defaultDob;
-    const examIso = cm.examDate ?? todayIsoStr;
-    const dobDisp = formatPdfDate(dobIso, settings.dateFormat);
-    const age = computeAge(dobIso, examIso);
-    const patient = [
-      { label: t("pdf.field.patientName"), value: nameVal },
-      { label: t("pdf.field.patientDob"), value: (settings.showAge && age !== null) ? `${dobDisp} (${age})` : dobDisp },
-      { label: t("pdf.field.examDate"), value: formatPdfDate(examIso, settings.dateFormat) },
-    ];
+    const patient = pdfPatientRows(cm, settings, todayIsoStr);
 
     // Document title + end-of-document footer (disclaimer + generation timestamp
     // / app version / attribution). __APP_VERSION__ is injected from package.json
@@ -7913,6 +7969,21 @@ export function clearSelection(){
   selectedTeeth = new Set();
   activeTooth = null;
   updateSelectionUI();
+}
+
+/**
+ * The currently selected teeth, as FDI numbers, in the order they were added to
+ * the selection. Empty when nothing is selected.
+ *
+ * Returns a fresh array — changing it never touches the selection. Every
+ * selection change fires {@link onStateChange}, so a host can follow the
+ * selection by re-reading this in its listener (to price a treatment for the
+ * selected teeth, for example).
+ *
+ * Contributed in a downstream fork (sofia-cluadette/React-Odontogram-Modul).
+ */
+export function getSelectedTeeth(): number[] {
+  return Array.from(selectedTeeth) as number[];
 }
 /**
  * Register one or more custom SVG plugins. Plugins can inject visual overlays

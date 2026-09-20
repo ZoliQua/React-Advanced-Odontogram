@@ -5012,19 +5012,19 @@ function showNoteEditor(toothNo: number){
 
   const actions = el("div", { class: "odon-note-actions" });
   const saveBtn = el("button", { class: "odon-zoom-btn", text: t("note.save") });
-  saveBtn.addEventListener("click", () => {
-    state.note = textarea.value.trim();
+  // The note is part of the export payload, so a real change must notify
+  // (autosave + hosts persisting the chart) like any other tooth edit.
+  const commitNote = (next: string) => {
+    const changed = next !== (state.note || "");
+    state.note = next;
     updateToothTooltip(toothNo);
     updateToothLabelNoteIcon(toothNo);
     hideNoteEditor();
-  });
+    if(changed) notifyStateChange();
+  };
+  saveBtn.addEventListener("click", () => commitNote(textarea.value.trim()));
   const deleteBtn = el("button", { class: "odon-zoom-btn danger", text: t("note.delete") });
-  deleteBtn.addEventListener("click", () => {
-    state.note = "";
-    updateToothTooltip(toothNo);
-    updateToothLabelNoteIcon(toothNo);
-    hideNoteEditor();
-  });
+  deleteBtn.addEventListener("click", () => commitNote(""));
   actions.appendChild(saveBtn);
   actions.appendChild(deleteBtn);
 

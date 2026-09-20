@@ -7557,6 +7557,13 @@ async function buildGrid(token: number){
     addLabelRow(lowerSide, toothLabelLower);
   }
 
+  // addTile() repainted each tooth from state; the label cells are fresh, so
+  // a rebuild (re-init, anatomy change, perio round-trip) must restore the
+  // note icons the same way, or a charted note shows up with no badge.
+  for(const toothNo of ALL_TEETH){
+    updateToothLabelNoteIcon(toothNo);
+  }
+
   // ARIA on grid container
   grid.setAttribute("role", "listbox");
   grid.setAttribute("aria-multiselectable", "true");

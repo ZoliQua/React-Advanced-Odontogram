@@ -13,6 +13,7 @@ import {
   __resetChartStateForTest,
   getStatusChart,
   onStateChange,
+  rebuildGrid,
   setNotesEnabled,
   setNumberingSystem,
 } from "../odontogram";
@@ -110,5 +111,20 @@ describe("note editor: save/delete notify onStateChange", () => {
     // Deleting an already-empty note is a no-op.
     const third = openNoteEditor(11);
     expect(notifiesFor(() => fireEvent.click(third.del))).toBe(0);
+  });
+
+  it("the label badge survives a grid rebuild", async () => {
+    render(createElement(App, { language: "en", enableNotes: true }));
+    await waitForGrid();
+
+    const { textarea, save } = openNoteEditor(11);
+    textarea.value = "keep me";
+    fireEvent.click(save);
+    const badge = () => document.querySelectorAll(".tooth-label-cell .tooth-note-icon").length;
+    expect(badge()).toBe(1);
+
+    await rebuildGrid();
+    await waitForGrid();
+    expect(badge()).toBe(1);
   });
 });

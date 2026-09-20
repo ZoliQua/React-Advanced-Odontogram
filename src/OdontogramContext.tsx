@@ -76,6 +76,16 @@ import {
   setFillingMaterialAvailability,
   getToothAnatomy,
   setToothAnatomy,
+  getScreenToothSpacing,
+  setScreenToothSpacing,
+  getScreenToothNumberSize,
+  setScreenToothNumberSize,
+  getSelectionColor,
+  setSelectionColor,
+  getSelectionBorderStyle,
+  setSelectionBorderStyle,
+  getToothInfoVisible,
+  setToothInfoVisible,
 } from "./odontogram";
 import type {
   OdontogramSummary,
@@ -265,6 +275,20 @@ export type OdontogramProviderProps = {
   fissureSealingEnabled?: boolean;
   /** See {@link onFillingComplexityChange} — the fissure-sealing toggle's counterpart. */
   onFissureSealingEnabledChange?: (enabled: boolean) => void;
+  /**
+   * Inter-tooth spacing of the on-screen grid (Settings → Odontogram). Mirrors
+   * the `screenToothSpacing` engine flag; same controlled/standalone contract
+   * as {@link fillingComplexity}.
+   */
+  screenToothSpacing?: ScreenToothSpacing;
+  /** Tooth-number size of the on-screen grid; same contract as {@link screenToothSpacing}. */
+  screenToothNumberSize?: ScreenToothNumberSize;
+  /** Selection-ring colour as `#rrggbb`; same contract as {@link screenToothSpacing}. */
+  selectionColor?: string;
+  /** Selection-ring border style; same contract as {@link screenToothSpacing}. */
+  selectionBorderStyle?: SelectionBorderStyle;
+  /** Whether the tooth-information panel is shown; same contract as {@link screenToothSpacing}. */
+  toothInfo?: boolean;
   /** The composed UI (surfaces + shell layout). */
   children?: ReactNode;
 };
@@ -410,6 +434,11 @@ function OdontogramProviderInner({
   onFillingMaterialAvailabilityChange,
   fissureSealingEnabled: fissureSealingEnabledProp,
   onFissureSealingEnabledChange,
+  screenToothSpacing: screenToothSpacingProp,
+  screenToothNumberSize: screenToothNumberSizeProp,
+  selectionColor: selectionColorProp,
+  selectionBorderStyle: selectionBorderStyleProp,
+  toothInfo: toothInfoProp,
 }: OdontogramProviderProps) {
   const { lang, setLang, t } = useI18n({ language, onLanguageChange });
   const [internalNumbering, setInternalNumbering] = useState<NumberingSystem>(numberingSystem ?? "FDI");
@@ -426,7 +455,7 @@ function OdontogramProviderInner({
   const [wearLevel, setWearLevel] = useState<ToothDetailLevel>(wearDetailLevel ?? "complex");
   const [discoLevel, setDiscoLevel] = useState<ToothDetailLevel>(discolorationDetailLevel ?? "complex");
   const [notation, setNotation] = useState<SurfaceNotation>(surfaceNotation ?? "full");
-  const [toothInfoOn, setToothInfoOn] = useState<boolean>(true);
+  const [toothInfoOn, setToothInfoOn] = useState<boolean>(() => getToothInfoVisible());
   // Per-format export + per-source import availability (session-only UI config).
   // All default ON. A disabled format/source hides its export/import menu item;
   // disabling PDF also disables the Export Settings tab.
@@ -439,11 +468,12 @@ function OdontogramProviderInner({
   // Odontogram-tab on-screen controls (session-only).
   const [planModeAvailable, setPlanModeAvailable] = useState<boolean>(true);
   const [perioChartAvailable, setPerioChartAvailable] = useState<boolean>(true);
-  const [screenSpacing, setScreenSpacing] = useState<ScreenToothSpacing>("normal");
-  const [screenNumberSize, setScreenNumberSize] = useState<ScreenToothNumberSize>("normal");
-  // Adjustable tooth-selection colour + border style.
-  const [selectionColor, setSelectionColor] = useState<string>("#3b7bff");
-  const [selectionBorderStyle, setSelectionBorderStyle] = useState<SelectionBorderStyle>("dashed");
+  // Chart styling + tooth-info panel mirror ./state/displaySettings (kept in
+  // sync via onStateChange below), so a host can read/restore them.
+  const [screenSpacing, setScreenSpacing] = useState<ScreenToothSpacing>(() => getScreenToothSpacing());
+  const [screenNumberSize, setScreenNumberSize] = useState<ScreenToothNumberSize>(() => getScreenToothNumberSize());
+  const [selectionColor, setSelectionColorState] = useState<string>(() => getSelectionColor());
+  const [selectionBorderStyle, setSelectionBorderStyleState] = useState<SelectionBorderStyle>(() => getSelectionBorderStyle());
   // Fillings-tab config (mirrors odontogram.ts module flags). The initializers
   // prefer a provided prop, falling back to the engine's current module value —
   // an imperative setX call before mount is never clobbered by a plain default.
@@ -689,6 +719,28 @@ function OdontogramProviderInner({
     return onStateChange(refresh);
   }, []);
 
+  // Mirror the chart display settings the same way; the setters notify, so a
+  // host calling them directly (or a prop-driven restore) re-renders the chart.
+  useEffect(() => {
+    const refresh = () => {
+      setScreenSpacing(getScreenToothSpacing());
+      setScreenNumberSize(getScreenToothNumberSize());
+      setSelectionColorState(getSelectionColor());
+      setSelectionBorderStyleState(getSelectionBorderStyle());
+      setToothInfoOn(getToothInfoVisible());
+    };
+    refresh();
+    return onStateChange(refresh);
+  }, []);
+
+  // Display-settings controlled props: defined-gated like the fillings props,
+  // because these too live in module state a host may have set before mount.
+  useEffect(() => { if (screenToothSpacingProp !== undefined) setScreenToothSpacing(screenToothSpacingProp); }, [screenToothSpacingProp]);
+  useEffect(() => { if (screenToothNumberSizeProp !== undefined) setScreenToothNumberSize(screenToothNumberSizeProp); }, [screenToothNumberSizeProp]);
+  useEffect(() => { if (selectionColorProp !== undefined) setSelectionColor(selectionColorProp); }, [selectionColorProp]);
+  useEffect(() => { if (selectionBorderStyleProp !== undefined) setSelectionBorderStyle(selectionBorderStyleProp); }, [selectionBorderStyleProp]);
+  useEffect(() => { if (toothInfoProp !== undefined) setToothInfoVisible(toothInfoProp); }, [toothInfoProp]);
+
   // Mirror the module-level tooth-anatomy profile the same way perioViewMode is
   // mirrored above.
   useEffect(() => {
@@ -741,7 +793,7 @@ function OdontogramProviderInner({
     isDark,
     onToggleDark: toggleDark,
     toothInfo: toothInfoOn,
-    onToothInfo: (v) => setToothInfoOn(v),
+    onToothInfo: (v) => setToothInfoVisible(v),
     exportPng: exportPngOn,
     onExportPng: (v) => setExportPngOn(v),
     exportJpg: exportJpgOn,
@@ -781,9 +833,9 @@ function OdontogramProviderInner({
       if (!v && getChartMode() === "plan") setChartMode("status");
     },
     screenToothSpacing: screenSpacing,
-    onScreenToothSpacing: (v) => setScreenSpacing(v),
+    onScreenToothSpacing: (v) => setScreenToothSpacing(v),
     screenToothNumberSize: screenNumberSize,
-    onScreenToothNumberSize: (v) => setScreenNumberSize(v),
+    onScreenToothNumberSize: (v) => setScreenToothNumberSize(v),
     toothAnatomy,
     onToothAnatomy: (v) => {
       // React state is deliberately NOT set optimistically here, and the grid is

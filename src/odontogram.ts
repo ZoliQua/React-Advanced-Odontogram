@@ -49,6 +49,14 @@ export type { PerioSite } from "./state/payload";
 // Active-chart readers the perio chart/export need moved in with the perio API.
 export { isPerioRowHidden, isToothImplant, getPerioToothKind, getToothMobility } from "./state/perio";
 import { getToothMobility } from "./state/perio";
+// ---- Chart display settings (./state/displaySettings) ----
+export {
+  getScreenToothSpacing, setScreenToothSpacing, getScreenToothNumberSize, setScreenToothNumberSize,
+  getSelectionColor, setSelectionColor, getSelectionBorderStyle, setSelectionBorderStyle,
+  getToothInfoVisible, setToothInfoVisible,
+} from "./state/displaySettings";
+export type { ScreenToothSpacing, ScreenToothNumberSize, SelectionBorderStyle } from "./state/displaySettings";
+
 // ---- Perio display settings (extracted to ./state/perioSettings) ----
 // Re-exported so the public API surface is unchanged by the extraction.
 export { getPerioIndexNameMode, getPerioRowVisibility, setPerioIndexNameMode, setPerioRowVisibility } from "./state/perioSettings";
@@ -7815,6 +7823,9 @@ function wireControls(){
  * Switch the displayed tooth numbering system and re-render all tooth labels.
  * @param system - The target {@link NumberingSystem}.
  */
+/** The numbering system currently displayed. Defaults to `"FDI"`. */
+export function getNumberingSystem(): NumberingSystem { return numberingSystem; }
+
 export function setNumberingSystem(system: NumberingSystem){
   if(!applyNumberingSystem(system)) return;
   updateAllToothTileNumbers();

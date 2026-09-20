@@ -25,7 +25,10 @@ export function setPostNotifyHook(fn: (() => void) | null): void {
 
 /**
  * Subscribe to odontogram state changes. The callback runs after any tooth
- * state edit, the edentulous toggle, or an import.
+ * state edit, the edentulous toggle, an import, or a change to a session
+ * setting (numbering system, notes, ICDAS, caries/pulp/wear/discoloration
+ * detail, surface notation, fillings, perio display) — so a host that
+ * persists the doctor's preferences can react to the settings modal too.
  *
  * @param cb - Callback invoked on each change.
  * @returns An unsubscribe function.

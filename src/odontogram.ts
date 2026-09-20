@@ -564,7 +564,13 @@ export function toggleCollapsedCard(id: string): void {
   notifyStateChange();
 }
 let icdasEnabled = false;
-export function setIcdasEnabled(value: boolean){ icdasEnabled = !!value; if(activeTooth) syncControlsFromState(toothState.get(activeTooth)); }
+export function setIcdasEnabled(value: boolean){
+  const next = !!value;
+  if(next === icdasEnabled) return;
+  icdasEnabled = next;
+  if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  notifyStateChange();
+}
 export function getIcdasEnabled(): boolean { return icdasEnabled; }
 // The pulp-detail level drives how the pulp control presents the pulp
 // diagnosis — "simple" (healthy/pulpitis), "aae" (4 AAE pulpDx values, default)
@@ -591,14 +597,20 @@ export function setPulpDetailLevel(value: PulpDetailLevel){
 export type ToothDetailLevel = "simple" | "complex";
 let wearDetailLevel: ToothDetailLevel = "complex";
 export function setWearDetailLevel(value: ToothDetailLevel){
-  wearDetailLevel = value === "simple" ? "simple" : "complex";
+  const next = value === "simple" ? "simple" : "complex";
+  if(next === wearDetailLevel) return;
+  wearDetailLevel = next;
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  notifyStateChange();
 }
 export function getWearDetailLevel(): ToothDetailLevel { return wearDetailLevel; }
 let discolorationDetailLevel: ToothDetailLevel = "complex";
 export function setDiscolorationDetailLevel(value: ToothDetailLevel){
-  discolorationDetailLevel = value === "simple" ? "simple" : "complex";
+  const next = value === "simple" ? "simple" : "complex";
+  if(next === discolorationDetailLevel) return;
+  discolorationDetailLevel = next;
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  notifyStateChange();
 }
 export function getDiscolorationDetailLevel(): ToothDetailLevel { return discolorationDetailLevel; }
 
@@ -641,29 +653,41 @@ export type RadiographicDepthMode = "off" | "threeLevel" | "detailed";
 
 let secondaryCariesMode: SecondaryCariesMode = "standard";
 export function setSecondaryCariesMode(value: SecondaryCariesMode){
-  secondaryCariesMode = (value === "simple" || value === "full") ? value : "standard";
+  const next = (value === "simple" || value === "full") ? value : "standard";
+  if(next === secondaryCariesMode) return;
+  secondaryCariesMode = next;
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  notifyStateChange();
 }
 export function getSecondaryCariesMode(): SecondaryCariesMode { return secondaryCariesMode; }
 
 let rootCariesMode: RootCariesMode = "simple";
 export function setRootCariesMode(value: RootCariesMode){
-  rootCariesMode = (value === "severity") ? value : "simple";
+  const next = (value === "severity") ? value : "simple";
+  if(next === rootCariesMode) return;
+  rootCariesMode = next;
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  notifyStateChange();
 }
 export function getRootCariesMode(): RootCariesMode { return rootCariesMode; }
 
 let radiographicDepthMode: RadiographicDepthMode = "off";
 export function setRadiographicDepthMode(value: RadiographicDepthMode){
-  radiographicDepthMode = (value === "threeLevel" || value === "detailed") ? value : "off";
+  const next = (value === "threeLevel" || value === "detailed") ? value : "off";
+  if(next === radiographicDepthMode) return;
+  radiographicDepthMode = next;
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  notifyStateChange();
 }
 export function getRadiographicDepthMode(): RadiographicDepthMode { return radiographicDepthMode; }
 
 let cariesDepthEnabled = true;
 export function setCariesDepthEnabled(value: boolean){
-  cariesDepthEnabled = value !== false;
+  const next = value !== false;
+  if(next === cariesDepthEnabled) return;
+  cariesDepthEnabled = next;
   if(activeTooth) syncControlsFromState(toothState.get(activeTooth));
+  notifyStateChange();
 }
 export function getCariesDepthEnabled(): boolean { return cariesDepthEnabled; }
 
@@ -7819,6 +7843,7 @@ export function setNumberingSystem(system: NumberingSystem){
   if(!applyNumberingSystem(system)) return;
   updateAllToothTileNumbers();
   updateActiveLabel();
+  notifyStateChange();
 }
 
 /**
@@ -8549,12 +8574,15 @@ export function getReadOnly(): boolean{
  * @param value - `true` to enable notes, `false` to disable.
  */
 export function setNotesEnabled(value: boolean){
-  notesEnabled = value;
+  const next = !!value;
+  if(next === notesEnabled) return;
+  notesEnabled = next;
   // Refresh tooltips and label icons for all teeth
   for(const toothNo of ALL_TEETH){
     updateToothTooltip(toothNo);
     updateToothLabelNoteIcon(toothNo);
   }
+  notifyStateChange();
 }
 
 /**

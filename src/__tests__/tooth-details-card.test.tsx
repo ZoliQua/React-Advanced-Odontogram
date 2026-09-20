@@ -13,7 +13,7 @@
 // predicates, that `#extractionPlanRow` reparents to the correct container per
 // state, and that the title `#btnResetTooth` resets the active tooth.
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { createElement } from "react";
+import { createElement, type ComponentProps } from "react";
 import { render, cleanup, fireEvent } from "@testing-library/react";
 import { OdontogramProvider, ToothControlsSurface } from "../App";
 import {
@@ -37,8 +37,8 @@ vi.mock("../odontogram", async (importOriginal) => {
   };
 });
 
-function renderControls() {
-  return render(createElement(OdontogramProvider, { language: "en" }, createElement(ToothControlsSurface)));
+function renderControls(props: Partial<ComponentProps<typeof OdontogramProvider>> = {}) {
+  return render(createElement(OdontogramProvider, { language: "en", ...props }, createElement(ToothControlsSurface)));
 }
 
 beforeEach(() => {
@@ -116,13 +116,13 @@ describe("PR 3f: <ToothDetailsCard/> renders declaratively", () => {
     expect(document.getElementById("discolorationToggleLabel")?.classList.contains("hidden")).toBe(true);
 
     // Simple: the toggles are shown, the selects hidden (level flips them, never
-    // mutating the stored value).
+    // mutating the stored value). The level goes in as a provider prop: the
+    // provider's mount effect pushes its props into the module, and since the
+    // setters now notify, that push re-renders the card.
     cleanup();
-    setWearDetailLevel("simple");
-    setDiscolorationDetailLevel("simple");
     __setToothStateForTest(11, { toothSelection: "tooth-base" });
     __setSelectionForTest([11]);
-    renderControls();
+    renderControls({ wearDetailLevel: "simple", discolorationDetailLevel: "simple" });
     expect(document.getElementById("wearEdgeSelectLabel")?.classList.contains("hidden")).toBe(true);
     expect(document.getElementById("wearEdgeToggleLabel")?.classList.contains("hidden")).toBe(false);
     expect(document.getElementById("discolorationSelectLabel")?.classList.contains("hidden")).toBe(true);

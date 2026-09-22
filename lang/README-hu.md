@@ -109,6 +109,11 @@ Az `OdontogramShell` egy vezérelt (controlled) komponens. A leggyakoribb propok
 | `fillingDefectEnabled` | `boolean` | `true` | Bekapcsolja a tömési defektusok rögzítését a Tömések kártyán. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | mind elérhető | Elérhető tömőanyagok logikai leképezésként a `amalgam`/`composite`/`gic`/`temporary` kulcsokon (ismeretlen kulcsok figyelmen kívül hagyva). |
 | `fissureSealingEnabled` | `boolean` | `true` | Bekapcsolja a barázdazárást a Tömések kártyán. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Fogak közti térköz a képernyőn. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Fogszám mérete a képernyős rácsban. |
+| `selectionColor` | `string` | `"#3b7bff"` | Kijelölőgyűrű színe (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Kijelölőgyűrű szegélystílusa. |
+| `toothInfo` | `boolean` | `true` | A foginformációs panel megjelenítése. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Akkor aktiválódik, amikor a felhasználó módosítja az adott beállítást a Beállítások → Tömések menüben. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Akkor hívódik meg, amikor a felhasználó módosítja a beállítást a felületen. |
 
@@ -596,6 +601,12 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `setNumberingSystem(system)` | Váltás FDI, Universal, Palmer között |
 | `clearSelection()` | Összes fog kiválasztásának törlése |
 | `getSelectedTeeth()` | Az aktuálisan kijelölt fogak (FDI-számok), a kijelölés sorrendjében |
+| `getNumberingSystem()` | A jelenleg aktív fogszámozási rendszer |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | A képernyős fogköz lekérdezése/beállítása |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | A fogszám méretének lekérdezése/beállítása |
+| `getSelectionColor()` / `setSelectionColor(hex)` | A kijelölőgyűrű színének lekérdezése/beállítása (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | A kijelölőgyűrű szegélystílusának lekérdezése/beállítása |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | A foginformációs panel láthatóságának lekérdezése/beállítása |
 | `setOcclusalVisible(on)` | Okkluzális nézet be/ki |
 | `setWisdomVisible(on)` | Bölcsességfogak mutatása/elrejtése |
 | `setShowBase(on)` | Csont réteg mutatása/elrejtése |
@@ -856,7 +867,7 @@ A React Advanced Odontogramot Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 
 **Közreműködők**
 
-- [@odontodev](https://github.com/odontodev): állapot hidratálás és életciklus API, tömésbeállítások vezérelt propként, idempotens setterek és összecsukható kártyák
+- [@odontodev](https://github.com/odontodev): állapot hidratálás és életciklus API, tömésbeállítások vezérelt propként, idempotens setterek és összecsukható kártyák; a diagram megjelenítési beállításai és a `getNumberingSystem()` elérhetővé tétele a gazdaalkalmazásnak, valamint a munkamenet-beállítások és a fogjegyzetek hiányzó `onStateChange` értesítései
 - [@JulianoBazzi](https://github.com/JulianoBazzi): brazil portugál fordítás
 - [@yassine-bhn](https://github.com/yassine-bhn): francia fordítás és a felmért anatómia jelöltje
 - [@saegerdirk-star](https://github.com/saegerdirk-star): felmért foganatómia és a foggenerátor, valamint a komponálható felület javaslata; három javítás a forkjából (betegazonosító adatok a PDF-ben, fogorientáció a parodontális diagramon, kijelölési sebesség)

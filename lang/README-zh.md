@@ -111,6 +111,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | 在充填卡片上启用充填缺陷发现项。 |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | 全部可用 | 可用充填材料，以 `amalgam`/`composite`/`gic`/`temporary` 为键的布尔映射（未知键被忽略）。 |
 | `fissureSealingEnabled` | `boolean` | `true` | 在充填卡片上启用窝沟封闭。 |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | 屏幕上牙齿之间的间距。 |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | 网格中牙位号的字号。 |
+| `selectionColor` | `string` | `"#3b7bff"` | 选中环颜色（`#rrggbb`）。 |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | 选中环边框样式。 |
+| `toothInfo` | `boolean` | `true` | 显示牙齿信息面板。 |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | 当用户在设置 → 充填中更改相应设置时触发。 |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | 当用户在界面中更改该设置时触发。 |
 
@@ -598,6 +603,12 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `setNumberingSystem(system)` | 在 FDI、通用编号法、Palmer 之间切换 |
 | `clearSelection()` | 取消选择所有牙齿 |
 | `getSelectedTeeth()` | 当前选中的牙齿（FDI 编号），按选择顺序 |
+| `getNumberingSystem()` | 当前使用的牙位编号系统 |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | 读取/设置屏幕上的牙齿间距 |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | 读取/设置牙位号字号 |
+| `getSelectionColor()` / `setSelectionColor(hex)` | 读取/设置选中环颜色（`#rrggbb`） |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | 读取/设置选中环边框样式 |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | 读取/设置是否显示牙齿信息面板 |
 | `setOcclusalVisible(on)` | 切换咬合面视图的开/关 |
 | `setWisdomVisible(on)` | 显示/隐藏智齿 |
 | `setShowBase(on)` | 显示/隐藏骨组织层 |
@@ -849,7 +860,7 @@ React Advanced Odontogram 由 Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 
 **贡献者**
 
-- [@odontodev](https://github.com/odontodev): 状态注水和生命周期 API，作为受控 props 的充填设置，幂等的 setter 以及可折叠卡片
+- [@odontodev](https://github.com/odontodev): 状态注水和生命周期 API，作为受控 props 的充填设置，幂等的 setter 以及可折叠卡片；将图表显示设置和 `getNumberingSystem()` 开放给宿主应用，并补上会话设置与牙齿备注缺失的 `onStateChange` 通知
 - [@JulianoBazzi](https://github.com/JulianoBazzi): 巴西葡萄牙语翻译
 - [@yassine-bhn](https://github.com/yassine-bhn): 法语翻译以及提议的测量解剖结构
 - [@saegerdirk-star](https://github.com/saegerdirk-star): 测量的牙齿解剖结构和牙齿生成器，以及可组合接口的提案；以及采纳自其分支的三项修复（PDF 中的患者身份、牙周图中的牙齿方向、选择速度）

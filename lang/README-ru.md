@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Включает фиксацию дефектов пломбы на карточке «Пломбы». |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | все доступны | Доступные пломбировочные материалы в виде логической карты по `amalgam`/`composite`/`gic`/`temporary` (неизвестные ключи игнорируются). |
 | `fissureSealingEnabled` | `boolean` | `true` | Включает герметизацию фиссур на карточке «Пломбы». |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Расстояние между зубами на экране. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Размер номера зуба в сетке. |
+| `selectionColor` | `string` | `"#3b7bff"` | Цвет кольца выделения (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Стиль границы кольца выделения. |
+| `toothInfo` | `boolean` | `true` | Показывать панель информации о зубе. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Срабатывает, когда пользователь меняет соответствующую настройку в Настройки → Пломбы. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Срабатывает, когда пользователь меняет настройку через интерфейс. |
 
@@ -596,6 +601,12 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `setNumberingSystem(system)` | Переключение между FDI, Universal, Palmer |
 | `clearSelection()` | Сброс выделения всех зубов |
 | `getSelectedTeeth()` | Выбранные в данный момент зубы (номера FDI) в порядке выбора |
+| `getNumberingSystem()` | Текущая система нумерации зубов |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Получить/задать расстояние между зубами на экране |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Получить/задать размер номера зуба |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Получить/задать цвет кольца выделения (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Получить/задать стиль границы кольца выделения |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Получить/задать видимость панели информации о зубе |
 | `setOcclusalVisible(on)` | Включение/отключение окклюзионного вида |
 | `setWisdomVisible(on)` | Показать/скрыть зубы мудрости |
 | `setShowBase(on)` | Показать/скрыть слой кости |
@@ -849,7 +860,7 @@ React Advanced Odontogram создаётся и поддерживается Zol
 
 **Участники**
 
-- [@odontodev](https://github.com/odontodev): гидратация состояния и API жизненного цикла, настройки пломб как управляемые props, идемпотентные сеттеры и сворачиваемые карточки
+- [@odontodev](https://github.com/odontodev): гидратация состояния и API жизненного цикла, настройки пломб как управляемые props, идемпотентные сеттеры и сворачиваемые карточки; настройки отображения схемы и `getNumberingSystem()`, доступные хост-приложению, а также недостающие уведомления `onStateChange` для настроек сессии и заметок по зубам
 - [@JulianoBazzi](https://github.com/JulianoBazzi): перевод на бразильский португальский
 - [@yassine-bhn](https://github.com/yassine-bhn): перевод на французский и предлагаемая измеренная анатомия
 - [@saegerdirk-star](https://github.com/saegerdirk-star): измеренная анатомия зуба и генератор зубов, а также предложение компонуемого интерфейса; три исправления, перенесённые из их форка (данные пациента в PDF, ориентация зубов в пародонтограмме, скорость выбора)

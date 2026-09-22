@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Włącza wykrywanie defektów wypełnienia na karcie Wypełnienia. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | wszystkie dostępne | Dostępne materiały wypełnień jako mapa wartości logicznych nad `amalgam`/`composite`/`gic`/`temporary` (nieznane klucze są ignorowane). |
 | `fissureSealingEnabled` | `boolean` | `true` | Włącza lakowanie bruzd na karcie Wypełnienia. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Odstęp między zębami na ekranie. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Rozmiar numeru zęba w siatce. |
+| `selectionColor` | `string` | `"#3b7bff"` | Kolor pierścienia zaznaczenia (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Styl obramowania pierścienia zaznaczenia. |
+| `toothInfo` | `boolean` | `true` | Pokaż panel informacji o zębie. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Wywoływane, gdy użytkownik zmienia odpowiednie ustawienie w Ustawienia → Wypełnienia. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Wywoływane, gdy użytkownik zmienia ustawienie z poziomu interfejsu. |
 
@@ -596,6 +601,12 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `setNumberingSystem(system)` | Przełącz między FDI, Universal, Palmer |
 | `clearSelection()` | Odznacz wszystkie zęby |
 | `getSelectedTeeth()` | Aktualnie zaznaczone zęby (numery FDI), w kolejności zaznaczania |
+| `getNumberingSystem()` | Aktualnie aktywny system numeracji zębów |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Odczyt/ustawienie odstępu między zębami na ekranie |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Odczyt/ustawienie rozmiaru numeru zęba |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Odczyt/ustawienie koloru pierścienia zaznaczenia (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Odczyt/ustawienie stylu obramowania pierścienia zaznaczenia |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Odczyt/ustawienie widoczności panelu informacji o zębie |
 | `setOcclusalVisible(on)` | Włącz/wyłącz widok okluzyjny |
 | `setWisdomVisible(on)` | Pokaż/ukryj zęby mądrości |
 | `setShowBase(on)` | Pokaż/ukryj warstwę kości |
@@ -849,7 +860,7 @@ React Advanced Odontogram jest tworzony i utrzymywany przez Zoltan Dul ([@ZoliQu
 
 **Współautorzy**
 
-- [@odontodev](https://github.com/odontodev): hydratacja stanu i API cyklu życia, ustawienia wypełnień jako kontrolowane props, idempotentne settery i zwijane karty
+- [@odontodev](https://github.com/odontodev): hydratacja stanu i API cyklu życia, ustawienia wypełnień jako kontrolowane props, idempotentne settery i zwijane karty; ustawienia wyświetlania wykresu i `getNumberingSystem()` udostępnione aplikacji hosta, a także brakujące powiadomienia `onStateChange` dla ustawień sesji i notatek przy zębach
 - [@JulianoBazzi](https://github.com/JulianoBazzi): tłumaczenie na brazylijski portugalski
 - [@yassine-bhn](https://github.com/yassine-bhn): tłumaczenie na francuski i proponowana zmierzona anatomia
 - [@saegerdirk-star](https://github.com/saegerdirk-star): zmierzona anatomia zęba i generator zębów, a także propozycja komponowalnego interfejsu; trzy poprawki przejęte z ich forka (dane pacjenta w PDF, orientacja zębów na wykresie periodontologicznym, szybkość zaznaczania)

@@ -111,6 +111,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | تفعيل تسجيل عيوب الحشوة في بطاقة الحشوات. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | جميعها متاحة | المواد المتاحة للحشو كخريطة منطقية على `amalgam`/`composite`/`gic`/`temporary` (تُتجاهل المفاتيح غير المعروفة). |
 | `fissureSealingEnabled` | `boolean` | `true` | تفعيل غلق الشقوق في بطاقة الحشوات. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | التباعد بين الأسنان على الشاشة. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | حجم رقم السن في الشبكة. |
+| `selectionColor` | `string` | `"#3b7bff"` | لون حلقة التحديد (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | نمط حدود حلقة التحديد. |
+| `toothInfo` | `boolean` | `true` | إظهار لوحة معلومات السن. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | تُستدعى عندما يغيّر المستخدم الإعداد المقابل في الإعدادات ← الحشوات. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | تُستدعى عندما يغيّر المستخدم الإعداد من الواجهة. |
 
@@ -598,6 +603,12 @@ npm run docs           # توليد توثيق TypeDoc داخل docs/
 | `setNumberingSystem(system)` | التبديل بين FDI والعالمي وبالمر |
 | `clearSelection()` | إلغاء تحديد كل الأسنان |
 | `getSelectedTeeth()` | الأسنان المحددة حاليًا (أرقام FDI) بترتيب التحديد |
+| `getNumberingSystem()` | نظام ترقيم الأسنان النشط حاليًا |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | قراءة/ضبط التباعد بين الأسنان على الشاشة |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | قراءة/ضبط حجم رقم السن |
+| `getSelectionColor()` / `setSelectionColor(hex)` | قراءة/ضبط لون حلقة التحديد (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | قراءة/ضبط نمط حدود حلقة التحديد |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | قراءة/ضبط ظهور لوحة معلومات السن |
 | `setOcclusalVisible(on)` | تبديل إظهار المنظر الإطباقي |
 | `setWisdomVisible(on)` | إظهار/إخفاء أسنان العقل |
 | `setShowBase(on)` | إظهار/إخفاء طبقة العظم |
@@ -850,7 +861,7 @@ React Advanced Odontogram من إنشاء وصيانة Zoltan Dul ([@ZoliQua](ht
 
 **المساهمون**
 
-- [@odontodev](https://github.com/odontodev): ترطيب الحالة وواجهة API لدورة الحياة، وإعدادات الحشوات كخصائص props مُتحكَّم بها، وأدوات ضبط idempotent، وبطاقات قابلة للطي
+- [@odontodev](https://github.com/odontodev): ترطيب الحالة وواجهة API لدورة الحياة، وإعدادات الحشوات كخصائص props مُتحكَّم بها، وأدوات ضبط idempotent، وبطاقات قابلة للطي؛ وإتاحة إعدادات عرض المخطط و`getNumberingSystem()` للتطبيق المضيف، إضافة إلى إشعارات `onStateChange` المفقودة لإعدادات الجلسة وملاحظات الأسنان
 - [@JulianoBazzi](https://github.com/JulianoBazzi): الترجمة إلى البرتغالية البرازيلية
 - [@yassine-bhn](https://github.com/yassine-bhn): الترجمة إلى الفرنسية والتشريح المقاس المقترح
 - [@saegerdirk-star](https://github.com/saegerdirk-star): تشريح الأسنان المقاس ومولّد الأسنان، إضافة إلى اقتراح الواجهة القابلة للتركيب؛ وثلاثة إصلاحات مأخوذة من نسختهم (هوية المريض في PDF، اتجاه الأسنان في مخطط اللثة، سرعة التحديد)

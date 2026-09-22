@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Zapína záchyt defektov výplne na karte Výplne. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | všetky dostupné | Dostupné výplňové materiály ako boolovská mapa nad `amalgam`/`composite`/`gic`/`temporary` (neznáme kľúče sa ignorujú). |
 | `fissureSealingEnabled` | `boolean` | `true` | Zapína zapečatenie fisúr na karte Výplne. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Rozostup zubov na obrazovke. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Veľkosť čísla zuba v mriežke. |
+| `selectionColor` | `string` | `"#3b7bff"` | Farba výberového prstenca (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Štýl okraja výberového prstenca. |
+| `toothInfo` | `boolean` | `true` | Zobraziť panel informácií o zube. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Spustí sa, keď používateľ zmení príslušné nastavenie v Nastavenia → Výplne. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Spustí sa, keď používateľ zmení nastavenie z rozhrania. |
 
@@ -596,6 +601,12 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `setNumberingSystem(system)` | Prepínanie medzi FDI, Universal, Palmer |
 | `clearSelection()` | Zrušiť výber všetkých zubov |
 | `getSelectedTeeth()` | Aktuálne vybrané zuby (čísla FDI) v poradí výberu |
+| `getNumberingSystem()` | Aktuálne aktívny systém číslovania zubov |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Získať/nastaviť rozostup zubov na obrazovke |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Získať/nastaviť veľkosť čísla zuba |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Získať/nastaviť farbu výberového prstenca (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Získať/nastaviť štýl okraja výberového prstenca |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Získať/nastaviť, či sa zobrazuje panel informácií o zube |
 | `setOcclusalVisible(on)` | Prepínanie oklúzneho pohľadu zap/vyp |
 | `setWisdomVisible(on)` | Zobraziť/skryť zuby múdrosti |
 | `setShowBase(on)` | Zobraziť/skryť vrstvu kosti |
@@ -848,7 +859,7 @@ React Advanced Odontogram vytvára a spravuje Zoltan Dul ([@ZoliQua](https://git
 
 **Prispievatelia**
 
-- [@odontodev](https://github.com/odontodev): hydratácia stavu a API životného cyklu, nastavenia výplní ako riadené props, idempotentné settery a zbaliteľné karty
+- [@odontodev](https://github.com/odontodev): hydratácia stavu a API životného cyklu, nastavenia výplní ako riadené props, idempotentné settery a zbaliteľné karty; nastavenia zobrazenia grafu a `getNumberingSystem()` sprístupnené hostiteľskej aplikácii, plus chýbajúce `onStateChange` notifikácie pre nastavenia relácie a poznámky k zubom
 - [@JulianoBazzi](https://github.com/JulianoBazzi): preklad do brazílskej portugalčiny
 - [@yassine-bhn](https://github.com/yassine-bhn): preklad do francúzštiny a navrhovaná meraná anatómia
 - [@saegerdirk-star](https://github.com/saegerdirk-star): meraná anatómia zuba a generátor zubov, plus návrh skladateľného rozhrania; tri opravy prevzaté z ich forku (údaje pacienta v PDF, orientácia zubov v parodontálnom zázname, rýchlosť výberu)

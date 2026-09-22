@@ -67,6 +67,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **The chart display settings are readable, settable and notifying (#27).**
+  Five Settings-modal values were React state private to the provider, so a host
+  persisting the doctor's preferences could neither read them after a change nor
+  restore them on the next mount — they silently reset on every reload. They now
+  live in `src/state/displaySettings.ts` with a getter and a notifying setter
+  each, exactly like `perioViewMode`: `screenToothSpacing`,
+  `screenToothNumberSize`, `selectionColor` (`#rrggbb`, sanitized),
+  `selectionBorderStyle` and the tooth-information panel
+  (`getToothInfoVisible()` / `setToothInfoVisible()`). All five are also
+  controlled props on `OdontogramShell` / `OdontogramProvider`, defined-gated
+  like the fillings props, and `getNumberingSystem()` joins them so the
+  numbering can be persisted too. Defaults are unchanged, so the rendered chart
+  is byte-identical. Contributed by
+  [@odontodev](https://github.com/odontodev).
+
 - **`getSelectedTeeth()` — read the multi-tooth selection.** A host could clear
   the selection but never ask what it was; only the single active tooth was
   readable. It returns the selected FDI numbers in the order they were added to
@@ -129,6 +144,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ValueSet concept is a CodeSystem concept with a matching display.
 
 ### Fixed
+
+- **Three mutations never reached `onStateChange` (#26).** A host persisting the
+  doctor's preferences or the chart saw none of them until the next unrelated
+  edit. The session-setting setters (`setNotesEnabled`, `setIcdasEnabled`,
+  `setCariesDepthEnabled`, `setSecondaryCariesMode`, `setRootCariesMode`,
+  `setRadiographicDepthMode`, `setWearDetailLevel`,
+  `setDiscolorationDetailLevel`, `setNumberingSystem`) now follow the convention
+  the fillings setters already used — early-return when unchanged, notify on a
+  real change. The note editor's save and delete write `state.note`, which is
+  part of the export payload, and now notify (re-saving the same text or
+  deleting an empty note stays silent). And `buildGrid()` repaints every tooth
+  from state but creates the label cells bare, so after a re-init, an anatomy
+  switch or a periodontal round trip a charted note kept its text and lost its
+  badge; the label rows are now restored with it. Contributed by
+  [@odontodev](https://github.com/odontodev).
+
+  One consequence worth knowing: `onStateChange` now fires for settings changes
+  too, so a subscriber that persists the export payload will be woken by a
+  Settings-modal toggle even though the payload itself is unchanged (the
+  autosave is debounced, so this costs one redundant write at most).
 
 A full code review of this release found eighteen defects, across the new
 interoperability work, the code splitting, and the periodontal round trip. All of

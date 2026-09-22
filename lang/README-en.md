@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Enable filling-defect findings on the Fillings card. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | all available | Available filling materials as a boolean map over `amalgam`/`composite`/`gic`/`temporary` (unknown keys ignored). |
 | `fissureSealingEnabled` | `boolean` | `true` | Enable fissure sealing on the Fillings card. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | On-screen inter-tooth spacing. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Tooth-number size in the on-screen grid. |
+| `selectionColor` | `string` | `"#3b7bff"` | Selection-ring colour (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Selection-ring border style. |
+| `toothInfo` | `boolean` | `true` | Show the tooth-information panel. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Fire when the user changes the matching setting from Settings → Fillings. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Fire when the user changes the setting from the UI. |
 
@@ -596,6 +601,12 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `setNumberingSystem(system)` | Switch between FDI, Universal, Palmer |
 | `clearSelection()` | Deselect all teeth |
 | `getSelectedTeeth()` | Currently selected teeth (FDI numbers), in selection order |
+| `getNumberingSystem()` | The tooth-numbering system currently active |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Get/set the on-screen inter-tooth spacing |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Get/set the tooth-number size |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Get/set the selection-ring colour (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Get/set the selection-ring border style |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Get/set whether the tooth-information panel is shown |
 | `setOcclusalVisible(on)` | Toggle occlusal view on/off |
 | `setWisdomVisible(on)` | Show/hide wisdom teeth |
 | `setShowBase(on)` | Show/hide bone layer |
@@ -848,7 +859,7 @@ React Advanced Odontogram is created and maintained by Zoltan Dul ([@ZoliQua](ht
 
 **Contributors**
 
-- [@odontodev](https://github.com/odontodev): state hydration and lifecycle API, fillings settings as controlled props, idempotent setters and collapsible cards
+- [@odontodev](https://github.com/odontodev): state hydration and lifecycle API, fillings settings as controlled props, idempotent setters and collapsible cards; the chart display settings and `getNumberingSystem()` exposed to hosts, and the missing `onStateChange` notifications for session settings and tooth notes
 - [@JulianoBazzi](https://github.com/JulianoBazzi): Brazilian Portuguese translation
 - [@yassine-bhn](https://github.com/yassine-bhn): French translation and the candidate measured anatomy
 - [@saegerdirk-star](https://github.com/saegerdirk-star): measured tooth anatomy and the tooth generator, plus the composable interface proposal; three fixes adopted from their fork (PDF patient identity, perio tooth orientation, selection speed)

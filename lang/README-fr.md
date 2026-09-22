@@ -111,6 +111,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Active les constats de défaut d'obturation sur la carte Obturations. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | tous disponibles | Matériaux d'obturation disponibles sous forme de mappage booléen sur `amalgam`/`composite`/`gic`/`temporary` (les clés inconnues sont ignorées). |
 | `fissureSealingEnabled` | `boolean` | `true` | Active le scellement des sillons sur la carte Obturations. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Espacement entre les dents à l'écran. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Taille du numéro de dent dans la grille. |
+| `selectionColor` | `string` | `"#3b7bff"` | Couleur de l'anneau de sélection (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Style de bordure de l'anneau de sélection. |
+| `toothInfo` | `boolean` | `true` | Afficher le panneau d'informations sur la dent. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Déclenché lorsque l'utilisateur modifie le paramètre correspondant depuis Paramètres → Obturations. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Déclenché lorsque l'utilisateur modifie le paramètre depuis l'interface. |
 
@@ -598,6 +603,12 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `setNumberingSystem(system)` | Bascule entre FDI, Universal, Palmer |
 | `clearSelection()` | Désélectionne toutes les dents |
 | `getSelectedTeeth()` | Dents actuellement sélectionnées (numéros FDI), dans l'ordre de sélection |
+| `getNumberingSystem()` | Le système de numérotation dentaire actif |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Lit/définit l'espacement entre les dents à l'écran |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Lit/définit la taille du numéro de dent |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Lit/définit la couleur de l'anneau de sélection (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Lit/définit le style de bordure de l'anneau de sélection |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Lit/définit si le panneau d'informations sur la dent est affiché |
 | `setOcclusalVisible(on)` | Active/désactive la vue occlusale |
 | `setWisdomVisible(on)` | Affiche/masque les dents de sagesse |
 | `setShowBase(on)` | Affiche/masque le calque d'os |
@@ -851,7 +862,7 @@ React Advanced Odontogram est créé et maintenu par Zoltan Dul ([@ZoliQua](http
 
 **Contributeurs**
 
-- [@odontodev](https://github.com/odontodev): hydratation de l'état et API de cycle de vie, réglages des obturations en tant que props contrôlées, setters idempotents et cartes repliables
+- [@odontodev](https://github.com/odontodev): hydratation de l'état et API de cycle de vie, réglages des obturations en tant que props contrôlées, setters idempotents et cartes repliables; les réglages d'affichage du schéma et `getNumberingSystem()` exposés à l'application hôte, ainsi que les notifications `onStateChange` manquantes pour les réglages de session et les notes par dent
 - [@JulianoBazzi](https://github.com/JulianoBazzi): traduction en portugais brésilien
 - [@yassine-bhn](https://github.com/yassine-bhn): traduction en français et l'anatomie mesurée proposée
 - [@saegerdirk-star](https://github.com/saegerdirk-star): anatomie dentaire mesurée et le générateur de dents, ainsi que la proposition d'interface composable; trois corrections reprises de leur fork (identité du patient dans le PDF, orientation des dents dans le parodontogramme, vitesse de sélection)

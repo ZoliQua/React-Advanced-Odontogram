@@ -111,6 +111,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Aktiviert Füllungsdefekt-Befunde auf der Füllungs-Karte. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | alle verfügbar | Verfügbare Füllungsmaterialien als boolesche Zuordnung über `amalgam`/`composite`/`gic`/`temporary` (unbekannte Schlüssel werden ignoriert). |
 | `fissureSealingEnabled` | `boolean` | `true` | Aktiviert die Fissurenversiegelung auf der Füllungs-Karte. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Zahnabstand auf dem Bildschirm. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Größe der Zahnnummern im Bildschirmraster. |
+| `selectionColor` | `string` | `"#3b7bff"` | Farbe des Auswahlrings (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Randstil des Auswahlrings. |
+| `toothInfo` | `boolean` | `true` | Zahninformationsbereich anzeigen. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Wird ausgelöst, wenn der Benutzer die entsprechende Einstellung über Einstellungen → Füllungen ändert. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Wird ausgelöst, wenn der Benutzer die Einstellung über die UI ändert. |
 
@@ -598,6 +603,12 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `setNumberingSystem(system)` | Zwischen FDI, Universal, Palmer wechseln |
 | `clearSelection()` | Alle Zähne abwählen |
 | `getSelectedTeeth()` | Aktuell ausgewählte Zähne (FDI-Nummern), in Auswahlreihenfolge |
+| `getNumberingSystem()` | Das aktuell aktive Zahnnummerierungssystem |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Bildschirm-Zahnabstand lesen/setzen |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Größe der Zahnnummern lesen/setzen |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Farbe des Auswahlrings lesen/setzen (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Randstil des Auswahlrings lesen/setzen |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Sichtbarkeit des Zahninformationsbereichs lesen/setzen |
 | `setOcclusalVisible(on)` | Okklusionsansicht ein-/ausschalten |
 | `setWisdomVisible(on)` | Weisheitszähne anzeigen/verbergen |
 | `setShowBase(on)` | Knochenschicht anzeigen/verbergen |
@@ -851,7 +862,7 @@ React Advanced Odontogram wird von Zoltan Dul ([@ZoliQua](https://github.com/Zol
 
 **Mitwirkende**
 
-- [@odontodev](https://github.com/odontodev): State-Hydration und Lifecycle-API, Füllungseinstellungen als kontrollierte Props, idempotente Setter und einklappbare Karten
+- [@odontodev](https://github.com/odontodev): State-Hydration und Lifecycle-API, Füllungseinstellungen als kontrollierte Props, idempotente Setter und einklappbare Karten; die Anzeigeeinstellungen des Befunds und `getNumberingSystem()` für Host-Anwendungen sowie die fehlenden `onStateChange`-Benachrichtigungen für Sitzungseinstellungen und Zahnnotizen
 - [@JulianoBazzi](https://github.com/JulianoBazzi): Übersetzung ins brasilianische Portugiesisch
 - [@yassine-bhn](https://github.com/yassine-bhn): französische Übersetzung und die vorgeschlagene vermessene Anatomie
 - [@saegerdirk-star](https://github.com/saegerdirk-star): vermessene Zahnanatomie und der Zahngenerator sowie der Vorschlag für die komponierbare Schnittstelle; drei aus ihrem Fork übernommene Korrekturen (Patientenangaben im PDF, Zahnausrichtung im Parodontalbefund, Auswahlgeschwindigkeit)

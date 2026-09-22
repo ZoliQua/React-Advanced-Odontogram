@@ -40,10 +40,8 @@ type TFn = (key: string, params?: Record<string, string | number>) => string;
  *  equivalents). Spacing = inter-tooth gap in the live grid; number size = the
  *  tooth-number font size. Session-only, pure CSS via data-attributes on the
  *  grid. */
-export type ScreenToothSpacing = "wide" | "normal" | "close";
-export type ScreenToothNumberSize = "small" | "normal" | "xlarge";
-/** Selection-ring border style (default dashed). */
-export type SelectionBorderStyle = "solid" | "dashed" | "dotted";
+export type { ScreenToothSpacing, ScreenToothNumberSize, SelectionBorderStyle } from "./state/displaySettings";
+import type { ScreenToothSpacing, ScreenToothNumberSize, SelectionBorderStyle } from "./state/displaySettings";
 /** Fillings card complexity — "complex" = per-surface grid (default), "simple"
  *  = one filled/not-filled toggle for the whole tooth. */
 export type FillingComplexity = "complex" | "simple";

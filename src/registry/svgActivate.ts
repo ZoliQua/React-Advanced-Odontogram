@@ -9,9 +9,16 @@
 import { AXES } from "./axes";
 import type { FlagCtx } from "./types";
 
+// The tooth STATE is the engine's plain, untyped per-tooth object (Sets and
+// Maps mixed with scalars, see `ToothRecord` for its serialized shape) — the
+// one `any` the registry keeps, deliberately: giving it a type here would mean
+// duplicating the live-state shape that `odontogram.ts` owns.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ToothState = any;
+
 interface Deps {
-  setActive: (el: any, on: boolean) => void;
-  svgGetById: (root: any, id: string) => any;
+  setActive: (el: Element | null, on: boolean) => void;
+  svgGetById: (root: ParentNode, id: string) => Element | null;
   isToothPresent: (sel: string) => boolean;
   isUnderGum: (sel: string) => boolean;
   isExtraction: (sel: string) => boolean;
@@ -20,7 +27,7 @@ interface Deps {
 }
 
 /** Compute the render's derived booleans (mirrors applyStateToSvgSingle). */
-export function buildFlagCtx(state: any, toothNo: number, d: Deps): FlagCtx {
+export function buildFlagCtx(state: ToothState, toothNo: number, d: Deps): FlagCtx {
   const sel = state.toothSelection;
   return {
     isImplant: sel === "implant",
@@ -37,7 +44,7 @@ export function buildFlagCtx(state: any, toothNo: number, d: Deps): FlagCtx {
 }
 
 /** Activate the in-scope boolean-flag layers + the mods set layers. Order-independent. */
-export function applyFlagLayers(svg: any, state: any, ctx: FlagCtx, d: Deps): void {
+export function applyFlagLayers(svg: ParentNode, state: ToothState, ctx: FlagCtx, d: Deps): void {
   for (const ax of AXES) {
     if (ax.kind === "boolean" && ax.svgLayer) {
       const on = state[ax.field] === true && (ax.appliesWhen ? ax.appliesWhen(ctx, state) : true);

@@ -16,7 +16,11 @@
 import { toLabel, type NumberingSystem } from "../utils/numbering";
 import { toothState } from "./chart";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- mirrors the engine-wide `Any` alias
+// The live per-tooth state is a plain object mixing Sets, Maps and scalars —
+// untyped on purpose; `odontogram.ts` documents why at its own `Any` alias, and
+// this is a local copy of that escape hatch, not a shared type (an exported
+// `any` alias would only invite wider use).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
 
 export let numberingSystem: NumberingSystem = "FDI";
@@ -42,10 +46,10 @@ export function getDisplayedToothNumber(toothNo: Any){
 }
 
 /** Formats a tooth number for display using the active numbering system AND
- *  the milktooth display-remap ({@link getDisplayedToothNumber}) — the exact
+ *  the milktooth display-remap (`getDisplayedToothNumber`) — the exact
  *  same formatting {@link getOdontogramSummary} uses for every tooth number
  *  it prints (permanent/missing lists, per-section entries, implants). Exported
- *  so the "What changes" box in App.tsx can label a {@link PlanChange.toothNo}
+ *  so the "What changes" box in App.tsx can label a `PlanChange.toothNo`
  *  identically, without duplicating the numbering/milktooth logic. */
 export function formatToothLabel(toothNo: number): string {
   return toLabel(getDisplayedToothNumber(toothNo), numberingSystem);

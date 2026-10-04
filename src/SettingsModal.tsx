@@ -27,7 +27,7 @@ import type {
 import type { PdfColorTheme } from "./perioPdf";
 
 /** Translation function signature (subset of `useI18n`'s `t`). */
-type TFn = (key: string, params?: Record<string, string | number>) => string;
+export type TFn = (key: string, params?: Record<string, string | number>) => string;
 
 /**
  * The full set of live setting values + change handlers the modal drives.
@@ -144,14 +144,14 @@ export type SettingsState = {
 };
 
 /** Context handed to every tab's `render()`. */
-type TabContext = { t: TFn; s: SettingsState };
+export type TabContext = { t: TFn; s: SettingsState };
 
 /**
  * Declarative tab registry. Adding a settings section is a matter of pushing a
  * new `{ id, titleKey, render }` entry (and its i18n keys) — no structural
  * changes to the modal shell. `render` receives the live settings + `t`.
  */
-type SettingsTab = {
+export type SettingsTab = {
   id: string;
   titleKey: string;
   render: (ctx: TabContext) => ReactNode;

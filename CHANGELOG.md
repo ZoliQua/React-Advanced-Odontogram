@@ -11,6 +11,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Quality pass: the reference documents itself, and the `any`s are gone or
+  justified.** The generated API reference had 41 warnings; it now has none.
+  Doc comments that linked to internal symbols are plain code spans — a link to
+  something the reference does not contain was never a link — and every type a
+  public signature already exposes is exported so it can be named: `CaseMeta`,
+  `PlainPerio`, `PerioSitePatch`, `FinalPerioClassification`, `SettingsTab`,
+  `TabContext`, `TFn`, `TranslateFn`, `RGB`, `Params`, `UseI18nOptions`. Types
+  only — the runtime API surface is unchanged.
+
+  Of the 13 `any`s in the source, 12 are gone: the PDF document interface takes
+  the option bags it actually receives, and the registry's flag activation takes
+  DOM nodes rather than anything at all. The one that remains is the engine-wide
+  alias for the live, untyped per-tooth state — now named and documented at its
+  definition, instead of being repeated silently in five modules.
+
+  Also from the code review's low-severity list: the FHIR importer's diagnosis
+  catalog is the engine's own set rather than a copy kept in step by a drift
+  test, and it shares the six probing sites too; the finding-types ValueSet
+  selects its concepts by identity instead of by matching the wording of their
+  definitions (a reword used to drop concepts silently); and the code-split
+  guard no longer exempts type-only imports, having inspected only the first
+  matching line. The published FHIR package and every parity golden are
+  byte-identical.
+
 - **The project is now React Advanced Odontogram — repository included.** The
   GitHub repository moved from `ZoliQua/React-Odontogram-Modul` to
   [`ZoliQua/React-Advanced-Odontogram`](https://github.com/ZoliQua/React-Advanced-Odontogram)

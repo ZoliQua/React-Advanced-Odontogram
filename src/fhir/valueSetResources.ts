@@ -3,9 +3,9 @@
 
 import type { ValueSet } from "fhir/r4";
 import { LOCAL_SYSTEM, LOCAL_VALUE_MAPS } from "./codesystems";
-import { FHIR_BASE } from "./primitives";
+import { fhirFullUrl, FHIR_BASE } from "./primitives";
 import { AXES } from "../registry/axes";
-import { buildOdontogramCodeSystem, EXTRA_LOCAL_CODES } from "./codeSystemResource";
+import { buildOdontogramCodeSystem, EXTRA_LOCAL_CODES, FINDING, WHOLE_MOUTH_FINDING } from "./codeSystemResource";
 
 /**
  * Interop arc part C — ValueSets over the engine CodeSystem, and the manifest
@@ -25,7 +25,7 @@ import { buildOdontogramCodeSystem, EXTRA_LOCAL_CODES } from "./codeSystemResour
 export const PACKAGE_NAME = "react-advanced-odontogram.fhir";
 const REPO = "https://github.com/ZoliQua/React-Advanced-Odontogram";
 
-const vsUrl = (id: string) => `${FHIR_BASE}/ValueSet/${id}`;
+const vsUrl = (id: string) => fhirFullUrl("ValueSet", id);
 const pascal = (s: string) => s.replace(/(^|[-_])(\w)/g, (_, __, c: string) => c.toUpperCase());
 
 function base(id: string, title: string, description: string, version: string): ValueSet {
@@ -59,7 +59,11 @@ export function buildFindingTypesValueSet(version: string = __APP_VERSION__): Va
     "The Observation.code concepts of the engine's FHIR export: one per clinical-axis registry entry plus the hand-emitted whole-mouth and per-surface finding types.", version);
   const concept = [
     ...AXES.map((a) => ({ code: a.finding.local, display: a.finding.display })),
-    ...EXTRA_LOCAL_CODES.filter((x) => /Finding type|Whole-mouth finding/.test(x.definition)).map((x) => ({ code: x.code, display: x.display })),
+    // Selected by IDENTITY against the two definition constants, not by matching
+    // their wording: a reworded sentence used to drop concepts from this ValueSet
+    // silently.
+    ...EXTRA_LOCAL_CODES.filter((x) => x.definition === FINDING || x.definition === WHOLE_MOUTH_FINDING)
+      .map((x) => ({ code: x.code, display: x.display })),
   ];
   vs.compose = { include: [{ system: LOCAL_SYSTEM, concept }] };
   return vs;

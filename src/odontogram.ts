@@ -91,6 +91,11 @@ import { PERIO_SITES, TOOTH_LEVEL_DX_KEYS, VALID_DX_OVERRIDE_VALUE, VALID_MOBILI
 export { TEMPLATES, TOOTH_TEMPLATE };
 export { CLASSIC_CEJ_Y, CLASSIC_IMPLANT_CEJ_Y, CLASSIC_MILKTOOTH_CEJ_Y } from "./anatomy/profiles";
 export type { ToothAnatomy, AnatomyProfile };
+// Types that public signatures here already expose; re-exported so a consumer
+// can name them (and so the generated reference documents them).
+export type { CaseMeta } from "./state/caseMeta";
+export type { PlainPerio, PerioSitePatch } from "./state/perio";
+export type { FinalPerioClassification } from "./fhir/toFhirPerio";
 
 // The profile the most recent setToothAnatomy() call is switching TO, and a
 // monotonic request token. Selecting "measured" awaits a chunk, so a second
@@ -192,6 +197,12 @@ function getPeriapicalTypeOptions(){
 // (The former `CARIES_OPTIONS` relabel table was removed with PR 3c — the
 // declarative `CariesCard` owns the caries surface-cross labels/letters now.)
 
+// The engine-wide escape hatch, used for two things only: the live per-tooth
+// state (a plain object mixing Sets, Maps and scalars, whose typed shape lives
+// in `ToothRecord` for the SERIALIZED form) and the DOM helpers below. Typing
+// either properly is a refactor of its own across this file's several thousand
+// call sites, not a rename — so it stays, named and deliberate rather than
+// scattered and silent.
 type Any = any;
 
 // Restoration material -> its SVG wrapper <g> id. Every material lives inside a
@@ -220,7 +231,12 @@ const PROSTHESIS_SUMMARY_KEY: Record<string, string> = {
 
 
 // ---- DOM helpers ----
+// Deliberately untyped (see the `Any` alias above): call sites reach straight
+// for `.value`, `.checked`, `.dataset` and friends on the result, so a generic
+// `Element` would need a cast at every one of them. A caller that cares casts.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const $ = (sel: string, el: ParentNode = document) => el.querySelector(sel) as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const $$ = (sel: string, el: ParentNode = document) => Array.from(el.querySelectorAll(sel)) as any[];
 
 function el(tag: Any, attrs: Any = {}, children: Any[] = []){
@@ -339,7 +355,7 @@ const planEditedTeeth = new Set<number>();
 
 /** Deep-copy tooth `toothNo`'s STATUS state into the PLAN chart via the proven
  *  serializeState -> hydrateState round-trip (fresh Maps/Sets, no shared refs —
- *  same guarantee as {@link cloneChart}). Passes `false` for
+ *  same guarantee as `cloneChart`). Passes `false` for
  *  `inferLegacySecondaryCaries`: the source is a live, fully-hydrated in-memory
  *  state whose recurrent-caries severities are already explicit, so no legacy
  *  inference is wanted. A status tooth with no entry mirrors a `defaultState()`
@@ -501,7 +517,7 @@ function syncChartModeUi(): void {
 /**
  * Switch the active chart between "status" (current findings) and "plan"
  * (proposed treatment). The first time "plan" is entered, it is deep-cloned
- * from "status" (see {@link cloneChart}); later switches reuse the existing
+ * from "status" (see `cloneChart`); later switches reuse the existing
  * plan chart untouched. Re-renders every tooth from the newly active chart
  * via the SAME full-repaint mechanism `importStatus()` uses, so no new
  * render path is introduced and SVG output stays byte-identical to the
@@ -990,7 +1006,7 @@ function syncInflammationModVisibility(container: Element | null, toothSelection
   if(inflLabel) inflLabel.classList.toggle("hidden", hidden);
 }
 
-/** TEST-ONLY: apply {@link syncInflammationModVisibility} to a hand-built
+/** TEST-ONLY: apply `syncInflammationModVisibility` to a hand-built
  *  `#modsChecks` DOM fragment, without requiring a live initOdontogram(). Not
  *  part of the public API. */
 export function __syncInflammationModVisibilityForTest(container: Element, toothSelection: string): void {
@@ -1001,7 +1017,7 @@ export function __syncInflammationModVisibilityForTest(container: Element, tooth
  *  parodontal/inflammation mods (they're migrated away for implants — see
  *  hydrateState's implant-mods migration), so show `#periImplantRow` only for
  *  an implant and hide BOTH mod checkboxes' rows there. Composes with
- *  {@link syncInflammationModVisibility} for the `parodontal` checkbox (order
+ *  `syncInflammationModVisibility` for the `parodontal` checkbox (order
  *  doesn't matter there — nothing else touches it). For `inflammation`,
  *  though, this function's blanket implant-only rule (visible for EVERY
  *  non-implant selection, including a present tooth) is deliberately
@@ -1020,7 +1036,7 @@ function syncPeriImplantVisibility(periImplantRow: Element | null, modsContainer
   }
 }
 
-/** TEST-ONLY: apply {@link syncPeriImplantVisibility} to hand-built DOM
+/** TEST-ONLY: apply `syncPeriImplantVisibility` to hand-built DOM
  *  fragments, without requiring a live initOdontogram(). Not part of the
  *  public API. */
 export function __syncPeriImplantVisibilityForTest(periImplantRow: Element | null, modsContainer: Element | null, toothSelection: string): void {
@@ -2327,7 +2343,7 @@ export type ToothDiagnosis = {
 };
 
 /** A tooth's EFFECTIVE coded diagnoses (derived − suppressed + added), reused
- *  by both the tooltip ({@link getStateSummary}) and the whole-mouth summary
+ *  by both the tooltip (`getStateSummary`) and the whole-mouth summary
  *  ({@link getOdontogramSummary}). Reads the ACTIVE chart's tooth state (so
  *  it's transparently Status/Plan dual-state aware, like every other per-tooth
  *  getter). A tooth with no state (never touched) has no diagnoses. */
@@ -2507,7 +2523,7 @@ export function removeDiagnosisFromSelection(key: string): void {
  *  validates `key` against {@link TOOTH_LEVEL_DX_KEYS} and `mode` against
  *  {@link VALID_DX_OVERRIDE_VALUE} (or `null`, which clears any existing
  *  override for `key`); anything else is a silent no-op. Routed through
- *  {@link gateToothEditBatch} directly (not `applyToSelected`) since
+ *  `gateToothEditBatch` directly (not `applyToSelected`) since
  *  `dxOverrides` has no SVG/DOM side effect to re-render per tooth. */
 export function setDxOverrideForSelection(key: string, mode: "add" | "suppress" | null): void {
   if(!TOOTH_LEVEL_DX_KEYS.has(key)) return;
@@ -3677,7 +3693,7 @@ export function __planEditedTeethForTest(): number[] {
   return Array.from(planEditedTeeth);
 }
 
-/** TEST-ONLY: invoke {@link mirrorStatusToPlan} directly so the deep-copy
+/** TEST-ONLY: invoke `mirrorStatusToPlan` directly so the deep-copy
  *  behavior can be exercised without going through the gate. Not part of the
  *  public API. */
 export function __mirrorStatusToPlanForTest(toothNo: number): void {
@@ -4315,7 +4331,7 @@ function syncToothDetailControls(state: Any): void {
   ($("#discolorationToggle") as HTMLInputElement).checked = state.discoloration !== "none";
 }
 
-/** TEST-ONLY: apply {@link syncToothDetailControls} to a hand-built DOM
+/** TEST-ONLY: apply `syncToothDetailControls` to a hand-built DOM
  *  fragment (the wear/discoloration select+toggle labels and checkboxes),
  *  without requiring a live initOdontogram(). Mirrors
  *  __syncInflammationModVisibilityForTest. Not part of the public API. */
@@ -4325,12 +4341,12 @@ export function __syncToothDetailControlsForTest(state: Record<string, unknown>)
 
 /**
  * Sync the #perioRow six-site PD/GM/BOP/SUP grid (built once by
- * {@link buildPerioGrid}) + the live derived read-out (per-site CAL, tooth
+ * `buildPerioGrid`) + the live derived read-out (per-site CAL, tooth
  * %BOP) for `toothNo`. Values are read via the SAME public
  * getToothPerio()/getToothCal() API the write path (buildPerioGrid's change
  * listeners) and the FHIR/export paths use — this never re-derives CAL or
  * %BOP itself, it only formats what those functions already return. The row
- * is hidden via {@link perioRowHidden} (missing/implant/under-gum/
+ * is hidden via `perioRowHidden` (missing/implant/under-gum/
  * extraction-socket teeth have no probing site to chart); when hidden (or
  * `toothNo` is unset — e.g. no active tooth yet) the per-input sync is
  * skipped, mirroring syncToothDetailControls' small-standalone-sync shape.
@@ -4377,7 +4393,7 @@ function syncPerioRow(state: Any, toothNo: Any = activeTooth): void {
   }
 }
 
-/** TEST-ONLY: apply {@link syncPerioRow} to a hand-built #perioRow DOM
+/** TEST-ONLY: apply `syncPerioRow` to a hand-built #perioRow DOM
  *  fragment for a given `toothNo`, without requiring a live initOdontogram()
  *  or a real `activeTooth`. Mirrors __syncToothDetailControlsForTest /
  *  __syncInflammationModVisibilityForTest. Not part of the public API. */
@@ -4389,7 +4405,7 @@ export function __syncPerioRowForTest(state: Record<string, unknown>, toothNo: n
  * Build the static 6-site PD/GM/BOP/SUP grid ONCE — site
  * identities never change across teeth, mirroring buildSurfaceCross/
  * buildChecks building their option lists once in wireControls(); per-tooth
- * VALUES are synced separately by {@link syncPerioRow} (called from
+ * VALUES are synced separately by `syncPerioRow` (called from
  * syncControlsFromState on tooth select), exactly like the caries/filling
  * surface checkboxes' `.checked` is synced from state while the surface list
  * itself is built once. Two site-group rows in PERIO_SITES' own canonical
@@ -4458,7 +4474,7 @@ function buildPerioGrid(container: Any): void {
   buildSiteRow(PERIO_SITES.slice(3, 6), "perio-lingual-row");
 }
 
-/** TEST-ONLY: apply {@link buildPerioGrid} to a hand-built container, without
+/** TEST-ONLY: apply `buildPerioGrid` to a hand-built container, without
  *  requiring a live initOdontogram() (there is no full-DOM mount harness for
  *  the tooth panel). Lets a test verify the real grid-building DOM shape
  *  (ids/data-attributes/types) that
@@ -4545,7 +4561,7 @@ function resetToothGated(toothNo: number): void {
 }
 
 /** Reset a SET of selected teeth to `defaultState()`,
- *  routed through {@link gateToothEditBatch} — one confirm covers the whole set
+ *  routed through `gateToothEditBatch` — one confirm covers the whole set
  *  when it touches a plan-edited tooth; un-planned teeth mirror status->plan.
  *  The `edentulous` flip + render + control-sync all live INSIDE the gated
  *  closure so on the deferred-confirm path they take effect only on Accept
@@ -5097,7 +5113,7 @@ function hideCariesDepthPopup(){
  *  mesial -> "M", distal -> "D", subcrown -> "SC" always.
  *
  *  SIMPLE: always the tooth-independent B/M/O/D/L/SC set, regardless of
- *  position. Exported so both {@link summarySurfaceLetter} and the live
+ *  position. Exported so both `summarySurfaceLetter` and the live
  *  surface-cross UI (buildSurfaceCross/refreshCheckLabels) share one source
  *  of truth. */
 export function surfaceLetter(surface: string, toothNo?: number | null): string {
@@ -5906,7 +5922,7 @@ const DIFF_AXES: { key: string; labelKey: string; label: (s: Any) => string }[] 
 
 /**
  * Compare the "status" chart against the "plan" chart, tooth by tooth and
- * axis by axis (see {@link DIFF_AXES}), and report every axis whose label
+ * axis by axis (see `DIFF_AXES`), and report every axis whose label
  * differs. Pure and read-only: never mutates either chart, never touches the
  * DOM, never renders — a `parity.test.ts`-safe addition.
  *
@@ -6556,7 +6572,7 @@ export async function exportSvg(){
  * callers can encode it as PNG or JPEG at whatever quality they need.
  * Extracted out of `exportImage`/`exportPerioImage`'s previously-duplicated
  * raster paths (DRY) — behavior is unchanged, only factored out. The new
- * `exportPdf()` raster path reuses it too, via {@link rasterizeSvgToPng}.
+ * `exportPdf()` raster path reuses it too, via `rasterizeSvgToPng`.
  */
 async function rasterizeSvgToCanvas(xml: string, width: number, height: number, scale = 2): Promise<HTMLCanvasElement> {
   const svgUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
@@ -6578,7 +6594,7 @@ async function rasterizeSvgToCanvas(xml: string, width: number, height: number, 
 }
 
 /**
- * SVG → PNG data URL, built on {@link rasterizeSvgToCanvas}.
+ * SVG → PNG data URL, built on `rasterizeSvgToCanvas`.
  * Used by `exportImage`'s/`exportPerioImage`'s PNG branch AND by
  * `exportPdf`'s chart-embedding path (jsPDF `.addImage` needs a PNG/JPEG
  * data URL, never raw SVG — see the module doc comment on `exportPdf`).
@@ -6640,7 +6656,7 @@ export async function exportPerioSvg(): Promise<void> {
 }
 
 /** Export the full perio chart as PNG/JPG (SVG → canvas @2×, via the
- *  shared {@link rasterizeSvgToCanvas} raster core). */
+ *  shared `rasterizeSvgToCanvas` raster core). */
 export async function exportPerioImage(format: "png" | "jpg" = "png"): Promise<void> {
   if(exportInProgress) return;
   exportInProgress = true;
@@ -6848,7 +6864,7 @@ function pdfPatientRows(
     { label: t("pdf.field.examDate"), value: formatPdfDate(examIso, settings.dateFormat) },
   ];
 }
-/** Test seam for {@link pdfPatientRows} (a real `exportPdf` needs jsPDF and a canvas). */
+/** Test seam for `pdfPatientRows` (a real `exportPdf` needs jsPDF and a canvas). */
 export const __pdfPatientRowsForTest = pdfPatientRows;
 
 // Odontogram PDF-setting → concrete value maps.
@@ -6904,7 +6920,7 @@ function buildPerioAbbreviations(): { term: string; desc: string }[] {
   return out;
 }
 
-/** Test seam for {@link buildPerioAbbreviations} (the fn is module-private; the
+/** Test seam for `buildPerioAbbreviations` (the fn is module-private; the
  *  real caller `exportPdf` can't run under jsdom — jsPDF needs canvas). */
 export function __buildPerioAbbreviationsForTest(): { term: string; desc: string }[] {
   return buildPerioAbbreviations();
@@ -6913,7 +6929,7 @@ export function __buildPerioAbbreviationsForTest(): { term: string; desc: string
 /**
  * Assemble a printable PDF report (jsPDF-native — vector text + raster chart
  * PNGs, no svg2pdf.js). Gathers all `data` (SVG→PNG
- * rasterization via {@link rasterizeSvgToPng}, summary/classification text,
+ * rasterization via `rasterizeSvgToPng`, summary/classification text,
  * `hasAnyPerioData()`), drives the export-progress overlay, then hands off
  * to the PURE `assemblePdf()` (`src/perioPdf.ts`), which decides section
  * layout from `opts`/`data` alone.

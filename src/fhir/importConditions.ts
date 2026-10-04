@@ -6,19 +6,22 @@ import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_CASE_KEY, VALID_LATERALIT
 import { deriveDentalDiagnoses } from "../dx/derive";
 import { ICD10CM_PACK } from "../dx/packs";
 import { REFINED_CM_TO_KEY, REFINED_WHO_TO_KEY } from "../dx/refine";
+import { TOOTH_LEVEL_DX_KEYS } from "../state/payload";
 import { ICD10_SYSTEM, SNOMED_SYSTEM, isLocalSystem } from "./codesystems";
 import { isToothCode } from "./primitives";
 import { deciduousToFdi } from "./iso3950";
 
-/** Tooth-level add/suppress catalog — MUST equal odontogram.ts `TOOTH_LEVEL_DX_KEYS`
- *  (drift-guarded by a test). Derived locally to avoid a fromFhir -> odontogram.ts
- *  back-dependency. Excludes the whole-mouth perio + uncoded peri-implant keys, so
- *  the override diff can never infer a false suppress from those. Exported so the
- *  drift-guard test can assert real equality against the odontogram.ts export. */
-export const CATALOG: Set<string> = new Set(
-  (Object.keys(DX_CODES) as DiagnosisKey[]).filter(
-    (k) => k !== "periodontitis" && k !== "gingivitis" && k !== "periImplantMucositis" && k !== "periImplantitis"),
-);
+/** Tooth-level add/suppress catalog: the engine's own `TOOTH_LEVEL_DX_KEYS`,
+ *  not a copy of it. It excludes the whole-mouth periodontal and the uncoded
+ *  peri-implant keys, so the override diff can never infer a false suppress
+ *  from those.
+ *
+ *  This used to be re-derived here, to avoid a back-dependency on the (then
+ *  enormous) odontogram.ts. The set moved to `state/payload.ts` when that file
+ *  was split, and importing it from there adds no cycle — so the duplicate, and
+ *  the drift guard it needed, are gone. Still exported: it names the role this
+ *  set plays on the import path. */
+export const CATALOG: ReadonlySet<string> = TOOTH_LEVEL_DX_KEYS;
 
 // reverse WHO ICD-10 code -> key maps (fallback when an id doesn't match our convention).
 // Map (not a plain object) -- a plain-object lookup for a code like "toString"/

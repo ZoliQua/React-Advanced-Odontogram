@@ -231,7 +231,7 @@ export type OdontogramProviderProps = {
   /**
    * Filling-complexity level for the Fillings card: `"simple"` (one material
    * per tooth, no per-surface picker) or `"complex"` (per-surface materials,
-   * default). Contrast with {@link settings.panels} — this one mirrors the
+   * default). Contrast with `settings.panels` — this one mirrors the
    * `fillingComplexity` engine flag (Settings → Fillings). When provided, the
    * value overrides the engine/UI default; when omitted, whatever the engine
    * holds (module default or a prior `setFillingComplexity` call) stays put.
@@ -294,7 +294,7 @@ export type OdontogramProviderProps = {
 };
 
 /** The translate function surfaced by {@link useI18n}. */
-type TranslateFn = ReturnType<typeof useI18n>["t"];
+export type TranslateFn = ReturnType<typeof useI18n>["t"];
 
 /**
  * Everything the surface components and shell-managed modals consume. Cross-cutting

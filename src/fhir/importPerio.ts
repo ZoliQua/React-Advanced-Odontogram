@@ -4,6 +4,7 @@
 import type { ToothRecord } from "./types";
 import { isLocalSystem } from "./codesystems";
 import { ensureTooth, isToothCode } from "./primitives";
+import { PERIO_SITES } from "../state/payload";
 import { deciduousToFdi } from "./iso3950";
 import { LOINC, LOINC_SYSTEM, COMPONENT_BODYSITE_EXTENSION_URL } from "./toFhirPerio";
 
@@ -21,7 +22,14 @@ import { LOINC, LOINC_SYSTEM, COMPONENT_BODYSITE_EXTENSION_URL } from "./toFhirP
  * `hydrateState` re-validates and clamps everything anyway.
  */
 
-const SITES = ["MB", "B", "DB", "ML", "L", "DL"] as const;
+// The engine's own six probing sites — imported, not re-listed: a site added
+// there must not silently stop importing here.
+const SITES = PERIO_SITES;
+// The furcation entrances and the four O'Leary plaque surfaces happen to be the
+// same four names, but they are separate value sets (`VALID_FURCATION_ENTRANCE`
+// is filtered per tooth position, `VALID_PLAQUE_SURFACE` is not). They stay
+// literal tuples here because `inSet()` narrows the parsed string to them; the
+// validators in state/payload.ts are plain `Set<string>` and cannot.
 const ENTRANCES = ["mesial", "distal", "buccal", "lingual"] as const;
 const SURFACES = ["mesial", "distal", "buccal", "lingual"] as const;
 const SMOKING = new Set(["never", "former", "current"]);

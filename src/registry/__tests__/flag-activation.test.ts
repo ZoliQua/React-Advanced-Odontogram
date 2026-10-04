@@ -12,7 +12,9 @@ const deps = {
 };
 const active = (state: any, toothNo = 11) => {
   const calls: string[] = []; deps.setActive.mockImplementation((id: any, on: boolean) => on && calls.push(id));
-  applyFlagLayers({}, state, buildFlagCtx(state, toothNo, deps as any), deps as any); return calls;
+  // A real node: the root is only handed to the (faked) svgGetById, but the
+  // signature asks for a DOM parent rather than anything at all.
+  applyFlagLayers(document.createElement("div"), state, buildFlagCtx(state, toothNo, deps as any), deps as any); return calls;
 };
 
 describe("applyFlagLayers", () => {

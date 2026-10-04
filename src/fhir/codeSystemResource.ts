@@ -56,11 +56,16 @@ const EXTENT_DISPLAY: Record<string, string> = { localized: "Localized", general
 const LATERALITY_DISPLAY: Record<string, string> = { unspecified: "Unspecified laterality", left: "Left", right: "Right", bilateral: "Bilateral" };
 
 const QUALIFIER = "Qualifier / component code";
-const FINDING = "Finding type (Observation.code)";
+export const FINDING = "Finding type (Observation.code)";
+/** The definition text of a whole-mouth (not per-tooth) finding type. Named and
+ *  exported for the same reason as FINDING: the finding-types ValueSet selects
+ *  on these two, and used to do it by matching their WORDING with a regex — a
+ *  reworded sentence would have silently dropped concepts from the ValueSet. */
+export const WHOLE_MOUTH_FINDING = "Whole-mouth finding (Observation.code)";
 
 /** Hand-emitted LOCAL_SYSTEM codes outside the axis registry and the value maps. */
 export const EXTRA_LOCAL_CODES: readonly Extra[] = [
-  { code: "edentulous", display: "Edentulous (whole mouth)", definition: "Whole-mouth finding (Observation.code)" },
+  { code: "edentulous", display: "Edentulous (whole mouth)", definition: WHOLE_MOUTH_FINDING },
   { code: "radiographic-caries-depth", display: "Radiographic caries depth", definition: FINDING },
   { code: "filling-defect", display: "Filling defect", definition: FINDING },
   { code: "tooth-note", display: "Tooth note", definition: FINDING },

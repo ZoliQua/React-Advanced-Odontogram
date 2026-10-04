@@ -145,9 +145,9 @@ export interface PdfAssembleData {
  *  lightweight fake without constructing a real `jsPDF` (see the jsdom note
  *  above). A real `jsPDF` instance satisfies this structurally. */
 export interface PdfDocLike {
-  text: (text: string, x: number, y: number, options?: any) => PdfDocLike;
+  text: (text: string, x: number, y: number, options?: Record<string, unknown>) => PdfDocLike;
   addImage: (imageData: string, format: string, x: number, y: number, width: number, height: number) => PdfDocLike;
-  addPage: (...args: any[]) => PdfDocLike;
+  addPage: (...args: unknown[]) => PdfDocLike;
   setFontSize: (size: number) => PdfDocLike;
   setFont: (fontName: string, fontStyle?: string) => PdfDocLike;
   // Embedded-font registration (present on a real jsPDF, absent on the test
@@ -204,7 +204,7 @@ function pdfStamp(): string {
 // Report colour palette (RGB) for the tabular layout — a colored section heading
 // bar (white text), light key-cell + alternating row shading, subtle borders.
 // Selectable via the PDF-settings colour theme.
-type RGB = readonly [number, number, number];
+export type RGB = readonly [number, number, number];
 export interface PdfPalette {
   header: RGB;      // section-heading bar fill (white text)
   headerText: RGB;
@@ -262,7 +262,7 @@ export function assemblePdf(
   doc.setFont(FONT, "normal");
   // All text goes through `drawText` so the per-script transform (Arabic
   // joining/bidi) is applied uniformly right before rendering.
-  const drawText = (s: string, x: number, y: number, options?: any) => doc.text(shape(s), x, y, options);
+  const drawText = (s: string, x: number, y: number, options?: Record<string, unknown>) => doc.text(shape(s), x, y, options);
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const contentWidth = pageWidth - MARGIN_MM * 2;

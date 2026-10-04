@@ -48,8 +48,8 @@ export function setToothEditGate(fn: (toothNo: number, applyFn: () => boolean | 
 // model: called while `chartMode === "plan"` they read/write the plan chart, and
 // vice versa. Pure data — no SVG/DOM touched, no render triggered.
 
-type PerioSitePatch = { pd?: number | null; gm?: number; bop?: boolean; sup?: boolean };
-type PlainPerio = { pd: Record<string, number>; gm: Record<string, number>; bop: string[]; sup: string[] };
+export type PerioSitePatch = { pd?: number | null; gm?: number; bop?: boolean; sup?: boolean };
+export type PlainPerio = { pd: Record<string, number>; gm: Record<string, number>; bop: string[]; sup: string[] };
 
 /**
  * Set/clear one perio site's reading(s) on the active chart's tooth.
@@ -156,7 +156,7 @@ export function getToothPerio(toothNo: number): PlainPerio {
  *   entrance; `null`/`undefined` clears it; anything else (non-integer,
  *   out-of-range) is a silent no-op — state stays unchanged.
  *
- * Fires {@link notifyStateChange} whenever it actually mutates state; never
+ * Fires `notifyStateChange` whenever it actually mutates state; never
  * on a rejected/no-op call.
  */
 export function setFurcation(toothNo: number, entrance: string, grade: number | null | undefined): void {
@@ -204,7 +204,7 @@ export function getToothFurcation(toothNo: number): Record<string, number> {
  * - `present` truthy adds the surface to the set (plaque present); falsy
  *   removes it (clean/not recorded).
  *
- * Fires {@link notifyStateChange} whenever it actually mutates state; never
+ * Fires `notifyStateChange` whenever it actually mutates state; never
  * on a rejected/no-op call.
  */
 export function setPlaque(toothNo: number, surface: string, present: boolean): void {
@@ -257,7 +257,7 @@ function getSurfaceGrade(map: Map<string, number>, surface: string): 0|1|2|3 {
  * - `grade` 0 clears the surface (absence = healthy); 1/2/3 sets it; any
  *   other value (non-integer, out of range) is a silent no-op.
  *
- * Fires {@link notifyStateChange} whenever it actually mutates state; never
+ * Fires `notifyStateChange` whenever it actually mutates state; never
  * on a rejected/no-op call — `toothEditGate`'s `applyFn` returns `false` for
  * a no-op so the gate protocol never marks/mirrors a tooth that didn't change.
  */
@@ -288,7 +288,7 @@ export function getPlaqueIndex(toothNo: number, surface: string): 0|1|2|3 {
 }
 
 /** Set/clear a tooth's Silness-Löe Plaque Index grade on one surface on the
- *  active chart. See {@link setSurfaceGrade} for validation/no-op semantics. */
+ *  active chart. See `setSurfaceGrade` for validation/no-op semantics. */
 export function setPlaqueIndex(toothNo: number, surface: string, grade: number): void {
   setSurfaceGrade(toothNo, "pi", surface, grade);
 }
@@ -301,7 +301,7 @@ export function getGingivalIndex(toothNo: number, surface: string): 0|1|2|3 {
 }
 
 /** Set/clear a tooth's Löe-Silness Gingival Index grade on one surface on the
- *  active chart. See {@link setSurfaceGrade} for validation/no-op semantics. */
+ *  active chart. See `setSurfaceGrade` for validation/no-op semantics. */
 export function setGingivalIndex(toothNo: number, surface: string, grade: number): void {
   setSurfaceGrade(toothNo, "gi", surface, grade);
 }
@@ -368,11 +368,11 @@ export function getKeratinizedWidth(toothNo: number): number | null {
  * Set/clear a tooth's keratinized gingiva width (mm) on the active chart.
  *
  * - `mm === null` explicitly clears it (not charted).
- * - Any other value is clamped to an integer 0-15 via {@link clampKg}.
+ * - Any other value is clamped to an integer 0-15 via `clampKg`.
  * - A non-finite number (e.g. `NaN` from a bad keystroke) is a silent no-op
  *   — it must NOT clear an existing value, unlike an explicit `null`.
  *
- * Fires {@link notifyStateChange} whenever it actually mutates state; never
+ * Fires `notifyStateChange` whenever it actually mutates state; never
  * on a rejected/no-op call — `toothEditGate`'s `applyFn` returns `false` for
  * a no-op so the gate protocol never marks/mirrors a tooth that didn't change.
  */
@@ -399,7 +399,7 @@ export function setKeratinizedWidth(toothNo: number, mm: number | null): void {
 /**
  * Set a tooth's CEJ-visibility on the active chart. `value` must be one of
  * {@link VALID_CEJ_VISIBILITY} (none | detectable | not-detectable); anything
- * else is a silent no-op (state unchanged). Fires {@link notifyStateChange}
+ * else is a silent no-op (state unchanged). Fires `notifyStateChange`
  * only when it actually changes state; never on a rejected/no-op call.
  */
 export function setCejVisibility(toothNo: number, value: string): void {
@@ -426,7 +426,7 @@ export function getCejVisibility(toothNo: number): string {
 /**
  * Set a tooth's root-concavity on the active chart. `value` must be one of
  * {@link VALID_ROOT_CONCAVITY} (none | mild | deep); anything else is a silent
- * no-op (state unchanged). Fires {@link notifyStateChange} only when it
+ * no-op (state unchanged). Fires `notifyStateChange` only when it
  * actually changes state; never on a rejected/no-op call.
  */
 export function setRootConcavity(toothNo: number, value: string): void {
@@ -460,7 +460,7 @@ export function getRootConcavity(toothNo: number): string {
  * Set a tooth's gingival-thickness on the active chart. `value` must be one
  * of {@link VALID_GINGIVAL_THICKNESS} (unknown | thin | medium | thick);
  * anything else is a silent no-op (state unchanged). Fires
- * {@link notifyStateChange} only when it actually changes state; never on a
+ * `notifyStateChange` only when it actually changes state; never on a
  * rejected/no-op call.
  */
 export function setGingivalThickness(toothNo: number, value: string): void {
@@ -485,7 +485,7 @@ export function getGingivalThickness(toothNo: number): string {
 /**
  * Set a tooth's Miller recession class on the active chart. `value` must be
  * one of {@link VALID_MILLER_CLASS} (none | i | ii | iii | iv); anything else
- * is a silent no-op (state unchanged). Fires {@link notifyStateChange} only
+ * is a silent no-op (state unchanged). Fires `notifyStateChange` only
  * when it actually changes state; never on a rejected/no-op call.
  */
 export function setMillerClass(toothNo: number, value: string): void {
@@ -547,7 +547,7 @@ export type RecessionType = "none" | "rt1" | "rt2" | "rt3";
  *     same as "no recession", not "unknown", since RT is a display-only
  *     derivation with no "uncharted" state of its own to represent.
  *   - `"rt1"`: buccal recession present, but the interproximal CAL
- *     (`max(CAL[MB], CAL[DB])`) is below {@link CAIRO_RT1_INTERPROX_THRESHOLD_MM}
+ *     (`max(CAL[MB], CAL[DB])`) is below `CAIRO_RT1_INTERPROX_THRESHOLD_MM`
  *     — essentially no interproximal attachment/papilla loss. An uncharted
  *     MB/DB site contributes `0` to that max (the most conservative/least
  *     severe reading), so "buccal recession + nothing charted
@@ -934,7 +934,7 @@ export function classificationSummaryFragment(cls: PerioClassificationResult): s
 
 // ---- Active-chart readers the perio chart and its exports need ----
 /** Whether tooth `toothNo`'s periodontal probing sites are chartable on the
- *  active chart — the SAME gate {@link perioRowHidden} applies to the
+ *  active chart — the SAME gate `perioRowHidden` applies to the
  *  tooth-info panel's `#perioRow` (missing/implant/under-gum/extraction-
  *  socket teeth have no probing site to chart). The full-mouth perio-chart
  *  overlay grid disables a tooth's entire column (site cells +
@@ -972,7 +972,7 @@ export function getPerioToothKind(toothNo: number): "missing" | "milktooth" | "i
 }
 
 /** Read tooth `toothNo`'s Miller mobility grade from the active chart
- *  ("none" for a never-touched tooth, matching {@link defaultState}). */
+ *  ("none" for a never-touched tooth, matching `defaultState`). */
 export function getToothMobility(toothNo: number): string {
   return toothState.get(toothNo)?.mobility ?? "none";
 }

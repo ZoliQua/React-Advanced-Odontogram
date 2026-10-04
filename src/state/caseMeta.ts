@@ -21,7 +21,11 @@ import { t } from "../i18n/useI18n";
 import { notifyStateChange } from "./notify";
 import { CASE_DX_CODES, LATERALIZABLE_CASE_KEYS, VALID_CASE_KEY, VALID_LATERALITY, type CaseConditionKey, type Laterality } from "../dx/caseCodes";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- mirrors the engine-wide `Any` alias
+// The live per-tooth state is a plain object mixing Sets, Maps and scalars —
+// untyped on purpose; `odontogram.ts` documents why at its own `Any` alias, and
+// this is a local copy of that escape hatch, not a shared type (an exported
+// `any` alias would only invite wider use).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
 
 // ---- Case-level metadata object -------------------------------------------
@@ -33,7 +37,7 @@ type Any = any;
 // serialized once into the payload's top-level `case` key (omit-when-empty),
 // hydrated in the shared `hydrateImportedCharts` data-path used by both
 // `importStatus()` and `__hydrateImportedChartsForTest()`.
-type CaseMeta = {
+export type CaseMeta = {
   age: number | null;
   smokingStatus: "unknown" | "never" | "former" | "current";
   cigarettesPerDay: number | null;

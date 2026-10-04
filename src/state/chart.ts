@@ -19,7 +19,11 @@
 
 import { serializeState, hydrateState } from "./payload";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- mirrors the engine-wide `Any` alias
+// The live per-tooth state is a plain object mixing Sets, Maps and scalars —
+// untyped on purpose; `odontogram.ts` documents why at its own `Any` alias, and
+// this is a local copy of that escape hatch, not a shared type (an exported
+// `any` alias would only invite wider use).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
 
 export const charts: Record<"status" | "plan", Map<Any, Any>> = {

@@ -43,6 +43,7 @@ export interface ClinicalAxis {
   surfacesField?: string;        // restoration axis: the ToothRecord field holding the surface list
   flag?: string;                 // feature-flag gate (e.g. "icdasEnabled")
   svgLayer?: string;                                    // boolean axis: the layer it toggles
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the engine's untyped live tooth state (see svgActivate.ts)
   appliesWhen?: (ctx: FlagCtx, state: any) => boolean;  // boolean axis: gating predicate
   uiOptions?: { value: string; labelKey: string; when?: (ctx: UiOptCtx) => boolean }[]; // curated UI option list
 }

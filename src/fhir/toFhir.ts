@@ -6,6 +6,7 @@ import { buildFhirBundleFromRegistry } from "../registry/fhir";
 import { appendPerioObservations, appendPerioCondition } from "./toFhirPerio";
 import { appendDentalConditions } from "./toFhirDx";
 import { appendCaseConditions } from "./toFhirCase";
+import { appendPlanServiceRequests } from "./toFhirPlan";
 import { assignEntryIdentities } from "./primitives";
 import { appendCodeSystem } from "./codeSystemResource";
 
@@ -41,6 +42,9 @@ export function buildFhirBundle(payload: OdontogramExportPayload, options: FhirE
   appendPerioCondition(bundle, payload, options);
   appendDentalConditions(bundle, payload, options);
   appendCaseConditions(bundle, payload, options);
+  // DX-11: the plan chart as ServiceRequests (intent "plan") — emitted only
+  // when the payload carries a plan that differs from the status chart.
+  appendPlanServiceRequests(bundle, payload, options);
   // The engine's own CodeSystem (default on) so local codes resolve in
   // validators; placed after the Patient, before identities are assigned.
   appendCodeSystem(bundle, options);

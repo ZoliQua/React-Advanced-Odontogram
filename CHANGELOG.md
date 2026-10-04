@@ -67,6 +67,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **The treatment plan is exported as FHIR (DX-11).** The FHIR export was
+  status-only — what the mouth IS. The plan chart, the same mouth as it will be
+  after treatment, had no FHIR representation at all, so the half of the record
+  a receiving system most wants never left the engine. Each tooth axis whose
+  planned value differs from the status value is now a `ServiceRequest` with
+  `intent: "plan"`, carrying the tooth as `bodySite` and a readable note of what
+  changes.
+
+  Two deliberate limits. The code is the intended clinical STATE — the engine's
+  own axis-value concept, exactly the coding the status export already emits for
+  that value — not a procedure nomenclature: CDT is proprietary and US-only,
+  SNOMED's procedure hierarchy is unmapped here, and an invented procedure code
+  would be worse than an honest state code. **No new codes: the CodeSystem is
+  unchanged.** And only INTERVENTIONS are emitted (`PLAN_SERVICE_AXES`): a plan
+  can also differ on a diagnosis or a measurement — the pulp normal again after
+  endodontic treatment, a shallower pocket — but those are expected outcomes,
+  and a `ServiceRequest` asking for "pulp: normal" would be nonsense.
+
+  It rides on the payload: `exportFhir()` emits it whenever the plan chart
+  exists and differs, which is exactly when the JSON export already carries its
+  `plan` key. A status-only export is byte-identical to before. FHIR import
+  still ignores the plan — it comes back through the JSON payload.
+
 - **`compareExams(before, after)` — the same mouth, charted twice.** The engine
   could diff the two charts of ONE exam (`getPlanChanges()`: status vs plan,
   what the clinician intends to change), but not one chart across two exams,

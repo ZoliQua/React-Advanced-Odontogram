@@ -1,9 +1,9 @@
 // Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
-import type { Bundle, Observation, Patient, Condition, CodeableConcept, Coding } from "fhir/r4";
+import type { Bundle, Observation, Patient, Condition, ServiceRequest, CodeableConcept, Coding } from "fhir/r4";
 
-export type { Bundle, Observation, Patient, Condition, CodeableConcept, Coding };
+export type { Bundle, Observation, Patient, Condition, ServiceRequest, CodeableConcept, Coding };
 
 /** Per-tooth record as produced by the engine's serializeState(). */
 export interface ToothRecord {
@@ -163,9 +163,9 @@ export interface ToothRecord {
 /** The serialized odontogram export payload (matches exportStatus()'s object).
  *  `plan` is additive: present only when the PLAN chart has been initialized and
  *  differs from `teeth` (the STATUS chart, always the primary/required field).
- *  FHIR export/import (toFhir.ts/fromFhir.ts) reads only `teeth`/`globals` and
- *  ignores `plan` — the plan layer round-trips through the JSON payload only, not
- *  FHIR. */
+ *  FHIR EXPORT reads it since DX-11: each planned INTERVENTION becomes a
+ *  `ServiceRequest` with `intent: "plan"` (toFhirPlan.ts). FHIR IMPORT still
+ *  ignores it — the plan layer comes back through the JSON payload only. */
 export interface OdontogramExportPayload {
   version: string;
   globals?: Record<string, boolean>;

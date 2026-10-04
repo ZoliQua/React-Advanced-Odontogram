@@ -228,7 +228,7 @@ export default function OdontogramClient() {
 - 📦 34 种预定义修复体模板（桥、可摘义齿、带种植体的杆卡义齿）
 - 💾 JSON 格式的状态导出/导入（版本 2.22；导入仍接受旧版 1.4 及 2.0 至 2.21 版本，并自动迁移，包含插件自定义状态及每颗牙齿的备注）
 - 💽 可选的 localStorage 状态持久化（`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`）——默认关闭；启用后会在每次状态变化时自动保存状态图表（可选同时保存计划图表），并在组件下次挂载时自动恢复，附带 4 MB 容量上限，存储/解析错误会通过 `onError` 回调（或 `console.warn`）上报，而不会抛出异常
-- 🔗 HL7 FHIR R4 导出（每颗牙齿一个 Observation 组成的 collection Bundle，**恒牙及乳牙**均采用 ISO 3950 牙位编码（乳牙 51-85，导入时可无损还原），使用本地代码系统，另附一个可选启用的 SNOMED CT 叠加编码（设置 → SNOMED CT））；已记录严重度的龋齿分量还会附带评分体系编码——原发（未充填）牙面采用 ICDAS，继发（已充填）牙面采用 CARS
+- 🔗 HL7 FHIR R4 导出（每颗牙齿一个 Observation 组成的 collection Bundle，**恒牙及乳牙**均采用 ISO 3950 牙位编码（乳牙 51-85，导入时可无损还原），使用本地代码系统，另附一个可选启用的 SNOMED CT 叠加编码（设置 → SNOMED CT））；已记录严重度的龋齿分量还会附带评分体系编码——原发（未充填）牙面采用 ICDAS，继发（已充填）牙面采用 CARS 自 DX-11 起，治疗计划也随之导出：每项计划中的处置都成为一个 `ServiceRequest`（`intent: "plan"`），以该牙位预期达到的临床状态编码。
 - ✚ 十字/加号式牙面选择界面（B/M/O/D/L）用于龋齿和充填记录
 - 🧱 每个牙面独立的修复材料（混合充填，例如颊侧银汞合金 + 远中复合树脂）
 - 🖼️ 图表的 PNG/JPG/SVG 图像导出（可下载；PNG/JPG 由矢量 SVG 栅格化而成）

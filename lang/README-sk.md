@@ -629,6 +629,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `getPlanChart()` | Získať payload grafu plánu (`{version, globals, teeth}`), nezávisle od toho, ktorý graf je aktuálne aktívny |
 | `setPlanChart(payload)` | Nahradiť zuby grafu plánu z payloadu (stav zostane nedotknutý); označí graf plánu ako inicializovaný |
 | `getPlanChanges()` | Získať štruktúrovaný rozdiel stav→plán (`{ toothNo, axis, from, to }[]`) — jeden záznam na zub a os ošetrenia, ktoré sa líšia medzi grafom stavu a plánu; prázdne, ak plán neexistuje. Zobrazuje sa aj v `getOdontogramSummary()` ako `plannedChanges` |
+| `compareExams(before, after)` | Porovná dve EXPORTOVANÉ vyšetrenia tých istých úst — zmeny na úrovni osí (rovnaký tvar ako `getPlanChanges()`), parodontálne čísla podľa miesta (hĺbka sondáže a úroveň pripojenia, s tým, čo sa posunulo o ≥ 2 mm) a klasifikáciu 2017 oboch vyšetrení. Čisté: nedotýka sa živého záznamu |
 | `setPerioSite(toothNo, site, patch)` | Nastaviť parodontálne údaje pre jedno zo šiestich miest (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` null/`<1` zruší zaznamenanie miesta. Validuje + orezáva (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Získať parodontálny záznam zuba pre jednotlivé miesta (iba zaznamenané miesta) |
 | `getToothCal(toothNo)` | Získať odvodenú CAL pre jednotlivé miesta (`pd + gingiválny okraj`) daného zuba |

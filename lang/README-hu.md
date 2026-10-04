@@ -629,6 +629,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `getPlanChart()` | A terv diagram payloadjának lekérdezése (`{version, globals, teeth}`), függetlenül attól, melyik diagram aktív éppen |
 | `setPlanChart(payload)` | A terv diagram fogainak cseréje egy payloadból (a státusz érintetlen marad); a terv diagramot inicializáltnak jelöli |
 | `getPlanChanges()` | A strukturált státusz→terv eltérés lekérdezése (`{ toothNo, axis, from, to }[]`) — egy bejegyzés fogankénti és kezelési tengelyenkénti eltérésre a státusz és terv diagram között; üres, ha nincs terv. A `getOdontogramSummary()`-n is megjelenik `plannedChanges` néven |
+| `compareExams(before, after)` | Ugyanannak a szájnak két EXPORTÁLT vizsgálatát hasonlítja össze — tengely szintű változások (a `getPlanChanges()` alakjában), a parodontális számok helyenként (tasakmélység és tapadási szint, jelölve ami ≥ 2 mm-t mozdult), valamint mindkét vizsgálat 2017-es besorolása. Tiszta: az élő táblához nem nyúl |
 | `setPerioSite(toothNo, site, patch)` | Parodontális adat beállítása a hat pont egyikén (`patch` = `{ pd?, gm?, bop?, sup? }`); a `pd` null/`<1` értéke törli a pont rögzítettségét. Validál és korlátoz (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Egy fog pontonkénti parodontális rekordjának lekérdezése (csak a rögzített pontok) |
 | `getToothCal(toothNo)` | Egy fog pontonkénti, levezetett CAL értékének lekérdezése (`pd + ínyszél`) |

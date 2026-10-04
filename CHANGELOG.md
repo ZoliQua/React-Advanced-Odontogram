@@ -67,6 +67,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`compareExams(before, after)` — the same mouth, charted twice.** The engine
+  could diff the two charts of ONE exam (`getPlanChanges()`: status vs plan,
+  what the clinician intends to change), but not one chart across two exams,
+  which is the question a recall appointment actually asks. A host keeping a
+  timeline of exports held both payloads and could only diff them by hand.
+
+  It returns three things: the axis-level changes in exactly the shape and with
+  the labels `getPlanChanges()` already uses (the diff loop is now shared, so
+  they cannot drift apart); the periodontal measurements, where the change is
+  numeric rather than a label — per-site probing depth and attachment level,
+  plus the sites that moved by at least `PROGRESSION_MM` (2 mm, the threshold
+  the literature uses for real attachment loss rather than probing noise) and
+  the whole-mouth figures of each exam; and each exam's 2017 classification
+  with the clinician's own overrides applied, so a stage or grade that moved is
+  visible. The periodontal half is a pure module of its own
+  (`comparePerioExams`), usable without the engine.
+
+  Pure and read-only — it never touches the live charts, so it can be called
+  mid-session, and each payload is hydrated under its own version rule, so an
+  old export compares faithfully.
+
 - **The chart display settings are readable, settable and notifying (#27).**
   Five Settings-modal values were React state private to the provider, so a host
   persisting the doctor's preferences could neither read them after a change nor

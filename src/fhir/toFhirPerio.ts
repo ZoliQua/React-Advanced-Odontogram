@@ -565,7 +565,10 @@ export function buildDerivationInputFromPayload(payload: OdontogramExportPayload
 /** The final (override ?? derived) classification for one axis each — see
  *  `getPerioClassification()` in odontogram.ts for the live-state
  *  equivalent this mirrors. */
-interface FinalPerioClassification {
+/** The final periodontal classification of a serialized payload — derived,
+ *  then overridden per axis by whatever the clinician pinned in `case`.
+ *  Exported because the exam comparison reports it for both exams. */
+export interface FinalPerioClassification {
   diagnosis: PerioDiagnosis;
   stage: PerioStage;
   grade: PerioGrade;
@@ -587,7 +590,7 @@ interface FinalPerioClassification {
  * branches on the final `grade`/`stage`/`extent` STRING values themselves, never
  * on `buckets`.
  */
-function computeFinalClassification(payload: OdontogramExportPayload): FinalPerioClassification {
+export function computeFinalClassification(payload: OdontogramExportPayload): FinalPerioClassification {
   const derived = derivePerioClassification(buildDerivationInputFromPayload(payload));
   const caseRaw = (payload && typeof payload === "object" ? payload.case : undefined) as
     | Record<string, unknown>

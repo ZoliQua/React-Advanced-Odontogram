@@ -631,6 +631,7 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `getPlanChart()` | 获取计划图表的数据（`{version, globals, teeth}`），与当前激活哪个图表无关 |
 | `setPlanChart(payload)` | 用给定数据替换计划图表的牙齿数据（不影响现状图表）；将计划图表标记为已初始化 |
 | `getPlanChanges()` | 获取结构化的现状→计划差异（`{ toothNo, axis, from, to }[]`）——每颗牙齿、每个治疗轴一条，仅列出现状图表与计划图表之间存在差异的项；若不存在计划则返回空数组。也会以 `plannedChanges` 的形式出现在 `getOdontogramSummary()` 中 |
+| `compareExams(before, after)` | 比较同一口腔的两次已导出检查——轴级变化（与 `getPlanChanges()` 相同的结构）、每个位点的牙周数值（探诊深度与附着水平，并标出变化 ≥ 2 mm 的项），以及两次检查各自的 2017 分类。纯函数：不触碰当前图表 |
 | `setPerioSite(toothNo, site, patch)` | 设置六个位点之一的牙周数据（`patch` = `{ pd?, gm?, bop?, sup? }`）；`pd` 为 null 或 `<1` 表示取消该位点的记录。会进行校验并限幅（PD 1–15，GM −10…+20） |
 | `getToothPerio(toothNo)` | 获取某颗牙齿按位点记录的牙周数据（仅限已记录的位点） |
 | `getToothCal(toothNo)` | 获取某颗牙齿各位点推算得出的 CAL（`探诊深度 + 龈缘位置`） |

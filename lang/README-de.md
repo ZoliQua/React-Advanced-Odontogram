@@ -631,6 +631,7 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `getPlanChart()` | Das Payload des Plan-Charts abrufen (`{version, globals, teeth}`), unabhängig davon, welches Chart gerade aktiv ist |
 | `setPlanChart(payload)` | Die Zähne des Plan-Charts aus einem Payload ersetzen (der Status bleibt unangetastet); markiert das Plan-Chart als initialisiert |
 | `getPlanChanges()` | Den strukturierten Status→Plan-Diff abrufen (`{ toothNo, axis, from, to }[]`) — ein Eintrag pro Zahn und pro Behandlungsachse, die sich zwischen Status- und Plan-Chart unterscheidet; leer, wenn kein Plan existiert. Auch auf `getOdontogramSummary()` als `plannedChanges` verfügbar |
+| `compareExams(before, after)` | Vergleicht zwei EXPORTIERTE Befunde desselben Mundes — Änderungen auf Achsenebene (gleiche Form wie `getPlanChanges()`), die parodontalen Zahlen je Stelle (Sondierungstiefe und Attachmentniveau, mit allem, was sich um ≥ 2 mm bewegt hat) und die 2017er Klassifikation beider Befunde. Rein: rührt den laufenden Befund nicht an |
 | `setPerioSite(toothNo, site, patch)` | Parodontale Daten für eine der sechs Messstellen setzen (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` null/`<1` löscht die Messstelle wieder aus der Erfassung. Validiert + begrenzt (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Den parodontalen Datensatz eines Zahns pro Messstelle abrufen (nur erfasste Messstellen) |
 | `getToothCal(toothNo)` | Das abgeleitete CAL pro Messstelle (`pd + Gingivarand`) für einen Zahn abrufen |

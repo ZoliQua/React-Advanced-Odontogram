@@ -629,6 +629,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `getPlanChart()` | Get the plan chart's payload (`{version, globals, teeth}`), independent of which chart is currently active |
 | `setPlanChart(payload)` | Replace the plan chart's teeth from a payload (status is left untouched); marks the plan chart initialized |
 | `getPlanChanges()` | Get the structured status→plan diff (`{ toothNo, axis, from, to }[]`) — one entry per tooth per treatment axis that differs between the status and plan charts; empty when no plan exists. Also surfaced on `getOdontogramSummary()` as `plannedChanges` |
+| `compareExams(before, after)` | Compare two EXPORTED exams of the same mouth — axis-level changes (same shape as `getPlanChanges()`), the periodontal numbers per site (probing depth and attachment level, with what moved by ≥ 2 mm), and each exam's 2017 classification. Pure: never touches the live chart |
 | `setPerioSite(toothNo, site, patch)` | Set periodontal data for one of the six sites (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` null/`<1` un-charts the site. Validates + clamps (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Get a tooth's per-site periodontal record (charted sites only) |
 | `getToothCal(toothNo)` | Get derived per-site CAL (`pd + gingival margin`) for a tooth |

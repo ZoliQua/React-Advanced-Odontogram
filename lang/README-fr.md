@@ -631,6 +631,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `getPlanChart()` | Obtient la charge utile du schéma de plan (`{version, globals, teeth}`), indépendamment du schéma actuellement actif |
 | `setPlanChart(payload)` | Remplace les dents du schéma de plan à partir d'une charge utile (l'état est laissé intact) ; marque le schéma de plan comme initialisé |
 | `getPlanChanges()` | Obtient le diff structuré état→plan (`{ toothNo, axis, from, to }[]`) — une entrée par dent par axe de traitement qui diffère entre les schémas d'état et de plan ; vide lorsqu'aucun plan n'existe. Également exposé sur `getOdontogramSummary()` comme `plannedChanges` |
+| `compareExams(before, after)` | Compare deux examens EXPORTÉS de la même bouche — changements par axe (même forme que `getPlanChanges()`), les chiffres parodontaux par site (profondeur de sondage et niveau d'attache, avec ce qui a bougé de ≥ 2 mm) et la classification 2017 de chaque examen. Pure : ne touche pas au schéma actif |
 | `setPerioSite(toothNo, site, patch)` | Définit les données parodontales pour l'un des six sites (`patch` = `{ pd?, gm?, bop?, sup? }`) ; `pd` null/`<1` dé-charte le site. Valide + borne (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Obtient l'enregistrement parodontal par site d'une dent (sites chartés uniquement) |
 | `getToothCal(toothNo)` | Obtient le CAL dérivé par site (`pd + marge gingivale`) pour une dent |

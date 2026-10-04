@@ -629,6 +629,7 @@ npm run docs           # Generar documentación TypeDoc en docs/
 | `getPlanChart()` | Obtener el payload del odontograma de plan (`{version, globals, teeth}`), independientemente de cuál esté activo |
 | `setPlanChart(payload)` | Reemplazar los dientes del odontograma de plan a partir de un payload (el estado no se modifica); marca el odontograma de plan como inicializado |
 | `getPlanChanges()` | Obtener el diff estructurado estado→plan (`{ toothNo, axis, from, to }[]`) — una entrada por diente y por eje de tratamiento que difiere entre los odontogramas de estado y de plan; vacío cuando no hay plan. También expuesto en `getOdontogramSummary()` como `plannedChanges` |
+| `compareExams(before, after)` | Compara dos exámenes EXPORTADOS de la misma boca — cambios por eje (misma forma que `getPlanChanges()`), las cifras periodontales por sitio (profundidad de sondaje y nivel de inserción, señalando lo que se movió ≥ 2 mm) y la clasificación 2017 de cada examen. Puro: no toca el gráfico en uso |
 | `setPerioSite(toothNo, site, patch)` | Establecer los datos periodontales de uno de los seis sitios (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` nulo/`<1` descarta el registro del sitio. Valida y limita los valores (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Obtener el registro periodontal por sitio de un diente (solo los sitios registrados) |
 | `getToothCal(toothNo)` | Obtener el CAL derivado por sitio (`pd + margen gingival`) de un diente |

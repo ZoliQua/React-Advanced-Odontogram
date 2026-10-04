@@ -629,6 +629,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `getPlanChart()` | Pobierz ładunek wykresu planu (`{version, globals, teeth}`), niezależnie od tego, który wykres jest aktualnie aktywny |
 | `setPlanChart(payload)` | Zastąp zęby wykresu planu na podstawie ładunku (status pozostaje nietknięty); oznacza wykres planu jako zainicjowany |
 | `getPlanChanges()` | Pobierz ustrukturyzowaną różnicę status→plan (`{ toothNo, axis, from, to }[]`) — jeden wpis na ząb i na oś leczenia różniącą się między wykresem statusu a planu; pusta tablica, gdy plan nie istnieje. Dostępne również w `getOdontogramSummary()` jako `plannedChanges` |
+| `compareExams(before, after)` | Porównuje dwa WYEKSPORTOWANE badania tych samych ust — zmiany na poziomie osi (ten sam kształt co `getPlanChanges()`), liczby periodontologiczne dla każdego miejsca (głębokość sondowania i poziom przyczepu, z tym, co zmieniło się o ≥ 2 mm) oraz klasyfikację 2017 obu badań. Czyste: nie dotyka aktywnego wykresu |
 | `setPerioSite(toothNo, site, patch)` | Ustaw dane periodontalne dla jednego z sześciu miejsc (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` równe null/`<1` usuwa dokumentację miejsca. Waliduje i ogranicza (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Pobierz rekord periodontalny zęba na miejsce (tylko udokumentowane miejsca) |
 | `getToothCal(toothNo)` | Pobierz pochodny CAL na miejsce (`pd + brzeg dziąsłowy`) dla zęba |

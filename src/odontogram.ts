@@ -7,8 +7,10 @@ import { toLabel, type NumberingSystem } from "./utils/numbering";
 import { type OdontogramPlugin, getQuadrant, LAYER_Z } from "./plugin";
 import { sanitizePluginSvg } from "./pluginSanitize";
 import { buildFhirBundle } from "./fhir/toFhir";
+import { computeFinalClassification, type FinalPerioClassification } from "./fhir/toFhirPerio";
+import { comparePerioExams, type PerioExamComparison } from "./state/examCompare";
 import { parseFhirBundle } from "./fhir/fromFhir";
-import type { FhirExportOptions } from "./fhir/types";
+import type { FhirExportOptions, OdontogramExportPayload } from "./fhir/types";
 import { resolveCodingPack } from "./dx/packs";
 import { DX_CODES, type DiagnosisKey } from "./dx/codes";
 import { deriveDentalDiagnoses, isNaturalPresent } from "./dx/derive";
@@ -5920,17 +5922,78 @@ const DIFF_AXES: { key: string; labelKey: string; label: (s: Any) => string }[] 
  */
 export function getPlanChanges(): PlanChange[] {
   if(!planInitialized) return [];
+  return diffChartsByAxis(
+    (toothNo) => charts.status.get(toothNo) ?? defaultState(),
+    (toothNo) => charts.plan.get(toothNo) ?? defaultState(),
+  );
+}
+
+/** The axis-level diff itself, over any two sources of tooth state. Shared by
+ *  {@link getPlanChanges} (the two charts of one exam) and {@link compareExams}
+ *  (the same chart on two different days), so both produce identical entries —
+ *  same axes, same labels, same tooth order. */
+function diffChartsByAxis(before: (toothNo: number) => Any, after: (toothNo: number) => Any): PlanChange[] {
   const out: PlanChange[] = [];
   for(const toothNo of ALL_TEETH){
-    const st = charts.status.get(toothNo) ?? defaultState();
-    const pl = charts.plan.get(toothNo) ?? defaultState();
+    const a = before(toothNo);
+    const b = after(toothNo);
     for(const axis of DIFF_AXES){
-      const from = axis.label(st);
-      const to = axis.label(pl);
+      const from = axis.label(a);
+      const to = axis.label(b);
       if(from !== to) out.push({ toothNo, axis: axis.key, from, to });
     }
   }
   return out;
+}
+
+/** What {@link compareExams} answers: the same mouth, charted twice. */
+export interface ExamComparison {
+  /** Axis-level changes, exactly the shape and labels `getPlanChanges()` uses —
+   *  `from` is the earlier exam, `to` the later one. */
+  changes: PlanChange[];
+  /** The periodontal measurements, where the change is numeric rather than a
+   *  label: per-site probing depth and attachment level, and what moved by a
+   *  clinically meaningful amount. */
+  perio: PerioExamComparison;
+  /** The 2017 classification of each exam (derived, with the clinician's own
+   *  per-axis overrides applied), so a stage or grade that moved is visible. */
+  classification: { from: FinalPerioClassification; to: FinalPerioClassification };
+}
+
+/**
+ * Compare two EXPORTED exams of the same mouth — `before` as charted then,
+ * `after` as charted now.
+ *
+ * `getPlanChanges()` diffs the two charts of ONE exam (what the clinician plans
+ * to change); this diffs one chart across TWO exams (what actually changed
+ * since last time), which is the question a recall appointment asks. A host
+ * keeping a timeline of exports holds both payloads; nothing else is needed.
+ *
+ * Pure and read-only: it never touches the live charts, so it can be called
+ * while the clinician is working, and the active chart is irrelevant to the
+ * result. Each payload is hydrated under ITS OWN version rule (the same one
+ * `importStatus()` applies), so an old export compares faithfully. Tolerant of
+ * a malformed or empty payload — an unreadable tooth compares as the clinical
+ * default rather than throwing.
+ */
+export function compareExams(before: Any, after: Any): ExamComparison {
+  const reader = (payload: Any) => {
+    const teeth = (payload && typeof payload === "object" && payload.teeth && typeof payload.teeth === "object")
+      ? payload.teeth as Record<string, Any> : {};
+    const legacy = isLegacyPayloadVersion(payload?.version);
+    return (toothNo: number) => {
+      const raw = teeth[String(toothNo)];
+      return raw && typeof raw === "object" ? hydrateState(raw, legacy) : defaultState();
+    };
+  };
+  return {
+    changes: diffChartsByAxis(reader(before), reader(after)),
+    perio: comparePerioExams(before, after),
+    classification: {
+      from: computeFinalClassification(before as OdontogramExportPayload),
+      to: computeFinalClassification(after as OdontogramExportPayload),
+    },
+  };
 }
 
 

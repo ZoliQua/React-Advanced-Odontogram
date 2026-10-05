@@ -38,9 +38,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   — every parity golden is byte-identical.
 
   The expanded specification, the registration metadata and the verification
-  suite were ported from [@Ditherys](https://github.com/Ditherys)'s fork. The
-  generator also emits a deciduous set (51-55, 71-75), which is not wired into
-  the profile yet.
+  suite were ported from [@Ditherys](https://github.com/Ditherys)'s fork.
+
+- **A milk tooth is drawn as a milk tooth.** The measured profile now carries
+  the deciduous set the generator emits (51-55, 71-75) and renders a tooth
+  charted as `milktooth` from its own deciduous template, rather than from a
+  layer inside the permanent drawing. These are genuinely deciduous shapes, not
+  the permanent ones relabelled — template 51 is 66.3 units tall against 11's
+  80.3 — and they cover exactly the positions the engine allows a milk tooth
+  on (1-5; positions 6-8 stay blocked and keep their single drawing).
+
+  Both drawings live in the same tile and exactly one is displayed, so
+  switching a tooth to or from `milktooth` flips artwork without rebuilding the
+  tile: its selection, focus, listeners and registry entries all survive.
+  Both are painted from the same state, so the flip never shows a stale tooth.
+
+  The perio chart makes the same choice, so the two views cannot disagree about
+  a milk tooth. Its column widths follow the artwork in use, because a
+  deciduous molar is WIDER than the premolar position it occupies (template 74
+  is 42.9 units against 34's 39.8) — a column sized from the permanent template
+  would have let a milk tooth overlap its neighbour, and the curve, the mm
+  overlays and the number columns all ride those same columns.
+
+  The classic profile has no deciduous set and is unchanged in every respect:
+  one root per tile, no variant attribute, every parity golden byte-identical.
+  The measured chunk is now ~3.6 MB (679 kB gzipped), still fetched only when
+  the measured profile is selected.
 
 ## [2.6.0] - 2026-09-14
 

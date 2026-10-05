@@ -382,7 +382,9 @@ export async function buildPerioSvg(opts: {
   const visible = getPerioRowVisibility();
 
   const buildOneArch = (teeth: readonly number[]) => {
-    const layout = respace(archToothLayout(cache, teeth));
+    // Same kind-aware columns as the on-screen chart and the arch builders
+    // below, so an exported mixed dentition matches what was on screen.
+    const layout = respace(archToothLayout(cache, teeth, undefined, getPerioToothKind));
     if (layout.teeth.length === 0) return;
     maxWidth = Math.max(maxWidth, LABEL_WIDTH + layout.totalWidth);
     const isUpper = isUpperTooth(teeth[0]);

@@ -41,7 +41,8 @@ describe("measured anatomy: registration anchors follow the artwork", () => {
     await setToothAnatomy("measured");
     const p = activeAnatomyProfile();
     expect(p.tplNos.length).toBe(16);
-    for (const tplNo of p.tplNos) {
+    expect(p.primaryTplNos).toHaveLength(10);
+    for (const tplNo of [...p.tplNos, ...(p.primaryTplNos ?? [])]) {
       const svgText = svgFor(tplNo);
       expect(p.cejY[tplNo], `CEJ anchor for ${tplNo}`).toBe(published(svgText, "data-cej-y"));
       expect(p.implantCejY[tplNo], `implant anchor for ${tplNo}`).toBe(
@@ -58,7 +59,11 @@ describe("measured anatomy: registration anchors follow the artwork", () => {
   it("leaves no template without an anchor, and no anchor without a template", async () => {
     await setToothAnatomy("measured");
     const p = activeAnatomyProfile();
-    const tplNos = [...p.tplNos].sort((a, b) => a - b);
+    // Both sets share one anchor record — the permanent (11-38) and deciduous
+    // (51-75) template numbers cannot collide, so a lookup never has to know
+    // which set a template came from.
+    const tplNos = [...p.tplNos, ...(p.primaryTplNos ?? [])].sort((a, b) => a - b);
+    expect(tplNos).toHaveLength(26);
     expect(Object.keys(p.cejY).map(Number).sort((a, b) => a - b)).toEqual(tplNos);
     expect(Object.keys(p.implantCejY).map(Number).sort((a, b) => a - b)).toEqual(tplNos);
     expect(Object.keys(p.milktoothCejY).map(Number).sort((a, b) => a - b)).toEqual(tplNos);

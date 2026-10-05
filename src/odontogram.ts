@@ -3527,7 +3527,14 @@ export function __applyProposedStylingForTest(toothNo: Any, svg: Any): void {
 function applyStateToSvg(toothNo: Any){
   const roots = toothSvgRoot.get(toothNo);
   if(!roots) return;
+  // Which artwork variant this tooth shows, for the profiles that ship a
+  // deciduous set: the permanent drawing unless the tooth is charted as a milk
+  // tooth. Roots without a `data-variant` (every classic tile, and every
+  // position a milk tooth cannot occupy) are left displayed as they are.
+  const wantPrimary = toothState.get(toothNo)?.toothSelection === "milktooth";
   for(const svg of roots){
+    const variant = svg.getAttribute("data-variant");
+    if(variant) svg.style.display = (variant === "primary") === wantPrimary ? "" : "none";
     applyStateToSvgSingle(toothNo, svg);
     applyProposedStyling(toothNo, svg); // dashed+tint plan-only layers (Plan mode only)
   }
@@ -4841,10 +4848,12 @@ function showZoomPopover(toothNo: number){
   hideZoomPopover();
   hideContextMenu();
   const svgs = toothSvgRoot.get(toothNo);
-  const sideSvg = svgs?.find((_s: Any, i: number) => {
-    const tiles = toothTile.get(toothNo);
-    return tiles?.[i]?.classList.contains("side-view");
-  }) || svgs?.[0];
+  // Find the root through the DOM rather than by position: a tooth with a
+  // deciduous variant has two roots per tile, so the svg and tile registries
+  // are not index-aligned, and only one of the two roots is displayed.
+  const sideSvg = svgs?.find((s: Any) =>
+    s.closest?.(".tooth-tile")?.classList.contains("side-view") && s.style.display !== "none"
+  ) || svgs?.[0];
   if(!sideSvg) return;
 
   const overlay = el("div", { class: "odon-zoom-overlay" });
@@ -7484,8 +7493,16 @@ async function buildGrid(token: number){
   // preload SVG templates in parallel
   const tplCache = new Map();
   const occlCache = new Map();
+  // The deciduous set is OPTIONAL — only a profile that draws milk teeth as
+  // their own templates populates it, and then only for the positions a milk
+  // tooth can occupy. Both caches stay empty for a profile without one, and
+  // every lookup below then simply finds nothing.
+  const primaryTplCache = new Map();
+  const primaryOcclCache = new Map();
   const tplNos = profile.tplNos;
   const occlNos = profile.occlNos;
+  const primaryTemplates = profile.primaryTemplates;
+  const primaryTemplatesOccl = profile.primaryTemplatesOccl;
   await Promise.all([
     ...tplNos.map(async (tplNo) => {
       tplCache.set(tplNo, await loadSvg(profile.templates[tplNo]));
@@ -7493,16 +7510,29 @@ async function buildGrid(token: number){
     ...occlNos.map(async (tplNo) => {
       occlCache.set(tplNo, await loadSvg(profile.templatesOccl[tplNo]));
     }),
+    ...(primaryTemplates ? (profile.primaryTplNos ?? []).map(async (tplNo) => {
+      primaryTplCache.set(tplNo, await loadSvg(primaryTemplates[tplNo]));
+    }) : []),
+    ...(primaryTemplatesOccl ? (profile.primaryOcclNos ?? []).map(async (tplNo) => {
+      primaryOcclCache.set(tplNo, await loadSvg(primaryTemplatesOccl[tplNo]));
+    }) : []),
   ]);
   if(!initialized || token !== initToken) return;
 
-  function addTile({toothNo, tplNo, rot, mirror, view, clickable}: Any){
-    if(!initialized || token !== initToken) return;
-    const tpl = view === "occl" ? occlCache.get(tplNo) : tplCache.get(tplNo);
-    if(!tpl) return;
+  /** Clone one cached template into an oriented, tile-ready svg node. */
+  function instantiate(cache: Any, tplNo: Any, rot: Any, mirror: Any){
+    const tpl = cache.get(tplNo);
+    if(!tpl) return null;
     const svg = tpl.cloneNode(true);
     if(rot === 180) rotate180(svg);
     if(mirror) mirrorVertical(svg);
+    return svg;
+  }
+
+  function addTile({toothNo, tplNo, rot, mirror, view, clickable}: Any){
+    if(!initialized || token !== initToken) return;
+    const svg = instantiate(view === "occl" ? occlCache : tplCache, tplNo, rot, mirror);
+    if(!svg) return;
 
     const tileClasses = [
       "tooth-tile",
@@ -7516,6 +7546,31 @@ async function buildGrid(token: number){
       el("div", { class:"tooth-svg" })
     ]);
     $(".tooth-svg", tile).appendChild(svg);
+
+    // A position that can carry a milk tooth gets its DECIDUOUS drawing as a
+    // second root in the SAME tile, and `applyStateToSvg` displays exactly one
+    // of the two. Both are painted from the same state, so switching a tooth
+    // to or from `milktooth` is an instant flip that touches no DOM structure:
+    // the tile, its listeners, its selection/focus state and its registry
+    // entries all survive, which a per-tooth rebuild would have to reconstruct.
+    // Profiles without a deciduous set (classic) produce exactly one root and
+    // no `data-variant` attribute, so nothing about them changes.
+    const roots = [svg];
+    const primaryMap = view === "occl"
+      ? profile.primaryOcclusalTemplate?.get(toothNo)
+      : profile.primaryToothTemplate?.get(toothNo);
+    if(primaryMap){
+      const primarySvg = instantiate(
+        view === "occl" ? primaryOcclCache : primaryTplCache,
+        primaryMap.tpl, primaryMap.rot, primaryMap.mirror,
+      );
+      if(primarySvg){
+        svg.setAttribute("data-variant", "permanent");
+        primarySvg.setAttribute("data-variant", "primary");
+        $(".tooth-svg", tile).appendChild(primarySvg);
+        roots.push(primarySvg);
+      }
+    }
 
     if(clickable){
       tile.addEventListener("click", (e)=>onToothClick(toothNo, e));
@@ -7538,7 +7593,10 @@ async function buildGrid(token: number){
     appendTarget.appendChild(tile);
 
     if(!toothSvgRoot.has(toothNo)) toothSvgRoot.set(toothNo, []);
-    toothSvgRoot.get(toothNo).push(svg);
+    // Note: a tile with a deciduous variant contributes TWO svg roots but ONE
+    // tile, so the two registries are no longer index-aligned. Nothing may zip
+    // them by position — find a root's tile through the DOM instead.
+    for(const root of roots) toothSvgRoot.get(toothNo).push(root);
     if(!toothTile.has(toothNo)) toothTile.set(toothNo, []);
     toothTile.get(toothNo).push(tile);
 

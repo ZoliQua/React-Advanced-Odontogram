@@ -114,6 +114,23 @@ export type AnatomyProfile = {
   cejY: Record<number, number>;
   implantCejY: Record<number, number>;
   milktoothCejY: Record<number, number>;
+  /** OPTIONAL deciduous artwork. A profile that draws milk teeth as their own,
+   *  correctly proportioned templates (rather than as a layer inside the
+   *  permanent drawing) populates these; a profile that does not leaves them
+   *  undefined and nothing downstream changes.
+   *
+   *  The maps are keyed by the PERMANENT FDI tooth number the milk tooth
+   *  occupies — the engine charts a milk tooth as a `toothSelection` on a
+   *  permanent position (see `PRIMARY_MILK` in odontogram.ts), never as a 5x/7x
+   *  number — while the `tpl` values they yield are the deciduous template
+   *  numbers, which share the `cejY`/`implantCejY` anchor records with the
+   *  permanent templates (the two number ranges cannot collide). */
+  primaryTemplates?: Record<number, string>;
+  primaryTemplatesOccl?: Record<number, string>;
+  primaryToothTemplate?: Map<number, { tpl: number; rot: number; mirror: boolean }>;
+  primaryOcclusalTemplate?: Map<number, { tpl: number; rot: number; mirror: boolean }>;
+  primaryTplNos?: number[];
+  primaryOcclNos?: number[];
 };
 
 /** The CLASSIC profile — today's exact values. Referencing the existing

@@ -86,6 +86,32 @@ function anchorFor(tplNo: TemplateNo, kind: PerioArtworkKind): number {
   return profile.cejY[tplNo];
 }
 
+/**
+ * The template a tooth's perio graphic is drawn from, honouring the deciduous
+ * variant where the profile has one.
+ *
+ * Every caller MUST go through this. The artwork group, its baseline anchor and
+ * its column width are computed in three different places, and a deciduous
+ * molar is both shorter AND wider than the permanent premolar whose position it
+ * occupies (template 74 is 42.9 units wide against 34's 39.8) — so a caller
+ * that resolved the template on its own would align the milk tooth on the wrong
+ * CEJ anchor, or reserve the wrong column and overlap its neighbour.
+ *
+ * Returns the permanent entry for every kind but `milktooth`, and for every
+ * profile without a deciduous set — so nothing changes for the classic profile.
+ */
+export function perioTemplateFor(
+  toothNo: number,
+  kind: PerioArtworkKind = "normal",
+): { tpl: number; rot: number; mirror: boolean } | undefined {
+  const profile = activeAnatomyProfile();
+  if (kind === "milktooth") {
+    const primary = profile.primaryToothTemplate?.get(toothNo);
+    if (primary) return primary;
+  }
+  return profile.toothTemplate.get(toothNo);
+}
+
 /** Canine (FDI position 3) root-elongation factor — position 3 renders
  *  `scale(1, CANINE_ROOT_SCALE)` anchored at `CEJ_Y`, so the CEJ itself
  *  (the transform's fixed point) never moves — only the crown/root
@@ -115,7 +141,13 @@ export async function loadTemplateCache(): Promise<TemplateDocCache> {
   if (!cachedPromise) {
     cachedPromise = (async () => {
       const cache: TemplateDocCache = new Map();
-      const entries = Object.entries(activeAnatomyProfile().templates) as [string, string][];
+      const profile = activeAnatomyProfile();
+      // The deciduous templates go into the SAME cache: their numbers (51-75)
+      // cannot collide with the permanent ones (11-38), and a milk tooth on a
+      // profile that has them renders from its own drawing rather than from the
+      // permanent template's `#milktooth-base` layer — the same choice the live
+      // grid makes, so the two views cannot disagree about a milk tooth.
+      const entries = Object.entries({ ...profile.templates, ...(profile.primaryTemplates ?? {}) }) as [string, string][];
       for (const [tplNoStr, svgText] of entries) {
         const tplNo = Number(tplNoStr) as TemplateNo;
         if (!svgText) throw new Error(`perioGraphic: missing template SVG for ${tplNoStr}`);
@@ -232,7 +264,14 @@ export function getToothBaseGroupFromCache(
   toothNo: number,
   opts: { implant?: boolean; milktooth?: boolean } = {},
 ): SVGGElement {
-  const map = activeAnatomyProfile().toothTemplate.get(toothNo);
+  // A milk tooth prefers its own deciduous drawing where the profile has one
+  // (positions 1-5); everywhere else — and on every profile without a
+  // deciduous set — it stays the permanent template, whose `#milktooth-base`
+  // layer is selected below.
+  const map = perioTemplateFor(
+    toothNo,
+    opts.milktooth === true && opts.implant !== true ? "milktooth" : "normal",
+  );
   if (!map) throw new Error(`perioGraphic: no TOOTH_TEMPLATE entry for tooth ${toothNo}`);
   const tplNo = map.tpl as TemplateNo;
   const doc = cache.get(tplNo);
@@ -444,12 +483,16 @@ export function archToothLayout(
   cache: TemplateDocCache,
   teeth: readonly number[],
   gap: number = TOOTH_GAP,
+  kindFn?: ToothKindFn,
 ): ArchLayout {
   const out: ArchToothLayout[] = [];
   let cursorX = 0;
-  const toothTemplate = activeAnatomyProfile().toothTemplate;
   for (const toothNo of teeth) {
-    const map = toothTemplate.get(toothNo);
+    // Kind-aware, because a deciduous molar is wider than the premolar whose
+    // position it occupies: a column sized from the permanent template would
+    // let the milk tooth overlap its neighbour. Callers that pass no `kindFn`
+    // get exactly the previous permanent-only columns.
+    const map = perioTemplateFor(toothNo, kindFn ? kindFn(toothNo) : "normal");
     if (!map) continue;
     const tplNo = map.tpl as TemplateNo;
     const doc = cache.get(tplNo);
@@ -476,7 +519,7 @@ function buildBuccalRowGroup(
 ): { group: SVGGElement; width: number } {
   const row = document.createElementNS(SVG_NS, "g") as unknown as SVGGElement;
   row.setAttribute("class", "perio-tooth-row-buccal");
-  const layout = archToothLayout(cache, teeth, gap);
+  const layout = archToothLayout(cache, teeth, gap, kindFn);
   for (const { toothNo, x } of layout.teeth) {
     // Resolve the artwork kind. A `kindFn` (active-chart aware) supersedes the
     // implant-only predicate, so the graphic tracks the odontogram: missing →
@@ -484,7 +527,7 @@ function buildBuccalRowGroup(
     // number rows aligned), milktooth → deciduous artwork, implant → fixture body.
     const kind: PerioArtworkKind = kindFn ? kindFn(toothNo) : (isImplant(toothNo) ? "implant" : "normal");
     if (kind === "missing") continue;
-    const tplNo = activeAnatomyProfile().toothTemplate.get(toothNo)!.tpl as TemplateNo;
+    const tplNo = perioTemplateFor(toothNo, kind)!.tpl as TemplateNo;
     const toothGroup = getToothBaseGroupFromCache(cache, toothNo, {
       implant: kind === "implant",
       milktooth: kind === "milktooth",

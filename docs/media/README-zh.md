@@ -111,6 +111,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | 在充填卡片上启用充填缺陷发现项。 |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | 全部可用 | 可用充填材料，以 `amalgam`/`composite`/`gic`/`temporary` 为键的布尔映射（未知键被忽略）。 |
 | `fissureSealingEnabled` | `boolean` | `true` | 在充填卡片上启用窝沟封闭。 |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | 屏幕上牙齿之间的间距。 |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | 网格中牙位号的字号。 |
+| `selectionColor` | `string` | `"#3b7bff"` | 选中环颜色（`#rrggbb`）。 |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | 选中环边框样式。 |
+| `toothInfo` | `boolean` | `true` | 显示牙齿信息面板。 |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | 当用户在设置 → 充填中更改相应设置时触发。 |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | 当用户在界面中更改该设置时触发。 |
 
@@ -223,7 +228,7 @@ export default function OdontogramClient() {
 - 📦 34 种预定义修复体模板（桥、可摘义齿、带种植体的杆卡义齿）
 - 💾 JSON 格式的状态导出/导入（版本 2.22；导入仍接受旧版 1.4 及 2.0 至 2.21 版本，并自动迁移，包含插件自定义状态及每颗牙齿的备注）
 - 💽 可选的 localStorage 状态持久化（`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`）——默认关闭；启用后会在每次状态变化时自动保存状态图表（可选同时保存计划图表），并在组件下次挂载时自动恢复，附带 4 MB 容量上限，存储/解析错误会通过 `onError` 回调（或 `console.warn`）上报，而不会抛出异常
-- 🔗 HL7 FHIR R4 导出（每颗牙齿一个 Observation 组成的 collection Bundle，**恒牙及乳牙**均采用 ISO 3950 牙位编码（乳牙 51-85，导入时可无损还原），使用本地代码系统，另附一个可选启用的 SNOMED CT 叠加编码（设置 → SNOMED CT））；已记录严重度的龋齿分量还会附带评分体系编码——原发（未充填）牙面采用 ICDAS，继发（已充填）牙面采用 CARS
+- 🔗 HL7 FHIR R4 导出（每颗牙齿一个 Observation 组成的 collection Bundle，**恒牙及乳牙**均采用 ISO 3950 牙位编码（乳牙 51-85，导入时可无损还原），使用本地代码系统，另附一个可选启用的 SNOMED CT 叠加编码（设置 → SNOMED CT））；已记录严重度的龋齿分量还会附带评分体系编码——原发（未充填）牙面采用 ICDAS，继发（已充填）牙面采用 CARS 自 DX-11 起，治疗计划也随之导出：每项计划中的处置都成为一个 `ServiceRequest`（`intent: "plan"`），以该牙位预期达到的临床状态编码。
 - ✚ 十字/加号式牙面选择界面（B/M/O/D/L）用于龋齿和充填记录
 - 🧱 每个牙面独立的修复材料（混合充填，例如颊侧银汞合金 + 远中复合树脂）
 - 🖼️ 图表的 PNG/JPG/SVG 图像导出（可下载；PNG/JPG 由矢量 SVG 栅格化而成）
@@ -453,7 +458,7 @@ export default function OdontogramClient() {
 通过顶部工具栏的齿轮图标打开；这是一个具有焦点陷阱、ARIA `dialog` 角色的带标签页弹窗（Esc 键或点击背景可关闭，方向键可切换标签页）。除非另有说明，所有设置均仅为会话级界面状态——都不会修改按牙位数据或导出数据。
 
 - **常规：** 编号系统（FDI/通用编号法/Palmer）、语言、深色/浅色主题、牙齿信息面板可见性
-- **牙位图：** 牙齿解剖轮廓（`classic` 默认 / `measured`）——`measured` 以双牙弓、逐牙宽度布局渲染九个依据文献测量的牙齿模板；可在运行时切换，不影响 `classic` 默认值；其图形位于独立分块中，仅在切换到它时才会下载，因此默认的 `classic` 不会带来任何额外体积
+- **牙位图：** 牙齿解剖轮廓（`classic` 默认 / `measured`）——`measured` 以双牙弓、逐牙宽度布局渲染十六个依据文献测量的牙齿模板——每个临床上独立的牙位各有一个，因此每颗磨牙都有自己的牙冠轮廓和牙根数量；可在运行时切换，不影响 `classic` 默认值；其图形位于独立分块中，仅在切换到它时才会下载，因此默认的 `classic` 不会带来任何额外体积；标记为乳牙的牙齿将从自己的乳牙模板绘制（1-5 牙位），而不是作为恒牙图形中的一个图层——牙位图与牙周图表皆然
 - **面板：** 独立显示/隐藏全口“状态”卡片和“正畸”卡片（默认均可见）
 - **牙齿详情：** 磨耗详情级别与变色详情级别（简单/复杂，默认均为复杂）、牙面记法（简单/完整，默认完整）
 - **龋齿：** ICDAS II 评分开关（`enableIcdas`）、龋齿深度开关（`cariesDepthEnabled`）、根面龋粒度（`rootCariesMode`：简单/严重度）、继发龋/CARS 粒度（`secondaryCariesMode`：简单/标准/完整）、影像学深度粒度（`radiographicDepthMode`：关闭/三级/详细）——原先独立的“继发龋”标签页已合并入本标签页，CARS 控件位置紧邻影像学深度之上
@@ -598,6 +603,12 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `setNumberingSystem(system)` | 在 FDI、通用编号法、Palmer 之间切换 |
 | `clearSelection()` | 取消选择所有牙齿 |
 | `getSelectedTeeth()` | 当前选中的牙齿（FDI 编号），按选择顺序 |
+| `getNumberingSystem()` | 当前使用的牙位编号系统 |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | 读取/设置屏幕上的牙齿间距 |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | 读取/设置牙位号字号 |
+| `getSelectionColor()` / `setSelectionColor(hex)` | 读取/设置选中环颜色（`#rrggbb`） |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | 读取/设置选中环边框样式 |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | 读取/设置是否显示牙齿信息面板 |
 | `setOcclusalVisible(on)` | 切换咬合面视图的开/关 |
 | `setWisdomVisible(on)` | 显示/隐藏智齿 |
 | `setShowBase(on)` | 显示/隐藏骨组织层 |
@@ -620,6 +631,7 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `getPlanChart()` | 获取计划图表的数据（`{version, globals, teeth}`），与当前激活哪个图表无关 |
 | `setPlanChart(payload)` | 用给定数据替换计划图表的牙齿数据（不影响现状图表）；将计划图表标记为已初始化 |
 | `getPlanChanges()` | 获取结构化的现状→计划差异（`{ toothNo, axis, from, to }[]`）——每颗牙齿、每个治疗轴一条，仅列出现状图表与计划图表之间存在差异的项；若不存在计划则返回空数组。也会以 `plannedChanges` 的形式出现在 `getOdontogramSummary()` 中 |
+| `compareExams(before, after)` | 比较同一口腔的两次已导出检查——轴级变化（与 `getPlanChanges()` 相同的结构）、每个位点的牙周数值（探诊深度与附着水平，并标出变化 ≥ 2 mm 的项），以及两次检查各自的 2017 分类。纯函数：不触碰当前图表 |
 | `setPerioSite(toothNo, site, patch)` | 设置六个位点之一的牙周数据（`patch` = `{ pd?, gm?, bop?, sup? }`）；`pd` 为 null 或 `<1` 表示取消该位点的记录。会进行校验并限幅（PD 1–15，GM −10…+20） |
 | `getToothPerio(toothNo)` | 获取某颗牙齿按位点记录的牙周数据（仅限已记录的位点） |
 | `getToothCal(toothNo)` | 获取某颗牙齿各位点推算得出的 CAL（`探诊深度 + 龈缘位置`） |
@@ -849,11 +861,12 @@ React Advanced Odontogram 由 Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 
 **贡献者**
 
-- [@odontodev](https://github.com/odontodev): 状态注水和生命周期 API，作为受控 props 的充填设置，幂等的 setter 以及可折叠卡片
+- [@odontodev](https://github.com/odontodev): 状态注水和生命周期 API，作为受控 props 的充填设置，幂等的 setter 以及可折叠卡片；将图表显示设置和 `getNumberingSystem()` 开放给宿主应用，并补上会话设置与牙齿备注缺失的 `onStateChange` 通知
 - [@JulianoBazzi](https://github.com/JulianoBazzi): 巴西葡萄牙语翻译
 - [@yassine-bhn](https://github.com/yassine-bhn): 法语翻译以及提议的测量解剖结构
 - [@saegerdirk-star](https://github.com/saegerdirk-star): 测量的牙齿解剖结构和牙齿生成器，以及可组合接口的提案；以及采纳自其分支的三项修复（PDF 中的患者身份、牙周图中的牙齿方向、选择速度）
 - [@sofia-cluadette](https://github.com/sofia-cluadette): `getSelectedTeeth()` 选择 API
+- [@Ditherys](https://github.com/Ditherys)：扩充后的实测牙齿集——解剖生成器针对恒牙与乳牙的完整规格、叠加层的配准元数据及其校验套件，自其分支移植而来
 
 **基于** [jsPDF](https://github.com/parallax/jsPDF)、[DOMPurify](https://github.com/cure53/DOMPurify)、[React](https://react.dev)、[Vite](https://vite.dev)、[TypeScript](https://www.typescriptlang.org) 和 [Tailwind CSS](https://tailwindcss.com) 构建。
 

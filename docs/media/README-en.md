@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Enable filling-defect findings on the Fillings card. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | all available | Available filling materials as a boolean map over `amalgam`/`composite`/`gic`/`temporary` (unknown keys ignored). |
 | `fissureSealingEnabled` | `boolean` | `true` | Enable fissure sealing on the Fillings card. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | On-screen inter-tooth spacing. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Tooth-number size in the on-screen grid. |
+| `selectionColor` | `string` | `"#3b7bff"` | Selection-ring colour (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Selection-ring border style. |
+| `toothInfo` | `boolean` | `true` | Show the tooth-information panel. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Fire when the user changes the matching setting from Settings → Fillings. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Fire when the user changes the setting from the UI. |
 
@@ -221,7 +226,7 @@ Or load it with a client-only dynamic import: `dynamic(() => import("./Odontogra
 - 📦 34 predefined restoration templates (bridges, removable dentures, bar dentures with implants)
 - 💾 Status export/import in JSON (version 2.22; imports still accept legacy 1.4 and 2.0 through 2.21 and migrate automatically, with plugin custom states and per-tooth notes)
 - 💽 Opt-in localStorage persistence (`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`) — disabled by default; auto-saves the status chart (and, optionally, the plan chart) on every state change and restores it the next time the component mounts, with a 4 MB size guard and storage/parse errors routed to an `onError` callback (or `console.warn`) instead of throwing
-- 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition **and** deciduous milk teeth (51-85, lossless round-trip on import), local code system, plus an opt-in SNOMED CT overlay (Settings → SNOMED CT)); a caries component with a charted severity also carries a scoring-system coding — ICDAS on a primary (unfilled) surface, CARS on a recurrent (filled) one
+- 🔗 HL7 FHIR R4 export (collection Bundle of per-tooth Observations, ISO 3950 tooth coding for permanent dentition **and** deciduous milk teeth (51-85, lossless round-trip on import), local code system, plus an opt-in SNOMED CT overlay (Settings → SNOMED CT)); a caries component with a charted severity also carries a scoring-system coding — ICDAS on a primary (unfilled) surface, CARS on a recurrent (filled) one The PLAN chart travels with it since DX-11: every planned intervention becomes a `ServiceRequest` (`intent: "plan"`) coded with the intended clinical state on that tooth.
 - ✚ Cross/plus surface selection UI (B/M/O/D/L) for caries and fillings
 - 🧱 Per-surface restoration materials (mixed fillings, e.g. buccal amalgam + distal composite)
 - 🖼️ PNG/JPG/SVG image export of the chart (downloadable; PNG/JPG rasterized from vector SVG)
@@ -451,7 +456,7 @@ Or load it with a client-only dynamic import: `dynamic(() => import("./Odontogra
 Opened from the topbar gear icon; a focus-trapped, ARIA `dialog` with a tabbed layout (Esc/backdrop-click to close, arrow keys to switch tabs). All settings are session-level UI state only, unless noted — none of them mutate per-tooth data or the export payload.
 
 - **General:** numbering system (FDI/Universal/Palmer), language, dark/light theme, tooth-information panel visibility
-- **Odontogram:** tooth anatomy profile (`classic` default / `measured`) — `measured` renders nine literature-measured tooth templates in a two-arch, per-tooth-width layout; switchable at runtime, no effect on the classic default; its artwork is a separate chunk, fetched only when you switch to it, so the classic default costs nothing
+- **Odontogram:** tooth anatomy profile (`classic` default / `measured`) — `measured` renders sixteen literature-measured tooth templates — one per clinically distinct position, so each molar carries its own crown outline and root count — in a two-arch, per-tooth-width layout; switchable at runtime, no effect on the classic default; its artwork is a separate chunk, fetched only when you switch to it, so the classic default costs nothing; a tooth charted as a milk tooth renders from its own deciduous template (positions 1-5) instead of a layer inside the permanent drawing, in the chart and in the perio chart alike
 - **Panels:** independently show/hide the whole-mouth Statuses card and the Orthodontics card (both default visible)
 - **Tooth details:** wear detail level and discoloration detail level (simple/complex, each default complex), surface notation (simple/full, default full)
 - **Caries:** ICDAS II scoring toggle (`enableIcdas`), caries-depth toggle (`cariesDepthEnabled`), root-caries granularity (`rootCariesMode`: simple/severity), secondary/CARS granularity (`secondaryCariesMode`: simple/standard/full), radiographic-depth granularity (`radiographicDepthMode`: off/threeLevel/detailed) — the former separate "Secondary caries" tab is merged into this one, with the CARS control positioned directly above radiographic depth
@@ -596,6 +601,12 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `setNumberingSystem(system)` | Switch between FDI, Universal, Palmer |
 | `clearSelection()` | Deselect all teeth |
 | `getSelectedTeeth()` | Currently selected teeth (FDI numbers), in selection order |
+| `getNumberingSystem()` | The tooth-numbering system currently active |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Get/set the on-screen inter-tooth spacing |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Get/set the tooth-number size |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Get/set the selection-ring colour (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Get/set the selection-ring border style |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Get/set whether the tooth-information panel is shown |
 | `setOcclusalVisible(on)` | Toggle occlusal view on/off |
 | `setWisdomVisible(on)` | Show/hide wisdom teeth |
 | `setShowBase(on)` | Show/hide bone layer |
@@ -618,6 +629,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `getPlanChart()` | Get the plan chart's payload (`{version, globals, teeth}`), independent of which chart is currently active |
 | `setPlanChart(payload)` | Replace the plan chart's teeth from a payload (status is left untouched); marks the plan chart initialized |
 | `getPlanChanges()` | Get the structured status→plan diff (`{ toothNo, axis, from, to }[]`) — one entry per tooth per treatment axis that differs between the status and plan charts; empty when no plan exists. Also surfaced on `getOdontogramSummary()` as `plannedChanges` |
+| `compareExams(before, after)` | Compare two EXPORTED exams of the same mouth — axis-level changes (same shape as `getPlanChanges()`), the periodontal numbers per site (probing depth and attachment level, with what moved by ≥ 2 mm), and each exam's 2017 classification. Pure: never touches the live chart |
 | `setPerioSite(toothNo, site, patch)` | Set periodontal data for one of the six sites (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` null/`<1` un-charts the site. Validates + clamps (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Get a tooth's per-site periodontal record (charted sites only) |
 | `getToothCal(toothNo)` | Get derived per-site CAL (`pd + gingival margin`) for a tooth |
@@ -848,11 +860,12 @@ React Advanced Odontogram is created and maintained by Zoltan Dul ([@ZoliQua](ht
 
 **Contributors**
 
-- [@odontodev](https://github.com/odontodev): state hydration and lifecycle API, fillings settings as controlled props, idempotent setters and collapsible cards
+- [@odontodev](https://github.com/odontodev): state hydration and lifecycle API, fillings settings as controlled props, idempotent setters and collapsible cards; the chart display settings and `getNumberingSystem()` exposed to hosts, and the missing `onStateChange` notifications for session settings and tooth notes
 - [@JulianoBazzi](https://github.com/JulianoBazzi): Brazilian Portuguese translation
 - [@yassine-bhn](https://github.com/yassine-bhn): French translation and the candidate measured anatomy
 - [@saegerdirk-star](https://github.com/saegerdirk-star): measured tooth anatomy and the tooth generator, plus the composable interface proposal; three fixes adopted from their fork (PDF patient identity, perio tooth orientation, selection speed)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): the `getSelectedTeeth()` selection API
+- [@Ditherys](https://github.com/Ditherys): the expanded measured tooth set — the anatomy generator's full permanent and deciduous specification, its overlay-registration metadata and its verification suite, ported here from their fork
 
 **Built with** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) and [Tailwind CSS](https://tailwindcss.com).
 

@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Włącza wykrywanie defektów wypełnienia na karcie Wypełnienia. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | wszystkie dostępne | Dostępne materiały wypełnień jako mapa wartości logicznych nad `amalgam`/`composite`/`gic`/`temporary` (nieznane klucze są ignorowane). |
 | `fissureSealingEnabled` | `boolean` | `true` | Włącza lakowanie bruzd na karcie Wypełnienia. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Odstęp między zębami na ekranie. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Rozmiar numeru zęba w siatce. |
+| `selectionColor` | `string` | `"#3b7bff"` | Kolor pierścienia zaznaczenia (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Styl obramowania pierścienia zaznaczenia. |
+| `toothInfo` | `boolean` | `true` | Pokaż panel informacji o zębie. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Wywoływane, gdy użytkownik zmienia odpowiednie ustawienie w Ustawienia → Wypełnienia. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Wywoływane, gdy użytkownik zmienia ustawienie z poziomu interfejsu. |
 
@@ -221,7 +226,7 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 - 📦 34 predefiniowane szablony uzupełnień (mosty, protezy ruchome, protezy na belce z implantami)
 - 💾 Eksport/import statusu w formacie JSON (wersja 2.22; import nadal akceptuje starsze wersje 1.4 oraz 2.0 do 2.21 i migruje je automatycznie, wraz z niestandardowymi stanami wtyczek i notatkami do zębów)
 - 💽 Opcjonalna (wyłączona domyślnie) trwałość stanu w `localStorage` (`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`) — automatycznie zapisuje wykres statusu (a opcjonalnie także wykres planu) przy każdej zmianie stanu i przywraca go przy kolejnym zamontowaniu komponentu, z zabezpieczeniem rozmiaru 4 MB oraz błędami przekazywanymi do wywołania zwrotnego `onError` (lub `console.warn`) zamiast rzucania wyjątku
-- 🔗 Eksport HL7 FHIR R4 (kolekcja Bundle z obserwacjami na ząb, kodowanie zębów wg ISO 3950 dla uzębienia stałego **i** mlecznego (51-85, bezstratny odzwrotny import), lokalny system kodów, a także opcjonalna warstwa SNOMED CT (Ustawienia → SNOMED CT)); komponent próchnicy z zapisaną ciężkością niesie też kodowanie systemu punktacji — ICDAS na powierzchni pierwotnej (bez wypełnienia), CARS na powierzchni wtórnej (z wypełnieniem)
+- 🔗 Eksport HL7 FHIR R4 (kolekcja Bundle z obserwacjami na ząb, kodowanie zębów wg ISO 3950 dla uzębienia stałego **i** mlecznego (51-85, bezstratny odzwrotny import), lokalny system kodów, a także opcjonalna warstwa SNOMED CT (Ustawienia → SNOMED CT)); komponent próchnicy z zapisaną ciężkością niesie też kodowanie systemu punktacji — ICDAS na powierzchni pierwotnej (bez wypełnienia), CARS na powierzchni wtórnej (z wypełnieniem) Od DX-11 podróżuje z nim także PLAN: każda planowana interwencja staje się `ServiceRequest` (`intent: "plan"`) z kodem zamierzonego stanu klinicznego na danym zębie.
 - ✚ Interfejs wyboru powierzchni w układzie krzyżowym (B/M/O/D/L) dla próchnicy i wypełnień
 - 🧱 Materiały wypełnień na powierzchnię (mieszane wypełnienia, np. policzkowe amalgamat + dystalne kompozyt)
 - 🖼️ Eksport obrazu PNG/JPG/SVG wykresu (do pobrania; PNG/JPG rastrowane z wektorowego SVG)
@@ -451,7 +456,7 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 Otwierane za pomocą ikony trybika na pasku górnym; okno dialogowe ARIA `dialog` z pułapką fokusu i układem zakładkowym (Esc/klik w tło zamyka, strzałki przełączają zakładki). Wszystkie ustawienia są wyłącznie stanem interfejsu na poziomie sesji, chyba że zaznaczono inaczej — żadne z nich nie zmienia danych na ząb ani struktury eksportu.
 
 - **Ogólne:** system numeracji (FDI/Universal/Palmer), język, motyw jasny/ciemny, widoczność panelu informacji o zębach
-- **Odontogram:** profil anatomii zębów (`classic` domyślny / `measured`) — `measured` renderuje dziewięć szablonów zębów zmierzonych na podstawie literatury w układzie dwułukowym z szerokością na ząb; przełączalny w czasie działania, bez wpływu na domyślny `classic`; jego grafika to osobny chunk pobierany dopiero przy przełączeniu, więc domyślny `classic` nic nie kosztuje
+- **Odontogram:** profil anatomii zębów (`classic` domyślny / `measured`) — `measured` renderuje szesnaście szablonów zębów zmierzonych na podstawie literatury — po jednym na każdą klinicznie odrębną pozycję, dzięki czemu każdy trzonowiec ma własny zarys korony i własną liczbę korzeni — w układzie dwułukowym z szerokością na ząb; przełączalny w czasie działania, bez wpływu na domyślny `classic`; jego grafika to osobny chunk pobierany dopiero przy przełączeniu, więc domyślny `classic` nic nie kosztuje; ząb oznaczony jako mleczny jest rysowany z własnego szablonu mlecznego (pozycje 1-5), a nie jako warstwa w rysunku zęba stałego — zarówno na diagramie zębów, jak i na karcie periodontologicznej
 - **Panele:** niezależne pokazywanie/ukrywanie karty podsumowania Statusów oraz karty Ortodoncji dla całej jamy ustnej (obie domyślnie widoczne)
 - **Szczegóły zęba:** poziom szczegółowości starcia i poziom szczegółowości przebarwienia (prosty/złożony, oba domyślnie złożone), notacja powierzchni (prosta/pełna, domyślnie pełna)
 - **Próchnica:** przełącznik punktowania ICDAS II (`enableIcdas`), przełącznik głębokości próchnicy (`cariesDepthEnabled`), szczegółowość próchnicy korzenia (`rootCariesMode`: simple/severity), szczegółowość wtórna/CARS (`secondaryCariesMode`: simple/standard/full), szczegółowość głębokości radiologicznej (`radiographicDepthMode`: off/threeLevel/detailed) — dawna osobna zakładka „Próchnica wtórna” została połączona z tą zakładką, a kontrolka CARS umieszczona bezpośrednio nad głębokością radiologiczną
@@ -596,6 +601,12 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `setNumberingSystem(system)` | Przełącz między FDI, Universal, Palmer |
 | `clearSelection()` | Odznacz wszystkie zęby |
 | `getSelectedTeeth()` | Aktualnie zaznaczone zęby (numery FDI), w kolejności zaznaczania |
+| `getNumberingSystem()` | Aktualnie aktywny system numeracji zębów |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Odczyt/ustawienie odstępu między zębami na ekranie |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Odczyt/ustawienie rozmiaru numeru zęba |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Odczyt/ustawienie koloru pierścienia zaznaczenia (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Odczyt/ustawienie stylu obramowania pierścienia zaznaczenia |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Odczyt/ustawienie widoczności panelu informacji o zębie |
 | `setOcclusalVisible(on)` | Włącz/wyłącz widok okluzyjny |
 | `setWisdomVisible(on)` | Pokaż/ukryj zęby mądrości |
 | `setShowBase(on)` | Pokaż/ukryj warstwę kości |
@@ -618,6 +629,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `getPlanChart()` | Pobierz ładunek wykresu planu (`{version, globals, teeth}`), niezależnie od tego, który wykres jest aktualnie aktywny |
 | `setPlanChart(payload)` | Zastąp zęby wykresu planu na podstawie ładunku (status pozostaje nietknięty); oznacza wykres planu jako zainicjowany |
 | `getPlanChanges()` | Pobierz ustrukturyzowaną różnicę status→plan (`{ toothNo, axis, from, to }[]`) — jeden wpis na ząb i na oś leczenia różniącą się między wykresem statusu a planu; pusta tablica, gdy plan nie istnieje. Dostępne również w `getOdontogramSummary()` jako `plannedChanges` |
+| `compareExams(before, after)` | Porównuje dwa WYEKSPORTOWANE badania tych samych ust — zmiany na poziomie osi (ten sam kształt co `getPlanChanges()`), liczby periodontologiczne dla każdego miejsca (głębokość sondowania i poziom przyczepu, z tym, co zmieniło się o ≥ 2 mm) oraz klasyfikację 2017 obu badań. Czyste: nie dotyka aktywnego wykresu |
 | `setPerioSite(toothNo, site, patch)` | Ustaw dane periodontalne dla jednego z sześciu miejsc (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` równe null/`<1` usuwa dokumentację miejsca. Waliduje i ogranicza (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Pobierz rekord periodontalny zęba na miejsce (tylko udokumentowane miejsca) |
 | `getToothCal(toothNo)` | Pobierz pochodny CAL na miejsce (`pd + brzeg dziąsłowy`) dla zęba |
@@ -849,11 +861,12 @@ React Advanced Odontogram jest tworzony i utrzymywany przez Zoltan Dul ([@ZoliQu
 
 **Współautorzy**
 
-- [@odontodev](https://github.com/odontodev): hydratacja stanu i API cyklu życia, ustawienia wypełnień jako kontrolowane props, idempotentne settery i zwijane karty
+- [@odontodev](https://github.com/odontodev): hydratacja stanu i API cyklu życia, ustawienia wypełnień jako kontrolowane props, idempotentne settery i zwijane karty; ustawienia wyświetlania wykresu i `getNumberingSystem()` udostępnione aplikacji hosta, a także brakujące powiadomienia `onStateChange` dla ustawień sesji i notatek przy zębach
 - [@JulianoBazzi](https://github.com/JulianoBazzi): tłumaczenie na brazylijski portugalski
 - [@yassine-bhn](https://github.com/yassine-bhn): tłumaczenie na francuski i proponowana zmierzona anatomia
 - [@saegerdirk-star](https://github.com/saegerdirk-star): zmierzona anatomia zęba i generator zębów, a także propozycja komponowalnego interfejsu; trzy poprawki przejęte z ich forka (dane pacjenta w PDF, orientacja zębów na wykresie periodontologicznym, szybkość zaznaczania)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): API zaznaczania `getSelectedTeeth()`
+- [@Ditherys](https://github.com/Ditherys): rozszerzony zmierzony zestaw zębów — pełna specyfikacja generatora anatomii dla uzębienia stałego i mlecznego, metadane rejestracji nakładek oraz zestaw weryfikacyjny, przeniesione z ich forka
 
 **Zbudowano przy użyciu** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) i [Tailwind CSS](https://tailwindcss.com).
 

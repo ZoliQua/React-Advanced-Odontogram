@@ -111,6 +111,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Aktiviert Füllungsdefekt-Befunde auf der Füllungs-Karte. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | alle verfügbar | Verfügbare Füllungsmaterialien als boolesche Zuordnung über `amalgam`/`composite`/`gic`/`temporary` (unbekannte Schlüssel werden ignoriert). |
 | `fissureSealingEnabled` | `boolean` | `true` | Aktiviert die Fissurenversiegelung auf der Füllungs-Karte. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Zahnabstand auf dem Bildschirm. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Größe der Zahnnummern im Bildschirmraster. |
+| `selectionColor` | `string` | `"#3b7bff"` | Farbe des Auswahlrings (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Randstil des Auswahlrings. |
+| `toothInfo` | `boolean` | `true` | Zahninformationsbereich anzeigen. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Wird ausgelöst, wenn der Benutzer die entsprechende Einstellung über Einstellungen → Füllungen ändert. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Wird ausgelöst, wenn der Benutzer die Einstellung über die UI ändert. |
 
@@ -223,7 +228,7 @@ Oder laden Sie sie mit einem rein clientseitigen dynamischen Import: `dynamic(()
 - 📦 34 vordefinierte Restaurationsvorlagen (Brücken, herausnehmbare Prothesen, Stegprothesen mit Implantaten)
 - 💾 Status-Export/Import in JSON (Version 2.22; Importe akzeptieren weiterhin die Legacy-Version 1.4 sowie 2.0 bis 2.21 und werden automatisch migriert, mit Plugin Custom States und per-Zahn Notizen)
 - 💽 Opt-in localStorage-Persistenz (`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`) — standardmäßig deaktiviert; speichert den Status-Befund (und optional den Plan-Befund) bei jeder Zustandsänderung automatisch und stellt ihn beim nächsten Mounten der Komponente wieder her, mit einer 4-MB-Größenbeschränkung und Speicher-/Parse-Fehlern, die an einen `onError`-Callback (oder `console.warn`) weitergeleitet werden, statt eine Exception auszulösen
-- 🔗 HL7 FHIR R4 Export (Collection-Bundle aus Observations pro Zahn, ISO 3950 Zahnkodierung für das bleibende Gebiss **und** für Milchzähne (51-85, verlustfreier Rückweg beim Import), lokales Codesystem, plus ein optionales SNOMED-CT-Overlay (Einstellungen → SNOMED CT)); eine erfasste Kariesschwere an einer Kariologie-Komponente trägt zusätzlich eine Bewertungssystem-Kodierung — ICDAS an einer primären (ungefüllten) Fläche, CARS an einer rezidivierenden (gefüllten) Fläche
+- 🔗 HL7 FHIR R4 Export (Collection-Bundle aus Observations pro Zahn, ISO 3950 Zahnkodierung für das bleibende Gebiss **und** für Milchzähne (51-85, verlustfreier Rückweg beim Import), lokales Codesystem, plus ein optionales SNOMED-CT-Overlay (Einstellungen → SNOMED CT)); eine erfasste Kariesschwere an einer Kariologie-Komponente trägt zusätzlich eine Bewertungssystem-Kodierung — ICDAS an einer primären (ungefüllten) Fläche, CARS an einer rezidivierenden (gefüllten) Fläche Der PLAN-Befund reist seit DX-11 mit: jede geplante Maßnahme wird zu einem `ServiceRequest` (`intent: "plan"`), codiert mit dem am Zahn beabsichtigten klinischen Zustand.
 - ✚ Kreuz-/Plus-Oberflächenauswahl (B/M/O/D/L) für Karies und Füllungen
 - 🧱 Füllungsmaterialien pro Fläche (gemischte Füllungen, z. B. bukkal Amalgam + distal Komposit)
 - 🖼️ PNG/JPG/SVG-Bildexport des Befunds (herunterladbar; PNG/JPG aus Vektor-SVG gerastert)
@@ -453,7 +458,7 @@ Oder laden Sie sie mit einem rein clientseitigen dynamischen Import: `dynamic(()
 Wird über das Zahnrad-Symbol in der Kopfleiste geöffnet; ein fokus-gefangener, ARIA-`dialog` mit tabbasiertem Layout (Esc/Klick auf den Hintergrund zum Schließen, Pfeiltasten zum Wechseln der Tabs). Alle Einstellungen sind, sofern nicht anders angegeben, reiner Sitzungs-UI-Zustand — keine davon verändert Pro-Zahn-Daten oder den Export-Payload.
 
 - **Allgemein:** Nummerierungssystem (FDI/Universal/Palmer), Sprache, dunkles/helles Theme, Sichtbarkeit des Zahninformationen-Panels
-- **Odontogramm:** Zahnanatomie-Profil (`classic` Standard / `measured`) — `measured` rendert neun literaturvermessene Zahnvorlagen in einem Zwei-Kiefer-Layout mit zahnindividueller Breite; zur Laufzeit umschaltbar, ohne Auswirkung auf den `classic`-Standard; seine Grafik ist ein eigener Chunk, der erst beim Umschalten geladen wird, sodass der `classic`-Standard nichts kostet
+- **Odontogramm:** Zahnanatomie-Profil (`classic` Standard / `measured`) — `measured` rendert sechzehn literaturvermessene Zahnvorlagen — eine je klinisch eigenständiger Position, sodass jeder Molar seinen eigenen Kronenumriss und seine eigene Wurzelzahl trägt — in einem Zwei-Kiefer-Layout mit zahnindividueller Breite; zur Laufzeit umschaltbar, ohne Auswirkung auf den `classic`-Standard; seine Grafik ist ein eigener Chunk, der erst beim Umschalten geladen wird, sodass der `classic`-Standard nichts kostet; ein als Milchzahn erfasster Zahn wird aus seiner eigenen Milchzahnvorlage gezeichnet (Positionen 1-5) statt als Ebene innerhalb der bleibenden Zeichnung — im Zahnschema wie im Parodontalstatus
 - **Panels:** Ganzmund-Statuskarte und Kieferorthopädie-Karte unabhängig ein-/ausblenden (beide standardmäßig sichtbar)
 - **Zahndetails:** Abrieb-Detailstufe und Verfärbungs-Detailstufe (einfach/komplex, jeweils Standard komplex), Flächenbezeichnung (einfach/vollständig, Standard vollständig)
 - **Karies:** ICDAS-II-Scoring-Umschalter (`enableIcdas`), Kariestiefe-Umschalter (`cariesDepthEnabled`), Wurzelkaries-Granularität (`rootCariesMode`: simple/severity), Sekundärkaries-/CARS-Granularität (`secondaryCariesMode`: simple/standard/full), Granularität der radiologischen Tiefe (`radiographicDepthMode`: off/threeLevel/detailed) — der frühere separate „Sekundärkaries"-Tab ist in diesen zusammengeführt, wobei die CARS-Steuerung direkt oberhalb der radiologischen Tiefe positioniert ist
@@ -598,6 +603,12 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `setNumberingSystem(system)` | Zwischen FDI, Universal, Palmer wechseln |
 | `clearSelection()` | Alle Zähne abwählen |
 | `getSelectedTeeth()` | Aktuell ausgewählte Zähne (FDI-Nummern), in Auswahlreihenfolge |
+| `getNumberingSystem()` | Das aktuell aktive Zahnnummerierungssystem |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Bildschirm-Zahnabstand lesen/setzen |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Größe der Zahnnummern lesen/setzen |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Farbe des Auswahlrings lesen/setzen (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Randstil des Auswahlrings lesen/setzen |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Sichtbarkeit des Zahninformationsbereichs lesen/setzen |
 | `setOcclusalVisible(on)` | Okklusionsansicht ein-/ausschalten |
 | `setWisdomVisible(on)` | Weisheitszähne anzeigen/verbergen |
 | `setShowBase(on)` | Knochenschicht anzeigen/verbergen |
@@ -620,6 +631,7 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `getPlanChart()` | Das Payload des Plan-Charts abrufen (`{version, globals, teeth}`), unabhängig davon, welches Chart gerade aktiv ist |
 | `setPlanChart(payload)` | Die Zähne des Plan-Charts aus einem Payload ersetzen (der Status bleibt unangetastet); markiert das Plan-Chart als initialisiert |
 | `getPlanChanges()` | Den strukturierten Status→Plan-Diff abrufen (`{ toothNo, axis, from, to }[]`) — ein Eintrag pro Zahn und pro Behandlungsachse, die sich zwischen Status- und Plan-Chart unterscheidet; leer, wenn kein Plan existiert. Auch auf `getOdontogramSummary()` als `plannedChanges` verfügbar |
+| `compareExams(before, after)` | Vergleicht zwei EXPORTIERTE Befunde desselben Mundes — Änderungen auf Achsenebene (gleiche Form wie `getPlanChanges()`), die parodontalen Zahlen je Stelle (Sondierungstiefe und Attachmentniveau, mit allem, was sich um ≥ 2 mm bewegt hat) und die 2017er Klassifikation beider Befunde. Rein: rührt den laufenden Befund nicht an |
 | `setPerioSite(toothNo, site, patch)` | Parodontale Daten für eine der sechs Messstellen setzen (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` null/`<1` löscht die Messstelle wieder aus der Erfassung. Validiert + begrenzt (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Den parodontalen Datensatz eines Zahns pro Messstelle abrufen (nur erfasste Messstellen) |
 | `getToothCal(toothNo)` | Das abgeleitete CAL pro Messstelle (`pd + Gingivarand`) für einen Zahn abrufen |
@@ -851,11 +863,12 @@ React Advanced Odontogram wird von Zoltan Dul ([@ZoliQua](https://github.com/Zol
 
 **Mitwirkende**
 
-- [@odontodev](https://github.com/odontodev): State-Hydration und Lifecycle-API, Füllungseinstellungen als kontrollierte Props, idempotente Setter und einklappbare Karten
+- [@odontodev](https://github.com/odontodev): State-Hydration und Lifecycle-API, Füllungseinstellungen als kontrollierte Props, idempotente Setter und einklappbare Karten; die Anzeigeeinstellungen des Befunds und `getNumberingSystem()` für Host-Anwendungen sowie die fehlenden `onStateChange`-Benachrichtigungen für Sitzungseinstellungen und Zahnnotizen
 - [@JulianoBazzi](https://github.com/JulianoBazzi): Übersetzung ins brasilianische Portugiesisch
 - [@yassine-bhn](https://github.com/yassine-bhn): französische Übersetzung und die vorgeschlagene vermessene Anatomie
 - [@saegerdirk-star](https://github.com/saegerdirk-star): vermessene Zahnanatomie und der Zahngenerator sowie der Vorschlag für die komponierbare Schnittstelle; drei aus ihrem Fork übernommene Korrekturen (Patientenangaben im PDF, Zahnausrichtung im Parodontalbefund, Auswahlgeschwindigkeit)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): die Auswahl-API `getSelectedTeeth()`
+- [@Ditherys](https://github.com/Ditherys): der erweiterte vermessene Zahnsatz — die vollständige Spezifikation des Anatomiegenerators für bleibende und Milchzähne, die Registrierungs-Metadaten der Overlays und die Prüfsuite, aus ihrem Fork übernommen
 
 **Erstellt mit** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) und [Tailwind CSS](https://tailwindcss.com).
 

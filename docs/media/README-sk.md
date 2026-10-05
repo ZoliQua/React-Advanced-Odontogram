@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Zapína záchyt defektov výplne na karte Výplne. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | všetky dostupné | Dostupné výplňové materiály ako boolovská mapa nad `amalgam`/`composite`/`gic`/`temporary` (neznáme kľúče sa ignorujú). |
 | `fissureSealingEnabled` | `boolean` | `true` | Zapína zapečatenie fisúr na karte Výplne. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Rozostup zubov na obrazovke. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Veľkosť čísla zuba v mriežke. |
+| `selectionColor` | `string` | `"#3b7bff"` | Farba výberového prstenca (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Štýl okraja výberového prstenca. |
+| `toothInfo` | `boolean` | `true` | Zobraziť panel informácií o zube. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Spustí sa, keď používateľ zmení príslušné nastavenie v Nastavenia → Výplne. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Spustí sa, keď používateľ zmení nastavenie z rozhrania. |
 
@@ -221,7 +226,7 @@ Alebo ho načítajte pomocou dynamického importu iba na strane klienta: `dynami
 - 📦 34 preddefinovaných šablón reštaurácií (mostíky, snímateľné protézy, stegové protézy s implantátmi)
 - 💾 Export/import stavu v JSON (verzia 2.22; import stále akceptuje staršie verzie 1.4 a 2.0 až 2.21 a automaticky ich migruje, s vlastnými stavmi pluginov a poznámkami ku každému zubu)
 - 💽 Voliteľná (opt-in) perzistencia stavu v `localStorage` (`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`) — predvolene vypnutá; automaticky ukladá stavový graf (a voliteľne aj plánovací graf) pri každej zmene stavu a obnoví ho pri ďalšom pripojení komponentu, s limitom veľkosti 4 MB a chybami pri ukladaní/parsovaní smerovanými do callbacku `onError` (alebo `console.warn`) namiesto vyhodenia výnimky
-- 🔗 Export HL7 FHIR R4 (kolekcia Bundle s Observations pre každý zub, kódovanie zubov ISO 3950 pre trvalý chrup **aj** mliečne zuby (51-85, obojsmerne bezstratovo pri importe), lokálny systém kódov, plus voliteľná vrstva SNOMED CT (Nastavenia → SNOMED CT)); komponent kazu so zaznamenanou závažnosťou nesie aj kódovanie skórovacieho systému — ICDAS na primárnej (nevyplnenej) ploche, CARS na rekurentnej (vyplnenej)
+- 🔗 Export HL7 FHIR R4 (kolekcia Bundle s Observations pre každý zub, kódovanie zubov ISO 3950 pre trvalý chrup **aj** mliečne zuby (51-85, obojsmerne bezstratovo pri importe), lokálny systém kódov, plus voliteľná vrstva SNOMED CT (Nastavenia → SNOMED CT)); komponent kazu so zaznamenanou závažnosťou nesie aj kódovanie skórovacieho systému — ICDAS na primárnej (nevyplnenej) ploche, CARS na rekurentnej (vyplnenej) Od DX-11 cestuje s ním aj PLÁN: každý plánovaný zákrok sa stáva `ServiceRequest` (`intent: "plan"`) s kódom zamýšľaného klinického stavu na danom zube.
 - ✚ Krížový výber plôch (B/M/O/D/L) pre kaz a výplne
 - 🧱 Materiály reštaurácie pre každú plochu (zmiešané výplne, napr. bukálny amalgám + distálny kompozit)
 - 🖼️ Export obrázka odontogramu vo formáte PNG/JPG/SVG (na stiahnutie; PNG/JPG rastrovaný z vektorového SVG)
@@ -451,7 +456,7 @@ Polia `endo` a `pulpDx` sa zobrazujú cez jeden zlúčený výber „Stav drene 
 Otvárané cez ikonu ozubeného kolieska na hornej lište; dialóg s uzamknutým fokusom, ARIA `dialog` so záložkovým rozložením (Esc/klik mimo okna na zatvorenie, šípky na prepínanie záložiek). Všetky nastavenia sú iba stav rozhrania na úrovni relácie, pokiaľ nie je uvedené inak — žiadne z nich nemenia dáta jednotlivých zubov ani exportný payload.
 
 - **Všeobecné:** systém číslovania (FDI/Universal/Palmer), jazyk, tmavá/svetlá téma, viditeľnosť panela informácií o zuboch
-- **Odontogram:** profil anatómie zubov (`classic` predvolený / `measured`) — `measured` vykresľuje deväť zubných šablón odmeraných podľa literatúry v rozložení dvoch oblúkov so šírkou na zub; prepínateľný za behu, bez vplyvu na predvolený `classic`; jeho grafika je samostatný chunk, ktorý sa stiahne až pri prepnutí, takže predvolený `classic` nič nestojí
+- **Odontogram:** profil anatómie zubov (`classic` predvolený / `measured`) — `measured` vykresľuje šestnásť zubných šablón odmeraných podľa literatúry — po jednej na každú klinicky odlišnú pozíciu, takže každý molár má vlastný obrys korunky a vlastný počet koreňov — v rozložení dvoch oblúkov so šírkou na zub; prepínateľný za behu, bez vplyvu na predvolený `classic`; jeho grafika je samostatný chunk, ktorý sa stiahne až pri prepnutí, takže predvolený `classic` nič nestojí; zub označený ako mliečny sa kreslí z vlastnej mliečnej šablóny (pozície 1-5), nie ako vrstva v rámci trvalej kresby — v zubnom diagrame aj v parodontálnej karte
 - **Panely:** nezávisle zobraziť/skryť kartu súhrnu za celé ústa Stavy a kartu Ortodoncia (obe predvolene viditeľné)
 - **Detaily zuba:** úroveň podrobnosti opotrebenia a úroveň podrobnosti zafarbenia (simple/complex, obe predvolene complex), notácia plôch (simple/full, predvolené full)
 - **Kaz:** prepínač skórovania ICDAS II (`enableIcdas`), prepínač hĺbky kazu (`cariesDepthEnabled`), podrobnosť kazu koreňa (`rootCariesMode`: simple/severity), podrobnosť sekundárneho kazu/CARS (`secondaryCariesMode`: simple/standard/full), podrobnosť rádiografickej hĺbky (`radiographicDepthMode`: off/threeLevel/detailed) — bývalá samostatná záložka „Sekundárny kaz" je zlúčená do tejto, pričom ovládací prvok CARS je umiestnený priamo nad rádiografickou hĺbkou
@@ -596,6 +601,12 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `setNumberingSystem(system)` | Prepínanie medzi FDI, Universal, Palmer |
 | `clearSelection()` | Zrušiť výber všetkých zubov |
 | `getSelectedTeeth()` | Aktuálne vybrané zuby (čísla FDI) v poradí výberu |
+| `getNumberingSystem()` | Aktuálne aktívny systém číslovania zubov |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Získať/nastaviť rozostup zubov na obrazovke |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Získať/nastaviť veľkosť čísla zuba |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Získať/nastaviť farbu výberového prstenca (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Získať/nastaviť štýl okraja výberového prstenca |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Získať/nastaviť, či sa zobrazuje panel informácií o zube |
 | `setOcclusalVisible(on)` | Prepínanie oklúzneho pohľadu zap/vyp |
 | `setWisdomVisible(on)` | Zobraziť/skryť zuby múdrosti |
 | `setShowBase(on)` | Zobraziť/skryť vrstvu kosti |
@@ -618,6 +629,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `getPlanChart()` | Získať payload grafu plánu (`{version, globals, teeth}`), nezávisle od toho, ktorý graf je aktuálne aktívny |
 | `setPlanChart(payload)` | Nahradiť zuby grafu plánu z payloadu (stav zostane nedotknutý); označí graf plánu ako inicializovaný |
 | `getPlanChanges()` | Získať štruktúrovaný rozdiel stav→plán (`{ toothNo, axis, from, to }[]`) — jeden záznam na zub a os ošetrenia, ktoré sa líšia medzi grafom stavu a plánu; prázdne, ak plán neexistuje. Zobrazuje sa aj v `getOdontogramSummary()` ako `plannedChanges` |
+| `compareExams(before, after)` | Porovná dve EXPORTOVANÉ vyšetrenia tých istých úst — zmeny na úrovni osí (rovnaký tvar ako `getPlanChanges()`), parodontálne čísla podľa miesta (hĺbka sondáže a úroveň pripojenia, s tým, čo sa posunulo o ≥ 2 mm) a klasifikáciu 2017 oboch vyšetrení. Čisté: nedotýka sa živého záznamu |
 | `setPerioSite(toothNo, site, patch)` | Nastaviť parodontálne údaje pre jedno zo šiestich miest (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` null/`<1` zruší zaznamenanie miesta. Validuje + orezáva (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Získať parodontálny záznam zuba pre jednotlivé miesta (iba zaznamenané miesta) |
 | `getToothCal(toothNo)` | Získať odvodenú CAL pre jednotlivé miesta (`pd + gingiválny okraj`) daného zuba |
@@ -848,11 +860,12 @@ React Advanced Odontogram vytvára a spravuje Zoltan Dul ([@ZoliQua](https://git
 
 **Prispievatelia**
 
-- [@odontodev](https://github.com/odontodev): hydratácia stavu a API životného cyklu, nastavenia výplní ako riadené props, idempotentné settery a zbaliteľné karty
+- [@odontodev](https://github.com/odontodev): hydratácia stavu a API životného cyklu, nastavenia výplní ako riadené props, idempotentné settery a zbaliteľné karty; nastavenia zobrazenia grafu a `getNumberingSystem()` sprístupnené hostiteľskej aplikácii, plus chýbajúce `onStateChange` notifikácie pre nastavenia relácie a poznámky k zubom
 - [@JulianoBazzi](https://github.com/JulianoBazzi): preklad do brazílskej portugalčiny
 - [@yassine-bhn](https://github.com/yassine-bhn): preklad do francúzštiny a navrhovaná meraná anatómia
 - [@saegerdirk-star](https://github.com/saegerdirk-star): meraná anatómia zuba a generátor zubov, plus návrh skladateľného rozhrania; tri opravy prevzaté z ich forku (údaje pacienta v PDF, orientácia zubov v parodontálnom zázname, rýchlosť výberu)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): API výberu `getSelectedTeeth()`
+- [@Ditherys](https://github.com/Ditherys): rozšírená sada odmeraných zubov — úplná špecifikácia generátora anatómie pre trvalý aj mliečny chrup, registračné metadáta prekryvov a overovacia sada, prenesené z ich forku
 
 **Vytvorené pomocou** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) a [Tailwind CSS](https://tailwindcss.com).
 

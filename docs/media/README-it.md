@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Abilita i riscontri di difetti dell'otturazione sulla scheda Otturazioni. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | tutti disponibili | Materiali di otturazione disponibili come mappa booleana su `amalgam`/`composite`/`gic`/`temporary` (le chiavi sconosciute vengono ignorate). |
 | `fissureSealingEnabled` | `boolean` | `true` | Abilita la sigillatura dei solchi sulla scheda Otturazioni. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Spaziatura tra i denti a schermo. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Dimensione del numero del dente nella griglia. |
+| `selectionColor` | `string` | `"#3b7bff"` | Colore dell'anello di selezione (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Stile del bordo dell'anello di selezione. |
+| `toothInfo` | `boolean` | `true` | Mostra il pannello informazioni dente. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Si attivano quando l'utente modifica l'impostazione corrispondente da Impostazioni → Otturazioni. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Si attivano quando l'utente cambia l'impostazione dall'interfaccia. |
 
@@ -221,7 +226,7 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 - 📦 34 template di restauro predefiniti (ponti, protesi rimovibili, protesi su barra con impianti)
 - 💾 Esportazione/importazione dello stato in JSON (versione 2.22; le importazioni continuano ad accettare le versioni legacy 1.4 e da 2.0 a 2.21 e vengono migrate automaticamente, con stati personalizzati dei plugin e note per dente)
 - 💽 Persistenza opzionale su localStorage (`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`) — disattivata per impostazione predefinita; salva automaticamente l'odontogramma di stato (e, opzionalmente, il piano) a ogni cambiamento di stato e lo ripristina al successivo montaggio del componente, con un limite di sicurezza di 4 MB e gli errori di archiviazione/parsing instradati a un callback `onError` (o a `console.warn`) invece di generare un'eccezione
-- 🔗 Esportazione HL7 FHIR R4 (Bundle di raccolta di Observation per dente, codifica dentale ISO 3950 per la dentizione permanente **e** per i denti decidui (51-85, con corrispondenza senza perdita di dati in importazione), sistema di codici locale, più un overlay SNOMED CT opzionale (Impostazioni → SNOMED CT)); un componente di carie con una gravità registrata riporta anche una codifica del sistema di punteggio — ICDAS su una superficie primaria (non otturata), CARS su una ricorrente (otturata)
+- 🔗 Esportazione HL7 FHIR R4 (Bundle di raccolta di Observation per dente, codifica dentale ISO 3950 per la dentizione permanente **e** per i denti decidui (51-85, con corrispondenza senza perdita di dati in importazione), sistema di codici locale, più un overlay SNOMED CT opzionale (Impostazioni → SNOMED CT)); un componente di carie con una gravità registrata riporta anche una codifica del sistema di punteggio — ICDAS su una superficie primaria (non otturata), CARS su una ricorrente (otturata) Dal DX-11 il piano viaggia con esso: ogni intervento pianificato diventa un `ServiceRequest` (`intent: "plan"`) codificato con lo stato clinico previsto su quel dente.
 - ✚ Interfaccia di selezione superfici a croce (B/M/O/D/L) per carie e otturazioni
 - 🧱 Materiali di restauro per superficie (otturazioni miste, es. buccale amalgama + distale composito)
 - 🖼️ Esportazione immagine PNG/JPG/SVG dell'odontogramma (scaricabile; PNG/JPG rasterizzato da SVG vettoriale)
@@ -451,7 +456,7 @@ Oppure caricalo con un import dinamico solo client-side: `dynamic(() => import("
 Si apre dall'icona a ingranaggio nella barra superiore; un `dialog` ARIA con focus intrappolato e layout a schede (Esc/clic sullo sfondo per chiudere, tasti freccia per cambiare scheda). Tutte le impostazioni sono stato dell'interfaccia a livello di sessione, salvo diversa indicazione — nessuna di esse modifica i dati per dente o il payload di esportazione.
 
 - **Generale:** sistema di numerazione (FDI/Universal/Palmer), lingua, tema chiaro/scuro, visibilità del pannello informazioni dentali
-- **Odontogramma:** profilo di anatomia dentale (`classic` predefinito / `measured`) — `measured` rende nove modelli dentali misurati dalla letteratura in un layout a due arcate con larghezza per dente; commutabile a runtime, senza effetto sul valore predefinito `classic`; la sua grafica è un chunk separato, scaricato solo quando ci si passa, così il valore predefinito `classic` non costa nulla
+- **Odontogramma:** profilo di anatomia dentale (`classic` predefinito / `measured`) — `measured` rende sedici modelli dentali misurati dalla letteratura — uno per ogni posizione clinicamente distinta, così che ogni molare porti il proprio profilo coronale e il proprio numero di radici — in un layout a due arcate con larghezza per dente; commutabile a runtime, senza effetto sul valore predefinito `classic`; la sua grafica è un chunk separato, scaricato solo quando ci si passa, così il valore predefinito `classic` non costa nulla; un dente registrato come dente da latte viene disegnato dal proprio modello deciduo (posizioni 1-5) anziché come livello del disegno permanente, sia nell'odontogramma sia nel parodontogramma
 - **Pannelli:** mostra/nasconde in modo indipendente la scheda Stati per l'intera bocca e la scheda Ortodonzia (entrambe visibili per impostazione predefinita)
 - **Dettagli dentali:** livello di dettaglio dell'usura e livello di dettaglio della discromia (simple/complex, ciascuno predefinito complex), notazione delle superfici (simple/full, predefinito full)
 - **Carie:** interruttore punteggio ICDAS II (`enableIcdas`), interruttore profondità carie (`cariesDepthEnabled`), granularità carie radicolare (`rootCariesMode`: simple/severity), granularità secondaria/CARS (`secondaryCariesMode`: simple/standard/full), granularità profondità radiografica (`radiographicDepthMode`: off/threeLevel/detailed) — la precedente scheda separata "Carie secondaria" è stata unita a questa, con il controllo CARS posizionato direttamente sopra la profondità radiografica
@@ -596,6 +601,12 @@ npm run docs           # Genera la documentazione TypeDoc in docs/
 | `setNumberingSystem(system)` | Passa tra FDI, Universal, Palmer |
 | `clearSelection()` | Deseleziona tutti i denti |
 | `getSelectedTeeth()` | Denti attualmente selezionati (numeri FDI), in ordine di selezione |
+| `getNumberingSystem()` | Il sistema di numerazione dentale attivo |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Legge/imposta la spaziatura tra i denti a schermo |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Legge/imposta la dimensione del numero del dente |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Legge/imposta il colore dell'anello di selezione (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Legge/imposta lo stile del bordo dell'anello di selezione |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Legge/imposta se il pannello informazioni dente è visibile |
 | `setOcclusalVisible(on)` | Attiva/disattiva la vista occlusale |
 | `setWisdomVisible(on)` | Mostra/nasconde i denti del giudizio |
 | `setShowBase(on)` | Mostra/nasconde il livello osseo |
@@ -618,6 +629,7 @@ npm run docs           # Genera la documentazione TypeDoc in docs/
 | `getPlanChart()` | Ottiene il payload del grafico del piano (`{version, globals, teeth}`), indipendentemente da quale grafico sia attualmente attivo |
 | `setPlanChart(payload)` | Sostituisce i denti del grafico del piano a partire da un payload (lo stato resta invariato); segna il grafico del piano come inizializzato |
 | `getPlanChanges()` | Ottiene il diff strutturato stato→piano (`{ toothNo, axis, from, to }[]`) — una voce per dente per ogni asse di trattamento che differisce tra il grafico dello stato e quello del piano; vuoto quando non esiste ancora un piano. Disponibile anche su `getOdontogramSummary()` come `plannedChanges` |
+| `compareExams(before, after)` | Confronta due esami ESPORTATI della stessa bocca — cambiamenti per asse (stessa forma di `getPlanChanges()`), i numeri parodontali per sito (profondità di sondaggio e livello di attacco, con ciò che si è mosso di ≥ 2 mm) e la classificazione 2017 di ciascun esame. Puro: non tocca il grafico attivo |
 | `setPerioSite(toothNo, site, patch)` | Imposta i dati parodontali per uno dei sei siti (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` null/`<1` de-registra il sito. Valida e limita (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Ottiene il record parodontale per sito di un dente (solo siti registrati) |
 | `getToothCal(toothNo)` | Ottiene il CAL derivato per sito (`pd + margine gengivale`) di un dente |
@@ -849,11 +861,12 @@ React Advanced Odontogram è creato e mantenuto da Zoltan Dul ([@ZoliQua](https:
 
 **Contributori**
 
-- [@odontodev](https://github.com/odontodev): idratazione dello stato e API del ciclo di vita, impostazioni delle otturazioni come props controllate, setter idempotenti e schede comprimibili
+- [@odontodev](https://github.com/odontodev): idratazione dello stato e API del ciclo di vita, impostazioni delle otturazioni come props controllate, setter idempotenti e schede comprimibili; le impostazioni di visualizzazione del grafico e `getNumberingSystem()` esposte all'applicazione host, oltre alle notifiche `onStateChange` mancanti per le impostazioni di sessione e le note per dente
 - [@JulianoBazzi](https://github.com/JulianoBazzi): traduzione in portoghese brasiliano
 - [@yassine-bhn](https://github.com/yassine-bhn): traduzione in francese e l'anatomia misurata proposta
 - [@saegerdirk-star](https://github.com/saegerdirk-star): anatomia dentale misurata e il generatore di denti, oltre alla proposta di interfaccia componibile; tre correzioni riprese dal loro fork (identità del paziente nel PDF, orientamento dei denti nel parodontogramma, velocità di selezione)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): l'API di selezione `getSelectedTeeth()`
+- [@Ditherys](https://github.com/Ditherys): il set dentale misurato ampliato — la specifica completa del generatore di anatomia per dentatura permanente e decidua, i metadati di registrazione degli overlay e la suite di verifica, portati qui dal loro fork
 
 **Realizzato con** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) e [Tailwind CSS](https://tailwindcss.com).
 

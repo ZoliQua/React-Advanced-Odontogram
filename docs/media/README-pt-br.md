@@ -109,6 +109,11 @@ export function Chart() {
 | `fillingDefectEnabled` | `boolean` | `true` | Habilita achados de defeito de restauração no cartão Restaurações. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | todos disponíveis | Materiais de restauração disponíveis como um mapa booleano sobre `amalgam`/`composite`/`gic`/`temporary` (chaves desconhecidas são ignoradas). |
 | `fissureSealingEnabled` | `boolean` | `true` | Habilita o selante de fissura no cartão Restaurações. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Espaçamento entre dentes na tela. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Tamanho do número do dente na grade. |
+| `selectionColor` | `string` | `"#3b7bff"` | Cor do anel de seleção (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Estilo da borda do anel de seleção. |
+| `toothInfo` | `boolean` | `true` | Exibir o painel de informações do dente. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Disparam quando o usuário altera a configuração correspondente em Configurações → Restaurações. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Disparam quando o usuário altera a configuração pela interface. |
 
@@ -221,7 +226,7 @@ Ou carregue-o com um dynamic import somente cliente: `dynamic(() => import("./Od
 - 📦 34 modelos de restauração predefinidos (pontes, próteses removíveis, próteses tipo barra com implantes)
 - 💾 Exportação/importação de estado em JSON (versão 2.22; a importação ainda aceita as versões legadas 1.4 e 2.0 até 2.21 e migra automaticamente, com estados personalizados de plugins e anotações por dente)
 - 💽 Persistência opcional em localStorage (`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`) — desativada por padrão; salva automaticamente o gráfico de status (e, opcionalmente, o gráfico de plano) a cada mudança de estado e o restaura na próxima vez que o componente é montado, com um limite de tamanho de 4 MB e erros de storage/parse encaminhados a um callback `onError` (ou `console.warn`) em vez de lançar exceção
-- 🔗 Exportação HL7 FHIR R4 (Bundle collection de Observations por dente, codificação dentária ISO 3950 para a dentição permanente **e também** dentes decíduos (51-85, round-trip sem perda na importação), sistema de código local, além de uma sobreposição SNOMED CT opcional (Configurações → SNOMED CT)); um componente de cárie com uma severidade registrada também carrega uma codificação de sistema de pontuação — ICDAS em uma superfície primária (não restaurada), CARS em uma recorrente (restaurada)
+- 🔗 Exportação HL7 FHIR R4 (Bundle collection de Observations por dente, codificação dentária ISO 3950 para a dentição permanente **e também** dentes decíduos (51-85, round-trip sem perda na importação), sistema de código local, além de uma sobreposição SNOMED CT opcional (Configurações → SNOMED CT)); um componente de cárie com uma severidade registrada também carrega uma codificação de sistema de pontuação — ICDAS em uma superfície primária (não restaurada), CARS em uma recorrente (restaurada) Desde o DX-11 o PLANO viaja junto: cada intervenção planejada vira um `ServiceRequest` (`intent: "plan"`) codificado com o estado clínico pretendido naquele dente.
 - ✚ Interface de seleção de superfície em cruz/mais (B/M/O/D/L) para cáries e restaurações
 - 🧱 Materiais de restauração por superfície (restaurações mistas, ex.: amálgama vestibular + resina composta distal)
 - 🖼️ Exportação de imagem PNG/JPG/SVG do gráfico (baixável; PNG/JPG rasterizados a partir do SVG vetorial)
@@ -451,7 +456,7 @@ Ou carregue-o com um dynamic import somente cliente: `dynamic(() => import("./Od
 Abertas pelo ícone de engrenagem na barra superior; um `dialog` ARIA com foco preso e layout em abas (Esc/clique no fundo para fechar, setas para trocar de aba). Todas as configurações são apenas estado de interface em nível de sessão, salvo indicação — nenhuma delas altera dados por dente ou o payload de exportação.
 
 - **General:** sistema de numeração (FDI/Universal/Palmer), idioma, tema claro/escuro, visibilidade do painel de informações do dente
-- **Odontogram:** perfil de anatomia dental (`classic` padrão / `measured`) — `measured` renderiza nove modelos de dentes medidos pela literatura em um layout de dois arcos com largura por dente; alternável em tempo de execução, sem efeito sobre o padrão `classic`; sua arte é um chunk separado, baixado apenas ao alternar para ele, de modo que o padrão `classic` não custa nada
+- **Odontogram:** perfil de anatomia dental (`classic` padrão / `measured`) — `measured` renderiza dezesseis modelos de dentes medidos pela literatura — um por posição clinicamente distinta, de modo que cada molar traz o próprio contorno coronário e o próprio número de raízes — em um layout de dois arcos com largura por dente; alternável em tempo de execução, sem efeito sobre o padrão `classic`; sua arte é um chunk separado, baixado apenas ao alternar para ele, de modo que o padrão `classic` não custa nada; um dente registrado como dente decíduo é desenhado a partir do próprio modelo decíduo (posições 1-5), e não como uma camada dentro do desenho permanente, tanto no odontograma quanto no periodontograma
 - **Panels:** mostra/oculta de forma independente o cartão de Statuses de boca completa e o cartão de Orthodontics (ambos visíveis por padrão)
 - **Tooth details:** nível de detalhe de desgaste e nível de detalhe de descoloração (simple/complex, cada um padrão complex), notação de superfície (simple/full, padrão full)
 - **Caries:** alternância de pontuação ICDAS II (`enableIcdas`), alternância de profundidade de cárie (`cariesDepthEnabled`), granularidade de cárie radicular (`rootCariesMode`: simple/severity), granularidade secundária/CARS (`secondaryCariesMode`: simple/standard/full), granularidade de profundidade radiográfica (`radiographicDepthMode`: off/threeLevel/detailed) — a antiga aba separada "Secondary caries" foi mesclada nesta, com o controle CARS posicionado diretamente acima de profundidade radiográfica
@@ -596,6 +601,12 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `setNumberingSystem(system)` | Alterna entre FDI, Universal, Palmer |
 | `clearSelection()` | Deseleciona todos os dentes |
 | `getSelectedTeeth()` | Dentes selecionados no momento (números FDI), na ordem de seleção |
+| `getNumberingSystem()` | O sistema de numeração dentária ativo |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | Ler/definir o espaçamento entre dentes na tela |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | Ler/definir o tamanho do número do dente |
+| `getSelectionColor()` / `setSelectionColor(hex)` | Ler/definir a cor do anel de seleção (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | Ler/definir o estilo da borda do anel de seleção |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | Ler/definir se o painel de informações do dente é exibido |
 | `setOcclusalVisible(on)` | Liga/desliga a vista oclusal |
 | `setWisdomVisible(on)` | Mostra/oculta os dentes do siso |
 | `setShowBase(on)` | Mostra/oculta a camada de osso |
@@ -618,6 +629,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `getPlanChart()` | Obtém o payload do gráfico de plano (`{version, globals, teeth}`), independentemente de qual gráfico está ativo |
 | `setPlanChart(payload)` | Substitui os dentes do gráfico de plano a partir de um payload (o status permanece intocado); marca o gráfico de plano como inicializado |
 | `getPlanChanges()` | Obtém o diff estruturado status→plan (`{ toothNo, axis, from, to }[]`) — uma entrada por dente por eixo de tratamento que difere entre os gráficos de status e plano; vazio quando não existe plano. Também exposto em `getOdontogramSummary()` como `plannedChanges` |
+| `compareExams(before, after)` | Compara dois exames EXPORTADOS da mesma boca — mudanças por eixo (mesmo formato de `getPlanChanges()`), os números periodontais por sítio (profundidade de sondagem e nível de inserção, com o que se moveu ≥ 2 mm) e a classificação 2017 de cada exame. Puro: não toca no gráfico ativo |
 | `setPerioSite(toothNo, site, patch)` | Define dados periodontais para um dos seis sítios (`patch` = `{ pd?, gm?, bop?, sup? }`); `pd` null/`<1` descarta o registro do sítio. Valida + limita (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Obtém o registro periodontal por sítio de um dente (apenas sítios registrados) |
 | `getToothCal(toothNo)` | Obtém o CAL derivado por sítio (`pd + margem gengival`) para um dente |
@@ -848,11 +860,12 @@ React Advanced Odontogram é criado e mantido por Zoltan Dul ([@ZoliQua](https:/
 
 **Colaboradores**
 
-- [@odontodev](https://github.com/odontodev): hidratação de estado e API de ciclo de vida, configurações de restaurações como props controladas, setters idempotentes e cartões recolhíveis
+- [@odontodev](https://github.com/odontodev): hidratação de estado e API de ciclo de vida, configurações de restaurações como props controladas, setters idempotentes e cartões recolhíveis; as configurações de exibição do odontograma e `getNumberingSystem()` expostas ao aplicativo hospedeiro, além das notificações `onStateChange` que faltavam para as configurações de sessão e as notas por dente
 - [@JulianoBazzi](https://github.com/JulianoBazzi): tradução para o português brasileiro
 - [@yassine-bhn](https://github.com/yassine-bhn): tradução para o francês e a anatomia medida proposta
 - [@saegerdirk-star](https://github.com/saegerdirk-star): anatomia dental medida e o gerador de dentes, além da proposta de interface componível; três correções adotadas do seu fork (identidade do paciente no PDF, orientação dos dentes no periograma, velocidade de seleção)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): a API de seleção `getSelectedTeeth()`
+- [@Ditherys](https://github.com/Ditherys): o conjunto dental medido ampliado — a especificação completa do gerador de anatomia para as dentições permanente e decídua, os metadados de registro das sobreposições e sua suíte de verificação, portados do fork deles
 
 **Construído com** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) e [Tailwind CSS](https://tailwindcss.com).
 

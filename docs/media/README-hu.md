@@ -109,6 +109,11 @@ Az `OdontogramShell` egy vezérelt (controlled) komponens. A leggyakoribb propok
 | `fillingDefectEnabled` | `boolean` | `true` | Bekapcsolja a tömési defektusok rögzítését a Tömések kártyán. |
 | `fillingMaterialAvailability` | `Record<string, boolean>` | mind elérhető | Elérhető tömőanyagok logikai leképezésként a `amalgam`/`composite`/`gic`/`temporary` kulcsokon (ismeretlen kulcsok figyelmen kívül hagyva). |
 | `fissureSealingEnabled` | `boolean` | `true` | Bekapcsolja a barázdazárást a Tömések kártyán. |
+| `screenToothSpacing` | `"wide" \| "normal" \| "close"` | `"normal"` | Fogak közti térköz a képernyőn. |
+| `screenToothNumberSize` | `"small" \| "normal" \| "xlarge"` | `"normal"` | Fogszám mérete a képernyős rácsban. |
+| `selectionColor` | `string` | `"#3b7bff"` | Kijelölőgyűrű színe (`#rrggbb`). |
+| `selectionBorderStyle` | `"solid" \| "dashed" \| "dotted"` | `"dashed"` | Kijelölőgyűrű szegélystílusa. |
+| `toothInfo` | `boolean` | `true` | A foginformációs panel megjelenítése. |
 | `onFillingComplexityChange` / `onFillingDefectEnabledChange` / `onFillingMaterialAvailabilityChange` / `onFissureSealingEnabledChange` | `(...) => void` | — | Akkor aktiválódik, amikor a felhasználó módosítja az adott beállítást a Beállítások → Tömések menüben. |
 | `onLanguageChange` / `onNumberingChange` / `onDarkModeChange` | `(value) => void` | — | Akkor hívódik meg, amikor a felhasználó módosítja a beállítást a felületen. |
 
@@ -221,7 +226,7 @@ Vagy töltsd be egy kizárólag kliensoldali dinamikus importtal: `dynamic(() =>
 - 📦 34 előre definiált restaurációs sablon (hidak, kivehető protézisek, bár protézisek implantátumokkal)
 - 💾 Állapot export/import JSON formátumban (2.22 verzió; az importálás továbbra is elfogadja a korábbi 1.4 és 2.0–2.21 verziókat, és automatikusan migrálja, plugin egyedi állapotokkal és fogankénti megjegyzésekkel)
 - 💽 Opcionálisan bekapcsolható localStorage-perzisztencia (`enablePersistence`/`disablePersistence`/`clearPersistedState`/`isPersistenceEnabled`) — alapértelmezetten kikapcsolva; minden állapotváltozáskor elmenti a státusz-diagramot (és opcionálisan a terv-diagramot is), majd a komponens legközelebbi mountolásakor visszaállítja azt, 4 MB-os méretkorláttal, a tárolási/feldolgozási hibákat pedig dobás helyett egy `onError` callbacknek (vagy a `console.warn`-nak) adja tovább
-- 🔗 HL7 FHIR R4 export (collection Bundle fogankénti Observation-ökkel, ISO 3950 fogkódolás a maradó fogazatra **és** a tejfogakra (51–85, veszteségmentes oda-vissza konverzió importáláskor), lokális kódrendszer, valamint egy opcionálisan bekapcsolható SNOMED CT réteg (Beállítások → SNOMED CT)); egy rögzített súlyosságú caries komponens egy pontozási-rendszer kódolást is hordoz — ICDAS-t egy elsődleges (tömés nélküli) felületen, CARS-t egy szekunder (tömött) felületen
+- 🔗 HL7 FHIR R4 export (collection Bundle fogankénti Observation-ökkel, ISO 3950 fogkódolás a maradó fogazatra **és** a tejfogakra (51–85, veszteségmentes oda-vissza konverzió importáláskor), lokális kódrendszer, valamint egy opcionálisan bekapcsolható SNOMED CT réteg (Beállítások → SNOMED CT)); egy rögzített súlyosságú caries komponens egy pontozási-rendszer kódolást is hordoz — ICDAS-t egy elsődleges (tömés nélküli) felületen, CARS-t egy szekunder (tömött) felületen A TERV-tábla a DX-11 óta vele utazik: minden tervezett beavatkozás egy `ServiceRequest` (`intent: "plan"`), az adott fogon szándékolt klinikai állapot kódjával.
 - ✚ Kereszt/plusz felület-választó UI (B/M/O/D/L) szuvasodáshoz és tömésekhez
 - 🧱 Felületenkénti tömőanyagok (vegyes tömések, pl. bukkális amalgám + disztális kompozit)
 - 🖼️ PNG/JPG/SVG képexport az odontogramról (letölthető; a PNG/JPG vektoros SVG-ből raszterizált)
@@ -451,7 +456,7 @@ Az `endo` és a `pulpDx` egyetlen összevont "Pulpa / Endo státusz" `<select>` 
 A fejléc fogaskerék ikonjával nyitható; egy focus-trapped, ARIA `dialog` lapozott (tabos) elrendezéssel (Esc/háttérre kattintás a bezáráshoz, nyílbillentyűk a fülek közti váltáshoz). Minden beállítás csak munkamenet-szintű UI állapot, hacsak másképp nincs jelezve — egyik sem módosítja a fogankénti adatokat vagy az export payloadot.
 
 - **Általános:** számozási rendszer (FDI/Universal/Palmer), nyelv, sötét/világos téma, fogadatok panel láthatósága
-- **Odontogram:** fogazatanatómia-profil (`classic` alapértelmezett / `measured`) — a `measured` kilenc, szakirodalom alapján bemért fogsablont jelenít meg két fogív, fogankénti szélesség elrendezésben; futásidőben váltható, a `classic` alapértelmezésre nincs hatással; a hozzá tartozó grafika külön chunk, amely csak átváltáskor töltődik le, így a `classic` alapértelmezés semmibe nem kerül
+- **Odontogram:** fogazatanatómia-profil (`classic` alapértelmezett / `measured`) — a `measured` tizenhat, szakirodalom alapján bemért fogsablont jelenít meg — pozíciónként egyet, így minden őrlőfog a saját koronakörvonalát és gyökérszámát viseli — két fogív, fogankénti szélesség elrendezésben; futásidőben váltható, a `classic` alapértelmezésre nincs hatással; a hozzá tartozó grafika külön chunk, amely csak átváltáskor töltődik le, így a `classic` alapértelmezés semmibe nem kerül; a tejfognak jelölt fog a saját tejfog-sablonjából jelenik meg (1-5. pozíció), nem a maradó rajz egyik rétegeként — a fogtérképen és a parodontális diagramon egyaránt
 - **Panelek:** a teljes szájüreg Státusz kártya és az Ortodoncia kártya egymástól függetlenül elrejthető/megjeleníthető (mindkettő alapértelmezésben látható)
 - **Fogadatok:** kopás részletezettségi szint és elszíneződés részletezettségi szint (egyszerű/összetett, mindkettő alapértelmezetten összetett), felület-jelölés (egyszerű/teljes, alapértelmezett: teljes)
 - **Caries:** ICDAS II pontozás kapcsoló (`enableIcdas`), caries-mélység kapcsoló (`cariesDepthEnabled`), gyökér-caries részletezettség (`rootCariesMode`: simple/severity), szekunder/CARS részletezettség (`secondaryCariesMode`: simple/standard/full), radiológiai-mélység részletezettség (`radiographicDepthMode`: off/threeLevel/detailed) — a korábban különálló "Szekunder caries" fül ebbe olvadt bele, a CARS vezérlő közvetlenül a radiológiai mélység fölé kerülve
@@ -596,6 +601,12 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `setNumberingSystem(system)` | Váltás FDI, Universal, Palmer között |
 | `clearSelection()` | Összes fog kiválasztásának törlése |
 | `getSelectedTeeth()` | Az aktuálisan kijelölt fogak (FDI-számok), a kijelölés sorrendjében |
+| `getNumberingSystem()` | A jelenleg aktív fogszámozási rendszer |
+| `getScreenToothSpacing()` / `setScreenToothSpacing(v)` | A képernyős fogköz lekérdezése/beállítása |
+| `getScreenToothNumberSize()` / `setScreenToothNumberSize(v)` | A fogszám méretének lekérdezése/beállítása |
+| `getSelectionColor()` / `setSelectionColor(hex)` | A kijelölőgyűrű színének lekérdezése/beállítása (`#rrggbb`) |
+| `getSelectionBorderStyle()` / `setSelectionBorderStyle(v)` | A kijelölőgyűrű szegélystílusának lekérdezése/beállítása |
+| `getToothInfoVisible()` / `setToothInfoVisible(on)` | A foginformációs panel láthatóságának lekérdezése/beállítása |
 | `setOcclusalVisible(on)` | Okkluzális nézet be/ki |
 | `setWisdomVisible(on)` | Bölcsességfogak mutatása/elrejtése |
 | `setShowBase(on)` | Csont réteg mutatása/elrejtése |
@@ -618,6 +629,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `getPlanChart()` | A terv diagram payloadjának lekérdezése (`{version, globals, teeth}`), függetlenül attól, melyik diagram aktív éppen |
 | `setPlanChart(payload)` | A terv diagram fogainak cseréje egy payloadból (a státusz érintetlen marad); a terv diagramot inicializáltnak jelöli |
 | `getPlanChanges()` | A strukturált státusz→terv eltérés lekérdezése (`{ toothNo, axis, from, to }[]`) — egy bejegyzés fogankénti és kezelési tengelyenkénti eltérésre a státusz és terv diagram között; üres, ha nincs terv. A `getOdontogramSummary()`-n is megjelenik `plannedChanges` néven |
+| `compareExams(before, after)` | Ugyanannak a szájnak két EXPORTÁLT vizsgálatát hasonlítja össze — tengely szintű változások (a `getPlanChanges()` alakjában), a parodontális számok helyenként (tasakmélység és tapadási szint, jelölve ami ≥ 2 mm-t mozdult), valamint mindkét vizsgálat 2017-es besorolása. Tiszta: az élő táblához nem nyúl |
 | `setPerioSite(toothNo, site, patch)` | Parodontális adat beállítása a hat pont egyikén (`patch` = `{ pd?, gm?, bop?, sup? }`); a `pd` null/`<1` értéke törli a pont rögzítettségét. Validál és korlátoz (PD 1–15, GM −10…+20) |
 | `getToothPerio(toothNo)` | Egy fog pontonkénti parodontális rekordjának lekérdezése (csak a rögzített pontok) |
 | `getToothCal(toothNo)` | Egy fog pontonkénti, levezetett CAL értékének lekérdezése (`pd + ínyszél`) |
@@ -856,11 +868,12 @@ A React Advanced Odontogramot Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 
 **Közreműködők**
 
-- [@odontodev](https://github.com/odontodev): állapot hidratálás és életciklus API, tömésbeállítások vezérelt propként, idempotens setterek és összecsukható kártyák
+- [@odontodev](https://github.com/odontodev): állapot hidratálás és életciklus API, tömésbeállítások vezérelt propként, idempotens setterek és összecsukható kártyák; a diagram megjelenítési beállításai és a `getNumberingSystem()` elérhetővé tétele a gazdaalkalmazásnak, valamint a munkamenet-beállítások és a fogjegyzetek hiányzó `onStateChange` értesítései
 - [@JulianoBazzi](https://github.com/JulianoBazzi): brazil portugál fordítás
 - [@yassine-bhn](https://github.com/yassine-bhn): francia fordítás és a felmért anatómia jelöltje
 - [@saegerdirk-star](https://github.com/saegerdirk-star): felmért foganatómia és a foggenerátor, valamint a komponálható felület javaslata; három javítás a forkjából (betegazonosító adatok a PDF-ben, fogorientáció a parodontális diagramon, kijelölési sebesség)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): a `getSelectedTeeth()` kijelölési API
+- [@Ditherys](https://github.com/Ditherys): a bővített, bemért fogkészlet — az anatómiagenerátor teljes maradó és tejfogazati specifikációja, a rárajzolt rétegek regisztrációs metaadatai és az ellenőrző készlet, az ő forkjukból átültetve
 
 **Felhasznált eszközök:** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) és [Tailwind CSS](https://tailwindcss.com).
 

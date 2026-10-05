@@ -9,6 +9,7 @@ servers are namespaced per template while clinical layer ids stay stable.
 from __future__ import annotations
 
 import argparse
+import math
 import re
 import sys
 from pathlib import Path
@@ -19,6 +20,7 @@ import roots  # noqa: E402
 import graft  # noqa: E402
 import gum  # noqa: E402
 import fillings  # noqa: E402
+import overlays  # noqa: E402
 from spec import (  # noqa: E402
     PRIMARY_PULP_SCALE,
     PRIMARY_ROOT_SPREAD,
@@ -30,7 +32,13 @@ from spec import (  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 
-ASSETS = ROOT / "src" / "assets" / "teeth-svgs"
+CLASSIC_ASSETS = ROOT / "src" / "assets" / "teeth-svgs"
+
+GENERATED_ASSETS = CLASSIC_ASSETS / "measured"
+
+# Backwards-compatible helper name. Toothgen output is isolated from the
+# hand-maintained classic profile, matching the documented no-argument command.
+ASSETS = GENERATED_ASSETS
 
 
 SOURCE = Path(__file__).resolve().parent / "source"
@@ -40,6 +48,13 @@ SRC_CEJ = {11: 32.2, 13: 32.4, 14: 32.1, 16: 31.0}
 
 
 BAND = 2.5
+
+DEFAULT_SET = "all"
+
+# Superseded generated class keys. They are removed only during a complete
+# no-argument build into the canonical measured directory; arbitrary --out
+# directories and partial builds are never cleaned.
+LEGACY_GENERATED_FILES = ("46.svg", "46_occl.svg")
 
 
 CROWN_SCALE = 1.0
@@ -433,6 +448,48 @@ def source_root_count(base_d: str, apex: float, cej: float) -> int:
     return max(1, len(roots.spans_at(subs, y)))
 
 
+def compose_maps(*maps):
+    """Compose optional coordinate maps in declaration order."""
+
+    active = [fn for fn in maps if fn is not None]
+    if not active:
+        return None
+
+    def composed(x: float, y: float):
+        for fn in active:
+            x, y = fn(x, y)
+        return x, y
+
+    return composed
+
+
+def crown_shape_xmap(s: ToothSpec, cx: float, cej: float, inc: float):
+    """Smooth class-level crown form, fixed at the CEJ.
+
+    Taper differentiates incisal/occlusal outline; the asymmetric polynomial
+    bulge peaks in the cervical third. Because this map is part of the common
+    rewrite path, fillings, caries, pulp and prosthetic layers remain registered.
+    """
+
+    if s.crown_taper == 0.0 and s.cervical_bulge == 0.0:
+        return None
+    span = inc - cej
+
+    def fn(x: float, y: float):
+        if y <= cej or span <= 0:
+            return x, y
+        t = min(1.0, (y - cej) / span)
+        ease = t * t * (3.0 - 2.0 * t)
+        # Normalized beta polynomial: peak at t=1/3, with zero slope at both
+        # CEJ and incisal/occlusal boundaries. The former is essential—using a
+        # linear t term makes a visible tangent kink where crown meets root.
+        cervical = 45.5625 * t * t * (1.0 - t) ** 4
+        factor = 1.0 + s.crown_taper * ease + s.cervical_bulge * cervical
+        return cx + (x - cx) * factor, y
+
+    return fn
+
+
 def build_one(s: ToothSpec, out_dir: Path, dry: bool, root_scale: float | None = None):
     src = SOURCE / f"{s.src_template}.svg"
     txt = src.read_text()
@@ -452,7 +509,7 @@ def build_one(s: ToothSpec, out_dir: Path, dry: bool, root_scale: float | None =
     base_d = tooth_base_d(txt)
     bx0, by0, bx1, by1 = curve_extent(base_d)
     have = source_root_count(base_d, by0, cej)
-    merge_fn = None
+    shape_maps = []
     root_note = f"{have} roots{graft_note}"
 
     if s.roots == 3 and have == 2:
@@ -496,7 +553,7 @@ def build_one(s: ToothSpec, out_dir: Path, dry: bool, root_scale: float | None =
         # their root width. So the enlargement Dirk asked for reaches the WIDTH
         # only, and the cap reports itself in the build line when it bites.
         txt, pulp_hit, fy = roots.scale_pulp(txt, PRIMARY_PULP_SCALE, cxs, by0)
-        merge_fn = roots.spread_roots_xmap(cxs, by0, cej, PRIMARY_ROOT_SPREAD)
+        shape_maps.append(roots.spread_roots_xmap(cxs, by0, cej, PRIMARY_ROOT_SPREAD))
         capped = "" if fy >= PRIMARY_PULP_SCALE - 1e-9 else f", capped to {fy:.3f}"
         root_note += f" +pulp {len(pulp_hit)}{capped} +spread"
         base_d = tooth_base_d(txt)
@@ -515,6 +572,13 @@ def build_one(s: ToothSpec, out_dir: Path, dry: bool, root_scale: float | None =
         )
         base_d = tooth_base_d(txt)
         bx0, by0, bx1, by1 = curve_extent(base_d)
+
+    if s.root_spread != 1.0 and s.roots > 1:
+        shape_maps.append(
+            roots.spread_roots_xmap((bx0 + bx1) / 2.0, by0, cej, s.root_spread)
+        )
+    shape_maps.append(crown_shape_xmap(s, (bx0 + bx1) / 2.0, cej, by1))
+    merge_fn = compose_maps(*shape_maps)
 
     apex, inc = by0, by1
 
@@ -566,7 +630,15 @@ def build_one(s: ToothSpec, out_dir: Path, dry: bool, root_scale: float | None =
     def ymap_shift(y):
         return ymap(y) + shift
 
-    vb_new = (vb_old[0], 0.0, vb_old[2], h_vb)
+    # A class may legitimately be wider than its donor viewBox (notably the
+    # mandibular first molar). Expand the canvas around the transformed crown
+    # rather than clipping class-registered crowns/wear at the donor boundary.
+    horizontal_margin = 2.0
+    vb_left = min(vb_old[0], cx - w_dst / 2.0 - horizontal_margin)
+    vb_right = max(vb_old[0] + vb_old[2], cx + w_dst / 2.0 + horizontal_margin)
+    vb_left = math.floor(vb_left * 10.0) / 10.0
+    vb_right = math.ceil(vb_right * 10.0) / 10.0
+    vb_new = (vb_left, 0.0, vb_right - vb_left, h_vb)
 
     out = rewrite_svg(txt, fn, ymap_shift, vb_new)
 
@@ -599,15 +671,68 @@ def build_one(s: ToothSpec, out_dir: Path, dry: bool, root_scale: float | None =
     )
 
     out = connect_fillings(out, n_inc)
+    out = overlays.normalize_crown_envelopes(out)
+
+    # Bridge connectors are not independent saddles. Regenerate two short
+    # proximal tabs from this class's transformed crown envelope so every
+    # material shares exact anatomy while retaining its historical id/style.
+    final_base_d = re.search(r'<path id="tooth-base" d="([^"]+)"', out).group(1)
+    bridge_y = n_cej + (n_inc - n_cej) * 0.64
+    bridge_h = min(2.8, max(1.8, (n_inc - n_cej) * 0.065))
+    out, bridge = overlays.register_bridge_tabs(
+        out,
+        final_base_d,
+        bridge_y,
+        bridge_h,
+        roots.crossings_at,
+        (vb_new[0], vb_new[0] + vb_new[2]),
+    )
 
     got_root = (n_cej - n_apex) / (n_inc - n_apex)
     got_total = n_inc - n_apex
     got_w = max(
         crown_width(
-            re.search(r'<path id="tooth-base" d="([^"]+)"', out).group(1), y
+            final_base_d, y
         )
         for y in [n_inc - (n_inc - n_cej) * f for f in (0.2, 0.35, 0.5, 0.65, 0.8)]
     )
+
+    im = re.search(r'<g id="implant-base".*?</g>', out, re.S)
+    n_impl = None
+    implant_left = implant_right = None
+    if im:
+        ds = re.findall(r'\sd="([^"]+)"', im.group(0))
+        pts = [pt for d2 in ds for sub in roots._polylines(d2) for pt in sub]
+        if pts:
+            n_impl = max(pt[1] for pt in pts)
+            implant_left = min(pt[0] for pt in pts)
+            implant_right = max(pt[0] for pt in pts)
+
+    cervical_y = n_cej + min(1.0, (n_inc - n_cej) * 0.04)
+    cervical_xs = roots.crossings_at(final_base_d, cervical_y)
+    if len(cervical_xs) < 2:
+        raise SystemExit(f"{s.key}: cannot derive cervical span")
+    crown_samples = [
+        roots.crossings_at(final_base_d, n_cej + (n_inc - n_cej) * frac)
+        for frac in (0.25, 0.5, 0.75)
+    ]
+    crown_left = min(xs[0] for xs in crown_samples if len(xs) >= 2)
+    crown_right = max(xs[-1] for xs in crown_samples if len(xs) >= 2)
+    registration = {
+        "data-cej-y": n_cej,
+        "data-cervical-left": cervical_xs[0],
+        "data-cervical-right": cervical_xs[-1],
+        "data-crown-left": crown_left,
+        "data-crown-right": crown_right,
+        "data-implant-platform-y": n_impl if n_impl is not None else n_cej,
+        "data-implant-left": implant_left if implant_left is not None else cervical_xs[0],
+        "data-implant-right": implant_right if implant_right is not None else cervical_xs[-1],
+        "data-bridge-anchor-y": bridge["y"],
+        "data-bridge-anchor-height": bridge["height"],
+    }
+    if s.roots > 1:
+        registration["data-furcation-y"] = n_cej - (n_cej - n_apex) * s.furc_frac
+    out = overlays.add_svg_attributes(out, registration)
 
     meta = (
         f"<!-- toothgen: template={s.key} src={s.src_template} roots={s.roots}"
@@ -620,14 +745,6 @@ def build_one(s: ToothSpec, out_dir: Path, dry: bool, root_scale: float | None =
         meta + f'<svg data-tooth-template="{s.key}" data-root-count="{s.roots}" ',
         1,
     )
-
-    im = re.search(r'<g id="implant-base".*?</g>', out, re.S)
-    n_impl = None
-    if im:
-        ds = re.findall(r'\sd="([^"]+)"', im.group(0))
-        pts = [pt for d2 in ds for sub in roots._polylines(d2) for pt in sub]
-        if pts:
-            n_impl = max(pt[1] for pt in pts)
 
     dst = out_dir / f"{s.key}.svg"
     if not dry:
@@ -661,9 +778,8 @@ def main():
     ap.add_argument(
         "--set",
         choices=("permanent", "primary", "all"),
-        default="permanent",
-        help="Which dentition to build (default: permanent, so an "
-        "unqualified run keeps writing exactly the nine shipped templates)",
+        default=DEFAULT_SET,
+        help="Which dentition to build (default: all permanent and primary classes)",
     )
     ap.add_argument(
         "--root-scale",
@@ -675,6 +791,17 @@ def main():
     args = ap.parse_args()
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
+    if (
+        not args.dry_run
+        and not args.only
+        and args.set == "all"
+        and out_dir.resolve() == GENERATED_ASSETS.resolve()
+    ):
+        for name in LEGACY_GENERATED_FILES:
+            stale = out_dir / name
+            if stale.exists():
+                stale.unlink()
+                print(f"removed superseded generated asset {name}")
     build_set: list[ToothSpec] = []
     if args.set in ("permanent", "all"):
         build_set += SPECS
@@ -686,6 +813,19 @@ def main():
         if args.only and s.key != args.only:
             continue
         rows.append(build_one(s, out_dir, args.dry_run, args.root_scale))
+
+    # Occlusal anatomy is part of the same generated profile. Keeping it in the
+    # no-argument build makes the documented command reproduce the complete
+    # runtime asset set instead of relying on stale files from a separate step.
+    if not args.only:
+        import occlusal  # local import avoids a module-level build/occlusal cycle
+
+        for item in occlusal.OCCL_SPECS:
+            if args.set == "permanent" and item.primary:
+                continue
+            if args.set == "primary" and not item.primary:
+                continue
+            occlusal.build_one(item, out_dir, args.dry_run)
 
     print("\n--- CSS (src/index.css) ---")
     for r in rows:

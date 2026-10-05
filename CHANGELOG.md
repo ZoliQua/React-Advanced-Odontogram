@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **The measured anatomy now draws every position from its own template, and
+  the generator that produces it lives in the repository.** The measured set
+  grew from nine templates to sixteen — one per clinically distinct position,
+  the maxillary right and mandibular left quadrants, with every other tooth
+  mirrored across the midline and never between arches. The second and third
+  molars no longer borrow the first molar's artwork: each carries its own crown
+  outline and root count, and each posterior position has its own occlusal tile
+  (ten, up from four). The measured grid in `src/index.css` widened to match,
+  so the interdental papilla still lands on the joint at every position.
+
+  The templates are no longer opaque committed artwork. `tools/toothgen` (Python
+  standard library only) regenerates the whole set from six hand-drawn sources,
+  and the committed files are byte-for-byte what it emits, checked by the
+  generator's own suite: `verify.py` (clinical and overlay registration, plus
+  the grid-column agreement with `src/index.css`), `check_roundtrip.py` (10,157
+  paths, worst deviation 0.021 against a 0.05 tolerance) and 27 pytest cases.
+
+  Each generated template now publishes its measured registration points as
+  root `data-*` attributes (`data-cej-y`, `data-implant-platform-y`, crown and
+  cervical extents, bridge anchors), and the profile DERIVES the perio-chart
+  baseline anchors from them instead of restating them as literals — so
+  regenerating the artwork can no longer leave the CEJ baseline behind on the
+  previous geometry, which used to fail silently.
+
+  Opt-in as before: the measured artwork is its own chunk, fetched only when you
+  switch to it (now ~2.3 MB, from ~1.1 MB), and the classic default is untouched
+  — every parity golden is byte-identical.
+
+  The expanded specification, the registration metadata and the verification
+  suite were ported from [@Ditherys](https://github.com/Ditherys)'s fork. The
+  generator also emits a deciduous set (51-55, 71-75), which is not wired into
+  the profile yet.
+
 ## [2.6.0] - 2026-09-14
 
 ### Changed

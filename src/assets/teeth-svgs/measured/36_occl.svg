@@ -1,0 +1,367 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Created by Zoltan Dul in 2026 - free to use with MIT license. Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram - SVG Version: 2.5.0 -->
+<!-- toothgen: template=36_occl src=16_occl view=occlusal ratio=0.940 target=0.94 source="Bild 75 (p. 95) + standard BL/MD dimensions" -->
+<svg data-tooth-template="36_occl" data-cusp-count="5" data-groove-pattern="y5" data-crown-left="4.243" data-crown-right="42.65" data-bridge-anchor-y="20.944" data-bridge-anchor-height="2.8" xmlns="http://www.w3.org/2000/svg" id="molar_x5F_tooth" version="1.1" viewBox="0.0 0.0 48.2 41.5">
+  <style>
+    [data-active="0"] { display: none; }
+  </style>
+  <defs>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-0" x1="8" y1="-2065.3" x2="39.9" y2="-2065.3" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-1" x1="5.8" y1="-2065.3" x2="39.9" y2="-2065.3" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-2" x1="7.9" y1="-2065.4" x2="40.8" y2="-2065.4" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-3" x1="5.8" y1="-2065.4" x2="40.8" y2="-2065.4" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-4" x1="5.8" y1="-2065.4" x2="40.8" y2="-2065.4" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-5" x1="37.3" y1="-2069.4" x2="30.4" y2="-2057.3" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-6" x1="10.7" y1="-2051.9" x2="21.2" y2="-2062.3" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-7" x1="28.6" y1="-2047.7" x2="28.6" y2="-2063.4" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0f0f0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-8" x1="30.7" y1="-2081.8" x2="19.7" y2="-2062.6" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-9" x1="32.2" y1="-2075.9" x2="32.2" y2="-2062.7" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-10" x1="6.7" y1="-2074.8" x2="15.5" y2="-2069.7" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#f0eff0" data-active="1" />
+      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-11" x1="23.5" y1="3100.8" x2="23.5" y2="3122" gradientTransform="translate(0 -3090.7732)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="#c8c9c9" data-active="1" />
+      <stop offset="1" stop-color="#828282" data-active="1" />
+      </linearGradient>
+    <linearGradient id="toothgen-36_occl-linear-gradient-16-occl-12" x1="15.3" y1="-2064.8" x2="31.7" y2="-2064.8" gradientTransform="translate(0 -2044.4678) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset=".3" stop-color="#cf0" stop-opacity=".5" data-active="1" />
+      <stop offset="1" stop-color="#b4c500" data-active="1" />
+      </linearGradient>
+    <radialGradient id="toothgen-36_occl-radial-gradient-16-occl-0" cx="24.3" cy="23.7" fx="24.3" fy="23.7" r="17.8" gradientTransform="translate(0 42.6) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="var(--odon-rest-metal-ceramic-0, #feff5f)" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-rest-metal-ceramic-1, #f9fc60)" data-active="1" />
+      <stop offset=".2" stop-color="var(--odon-rest-metal-ceramic-2, #edf564)" data-active="1" />
+      <stop offset=".4" stop-color="var(--odon-rest-metal-ceramic-3, #d8ea6b)" data-active="1" />
+      <stop offset=".5" stop-color="var(--odon-rest-metal-ceramic-4, #bbd975)" data-active="1" />
+      <stop offset=".6" stop-color="var(--odon-rest-metal-ceramic-5, #95c482)" data-active="1" />
+      <stop offset=".8" stop-color="var(--odon-rest-metal-ceramic-6, #68ab91)" data-active="1" />
+      <stop offset=".9" stop-color="var(--odon-rest-metal-ceramic-7, #328da3)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-rest-metal-ceramic-8, #0071b5)" data-active="1" />
+      </radialGradient>
+    <radialGradient id="toothgen-36_occl-radial-gradient-16-occl-1" cx="23.5" cy="21.8" fx="23.5" fy="21.8" r="17.8" gradientTransform="translate(0 42.6) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="var(--odon-rest-metal-ceramic-0, #feff5f)" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-rest-metal-ceramic-1, #f9fc60)" data-active="1" />
+      <stop offset=".2" stop-color="var(--odon-rest-metal-ceramic-2, #edf564)" data-active="1" />
+      <stop offset=".4" stop-color="var(--odon-rest-metal-ceramic-3, #d8ea6b)" data-active="1" />
+      <stop offset=".5" stop-color="var(--odon-rest-metal-ceramic-4, #bbd975)" data-active="1" />
+      <stop offset=".6" stop-color="var(--odon-rest-metal-ceramic-5, #95c482)" data-active="1" />
+      <stop offset=".8" stop-color="var(--odon-rest-metal-ceramic-6, #68ab91)" data-active="1" />
+      <stop offset=".9" stop-color="var(--odon-rest-metal-ceramic-7, #328da3)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-rest-metal-ceramic-8, #0071b5)" data-active="1" />
+      </radialGradient>
+    <radialGradient id="toothgen-36_occl-radial-gradient-16-occl-2" cx="24.3" cy="23.7" fx="24.3" fy="23.7" r="17.8" gradientTransform="translate(0 42.6) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="var(--odon-rest-emax-0, #fff)" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-rest-emax-1, #fdf3ea)" data-active="1" />
+      <stop offset=".2" stop-color="var(--odon-rest-emax-2, #f9d8b9)" data-active="1" />
+      <stop offset=".3" stop-color="var(--odon-rest-emax-3, #f5c18f)" data-active="1" />
+      <stop offset=".4" stop-color="var(--odon-rest-emax-4, #f2ae6c)" data-active="1" />
+      <stop offset=".6" stop-color="var(--odon-rest-emax-5, #f09f52)" data-active="1" />
+      <stop offset=".7" stop-color="var(--odon-rest-emax-6, #ef953f)" data-active="1" />
+      <stop offset=".9" stop-color="var(--odon-rest-emax-7, #ee8f33)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-rest-emax-8, #ee8d30)" data-active="1" />
+      </radialGradient>
+    <radialGradient id="toothgen-36_occl-radial-gradient-16-occl-3" cx="23.4" cy="47.6" fx="23.4" fy="47.6" r="17.8" gradientTransform="translate(0 -26.8)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="var(--odon-rest-emax-0, #fff)" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-rest-emax-1, #fdf3ea)" data-active="1" />
+      <stop offset=".2" stop-color="var(--odon-rest-emax-2, #f9d8b9)" data-active="1" />
+      <stop offset=".3" stop-color="var(--odon-rest-emax-3, #f5c18f)" data-active="1" />
+      <stop offset=".4" stop-color="var(--odon-rest-emax-4, #f2ae6c)" data-active="1" />
+      <stop offset=".6" stop-color="var(--odon-rest-emax-5, #f09f52)" data-active="1" />
+      <stop offset=".7" stop-color="var(--odon-rest-emax-6, #ef953f)" data-active="1" />
+      <stop offset=".9" stop-color="var(--odon-rest-emax-7, #ee8f33)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-rest-emax-8, #ee8d30)" data-active="1" />
+      </radialGradient>
+    <radialGradient id="toothgen-36_occl-radial-gradient-16-occl-4" cx="23.7" cy="21.8" fx="23.7" fy="21.8" r="17.5" gradientTransform="translate(0 42.6) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="var(--odon-rest-emax-0, #fff)" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-rest-emax-1, #fdf3ea)" data-active="1" />
+      <stop offset=".2" stop-color="var(--odon-rest-emax-2, #f9d8b9)" data-active="1" />
+      <stop offset=".3" stop-color="var(--odon-rest-emax-3, #f5c18f)" data-active="1" />
+      <stop offset=".4" stop-color="var(--odon-rest-emax-4, #f2ae6c)" data-active="1" />
+      <stop offset=".6" stop-color="var(--odon-rest-emax-5, #f09f52)" data-active="1" />
+      <stop offset=".7" stop-color="var(--odon-rest-emax-6, #ef953f)" data-active="1" />
+      <stop offset=".9" stop-color="var(--odon-rest-emax-7, #ee8f33)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-rest-emax-8, #ee8d30)" data-active="1" />
+      </radialGradient>
+    <radialGradient id="toothgen-36_occl-radial-gradient-16-occl-5" cx="23.7" cy="21.9" fx="23.7" fy="21.9" r="17.5" gradientTransform="translate(0 42.6) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="var(--odon-rest-emax-0, #fff)" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-rest-emax-1, #fdf3ea)" data-active="1" />
+      <stop offset=".2" stop-color="var(--odon-rest-emax-2, #f9d8b9)" data-active="1" />
+      <stop offset=".3" stop-color="var(--odon-rest-emax-3, #f5c18f)" data-active="1" />
+      <stop offset=".4" stop-color="var(--odon-rest-emax-4, #f2ae6c)" data-active="1" />
+      <stop offset=".6" stop-color="var(--odon-rest-emax-5, #f09f52)" data-active="1" />
+      <stop offset=".7" stop-color="var(--odon-rest-emax-6, #ef953f)" data-active="1" />
+      <stop offset=".9" stop-color="var(--odon-rest-emax-7, #ee8f33)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-rest-emax-8, #ee8d30)" data-active="1" />
+      </radialGradient>
+    <radialGradient id="toothgen-36_occl-radial-gradient-16-occl-6" cx="24.1" cy="33.9" fx="24.1" fy="33.9" r="12.3" gradientTransform="translate(0 42.6) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
+      <stop offset="0" stop-color="var(--odon-rest-emax-0, #fff)" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-rest-emax-1, #fdf3ea)" data-active="1" />
+      <stop offset=".2" stop-color="var(--odon-rest-emax-2, #f9d8b9)" data-active="1" />
+      <stop offset=".3" stop-color="var(--odon-rest-emax-3, #f5c18f)" data-active="1" />
+      <stop offset=".4" stop-color="var(--odon-rest-emax-4, #f2ae6c)" data-active="1" />
+      <stop offset=".6" stop-color="var(--odon-rest-emax-5, #f09f52)" data-active="1" />
+      <stop offset=".7" stop-color="var(--odon-rest-emax-6, #ef953f)" data-active="1" />
+      <stop offset=".9" stop-color="var(--odon-rest-emax-7, #ee8f33)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-rest-emax-8, #ee8d30)" data-active="1" />
+      </radialGradient>
+    </defs>
+  <g id="base" data-active="1">
+    <path id="bone-base" d="M50.55,39.5c0,0-3.52.7-6.93.5-3.41-.2-5.72,0-6.6,0-2.53-.2-6.6-.3-10.34-.2-4.29,0-9.13.9-12.2.9-3.08,0-3.63,0-5.39-.2-4.4-.3-6.49-.7-6.49-.7-1.98-.3-4.95.7-4.95-.6v-36.5l6.05-.5,17.37-1.1h21.11l8.47.4v40h0v-2h-.11Z" data-active="1" style="fill: #fdecc5;" />
+    <g id="gum-base" data-active="1">
+      <path id="gum-line-2" d="M9.87,2.4c8.58-.2,33.32-1.1,36.06-.6,2.64.5,2.2.4,3.41,0,1.21-.4,1.32-1.2,0-1.5-1.32-.3-3.85-.3-6.93-.2-5.72.2-11.98.6-14.4.8-6.6.5-7.26.5-14.18.5-6.93,0-8.36-.5-13.63-.1-5.39.4-.99,1.4.22,1.4,5.28,0,5.72,0,9.35-.3Z" data-active="1" style="fill: #f79f9a;" />
+      <path id="gum-line-1" d="M38.57,39.2c-8.47,0-32.99.6-35.73,0-2.75-.6-2.2-.4-3.41,0-1.21.4-1.32,1.2,0,1.5,1.43.3,3.85.4,6.82.3,5.72,0,11.87-.4,14.4-.6,6.49-.4,7.15-.4,14.07-.3,4.95,0,8.25.6,13.41.3,5.17-.3.88-1.4-.33-1.5-5.17-.2-5.72,0-9.24,0h0v.3Z" data-active="1" style="fill: #f79f9a;" />
+      </g>
+    </g>
+  <g id="tooth-variants" data-active="1">
+    <path id="tooth-broken-mesial-distal" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6-4.84-.4-4.73.3,0,.8,2.2,3.4,2.2,4.2,0,.8-2.53,1.8-2.53,2.6,0,1.2,2.42,1.9,2.31,3.1,0,.6-3.3,2.8-3.3,3.4,0,1,3.52,1.8,3.3,2.7-.22.9-3.63,1.3-3.96,2.2-.33.9,5.28,1.4,4.73,2.4-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-.22-.4,4.18-2.2,4.29-4.5.11-2.3-3.52-1.7-3.41-2.8.11-1.1,0-2.4.77-3.9.77-1.5,1.54-1.9,1.54-2.7.22-2.4-3.19-1.5-2.86-3.5.33-2,1.21-2.1,1.65-3.8.44-1.7.44-5,.66-5.2,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-linear-gradient-16-occl-0); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+    <path id="tooth-broken-mesial" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6-4.84-.4-4.73.3,0,.8,2.2,3.4,2.2,4.2,0,.8-2.53,1.8-2.53,2.6,0,1.2,2.42,1.9,2.31,3.1,0,.6-3.3,2.8-3.3,3.4,0,1,3.52,1.8,3.3,2.7-.22.9-3.63,1.3-3.96,2.2-.33.9,5.28,1.4,4.73,2.4-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h.11,0Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-linear-gradient-16-occl-1); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+    <path id="tooth-broken-distal" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5,4.62-2.7,4.29-4.5-.33-1.3-3.52-1.4-3.41-2.8,0-.9.77-3,.77-3.9,0-.9,1.43-1.8,1.54-2.7.22-1.4-2.86-2.3-2.86-3.5,0-1.2,1.43-3,1.65-3.8.55-2.1-.88-3.6.66-5.2,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h-.11Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-linear-gradient-16-occl-2); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+    <g id="tooth-crownprep" data-active="1" style="display: none;">
+      <path id="tooth-crownprep-outer" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="fill: url(#toothgen-36_occl-linear-gradient-16-occl-3); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+      <path id="tooth-crownprep-inner" d="M20.76,7.2c1.65,0,3.63.2,5.39.4,1.21,0,2.53.2,3.63.5.66.2,1.43.5,2.09.7,1.21.4,2.31,1,3.19,1.9.88.8,1.54,1.7,1.98,2.8.22.5.33,1,.33,1.5.22,1.2.44,2.3.33,3.5v2.6c0,1.1,0,2.3-.44,3.4-.44,1.5-.88,3.1-1.65,4.4-1.1,1.8-3.3,2.8-5.39,3.3-.77.2-1.65.3-2.53.4-1.21.2-2.42.6-3.63.9-.99.2-2.09,0-3.08,0-.99,0-1.76-.2-2.64-.3-1.54,0-3.19-.2-4.4-1.1-1.1-.7-1.87-1.6-2.53-2.7-.77-1.1-1.32-2.3-1.65-3.6-.22-1-.22-2-.11-3,0-1.3.33-2.6.55-3.9.33-1.6.44-3.2.88-4.7.44-1.5,1.21-3,2.31-4.1,1.21-1.2,2.64-2.2,4.29-2.7.99-.3,2.2-.4,3.19-.3h0Z" data-active="1" style="fill: #eaeaea; stroke: #c8c8c8; stroke-miterlimit: 10;" />
+      </g>
+    </g>
+  <g id="tooth" data-active="1">
+    <g id="tooth-base" data-active="1">
+      <path id="background-cusp" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="fill: url(#toothgen-36_occl-linear-gradient-16-occl-4); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+      <g id="cusps" data-active="1" data-toothgen-anatomy="cusps" data-cusp-count="5">
+        <path d="M8.46,13.47c0-6.96,4.73-6.96,4.73-6.96,4.72,0,4.72,6.96,4.72,6.96,0,6.95-4.72,6.95-4.72,6.95-4.73,0-4.73-6.95-4.73-6.95Z" data-active="1" style="fill: #f4f1e8;" />
+        <path d="M18.99,13.47c0-6.96,4.45-6.96,4.45-6.96,4.45,0,4.45,6.96,4.45,6.96,0,6.95-4.45,6.95-4.45,6.95-4.45,0-4.45-6.95-4.45-6.95Z" data-active="1" style="fill: #f4f1e8;" />
+        <path d="M28.97,13.47c0-6.96,4.73-6.96,4.73-6.96,4.72,0,4.72,6.96,4.72,6.96,0,6.95-4.72,6.95-4.72,6.95-4.73,0-4.73-6.95-4.73-6.95Z" data-active="1" style="fill: #f4f1e8;" />
+        <path d="M8.46,28.42c0-6.96,7.22-6.96,7.22-6.96,7.21,0,7.21,6.96,7.21,6.96,0,6.96-7.21,6.96-7.21,6.96-7.22,0-7.22-6.96-7.22-6.96Z" data-active="1" style="fill: #f4f1e8;" />
+        <path d="M23.98,28.42c0-6.96,7.22-6.96,7.22-6.96,7.21,0,7.21,6.96,7.21,6.96,0,6.96-7.21,6.96-7.21,6.96-7.22,0-7.22-6.96-7.22-6.96Z" data-active="1" style="fill: #f4f1e8;" />
+      </g>
+      <g id="fissure" data-active="1" data-toothgen-anatomy="grooves" data-groove-pattern="y5">
+        <path d="M12.06,20.94h11.38,11.38" data-active="1" style="fill: none; stroke: #8f8f8f; stroke-linecap: round; stroke-linejoin: round; stroke-width: .65px;" />
+        <path d="M23.44,20.94v10.4" data-active="1" style="fill: none; stroke: #8f8f8f; stroke-linecap: round; stroke-linejoin: round; stroke-width: .65px;" />
+        <path d="M18.35,11.13l5.09,9.81,5.09-9.81" data-active="1" style="fill: none; stroke: #8f8f8f; stroke-linecap: round; stroke-linejoin: round; stroke-width: .65px;" />
+      </g>
+      </g>
+    </g>
+  <g id="surfaces" data-active="1">
+    <g id="caries" data-active="1">
+      <path id="caries-lingual" d="M17.24,38c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.4,1.21-.9.88-.6.88-1-.99-1.9-13.19-1.3-14.84-.6-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" />
+      <path id="caries-buccal" d="M18.12,5.8c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.5,1.21-1,.88-.6.88-1-1.1-1.9-13.19-1.2-14.84-.5-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" />
+      <g id="caries-mesial" data-active="1" style="display: none;">
+        <path id="mesial-shape" d="M39.56,28.6c3.74.2,3.74-14.6,2.2-16.2-.55-1.1-2.09-.3-3.08-.6-1.65-.5-2.09,3.4-3.08,5-.44,1.6-5.06,1.3-3.96,4.1,1.1,2.8,3.63,1,4.18,1.9.55.9,1.32,4.1,2.42,5.2l1.21.7h0Z" data-active="1" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" />
+        <path id="mesial-patch2" d="M38.79,21.5c-4.4,0,1.32,4.3,2.42,1.6.44-.9-1.1-1.7-2.09-1.6h-.44.11Z" data-active="1" style="fill: #fff;" />
+        <path id="mesial-patch1" d="M41.21,14.6c-1.87-1.3-6.27.7-2.86,1.6,2.2.5,3.41-.6,2.86-1.5h0Z" data-active="1" style="fill: #fff;" />
+        </g>
+      <g id="caries-distal" data-active="1" style="display: none;">
+        <path id="distal-shape" d="M10.2,25.9c2.64-.3-.44-3.3.11-5.4.77-3.1,2.97-7.5-.88-7.2-.88.1-2.53-.3-3.08.5-2.53,3-3.3,10.6-.33,12.1,2.97,1.5.66.6.77,1h0c0,.6.66,1,1.32.8.66-.2.66-.2.88-.4l1.32-1.4h0Z" data-active="1" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" />
+        <path id="distal-patch2" d="M9.43,18.3c1.32-.7.88-3.2-.77-3.1-1.65.1-1.32,3.6.33,3.1h.44Z" data-active="1" style="fill: #fff;" />
+        <path id="distal-patch1" d="M7.12,24.8c0,.3.66.5,1.1.6.22,0,.77.2.77,0-.22-.5-1.1-1.5-1.54-1.8-.77-.3-.55.9-.44,1.2,0,0,.11,0,0,0h0Z" data-active="1" style="fill: #fff;" />
+        </g>
+      <g id="caries-occlusal" data-active="1" style="display: none;">
+        <path id="occlusal-shape" d="M12.84,27.2c.66.9,4.07,6.3,5.06,6.4.99,0-1.76-4.6-1.65-5.7.11-1.1.22-3.1.77-3.7,1.1-1.2,3.52-3.2,4.29-3.3,1.87-.4,7.26,3.4,9.35,3.8,3.41.6-2.53-4.4,2.31-4.2,4.84.2-.33-3.5-.88-5-.99-2-5.39,1.8-7.7.6-2.31-1.2-1.32-6.5-3.19-6.5-1.87,0-.88,6.4-2.86,7.7-1.98,1.3-5.06,3.4-6.71,2.4-1.65-1-1.32-1.6-2.53-2.7-1.21-1.1-1.43,0-1.1.7l1.65,3.8,1.32,3,1.76,2.6h.11Z" data-active="1" style="fill: #0a1018; stroke: #000; stroke-miterlimit: 10;" />
+        <path id="occlusal-patch2" d="M25.48,19c-.99,3,4.51,1.5,4.95,0,.66-.8.22-2-.66-2.3-1.65-.5-3.3,1-4.4,2.1h0v.2c0,0,.11,0,.11,0Z" data-active="1" style="fill: #fff; stroke: #000; stroke-miterlimit: 10; stroke-width: .2px;" />
+        <path id="occlusal-patch1" d="M13.06,22.7c-.11,1.5,1.32,2.6,2.2,1.2.55-.9.55-3.1-.55-3.1-1.1,0-1.54.7-1.54,1.8v.2h-.11Z" data-active="1" style="fill: #fff; stroke: #000; stroke-miterlimit: 10; stroke-width: .2px;" />
+        </g>
+      </g>
+    <g id="subcaries" data-active="1">
+      <path id="subcaries-lingual" d="M17.24,38c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.4,1.21-.9.88-.6.88-1-.99-1.9-13.19-1.3-14.84-.6-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" />
+      <path id="subcaries-buccal" d="M18.12,5.8c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.5,1.21-1,.88-.6.88-1-1.1-1.9-13.19-1.2-14.84-.5-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" />
+      <path id="subcaries-mesial" d="M39.56,28.6c3.74.2,3.74-14.6,2.2-16.2-.55-1.1-2.09-.3-3.08-.6-1.65-.5-2.09,3.4-3.08,5-.44,1.6-5.06,1.3-3.96,4.1,1.1,2.8,3.63,1,4.18,1.9.55.9,1.32,4.1,2.42,5.2l1.21.7h0Z" data-active="1" style="display: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" />
+      <path id="subcaries-distal" d="M10.2,25.9c2.64-.3-.44-3.3.11-5.4.77-3.1,2.97-7.5-.88-7.2-.88.1-2.53-.3-3.08.5-2.53,3-3.3,10.6-.33,12.1,2.97,1.5.66.6.77,1h0c0,.6.66,1,1.32.8.66-.2.66-.2.88-.4l1.32-1.4h0Z" data-active="1" style="display: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" />
+      <path id="subcaries-occlusal" d="M12.84,27.2c.66.9,4.07,6.3,5.06,6.4.99,0-1.76-4.6-1.65-5.7.11-1.1.22-3.1.77-3.7,1.1-1.2,3.52-3.2,4.29-3.3,1.87-.4,7.26,3.4,9.35,3.8,3.41.6-2.53-4.4,2.31-4.2,4.84.2-.33-3.5-.88-5-.99-2-5.39,1.8-7.7.6-2.31-1.2-1.32-6.5-3.19-6.5-1.87,0-.88,6.4-2.86,7.7-1.98,1.3-5.06,3.4-6.71,2.4-1.65-1-1.32-1.6-2.53-2.7-1.21-1.1-1.43,0-1.1.7l1.65,3.8,1.32,3,1.76,2.6h.11Z" data-active="1" style="display: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" />
+      </g>
+    <g id="fillings" data-active="1">
+      <g id="amalgam" data-active="1">
+        <path id="filling-amalgam-occlusal" d="M12.84,27.2c.66.9,4.07,6.3,5.06,6.4.99,0-1.76-4.6-1.65-5.7.11-1.1.22-3.1.77-3.7,1.1-1.2,3.52-3.2,4.29-3.3,1.87-.4,7.26,3.4,9.35,3.8,3.41.6-2.53-4.4,2.31-4.2,4.84.2-.33-3.5-.88-5-.99-2-5.39,1.8-7.7.6-2.31-1.2-1.32-6.5-3.19-6.5-1.87,0-.88,6.4-2.86,7.7-1.98,1.3-5.06,3.4-6.71,2.4-1.65-1-1.32-1.6-2.53-2.7-1.21-1.1-1.43,0-1.1.7l1.65,3.8,1.32,3,1.76,2.6h.11Z" data-active="1" style="display: none; fill: var(--odon-fill-amalgam, #aaa); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+        <path id="filling-amalgam-lingual" d="M17.24,38c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.4,1.21-.9.88-.6.88-1-.99-1.9-13.19-1.3-14.84-.6-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: var(--odon-fill-amalgam, #aaa); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+        <path id="filling-amalgam-buccal" d="M18.12,5.8c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.5,1.21-1,.88-.6.88-1-1.1-1.9-13.19-1.2-14.84-.5-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: var(--odon-fill-amalgam, #aaa); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+        <path id="filling-amalgam-mesial" d="M39.56,28.6c3.74.2,3.74-14.6,2.2-16.2-.55-1.1-2.09-.3-3.08-.6-1.65-.5-2.09,3.4-3.08,5-.44,1.6-5.06,1.3-3.96,4.1,1.1,2.8,3.63,1,4.18,1.9.55.9,1.32,4.1,2.42,5.2l1.21.7h0Z" data-active="1" style="display: none; fill: var(--odon-fill-amalgam, #aaa); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+        <path id="filling-amalgam-distal" d="M10.2,25.9c2.64-.3-.44-3.3.11-5.4.77-3.1,2.97-7.5-.88-7.2-.88.1-2.53-.3-3.08.5-2.53,3-3.3,10.6-.33,12.1,2.97,1.5.66.6.77,1h0c0,.6.66,1,1.32.8.66-.2.66-.2.88-.4l1.32-1.4h0Z" data-active="1" style="display: none; fill: var(--odon-fill-amalgam, #aaa); stroke: #c8c8c8; stroke-miterlimit: 10;" />
+        </g>
+      <g id="composite" data-active="1">
+        <path id="filling-composite-occlusal" d="M12.84,27.2c.66.9,4.07,6.3,5.06,6.4.99,0-1.76-4.6-1.65-5.7.11-1.1.22-3.1.77-3.7,1.1-1.2,3.52-3.2,4.29-3.3,1.87-.4,7.26,3.4,9.35,3.8,3.41.6-2.53-4.4,2.31-4.2,4.84.2-.33-3.5-.88-5-.99-2-5.39,1.8-7.7.6-2.31-1.2-1.32-6.5-3.19-6.5-1.87,0-.88,6.4-2.86,7.7-1.98,1.3-5.06,3.4-6.71,2.4-1.65-1-1.32-1.6-2.53-2.7-1.21-1.1-1.43,0-1.1.7l1.65,3.8,1.32,3,1.76,2.6h.11Z" data-active="1" style="display: none; fill: var(--odon-fill-composite, #2f7a4d); stroke: #24603c; stroke-miterlimit: 10;" />
+        <path id="filling-composite-lingual" d="M17.24,38c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.4,1.21-.9.88-.6.88-1-.99-1.9-13.19-1.3-14.84-.6-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: var(--odon-fill-composite, #2f7a4d); stroke: #24603c; stroke-miterlimit: 10;" />
+        <path id="filling-composite-buccal" d="M18.12,5.8c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.5,1.21-1,.88-.6.88-1-1.1-1.9-13.19-1.2-14.84-.5-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: var(--odon-fill-composite, #2f7a4d); stroke: #24603c; stroke-miterlimit: 10;" />
+        <path id="filling-composite-mesial" d="M39.56,28.6c3.74.2,3.74-14.6,2.2-16.2-.55-1.1-2.09-.3-3.08-.6-1.65-.5-2.09,3.4-3.08,5-.44,1.6-5.06,1.3-3.96,4.1,1.1,2.8,3.63,1,4.18,1.9.55.9,1.32,4.1,2.42,5.2l1.21.7h0Z" data-active="1" style="display: none; fill: var(--odon-fill-composite, #2f7a4d); stroke: #24603c; stroke-miterlimit: 10;" />
+        <path id="filling-composite-distal" d="M10.2,25.9c2.64-.3-.44-3.3.11-5.4.77-3.1,2.97-7.5-.88-7.2-.88.1-2.53-.3-3.08.5-2.53,3-3.3,10.6-.33,12.1,2.97,1.5.66.6.77,1h0c0,.6.66,1,1.32.8.66-.2.66-.2.88-.4l1.32-1.4h0Z" data-active="1" style="display: none; fill: var(--odon-fill-composite, #2f7a4d); stroke: #24603c; stroke-miterlimit: 10;" />
+        </g>
+      <g id="gic" data-active="1">
+        <path id="filling-gic-occlusal" d="M12.84,27.2c.66.9,4.07,6.3,5.06,6.4.99,0-1.76-4.6-1.65-5.7.11-1.1.22-3.1.77-3.7,1.1-1.2,3.52-3.2,4.29-3.3,1.87-.4,7.26,3.4,9.35,3.8,3.41.6-2.53-4.4,2.31-4.2,4.84.2-.33-3.5-.88-5-.99-2-5.39,1.8-7.7.6-2.31-1.2-1.32-6.5-3.19-6.5-1.87,0-.88,6.4-2.86,7.7-1.98,1.3-5.06,3.4-6.71,2.4-1.65-1-1.32-1.6-2.53-2.7-1.21-1.1-1.43,0-1.1.7l1.65,3.8,1.32,3,1.76,2.6h.11Z" data-active="1" style="display: none; fill: var(--odon-fill-gic, #f9ae94); stroke: #f99; stroke-miterlimit: 10;" />
+        <path id="filling-gic-lingual" d="M17.24,38c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.4,1.21-.9.88-.6.88-1-.99-1.9-13.19-1.3-14.84-.6-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: var(--odon-fill-gic, #f9ae94); stroke: #f99; stroke-miterlimit: 10;" />
+        <path id="filling-gic-buccal" d="M18.12,5.8c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.5,1.21-1,.88-.6.88-1-1.1-1.9-13.19-1.2-14.84-.5-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: var(--odon-fill-gic, #f9ae94); stroke: #f99; stroke-miterlimit: 10;" />
+        <path id="filling-gic-mesial" d="M39.56,28.6c3.74.2,3.74-14.6,2.2-16.2-.55-1.1-2.09-.3-3.08-.6-1.65-.5-2.09,3.4-3.08,5-.44,1.6-5.06,1.3-3.96,4.1,1.1,2.8,3.63,1,4.18,1.9.55.9,1.32,4.1,2.42,5.2l1.21.7h0Z" data-active="1" style="display: none; fill: var(--odon-fill-gic, #f9ae94); stroke: #f99; stroke-miterlimit: 10;" />
+        <path id="filling-gic-distal" d="M10.2,25.9c2.64-.3-.44-3.3.11-5.4.77-3.1,2.97-7.5-.88-7.2-.88.1-2.53-.3-3.08.5-2.53,3-3.3,10.6-.33,12.1,2.97,1.5.66.6.77,1h0c0,.6.66,1,1.32.8.66-.2.66-.2.88-.4l1.32-1.4h0Z" data-active="1" style="display: none; fill: var(--odon-fill-gic, #f9ae94); stroke: #f99; stroke-miterlimit: 10;" />
+        </g>
+      <g id="temporary" data-active="1">
+        <path id="filling-temporary-occlusal" d="M12.84,27.2c.66.9,4.07,6.3,5.06,6.4.99,0-1.76-4.6-1.65-5.7.11-1.1.22-3.1.77-3.7,1.1-1.2,3.52-3.2,4.29-3.3,1.87-.4,7.26,3.4,9.35,3.8,3.41.6-2.53-4.4,2.31-4.2,4.84.2-.33-3.5-.88-5-.99-2-5.39,1.8-7.7.6-2.31-1.2-1.32-6.5-3.19-6.5-1.87,0-.88,6.4-2.86,7.7-1.98,1.3-5.06,3.4-6.71,2.4-1.65-1-1.32-1.6-2.53-2.7-1.21-1.1-1.43,0-1.1.7l1.65,3.8,1.32,3,1.76,2.6h.11Z" data-active="1" style="display: none; fill: var(--odon-fill-temporary, #fff); stroke: #eee; stroke-miterlimit: 10;" />
+        <path id="filling-temporary-lingual" d="M17.24,38c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.4,1.21-.9.88-.6.88-1-.99-1.9-13.19-1.3-14.84-.6-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: var(--odon-fill-temporary, #fff); stroke: #eee; stroke-miterlimit: 10;" />
+        <path id="filling-temporary-buccal" d="M18.12,5.8c1.21.5,3.3.7,5.06.7,2.75,0,5.06-.5,6.27-1.5,1.21-1,.88-.6.88-1-1.1-1.9-13.19-1.2-14.84-.5-.88.6,1.54,1.7,2.64,2.2h0Z" data-active="1" style="display: none; fill: var(--odon-fill-temporary, #fff); stroke: #eee; stroke-miterlimit: 10;" />
+        <path id="filling-temporary-mesial" d="M39.56,28.6c3.74.2,3.74-14.6,2.2-16.2-.55-1.1-2.09-.3-3.08-.6-1.65-.5-2.09,3.4-3.08,5-.44,1.6-5.06,1.3-3.96,4.1,1.1,2.8,3.63,1,4.18,1.9.55.9,1.32,4.1,2.42,5.2l1.21.7h0Z" data-active="1" style="display: none; fill: var(--odon-fill-temporary, #fff); stroke: #eee; stroke-miterlimit: 10;" />
+        <path id="filling-temporary-distal" d="M10.2,25.9c2.64-.3-.44-3.3.11-5.4.77-3.1,2.97-7.5-.88-7.2-.88.1-2.53-.3-3.08.5-2.53,3-3.3,10.6-.33,12.1,2.97,1.5.66.6.77,1h0c0,.6.66,1,1.32.8.66-.2.66-.2.88-.4l1.32-1.4h0Z" data-active="1" style="display: none; fill: var(--odon-fill-temporary, #fff); stroke: #eee; stroke-miterlimit: 10;" />
+        </g>
+      <g id="defect" data-active="1">
+        <polygon id="defect-occlusal" points="18.01,16.50 19.66,16.00 18.67,17.30 16.03,19.10 14.49,19.60 15.48,18.40 18.01,16.50" style="display: none; fill: #f5ff15; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        <polygon id="defect-lingual" points="23.29,38.30 24.17,38.90 23.18,39.40 21.31,39.30 20.43,38.70 21.42,38.10 23.29,38.30" style="display: none; fill: #f5ff15; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        <polygon id="defect-buccal" points="21.53,3.40 20.65,2.90 21.53,2.30 23.51,2.30 24.39,2.90 23.51,3.40 21.53,3.40" style="display: none; fill: #f5ff15; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        <polygon id="defect-distal" points="5.14,20.60 4.37,21.90 3.93,20.50 4.37,17.60 5.25,16.30 5.58,17.80 5.14,20.60" style="display: none; fill: #f5ff15; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        <polygon id="defect-mesial" points="43.30,21.60 42.64,23.00 42.09,21.60 42.09,18.70 42.64,17.30 43.30,18.70 43.30,21.60" style="display: none; fill: #f5ff15; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .5px;" data-active="1" />
+        </g>
+      </g>
+    <g id="contact-point" data-active="1" style="display: none;">
+      <g id="mesial-no-contact-point" data-active="1">
+        <path d="M40.88,15.5c.99,3,2.31,6.3,3.74,9.4" data-active="1" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" />
+        <path d="M40.66,25.4c.88-1.8,1.1-3,1.76-4.5.77-1.7,1.43-3.4,2.09-5.3" data-active="1" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" />
+        </g>
+      <g id="distal-no-contact-point" data-active="1">
+        <path d="M2.28,16.4c.99,3.1,2.42,6.4,3.74,9.7" data-active="1" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" />
+        <path d="M2.06,26.2c.99-1.8,1.1-2.9,1.87-4.3.77-1.4,1.54-3.3,2.09-5.1" data-active="1" style="fill: none; stroke: #aaa; stroke-miterlimit: 10; stroke-width: .5px;" />
+        </g>
+      </g>
+    <g id="fissure-sealing" data-active="1" style="display: none;">
+      <g id="fissure-sealing-occlusal" data-active="1">
+        <path d="M20.21,37.3c.33.7-1.21-2.1-1.87-3.1-.66-1-1.87-1.9-2.42-3-.77-1.6-1.98-3-1.98-4.8,0-2.7-2.97-4.7-4.62-6.8-1.1-1.3-2.53-7.1-2.09-6" data-active="1" style="fill: none; stroke: #3fb6ff; stroke-miterlimit: 10; stroke-width: 2px;" />
+        <path d="M24.61,18.7c.44-.1,1.32,1,1.65,1.3,1.1,1.1,4.29,3.6,4.84,5.1.55,1.3,5.5,4.3,5.06,4.1" data-active="1" style="fill: none; stroke: #3fb6ff; stroke-miterlimit: 10; stroke-width: 2px;" />
+        <path d="M12.51,23.6c1.1-1.2,1.98-1.3,3.3-2.4,1.21-.9,2.42-1.6,3.63-2.5.66-.6,1.32-1.5,1.54-2.4.22-.9-.77-1-.55-2.2,0-.5,0-2.1.22-2.5.88-1.7,0-1.5.22-2.2,0-.3-.44-5.7-.44-5.2" data-active="1" style="fill: none; stroke: #3fb6ff; stroke-miterlimit: 10; stroke-width: 2px;" />
+        <path d="M37.69,21.2c1.32.3-4.18-.9-5.83-1.1-.55,0-2.31-.1-2.75-.4-.44-.2-1.87-.2-2.2-.5-.33-.3-1.87-.6-2.31-.5" data-active="1" style="fill: none; stroke: #3fb6ff; stroke-miterlimit: 10; stroke-width: 2px;" />
+        <path d="M36.15,12c1.1-1-2.97,2.2-6.05,4.3-.77.6-3.74,1.5-4.62,2-.88.5-.66.4-1.21.4-.55,0-.99,0-1.43-.2-.88-.2-1.65-.6-2.2-1.3" data-active="1" style="fill: none; stroke: #3fb6ff; stroke-miterlimit: 10; stroke-width: 2px;" />
+        </g>
+      </g>
+    </g>
+  <g id="restorations" data-active="1">
+    <g id="implant" data-active="1" style="display: none;">
+      <g id="implant-base" data-active="1">
+        <path d="M24.94,35.1h-3.08l-.77-2.2c-.88-.2-1.65-.3-2.53-.7l-1.98,1.6-2.64-1.4.66-2.3c-.66-.5-1.32-1.1-1.87-1.7l-2.53.6-1.54-2.4,1.76-1.8c-.33-.8-.55-1.5-.77-2.3l-2.42-.7v-2.8l2.42-.7c.22-.8.44-1.5.77-2.3l-1.76-1.8,1.54-2.4,2.53.6c.55-.6,1.1-1.1,1.87-1.7l-.66-2.4,2.64-1.4,1.87,1.6c.88-.3,1.65-.5,2.53-.6l.77-2.2h3.08l.66,2.2c.88.2,1.65.3,2.53.6l1.98-1.6,2.64,1.4-.66,2.3c.66.5,1.21,1,1.87,1.7l2.53-.6,1.54,2.4-1.76,1.7c.33.8.55,1.5.77,2.3l2.42.7v2.8l-2.42.7c-.22.8-.44,1.6-.77,2.3l1.76,1.8-1.54,2.4-2.53-.6c-.55.6-1.1,1.1-1.87,1.6l.66,2.4-2.64,1.4-1.98-1.6c-.88.3-1.65.5-2.53.6l-.66,2.2v.3c0,0,.11,0,.11,0Z" data-active="1" style="fill: #145d2a;" />
+        <path d="M25.48,32.4h-.22l-.66,2.1h-2.31l-.66-2c0,0,0-.2-.22-.2-.99,0-1.98-.4-2.86-.7l-1.87,1.6-1.98-1,.55-2.3c-.88-.6-1.54-1.3-2.2-2l-2.53.6-1.1-1.8,1.76-1.7c-.44-.9-.66-1.8-.88-2.8l-2.31-.7v-2.1l2.2-.6c.22,0,.22-.1.22-.3.11-.9.44-1.7.77-2.6l-1.76-1.7,1.1-1.8,2.53.6c.66-.7,1.43-1.4,2.2-2l-.66-2.3,1.98-1,1.76,1.5c0,0,.22.1.33,0,.99-.3,1.87-.5,2.97-.7l.77-2.2h2.31l.66,2c0,.1,0,.2.22.2.99.1,1.98.4,2.86.7l1.87-1.6,1.98,1.1-.66,2.3c.88.6,1.54,1.3,2.2,2l2.53-.6,1.1,1.8-1.76,1.7c.44.9.66,1.8.88,2.8l2.31.7v2.1l-2.2.6c0,0,0,.1-.22.2,0,.9-.44,1.7-.77,2.5-.33.8,0,.2,0,.2l1.65,1.6-1.1,1.8-2.53-.6c-.66.7-1.43,1.4-2.2,2l.66,2.3-1.98,1-1.87-1.6c-.99.3-1.87.6-2.86.7h0c0,0,0,.2,0,.2Z" data-active="1" style="fill: #c8c8c8;" />
+        <circle cx="23.5" cy="20.40" r="9.4" data-active="1" style="fill: #eaeaea; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+        <circle cx="23.5" cy="20.40" r="5.8" data-active="1" style="fill: #fff; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+        </g>
+      <path id="implant-bar" d="M-1.45,15.7c-3.74,7.4-1.1,15.6,3.19,15.1,9.02.8,30.02,0,39.91,0,9.9,0,7.15-2.3,8.25-8.5.66-3.7,0-7.1-1.54-9.3-2.86-3.4-7.15-2.8-10.56-3.1-5.72,0-10.45,0-15.72.6-5.83.6-11.44,0-17.04.8-2.31,0-4.95,1.1-6.6,4h0v.6-.2c0,0,.11,0,0,0h0Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-linear-gradient-16-occl-11);" />
+      <circle id="implant-healing-abutment" cx="23.4" cy="20.50" r="11.4" data-active="1" style="display: none; fill: #475563; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <circle id="implant-locator-screw" cx="23.5" cy="20.40" r="8.2" data-active="1" style="fill: url(#toothgen-36_occl-linear-gradient-16-occl-12); isolation: isolate; opacity: .8; stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      </g>
+    <g id="prosthesis-implant" data-active="1" style="display: none;">
+      <path id="prosthesis-implant-gum" d="M49.89,23.2c-2.86,8.1-14.07,3.2-20.56,3.7-8.58-.9-22.65,4.1-28.7-2.6-2.09-2.8-3.52-7.5-.77-10.3,5.28-4.3,20.01-3.9,27.82-3.7,8.91.6,25.51-.7,22.21,12.7v.4h0c0,0,0-.2,0-.2Z" data-active="1" style="fill: var(--odon-rest-denture-base, #f9ae94); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="prosthesis-implant-crown" d="M19.99,5.7c1.98,0,4.18.3,6.27.4,1.43,0,2.86.2,4.18.6.88.3,1.54.5,2.42.8,1.32.5,2.64,1.2,3.63,2.2.99.9,1.87,2,2.2,3.3.22.5.33,1.1.44,1.7.33,1.4.44,2.7.44,4.1,0,1.4,0,2-.22,3.1,0,1.4-.22,2.6-.44,3.9-.44,1.7-.88,3.6-1.87,5.1-1.32,2-3.85,3.2-6.27,3.7-.88.2-1.98.3-2.86.5-1.43.3-2.75.7-4.18,1-1.21.3-2.42.2-3.52,0-.99,0-2.09-.3-3.08-.3-1.76-.2-3.63-.3-5.17-1.2-1.21-.8-2.09-1.9-2.86-3.1-.88-1.3-1.54-2.7-1.87-4.2-.33-1.1-.22-2.3-.22-3.4,0-1.1.44-3,.66-4.5.33-1.8.44-3.6.88-5.4.44-1.8,1.43-3.4,2.64-4.7,1.32-1.4,3.08-2.5,4.95-3.1,1.21-.3,2.53-.4,3.74-.4h0v-.2h.11,0Z" data-active="1" style="fill: var(--odon-rest-denture-base, #f9ae94); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    <g id="prosthesis" data-active="1" style="display: none;">
+      <path id="prosthesis-connector" d="M49.89,23.2c-2.86,8.1-14.07,3.2-20.56,3.7-8.58-.9-22.65,4.1-28.7-2.6-2.09-2.8-3.52-7.5-.77-10.3,5.28-4.3,20.01-3.9,27.82-3.7,8.91.6,25.51-.7,22.21,12.7v.4h0c0,0,0-.2,0-.2Z" data-active="1" style="fill: var(--odon-rest-denture-base, #f9ae94); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="prosthesis-crown" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="fill: var(--odon-rest-denture-tooth, #a8ddb9); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    <g id="telescope" data-active="1">
+      <path id="telescope-bridge-connector" d="M4.982,19.544H8.726V22.344H4.982Z M38.68,19.544H42.424V22.344H38.68Z" data-active="1" style="display: none; fill: var(--odon-rest-telescope-connector, #0051bf); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <g id="telescope-crown" data-active="1" style="display: none;">
+        <path id="telescope-crown-outside" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="fill: var(--odon-rest-telescope, #0051bf); stroke: #000; stroke-miterlimit: 10;" />
+        <path id="telescope-crown-inside" d="M20.21,7.3c1.76,0,3.74.3,5.61.4,1.32,0,2.64.2,3.74.5.77.2,1.43.5,2.09.7,1.21.4,2.31,1.1,3.3,1.9.88.8,1.65,1.8,1.98,2.9.22.5.33,1,.44,1.5.22,1.3.44,2.4.44,3.7v2.7c0,1.2,0,2.4-.44,3.5-.44,1.5-.88,3.2-1.65,4.5-1.21,1.8-3.41,2.9-5.61,3.4-.88.2-1.76.3-2.53.4-1.32.2-2.53.6-3.74.9-1.1.2-2.09,0-3.19,0-1.1,0-1.87-.2-2.75-.3-1.54,0-3.19-.2-4.51-1.1-1.1-.7-1.87-1.7-2.64-2.7-.77-1.1-1.43-2.4-1.65-3.8-.22-1-.22-2,0-3.1,0-1.4.33-2.7.66-4,.33-1.6.44-3.3.88-4.8.44-1.6,1.21-3.1,2.42-4.3,1.21-1.2,2.75-2.3,4.4-2.7,1.1-.3,2.2-.4,3.3-.4h0l-.33.2c0,0-.22,0-.22,0Z" data-active="1" style="fill: var(--odon-rest-telescope-inner, #aaa); stroke: #ffffff; stroke-miterlimit: 10; stroke-width: 1.6; paint-order: stroke;" />
+        </g>
+      </g>
+    <g id="zircon" data-active="1">
+      <path id="zircon-bridge-connector" d="M4.982,19.544H8.726V22.344H4.982Z M38.68,19.544H42.424V22.344H38.68Z" data-active="1" style="display: none; fill: var(--odon-rest-zircon, #cfe3ee); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="zircon-crown" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-zircon, #cfe3ee); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="zircon-onlay" d="M19.44,2.9c2.31,0,3.63,1.5,5.17,2,.99.3,3.52,2,4.51,2.4,1.54.6,8.58-.8,9.79.4,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-1.76,2.3-1.76,3.9,0,1.6,2.31,3.3,2.09,4.5,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-5.28,2.3-8.14,2.9-.77,0-6.16-6.7-5.83-1.9.33,4.8-.44,2.4-2.31,3.8-1.87,1.4-2.09.2-2.53,0-1.21,0-4.4,0-6.16-1-1.43-.9-1.21-5-1.54-6.8-.33-1.3-2.53-4-3.3-5.1-.77-1.1-3.96-5-3.74-6.8.44-2.1.55-4.3,1.1-6.4.55-2.1,6.93-2.8,9.13-3.4,1.43-.3,2.75-6.3,4.18-6.3h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-zircon, #cfe3ee); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="zircon-inlay" d="M19.44,2.9c2.31,0,3.85,8.4,5.39,8.9.99.3,2.31.5,3.3.9,1.54.6,9.57-6.2,10.78-5,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-6.38,0-6.38,1.7,0,1.7,6.93,5.5,6.71,6.7,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-12.31-13.8-15.17-13.2-.77.1,0,7.2.33,11.9.33,4.7-.77,4.2-2.53,5.6-1.76,1.4-.99.6-1.43.5-1.21,0-4.4,0-6.16-1-1.43-.9,0-4.9-.22-6.7-.33-1.3-1.65-5.6-2.42-6.7-.77-1.1-6.16-3.4-5.94-5.2.44-2.1.55-4.3,1.1-6.4.55-2.1,9.46,4.6,11.66,4,1.43-.3.22-13.7,1.65-13.7h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-zircon, #cfe3ee); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="zircon-veneer" d="M26.8,3.4c1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-36.5,1.3-35.95-.8.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,4.95,0,7.37.3Z" data-active="1" style="display: none; fill: var(--odon-rest-zircon, #cfe3ee); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    <g id="metal" data-active="1">
+      <path id="metal-bridge-connector" d="M4.982,19.544H8.726V22.344H4.982Z M38.68,19.544H42.424V22.344H38.68Z" data-active="1" style="display: none; fill: var(--odon-rest-metal, #0051bf); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="metal-crown" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-metal, #0051bf); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    <g id="metal-ceramic" data-active="1">
+      <path id="metal-ceramic-bridge-connector" d="M4.982,19.544H8.726V22.344H4.982Z M38.68,19.544H42.424V22.344H38.68Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-radial-gradient-16-occl-0); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="metal-ceramic-crown" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-radial-gradient-16-occl-1); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    <g id="gold" data-active="1">
+      <path id="gold-bridge-connector" d="M4.982,19.544H8.726V22.344H4.982Z M38.68,19.544H42.424V22.344H38.68Z" data-active="1" style="display: none; fill: var(--odon-rest-gold, #e0a80d); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="gold-crown" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-gold, #e0a80d); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="gold-onlay" d="M19.44,2.9c2.31,0,3.63,1.5,5.17,2,.99.3,3.52,2,4.51,2.4,1.54.6,8.58-.8,9.79.4,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-1.76,2.3-1.76,3.9,0,1.6,2.31,3.3,2.09,4.5,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-5.28,2.3-8.14,2.9-.77,0-6.16-6.7-5.83-1.9.33,4.8-.44,2.4-2.31,3.8-1.87,1.4-2.09.2-2.53,0-1.21,0-4.4,0-6.16-1-1.43-.9-1.21-5-1.54-6.8-.33-1.3-2.53-4-3.3-5.1-.77-1.1-3.96-5-3.74-6.8.44-2.1.55-4.3,1.1-6.4.55-2.1,6.93-2.8,9.13-3.4,1.43-.3,2.75-6.3,4.18-6.3h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-gold, #e0a80d); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="gold-inlay" d="M19.44,2.9c2.31,0,3.85,8.4,5.39,8.9.99.3,2.31.5,3.3.9,1.54.6,9.57-6.2,10.78-5,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-6.38,0-6.38,1.7,0,1.7,6.93,5.5,6.71,6.7,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-12.31-13.8-15.17-13.2-.77.1,0,7.2.33,11.9.33,4.7-.77,4.2-2.53,5.6-1.76,1.4-.99.6-1.43.5-1.21,0-4.4,0-6.16-1-1.43-.9,0-4.9-.22-6.7-.33-1.3-1.65-5.6-2.42-6.7-.77-1.1-6.16-3.4-5.94-5.2.44-2.1.55-4.3,1.1-6.4.55-2.1,9.46,4.6,11.66,4,1.43-.3.22-13.7,1.65-13.7h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-gold, #e0a80d); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="gold-veneer" d="M26.8,3.4c1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-36.5,1.3-35.95-.8.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,4.95,0,7.37.3Z" data-active="1" style="display: none; fill: var(--odon-rest-gold, #e0a80d); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    <g id="emax" data-active="1">
+      <path id="emax-bridge-connector" d="M4.982,19.544H8.726V22.344H4.982Z M38.68,19.544H42.424V22.344H38.68Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-radial-gradient-16-occl-2); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="emax-crown" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-radial-gradient-16-occl-3); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="emax-onlay" d="M19.44,2.9c2.31,0,3.63,1.5,5.17,2,.99.3,3.52,2,4.51,2.4,1.54.6,8.58-.8,9.79.4,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-1.76,2.3-1.76,3.9,0,1.6,2.31,3.3,2.09,4.5,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-5.28,2.3-8.14,2.9-.77,0-6.16-6.7-5.83-1.9.33,4.8-.44,2.4-2.31,3.8-1.87,1.4-2.09.2-2.53,0-1.21,0-4.4,0-6.16-1-1.43-.9-1.21-5-1.54-6.8-.33-1.3-2.53-4-3.3-5.1-.77-1.1-3.96-5-3.74-6.8.44-2.1.55-4.3,1.1-6.4.55-2.1,6.93-2.8,9.13-3.4,1.43-.3,2.75-6.3,4.18-6.3h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-radial-gradient-16-occl-4); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="emax-inlay" d="M19.44,2.9c2.31,0,3.85,8.4,5.39,8.9.99.3,2.31.5,3.3.9,1.54.6,9.57-6.2,10.78-5,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-6.38,0-6.38,1.7,0,1.7,6.93,5.5,6.71,6.7,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-12.31-13.8-15.17-13.2-.77.1,0,7.2.33,11.9.33,4.7-.77,4.2-2.53,5.6-1.76,1.4-.99.6-1.43.5-1.21,0-4.4,0-6.16-1-1.43-.9,0-4.9-.22-6.7-.33-1.3-1.65-5.6-2.42-6.7-.77-1.1-6.16-3.4-5.94-5.2.44-2.1.55-4.3,1.1-6.4.55-2.1,9.46,4.6,11.66,4,1.43-.3.22-13.7,1.65-13.7h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-radial-gradient-16-occl-5); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="emax-veneer" d="M26.8,3.4c1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-36.5,1.3-35.95-.8.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,4.95,0,7.37.3Z" data-active="1" style="display: none; fill: url(#toothgen-36_occl-radial-gradient-16-occl-6); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    <g id="gradia" data-active="1">
+      <path id="gradia-bridge-connector" d="M4.982,19.544H8.726V22.344H4.982Z M38.68,19.544H42.424V22.344H38.68Z" data-active="1" style="display: none; fill: var(--odon-rest-gradia, #57b285); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="gradia-crown" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-gradia, #57b285); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="gradia-onlay" d="M19.44,2.9c2.31,0,3.63,1.5,5.17,2,.99.3,3.52,2,4.51,2.4,1.54.6,8.58-.8,9.79.4,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-1.76,2.3-1.76,3.9,0,1.6,2.31,3.3,2.09,4.5,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-5.28,2.3-8.14,2.9-.77,0-6.16-6.7-5.83-1.9.33,4.8-.44,2.4-2.31,3.8-1.87,1.4-2.09.2-2.53,0-1.21,0-4.4,0-6.16-1-1.43-.9-1.21-5-1.54-6.8-.33-1.3-2.53-4-3.3-5.1-.77-1.1-3.96-5-3.74-6.8.44-2.1.55-4.3,1.1-6.4.55-2.1,6.93-2.8,9.13-3.4,1.43-.3,2.75-6.3,4.18-6.3h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-gradia, #57b285); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="gradia-inlay" d="M19.44,2.9c2.31,0,3.85,8.4,5.39,8.9.99.3,2.31.5,3.3.9,1.54.6,9.57-6.2,10.78-5,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-6.38,0-6.38,1.7,0,1.7,6.93,5.5,6.71,6.7,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-12.31-13.8-15.17-13.2-.77.1,0,7.2.33,11.9.33,4.7-.77,4.2-2.53,5.6-1.76,1.4-.99.6-1.43.5-1.21,0-4.4,0-6.16-1-1.43-.9,0-4.9-.22-6.7-.33-1.3-1.65-5.6-2.42-6.7-.77-1.1-6.16-3.4-5.94-5.2.44-2.1.55-4.3,1.1-6.4.55-2.1,9.46,4.6,11.66,4,1.43-.3.22-13.7,1.65-13.7h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-gradia, #57b285); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="gradia-veneer" d="M26.8,3.4c1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-36.5,1.3-35.95-.8.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,4.95,0,7.37.3Z" data-active="1" style="display: none; fill: var(--odon-rest-gradia, #57b285); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    <g id="temporary-restorations" data-active="1">
+      <path id="temporary-bridge-connector" d="M4.982,19.544H8.726V22.344H4.982Z M38.68,19.544H42.424V22.344H38.68Z" data-active="1" style="display: none; fill: var(--odon-rest-temporary, #fff); stroke: #1b3f1c; stroke-miterlimit: 10; stroke-width: .5px;" />
+      <path id="temporary-crown" d="M19.44,2.9c2.31,0,4.95.3,7.37.5,1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.22,3.6,0,1.6-.22,3.1-.55,4.6-.55,2-1.1,4.2-2.2,6-1.54,2.4-4.51,3.8-7.37,4.4-1.1.2-2.31.4-3.41.6-1.65.3-3.3.8-4.95,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.09-.2-4.29-.3-6.05-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.2-5-.33-1.3-.22-2.7-.22-4,0-1.3.55-3.5.77-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-temporary, #fff); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="temporary-onlay" d="M19.44,2.9c2.31,0,3.63,1.5,5.17,2,.99.3,3.52,2,4.51,2.4,1.54.6,8.58-.8,9.79.4,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-1.76,2.3-1.76,3.9,0,1.6,2.31,3.3,2.09,4.5,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-5.28,2.3-8.14,2.9-.77,0-6.16-6.7-5.83-1.9.33,4.8-.44,2.4-2.31,3.8-1.87,1.4-2.09.2-2.53,0-1.21,0-4.4,0-6.16-1-1.43-.9-1.21-5-1.54-6.8-.33-1.3-2.53-4-3.3-5.1-.77-1.1-3.96-5-3.74-6.8.44-2.1.55-4.3,1.1-6.4.55-2.1,6.93-2.8,9.13-3.4,1.43-.3,2.75-6.3,4.18-6.3h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-temporary, #fff); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="temporary-inlay" d="M19.44,2.9c2.31,0,3.85,8.4,5.39,8.9.99.3,2.31.5,3.3.9,1.54.6,9.57-6.2,10.78-5,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-6.38,0-6.38,1.7,0,1.7,6.93,5.5,6.71,6.7,0,1.6.22,3.1-2.86,2-7.04-1.5,0,8.2-.99,10-1.54,2.4-12.31-13.8-15.17-13.2-.77.1,0,7.2.33,11.9.33,4.7-.77,4.2-2.53,5.6-1.76,1.4-.99.6-1.43.5-1.21,0-4.4,0-6.16-1-1.43-.9,0-4.9-.22-6.7-.33-1.3-1.65-5.6-2.42-6.7-.77-1.1-6.16-3.4-5.94-5.2.44-2.1.55-4.3,1.1-6.4.55-2.1,9.46,4.6,11.66,4,1.43-.3.22-13.7,1.65-13.7h0c0,0,0-.2,0-.2Z" data-active="1" style="display: none; fill: var(--odon-rest-temporary, #fff); stroke: #000; stroke-miterlimit: 10;" />
+      <path id="temporary-veneer" d="M26.8,3.4c1.65,0,3.41.2,4.95.7.99.3,1.87.6,2.86,1,1.54.6,3.08,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.64,3.9.22.6.33,1.3.55,2,.33,1.7-36.5,1.3-35.95-.8.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.63-3,5.83-3.6,1.43-.3,2.97-.5,4.4-.5h0c0,0,4.95,0,7.37.3Z" data-active="1" style="display: none; fill: var(--odon-rest-temporary, #fff); stroke: #000; stroke-miterlimit: 10;" />
+      </g>
+    </g>
+  <g id="ortho" data-active="1">
+    <g id="missing-closed" data-active="1" style="display: none;">
+      <path d="M4.92,4c23.86,10.1,21.22,22.9,0,33.3" data-active="1" style="fill: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" />
+      <path d="M41.43,36.5c-23.97-9.9-21.66-22.8-.66-33.3" data-active="1" style="fill: none; stroke: #000; stroke-miterlimit: 10; stroke-width: 2px;" />
+      </g>
+    <path id="ortho-ring" d="M19.77,2.6c2.2,0,4.84.3,7.26.5,1.65,0,3.41.2,4.84.7.99.3,1.87.6,2.75,1,1.54.6,3.08,1.4,4.18,2.6,1.1,1.1,2.09,2.4,2.64,3.9.33.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.8,0,1.6,0,2.4-.33,3.6,0,1.6-.33,3.1-.55,4.6-.55,2-1.1,4.2-2.09,6-1.54,2.4-4.51,3.8-7.26,4.4-1.1.2-2.2.4-3.41.6-1.65.3-3.19.8-4.84,1.2-1.43.3-2.75.2-4.07,0-1.1,0-2.42-.3-3.52-.3-2.09-.2-4.18-.3-5.83-1.4-1.43-.9-2.53-2.2-3.41-3.6-1.1-1.5-1.87-3.2-2.09-5-.33-1.3-.33-2.7-.33-4,0-1.3.55-3.5.66-5.3.44-2.1.55-4.3,1.1-6.4.55-2.1,1.65-4,3.08-5.6,1.54-1.6,3.52-3,5.72-3.6,1.43-.3,2.97-.5,4.29-.5h0v-.2c0,0-.33,0-.33,0Z" data-active="1" style="display: none; fill: none; stroke: #737373; stroke-miterlimit: 10; stroke-width: 2px;" />
+    <g id="ortho-bracket" style="display: none;" data-active="1">
+      <ellipse cx="24.4" cy="3.40" rx="5.4" ry="1.6" style="fill: #bfbfbf;" data-active="1" />
+      <path d="M23.4,4.7h-3.19c-.66-.1-1.21-.6-1.21-1.2,0-.6.44-1.3,1.32-1.4h8.8c.77,0,1.43.6,1.43,1.3,0,.7-.55,1.3-1.43,1.3h-2.97" style="fill: none; stroke: #737373; stroke-linecap: round; stroke-linejoin: round; stroke-width: .8px;" data-active="1" />
+      </g>
+    <g id="arrows" data-active="1">
+      <g id="arrow-distal" style="display: none;" data-active="1">
+        <line x1="4.7" y1="16.8" x2="1.2" y2="20.4" style="fill: none; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+        <line x1="7.2" y1="20.6" x2="1.1" y2="20.6" style="fill: none; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+        <line x1="4.7" y1="24.2" x2="1.2" y2="20.6" style="fill: none; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+        </g>
+      <g id="arrow-mesial" style="display: none;" data-active="1">
+        <line x1="43.3" y1="24.2" x2="47.6" y2="20.6" style="fill: none; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+        <line x1="40.2" y1="20.4" x2="47.8" y2="20.4" style="fill: none; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+        <line x1="43.3" y1="16.8" x2="47.6" y2="20.4" style="fill: none; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+        </g>
+      <g id="arrow-rotation" style="display: none;" data-active="1">
+        <path d="M44.73,37.5c-.22,0-.88-.4-1.1-1.1-.22-.7-.11-.9,0-1.1" style="fill: none; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+        <path d="M43.08,32.8c1.32-1.3,6.82-.7,5.83,2.2-.55,3.5-8.8.1-3.74-.4" style="fill: none; stroke: #2e3192; stroke-miterlimit: 10; stroke-width: .8px;" data-active="1" />
+        </g>
+      </g>
+    </g>
+  <g id="plan" data-active="1">
+    <g id="extraction-plan" data-active="1" style="display: none;">
+      <path d="M4.81,36.8c1.87-2.5,38.37-32.8,39.47-34.1" data-active="1" style="fill: none; stroke: #b70000; stroke-miterlimit: 10; stroke-width: 3px;" />
+      <path d="M5.36,3c3.63,2.2,27.05,25,31.78,30.6.77,1,1.65,1.9,2.75,2.7" data-active="1" style="fill: none; stroke: #b70000; stroke-miterlimit: 10; stroke-width: 3px;" />
+      </g>
+    <g id="crown-needed" data-active="1" style="display: none;">
+      <path id="crown-needed-shape" d="M19.44,2.3c2.31,0,5.06.3,7.48.5,1.76,0,3.52.2,5.06.7.99.3,1.87.6,2.86,1,1.54.6,3.19,1.4,4.29,2.6,1.21,1.1,2.2,2.4,2.75,3.9.33.6.33,1.3.55,2,.33,1.7.55,3.2.55,4.9,0,1.7,0,2.4-.33,3.6,0,1.6-.33,3.1-.55,4.7-.55,2-1.21,4.2-2.2,6.1-1.54,2.4-4.62,3.8-7.48,4.5-1.21.2-2.31.4-3.52.6-1.76.3-3.3.8-5.06,1.2-1.43.3-2.86.2-4.18,0-1.21,0-2.42-.3-3.63-.3-2.2-.2-4.29-.3-6.05-1.4-1.43-.9-2.64-2.2-3.52-3.6-1.21-1.5-1.87-3.2-2.2-5.1-.33-1.3-.33-2.7-.33-4,0-1.3.55-3.5.77-5.4.44-2.1.55-4.3,1.21-6.5.55-2.1,1.76-4,3.19-5.7,1.54-1.6,3.63-3,5.94-3.6,1.43-.3,3.08-.5,4.51-.5h0v-.2h-.33c0,0,.22,0,.22,0Z" data-active="1" style="fill: #c83014; stroke: #000; stroke-miterlimit: 10;" />
+      <path id="crown-needed-path" d="M20.98,3.1c-3.41,3.7-6.82,7.5-10.12,11.1-1.21,1.5-4.84,3.4-3.3,5.2,1.87,1.3,3.41-1.3,4.4-2.2,5.06-4.7,8.47-11,16.71-13.9.66-.2,1.21-.2,1.43,0,.22.2.22.7,0,1.2-3.41,7.4-16.38,14.6-19.9,21.6-7.59,13.4,2.53,5.6,7.48-1.3,4.18-5,10.67-13.1,16.82-17.2,3.96-1.8,2.75,2.8,2.09,4.2-2.2,7.1-16.6,13-16.71,20.3,1.54,6,13.52-10.4,16.27-12.7,1.1-1,4.29-3.5,4.4-1.1,0,4-4.07,8.4-6.93,11.4-.88,1.1-1.98,2.2-2.2,3.5,1.1,2.7,9.24-4.8,10.45-5.9" data-active="1" style="fill: #feffbf; stroke: #1b3f1c; stroke-miterlimit: 10;" />
+      </g>
+    <g id="crown-replace" data-active="1" style="display: none;">
+      <path id="crown-replace-shape" d="M19.55,3.4c2.2,0,4.84.3,7.26.5,1.65,0,3.3.2,4.84.7.99.3,1.76.6,2.75,1,1.54.6,3.08,1.3,4.18,2.5,1.1,1.1,2.09,2.3,2.64,3.8.33.6.33,1.3.55,1.9.33,1.6.55,3.1.55,4.6,0,1.5,0,2.3-.33,3.5,0,1.5-.33,3-.55,4.4-.55,1.9-1.1,4-2.09,5.8-1.54,2.3-4.4,3.7-7.26,4.2-1.1.2-2.2.4-3.3.6-1.65.3-3.19.8-4.84,1.2-1.43.3-2.75.2-4.07,0-1.1,0-2.42-.3-3.52-.3-2.09-.2-4.18-.3-5.83-1.3-1.43-.9-2.53-2.1-3.3-3.5-1.1-1.4-1.76-3.1-2.09-4.8-.33-1.3-.33-2.6-.33-3.9,0-1.3.55-3.4.66-5.1.44-2,.55-4.1,1.1-6.2.55-2,1.65-3.9,3.08-5.4,1.54-1.5,3.52-2.9,5.72-3.5,1.43-.3,2.97-.5,4.29-.5h0v-.2h-.33c0,0,.22,0,.22,0Z" data-active="1" style="fill: none; stroke: #c83014; stroke-miterlimit: 10; stroke-width: 3px;" />
+      </g>
+    </g>
+  </svg>

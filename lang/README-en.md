@@ -456,7 +456,7 @@ Or load it with a client-only dynamic import: `dynamic(() => import("./Odontogra
 Opened from the topbar gear icon; a focus-trapped, ARIA `dialog` with a tabbed layout (Esc/backdrop-click to close, arrow keys to switch tabs). All settings are session-level UI state only, unless noted — none of them mutate per-tooth data or the export payload.
 
 - **General:** numbering system (FDI/Universal/Palmer), language, dark/light theme, tooth-information panel visibility
-- **Odontogram:** tooth anatomy profile (`classic` default / `measured`) — `measured` renders nine literature-measured tooth templates in a two-arch, per-tooth-width layout; switchable at runtime, no effect on the classic default; its artwork is a separate chunk, fetched only when you switch to it, so the classic default costs nothing
+- **Odontogram:** tooth anatomy profile (`classic` default / `measured`) — `measured` renders sixteen literature-measured tooth templates — one per clinically distinct position, so each molar carries its own crown outline and root count — in a two-arch, per-tooth-width layout; switchable at runtime, no effect on the classic default; its artwork is a separate chunk, fetched only when you switch to it, so the classic default costs nothing
 - **Panels:** independently show/hide the whole-mouth Statuses card and the Orthodontics card (both default visible)
 - **Tooth details:** wear detail level and discoloration detail level (simple/complex, each default complex), surface notation (simple/full, default full)
 - **Caries:** ICDAS II scoring toggle (`enableIcdas`), caries-depth toggle (`cariesDepthEnabled`), root-caries granularity (`rootCariesMode`: simple/severity), secondary/CARS granularity (`secondaryCariesMode`: simple/standard/full), radiographic-depth granularity (`radiographicDepthMode`: off/threeLevel/detailed) — the former separate "Secondary caries" tab is merged into this one, with the CARS control positioned directly above radiographic depth
@@ -865,6 +865,7 @@ React Advanced Odontogram is created and maintained by Zoltan Dul ([@ZoliQua](ht
 - [@yassine-bhn](https://github.com/yassine-bhn): French translation and the candidate measured anatomy
 - [@saegerdirk-star](https://github.com/saegerdirk-star): measured tooth anatomy and the tooth generator, plus the composable interface proposal; three fixes adopted from their fork (PDF patient identity, perio tooth orientation, selection speed)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): the `getSelectedTeeth()` selection API
+- [@Ditherys](https://github.com/Ditherys): the expanded measured tooth set — the anatomy generator's full permanent and deciduous specification, its overlay-registration metadata and its verification suite, ported here from their fork
 
 **Built with** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) and [Tailwind CSS](https://tailwindcss.com).
 

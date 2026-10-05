@@ -9,7 +9,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import svgpath  # noqa: E402
 
-ASSETS = Path(__file__).resolve().parents[2] / "src" / "assets" / "teeth-svgs"
+ROOT = Path(__file__).resolve().parents[2]
+ASSET_GROUPS = (
+    ("canonical source", Path(__file__).resolve().parent / "source"),
+    ("classic runtime", ROOT / "src" / "assets" / "teeth-svgs"),
+    ("generated measured", ROOT / "src" / "assets" / "teeth-svgs" / "measured"),
+)
 D_RE = re.compile(r'\sd="([^"]+)"')
 
 
@@ -71,11 +76,19 @@ def hausdorff_ish(a, b):
 
 def main():
     ident = lambda x, y: (x, y)  # noqa: E731
-    files = sorted(ASSETS.glob("*.svg"))
+    files = [
+        (group, file)
+        for group, directory in ASSET_GROUPS
+        for file in sorted(directory.glob("*.svg"))
+    ]
     total = 0
     worst_overall = 0.0
     worst_where = ""
-    for f in files:
+    current_group = None
+    for group, f in files:
+        if group != current_group:
+            print(f"\n[{group}]")
+            current_group = group
         txt = f.read_text()
         ds = D_RE.findall(txt)
         worst = 0.0
@@ -90,7 +103,7 @@ def main():
         flag = "OK " if worst < 0.05 else "!! "
         print(f"{flag}{f.name:34s} {len(ds):4d} paths   maximum deviation {worst:.4f}")
         if worst > worst_overall:
-            worst_overall, worst_where = worst, f.name
+            worst_overall, worst_where = worst, f"{group}/{f.name}"
     print(
         f"\n{total} paths checked. Worst deviation {worst_overall:.4f} ({worst_where})"
     )

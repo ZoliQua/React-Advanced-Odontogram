@@ -456,7 +456,7 @@ Polia `endo` a `pulpDx` sa zobrazujú cez jeden zlúčený výber „Stav drene 
 Otvárané cez ikonu ozubeného kolieska na hornej lište; dialóg s uzamknutým fokusom, ARIA `dialog` so záložkovým rozložením (Esc/klik mimo okna na zatvorenie, šípky na prepínanie záložiek). Všetky nastavenia sú iba stav rozhrania na úrovni relácie, pokiaľ nie je uvedené inak — žiadne z nich nemenia dáta jednotlivých zubov ani exportný payload.
 
 - **Všeobecné:** systém číslovania (FDI/Universal/Palmer), jazyk, tmavá/svetlá téma, viditeľnosť panela informácií o zuboch
-- **Odontogram:** profil anatómie zubov (`classic` predvolený / `measured`) — `measured` vykresľuje deväť zubných šablón odmeraných podľa literatúry v rozložení dvoch oblúkov so šírkou na zub; prepínateľný za behu, bez vplyvu na predvolený `classic`; jeho grafika je samostatný chunk, ktorý sa stiahne až pri prepnutí, takže predvolený `classic` nič nestojí
+- **Odontogram:** profil anatómie zubov (`classic` predvolený / `measured`) — `measured` vykresľuje šestnásť zubných šablón odmeraných podľa literatúry — po jednej na každú klinicky odlišnú pozíciu, takže každý molár má vlastný obrys korunky a vlastný počet koreňov — v rozložení dvoch oblúkov so šírkou na zub; prepínateľný za behu, bez vplyvu na predvolený `classic`; jeho grafika je samostatný chunk, ktorý sa stiahne až pri prepnutí, takže predvolený `classic` nič nestojí
 - **Panely:** nezávisle zobraziť/skryť kartu súhrnu za celé ústa Stavy a kartu Ortodoncia (obe predvolene viditeľné)
 - **Detaily zuba:** úroveň podrobnosti opotrebenia a úroveň podrobnosti zafarbenia (simple/complex, obe predvolene complex), notácia plôch (simple/full, predvolené full)
 - **Kaz:** prepínač skórovania ICDAS II (`enableIcdas`), prepínač hĺbky kazu (`cariesDepthEnabled`), podrobnosť kazu koreňa (`rootCariesMode`: simple/severity), podrobnosť sekundárneho kazu/CARS (`secondaryCariesMode`: simple/standard/full), podrobnosť rádiografickej hĺbky (`radiographicDepthMode`: off/threeLevel/detailed) — bývalá samostatná záložka „Sekundárny kaz" je zlúčená do tejto, pričom ovládací prvok CARS je umiestnený priamo nad rádiografickou hĺbkou
@@ -865,6 +865,7 @@ React Advanced Odontogram vytvára a spravuje Zoltan Dul ([@ZoliQua](https://git
 - [@yassine-bhn](https://github.com/yassine-bhn): preklad do francúzštiny a navrhovaná meraná anatómia
 - [@saegerdirk-star](https://github.com/saegerdirk-star): meraná anatómia zuba a generátor zubov, plus návrh skladateľného rozhrania; tri opravy prevzaté z ich forku (údaje pacienta v PDF, orientácia zubov v parodontálnom zázname, rýchlosť výberu)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): API výberu `getSelectedTeeth()`
+- [@Ditherys](https://github.com/Ditherys): rozšírená sada odmeraných zubov — úplná špecifikácia generátora anatómie pre trvalý aj mliečny chrup, registračné metadáta prekryvov a overovacia sada, prenesené z ich forku
 
 **Vytvorené pomocou** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) a [Tailwind CSS](https://tailwindcss.com).
 

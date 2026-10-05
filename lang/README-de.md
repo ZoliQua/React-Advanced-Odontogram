@@ -458,7 +458,7 @@ Oder laden Sie sie mit einem rein clientseitigen dynamischen Import: `dynamic(()
 Wird über das Zahnrad-Symbol in der Kopfleiste geöffnet; ein fokus-gefangener, ARIA-`dialog` mit tabbasiertem Layout (Esc/Klick auf den Hintergrund zum Schließen, Pfeiltasten zum Wechseln der Tabs). Alle Einstellungen sind, sofern nicht anders angegeben, reiner Sitzungs-UI-Zustand — keine davon verändert Pro-Zahn-Daten oder den Export-Payload.
 
 - **Allgemein:** Nummerierungssystem (FDI/Universal/Palmer), Sprache, dunkles/helles Theme, Sichtbarkeit des Zahninformationen-Panels
-- **Odontogramm:** Zahnanatomie-Profil (`classic` Standard / `measured`) — `measured` rendert neun literaturvermessene Zahnvorlagen in einem Zwei-Kiefer-Layout mit zahnindividueller Breite; zur Laufzeit umschaltbar, ohne Auswirkung auf den `classic`-Standard; seine Grafik ist ein eigener Chunk, der erst beim Umschalten geladen wird, sodass der `classic`-Standard nichts kostet
+- **Odontogramm:** Zahnanatomie-Profil (`classic` Standard / `measured`) — `measured` rendert sechzehn literaturvermessene Zahnvorlagen — eine je klinisch eigenständiger Position, sodass jeder Molar seinen eigenen Kronenumriss und seine eigene Wurzelzahl trägt — in einem Zwei-Kiefer-Layout mit zahnindividueller Breite; zur Laufzeit umschaltbar, ohne Auswirkung auf den `classic`-Standard; seine Grafik ist ein eigener Chunk, der erst beim Umschalten geladen wird, sodass der `classic`-Standard nichts kostet
 - **Panels:** Ganzmund-Statuskarte und Kieferorthopädie-Karte unabhängig ein-/ausblenden (beide standardmäßig sichtbar)
 - **Zahndetails:** Abrieb-Detailstufe und Verfärbungs-Detailstufe (einfach/komplex, jeweils Standard komplex), Flächenbezeichnung (einfach/vollständig, Standard vollständig)
 - **Karies:** ICDAS-II-Scoring-Umschalter (`enableIcdas`), Kariestiefe-Umschalter (`cariesDepthEnabled`), Wurzelkaries-Granularität (`rootCariesMode`: simple/severity), Sekundärkaries-/CARS-Granularität (`secondaryCariesMode`: simple/standard/full), Granularität der radiologischen Tiefe (`radiographicDepthMode`: off/threeLevel/detailed) — der frühere separate „Sekundärkaries"-Tab ist in diesen zusammengeführt, wobei die CARS-Steuerung direkt oberhalb der radiologischen Tiefe positioniert ist
@@ -868,6 +868,7 @@ React Advanced Odontogram wird von Zoltan Dul ([@ZoliQua](https://github.com/Zol
 - [@yassine-bhn](https://github.com/yassine-bhn): französische Übersetzung und die vorgeschlagene vermessene Anatomie
 - [@saegerdirk-star](https://github.com/saegerdirk-star): vermessene Zahnanatomie und der Zahngenerator sowie der Vorschlag für die komponierbare Schnittstelle; drei aus ihrem Fork übernommene Korrekturen (Patientenangaben im PDF, Zahnausrichtung im Parodontalbefund, Auswahlgeschwindigkeit)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): die Auswahl-API `getSelectedTeeth()`
+- [@Ditherys](https://github.com/Ditherys): der erweiterte vermessene Zahnsatz — die vollständige Spezifikation des Anatomiegenerators für bleibende und Milchzähne, die Registrierungs-Metadaten der Overlays und die Prüfsuite, aus ihrem Fork übernommen
 
 **Erstellt mit** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) und [Tailwind CSS](https://tailwindcss.com).
 

@@ -19,6 +19,13 @@ TOL_FRAC = 0.015
 TOL_LEN = 1.0
 TOL_OCCL = 0.15
 
+CLINICAL_GROUP_ORDER = (
+    "base", "mods", "tooth-variants", "tooth", "milktooth", "endos",
+    "surfaces", "restorations", "ortho", "specials", "plan",
+)
+
+DEFAULT_SET = "all"
+
 # A canal may be no wider than this fraction of the root at the same height.
 # Generous against LUMEN_HALF_FRAC on purpose: several lumen layers overlap at
 # the chamber, and the check is here to catch a canal that fills its root, not
@@ -143,40 +150,65 @@ def lumen_extremes(txt: str, base_d: str, apex: float, cej: float):
 # standing proud of the second molars; at 0.30 it is 9.6 px and the canine is
 # still visibly the longest tooth, which is what "almost equal" asked for. One
 # constant, every template's length moves. Intended, reviewed correction.
-# Re-taken on 2026-08-11 for odontogram-9cl: the mesial and distal filling
-# shapes are stretched until they meet the occlusal one, so MO/OD/MOD reads as
-# one restoration instead of three blobs. Only the four direct-filling layers
-# move, and only on the proximal surfaces. Intended, reviewed correction.
+# Re-taken on 2026-08-28 after the canonical-anatomy overhaul was reviewed in
+# the running full-mouth, primary-dentition, periodontal, and mixed-clinical
+# views. The intentional changes are: 16 explicit permanent and 10 explicit
+# primary classes, class-specific crown/root maps, distinct upper/lower
+# premolar and molar topology, cervical bulbosity in every primary class, and
+# registered root/pulp/filling/periodontal transforms. The obsolete generated
+# class 46 is replaced by the explicit mandibular first-molar class 36. Every
+# generated side and occlusal class is frozen below; a new class may no longer
+# remain silently unfingerprinted.
+# Re-taken on 2026-08-28 for the clinical-overlay registration pass. Every
+# class now derives bounded proximal bridge tabs from its crown envelope;
+# material crowns share one class-specific contour; measured side SVGs publish
+# CEJ/cervical/implant/furcation registration metadata; and wide posterior
+# canvases expand instead of clipping crown/wear geometry. These are reviewed,
+# intentional generator changes rather than anatomy drift.
 AUTHORED_GEOMETRY_SHA256 = {
-    "11": "c2de41b27659c7c96efc089f9c77b2aa73a34e145e8b3643ae21105187c7760b",
-    "12": "6941ca26f1950f6320596ec9462cd64bcfdfc3f4d983b4f43ee86fa033d3391c",
-    "13": "0bc25f854fb66c10f27a1ed0c9ffbb7c92c1590e241ccb31c8dfcadb3417d23a",
-    # Re-taken for odontogram-1c0 on 2026-08-11: tpl 14 is drawn from BUCCAL
-    # now - the two roots converge and the palatal tip drops - instead of the
-    # proximal aspect the source draws. Intended, reviewed correction.
-    "14": "a7dea116afe014eee02f6e33475289a2307ada697da1356aabe87ec85faec496",
-    # Re-taken again on 2026-08-10 for odontogram-ay4: template 15's root is
-    # grafted from source 13 instead of converted from source 14's two roots.
-    "15": "ec51fc299adea9d3fd806acd003371ca2273a3ed401f6a6f34808a45ab12f009",
-    "16": "4b3f9e27054fef0a36fa85afabc4e62e0e9581f06c0cf8d4fa75240b42ea7b7e",
-    "17": "f8eb00f0078aeafe213b58f2df496dfefad4d7ed832e4d0347799e571f68beba",
-    "31": "de34279c6530fcce36a16002a160b73073f5078a7922061e6fd1b8cf61d0eec7",
-    "46": "b76ddc8212ef1211452e9b83f9b44707fa70f30e2a056dd7aef87ff0fa634321",
-    # Primary dentition, taken on 2026-08-10 after Dirk read the rendered
-    # dentition in the running chart and accepted it. Until then these eight
-    # were deliberately unfrozen, which the digest check reports as a state
-    # rather than a fault - a drawing does not have to pass a digest before it
-    # may exist, it has to pass the dentist (odontogram-0ak, odontogram-e0a).
-    "51": "a4bb53e56d46182ff145492e17e402d3eeba4c5a954867b34e68c601b46ea4f7",
-    "52": "76ea437a92e1e7ac6d89eac6f72201433823f0599e21679fad19f17f2bd180a7",
-    "53": "7b55004551a17a9633b8e2073a7ce8cd058be7a809c553a0e00ce79c5dab7eb8",
-    # 54 re-taken after Bild 91 moved its cervix from 38% to 31% of tooth height.
-    "54": "d9d66b5f73c4a2f9675a73e22330ba094cab4d2f225614c137a36194caa8f803",
-    # 55 re-taken after Bild 92 moved its cervix from 40% to 38%.
-    "55": "751b772350e992d8279e54629d6a397e0bf6454bf9419deb5c70d73c4812e83f",
-    "71": "40cf7ddf728b54b8b2d1e999f563a1228c5292a5a2e23b831b232728090fea13",
-    "74": "8b5b302da7e179d62f71d0fe8a8043c012e7c1d5c017ddfbd81ff39a85e8bb9a",
-    "75": "3b373abc2c372bb47dc1ae40661aa17c9a42ddd2c2b9846481141bfccc8e1327",
+    "11": "740406b88b1dfce2f44456004a8878ab4b27239521ca8c7a105fdd86a680a124",
+    "12": "4a63aa52f1d50010951a9e7e291bd844e0378384bb5a46a4ada0309b4539a7aa",
+    "13": "37c920bd682fe9e9a2cf1a1017371a2536bddcb6c27cb4d4ce962fb95ccd2062",
+    "14": "530aa35cf5ecac79283661e76742047fd615303b57067e31408893622587b1dd",
+    "15": "02264cb56e7c5275573de5c1ca9ce73456683636312e0ff6d4c7373f6420d5a6",
+    "16": "bd3868a6f28c1cc41e9402c8ae4bda411d12d25674a301065c1b5434ef3ab4c4",
+    "17": "b5170eaa25fcd3a82edca0010c97648796003766e0748213f1a289cc571838cb",
+    "18": "a8201154137a13ffe7289ac711a3508049c0d31b2770f3bc9da9e1058dba20fa",
+    "31": "479327c627d36bd3e14b13a7abfda64b892456f071284fe12b6f44dde2bf5b1e",
+    "32": "58e9c2b6eb73d01e7ba89e85454b70406c479cb83bcf95dfeb08a82c278c585e",
+    "33": "42829c3a815f39c1cc459f32d5a8001f0268eef44dec731a6e156a4e7321e5c8",
+    "34": "96c057e8c348df6fcb35fd68c5ae0f1a1157a25bb4f3a2cc9b10a18f1a62f9a9",
+    "35": "6126a29e620592e4afe2e80809043e95891e6f719265edb2c6ca934e5ea65bb8",
+    "36": "14703608a33aa4be61894be597d1378236f412b2b1888f9b474bba9b4f2bad99",
+    "37": "5aae26ac663a8b39f068274b15ef5969ec4939f3c309ac076003a65e30114feb",
+    "38": "b74204a244022c3e9893f32b906933f914138419a73c5b9925960721ed15df19",
+    "51": "48db0a802cb43dea9d5176a53555302f029a259bf7fa797a5be49bb5ef3c3727",
+    "52": "d613f455992989e14e56ee96c8ab16325aae710901c1b697630a27263b7586a3",
+    "53": "49513c6e1c474f4ef6daf627c08e33cae21061df78ba2069c49dcb780a4964be",
+    "54": "b4b282a806cf1c5a620d2a1a176be1dfc734895b0c4a3020bd189eae0dd4bec0",
+    "55": "50b576c88ea2a2464b48b94d9238849fa06cc98e8e6742b8c7e92498a9850c7a",
+    "71": "3a95a6b18a0d436dbac09db0aa25502333cebfb4a3e767c1638d22c35fb12096",
+    "72": "7b385566d84679fd3083cbdcedcf1016ae76e3f6e956e99deeb2b74cab6528d5",
+    "73": "8f589ac5cc938ff9eb7901e76e2addb90d61b99feda72e1b6fd36f3b23c2aaf0",
+    "74": "3cf7e222f663512bc0925213bc512395509ab9844a57f0c89751c9a8b736b60e",
+    "75": "8906ff3df0640b5f77d3f1e4730ed53a1c5659ddaa7f35c52185cb8dcaf590cb",
+}
+
+OCCLUSAL_GEOMETRY_SHA256 = {
+    "14_occl": "bd231b7a927492467edc46067fb771e8af54684939657f5aa9ad5a36bf464437",
+    "15_occl": "ab9c4ed87628f9aa15de57fb6becfa6ebd6296de9a7f23d18210adecb9e0c7ce",
+    "34_occl": "8be150bce513bb73f3281608cb6b03e3a64da68068e1e47f1ebec9e3a8bb6000",
+    "35_occl": "9bd84b9e63b1ad8fa5254f62e90c0eb12b0d0494d8aa095b9e10797ffa847938",
+    "16_occl": "647ccab4e41262e7bc8c519975721a7ab309267a9ea4b1513a2af862a7db95d0",
+    "17_occl": "f7a86ea9bcfafc5cc64c522f90d55566372dfa1130761537509507cf28646bbe",
+    "18_occl": "9dfe6a633f92966dfcf8c210db03fc9579b1b90afc8b33d36927672b3e9cf2d9",
+    "36_occl": "f7d4a49e2a50aac6d5b9c745025a626a6011d57bcc3116889fdf44358737979d",
+    "37_occl": "dca2e2aa27ae121857129757cf5b87ca41a03924db01fe8be78fb2a6b2cec69a",
+    "38_occl": "54f896ec4c8ca314d996b41cfb911a02d661be3a2330c708c3217d3dd9632d45",
+    "54_occl": "469480e94cee0360310eeffc040f9e3c6eb9a7f45947f86abd1026213beb4bcc",
+    "55_occl": "e19b5253abca2f3815d78a728a35085779654233e29dc2d018022e11ec9215ed",
+    "74_occl": "48010631f5f024be179e999e309cc2a8ffd7a438e9aea8960eb65df195e3af61",
+    "75_occl": "4f52373b603814b922efd5ee5b156fa089a7e4f208933cb0fd5664d160e0db4d",
 }
 
 GEOMETRY_ATTRIBUTES = (
@@ -297,15 +329,71 @@ def check_occlusal(out_dir: Path, failures: list[str]) -> None:
         ok_r = abs(ratio - spec.ratio) <= 0.02
 
         ids_ok = clinical_ids(txt) == clinical_ids(src)
-        tags_ok = re.findall(r"<(\w+)", txt) == re.findall(r"<(\w+)", src)
+
+        # Cusp/fissure paths are intentionally generated class anatomy. Remove
+        # only those marked/known baseline interiors before checking structural
+        # tag parity; every clinical surface and all surrounding structure must
+        # still match the canonical source exactly.
+        def without_baseline(value: str) -> str:
+            value = re.sub(
+                r'<g[^>]+data-toothgen-anatomy="primary-cusps"[^>]*>.*?</g>',
+                "",
+                value,
+                flags=re.S,
+            )
+            for group_id in ("cusps", "fissure", "fissure1"):
+                value = re.sub(
+                    rf'(<g id="{group_id}"[^>]*>).*?(</g>)',
+                    rf"\1\2",
+                    value,
+                    count=1,
+                    flags=re.S,
+                )
+            return value
+
+        tags_ok = re.findall(r"<(\w+)", without_baseline(txt)) == re.findall(
+            r"<(\w+)", without_baseline(src)
+        )
+
+        cusp_attr = re.search(r'<svg[^>]+data-cusp-count="(\d+)"', txt)
+        groove_attr = re.search(r'<svg[^>]+data-groove-pattern="([^"]+)"', txt)
+        marker = "primary-cusps" if spec.primary else "cusps"
+        cusp_group = re.search(
+            rf'<g[^>]+data-toothgen-anatomy="{marker}"[^>]*>(.*?)</g>',
+            txt,
+            re.S,
+        )
+        groove_marker = "primary-grooves" if spec.primary else "grooves"
+        groove_group = re.search(
+            rf'<g[^>]+data-toothgen-anatomy="{groove_marker}"[^>]*>(.*?)</g>',
+            txt,
+            re.S,
+        )
+        anatomy_ok = (
+            cusp_attr is not None
+            and int(cusp_attr.group(1)) == spec.cusp_count
+            and cusp_group is not None
+            and len(re.findall(r"<path\b", cusp_group.group(1))) == spec.cusp_count
+            and groove_attr is not None
+            and groove_attr.group(1) == spec.groove_pattern
+            and groove_group is not None
+            and len(re.findall(r"<path\b", groove_group.group(1))) >= 1
+        )
+
+        all_ids = re.findall(r'\bid="([^"]+)"', txt)
+        ids_unique = len(all_ids) == len(set(all_ids))
+        paint_refs = set(re.findall(r'url\(#([^)]+)\)', txt))
+        paint_ok = paint_refs.issubset(set(all_ids))
         # A layer switched off in the drawing must still be switched off here,
         # or a finding would render on a tooth nobody charted it on.
         hidden_ok = txt.count("display: none") == src.count("display: none")
+        geometry_ok = geometry_digest(txt) == OCCLUSAL_GEOMETRY_SHA256.get(spec.key)
 
         mark = lambda b: "OK" if b else "!!"  # noqa: E731
         print(
             f"{spec.key:9s} {mark(ok_r)} {ratio:5.2f} (target {spec.ratio:.2f})  "
-            f"{mark(ids_ok and tags_ok):>8s}  {mark(hidden_ok):>8s}"
+            f"{mark(ids_ok and tags_ok and anatomy_ok and ids_unique and paint_ok):>8s}  "
+            f"{mark(hidden_ok):>8s}"
         )
         if not ok_r:
             failures.append(
@@ -314,15 +402,27 @@ def check_occlusal(out_dir: Path, failures: list[str]) -> None:
         if not ids_ok:
             failures.append(f"{spec.key}: clinical id order differs from its drawing")
         if not tags_ok:
-            failures.append(f"{spec.key}: element tags differ from its drawing")
+            failures.append(
+                f"{spec.key}: non-anatomy element tags differ from its drawing"
+            )
+        if not anatomy_ok:
+            failures.append(
+                f"{spec.key}: generated cusp/groove topology does not match its spec"
+            )
+        if not ids_unique:
+            failures.append(f"{spec.key}: duplicate SVG ids within the asset")
+        if not paint_ok:
+            failures.append(f"{spec.key}: unresolved paint-server reference")
         if not hidden_ok:
             failures.append(
                 f"{spec.key}: {txt.count('display: none')} hidden defaults against "
                 f"the drawing's {src.count('display: none')}"
             )
+        if not geometry_ok:
+            failures.append(f"{spec.key}: authored occlusal geometry changed")
 
 
-INDEX_CSS = ASSETS.parents[1] / "index.css"
+INDEX_CSS = ASSETS.parents[2] / "index.css"
 
 
 def check_columns(specs, failures):
@@ -430,10 +530,85 @@ def check_fillings(out_dir: Path, failures):
                 )
 
 
+def _element_extent(element: ET.Element):
+    paths = []
+    if element.get("d"):
+        paths.append(element.get("d"))
+    paths.extend(
+        child.get("d") for child in element.iter()
+        if child is not element and child.get("d")
+    )
+    boxes = [curve_extent(path) for path in paths]
+    if not boxes:
+        return None
+    return (
+        min(box[0] for box in boxes), min(box[1] for box in boxes),
+        max(box[2] for box in boxes), max(box[3] for box in boxes),
+    )
+
+
+def check_clinical_registration(out_dir: Path, failures: list[str]) -> None:
+    """Validate the shared anatomy-to-overlay registration contract."""
+
+    required_side = (
+        "data-cej-y", "data-cervical-left", "data-cervical-right",
+        "data-implant-platform-y", "data-implant-left", "data-implant-right",
+        "data-bridge-anchor-y", "data-bridge-anchor-height",
+    )
+    required_occlusal = (
+        "data-crown-left", "data-crown-right",
+        "data-bridge-anchor-y", "data-bridge-anchor-height",
+    )
+    checked = 0
+    for item in SPECS + PRIMARY_SPECS:
+        root = ET.parse(out_dir / f"{item.key}.svg").getroot()
+        missing = [name for name in required_side if root.get(name) is None]
+        if item.roots > 1 and root.get("data-furcation-y") is None:
+            missing.append("data-furcation-y")
+        if missing:
+            failures.append(f"{item.key}: missing registration metadata {missing}")
+        vb_x, vb_y, vb_w, vb_h = map(float, root.get("viewBox").split())
+        top_ids = [child.get("id") for child in root if child.get("id")]
+        present = [name for name in CLINICAL_GROUP_ORDER if name in top_ids]
+        if [name for name in top_ids if name in present] != present:
+            failures.append(f"{item.key}: clinical group stacking differs from contract")
+        connectors = [
+            element for element in root.iter()
+            if (element.get("id") or "").endswith("-bridge-connector")
+        ]
+        if not connectors or len({element.get("d") for element in connectors}) != 1:
+            failures.append(f"{item.key}: material connector geometry diverges")
+        for element in connectors:
+            box = _element_extent(element)
+            if box and (
+                box[0] < vb_x - 0.05 or box[1] < vb_y - 0.05
+                or box[2] > vb_x + vb_w + 0.05
+                or box[3] > vb_y + vb_h + 0.05
+            ):
+                failures.append(f"{item.key}: {element.get('id')} leaves the viewBox")
+                break
+        checked += 1
+
+    from occlusal import OCCL_SPECS
+    for item in OCCL_SPECS:
+        root = ET.parse(out_dir / f"{item.key}.svg").getroot()
+        missing = [name for name in required_occlusal if root.get(name) is None]
+        if missing:
+            failures.append(f"{item.key}: missing registration metadata {missing}")
+        connectors = [
+            element for element in root.iter()
+            if (element.get("id") or "").endswith("-bridge-connector")
+        ]
+        if not connectors or len({element.get("d") for element in connectors}) != 1:
+            failures.append(f"{item.key}: material connector geometry diverges")
+        checked += 1
+    print(f"Clinical overlay registration: {checked} templates checked")
+
+
 
 def main(argv):
     argv = list(argv)
-    which = "permanent"
+    which = DEFAULT_SET
     for flag in ("--primary", "--all"):
         if flag in argv:
             which = flag[2:]
@@ -468,6 +643,21 @@ def main(argv):
         except Exception as e:
             failures.append(f"{s.key}: invalid XML ({e})")
             continue
+
+        all_ids = re.findall(r'\bid="([^"]+)"', txt)
+        if len(all_ids) != len(set(all_ids)):
+            failures.append(f"{s.key}: duplicate SVG ids within the asset")
+        paint_refs = set(re.findall(r'url\(#([^)]+)\)', txt))
+        if not paint_refs.issubset(set(all_ids)):
+            missing = sorted(paint_refs - set(all_ids))
+            failures.append(
+                f"{s.key}: unresolved paint-server reference(s) {missing}"
+            )
+        declared_roots = re.search(r'<svg[^>]+data-root-count="(\d+)"', txt)
+        if declared_roots is None or int(declared_roots.group(1)) != s.roots:
+            failures.append(
+                f"{s.key}: data-root-count does not match the anatomy spec"
+            )
 
         src = (SOURCE / f"{s.src_template}.svg").read_text()
         ids_ok = clinical_ids(src) == clinical_ids(txt)
@@ -600,6 +790,18 @@ def main(argv):
                 )
 
         n = root_count(base_d, apex, cej)
+        if s.roots > 1:
+            furc = roots.find_furcation(base_d, apex, cej)
+            root_trunk = (cej - furc) / (cej - apex)
+            # A zero-height split looks like detached root pieces; an extremely
+            # long trunk hides the clinically useful furcation. These broad
+            # bounds tolerate normal class variation and protect topology, not
+            # harmless subpixel shape changes.
+            if not 0.08 <= root_trunk <= 0.38:
+                failures.append(
+                    f"{s.key}: furcation/root-trunk fraction {root_trunk:.1%} "
+                    "falls outside the credible display range 8%-38%"
+                )
         frac = (cej - apex) / (inc - apex)
         length = inc - apex
         occl_offsets.append((s.key, vb[1] + vb[3] - inc))
@@ -637,6 +839,7 @@ def main(argv):
 
     check_occlusal(out_dir, failures)
     check_fillings(out_dir, failures)
+    check_clinical_registration(out_dir, failures)
     check_columns(specs, failures)
 
     if occl_offsets:

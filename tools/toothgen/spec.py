@@ -19,6 +19,10 @@ class ToothSpec:
     root_frac: float
     width_frac: float
     roots: int
+    # Explicit classification keeps anatomy decisions in one source of truth.
+    arch: str = ""
+    family: str = ""
+    sequence: int = 0
     length_rel: float = 1.0
     furc_frac: float = 0.0
     teeth: tuple[int, ...] = field(default=())
@@ -49,6 +53,12 @@ class ToothSpec:
     # second outline to hide, and nothing added that the parity fingerprint
     # would see.
     root_converge: float = 1.0
+    # Smooth generator-level morphology. ``root_spread`` changes divergence
+    # below the CEJ; crown values change the outline above it. All are applied
+    # to every clinical path, not only to the visible enamel contour.
+    root_spread: float = 1.0
+    crown_taper: float = 0.0
+    cervical_bulge: float = 0.0
     # Width of the grid column this template stands in, in CSS pixels; MUST
     # match `grid-template-columns` in src/index.css (verify.py checks it).
     #
@@ -57,10 +67,9 @@ class ToothSpec:
     # measured from each of two neighbouring tooth centres, always adds up to
     # the pitch between them - (a+g)/2 + (b+g)/2 = (a+b)/2 + g - so both
     # templates put their knee on the same point without either knowing which
-    # tooth is standing next to it. A template serving positions of differing
-    # column width (tpl 15, 54 and 57) is off by half that difference, which is
-    # under 2 px, and both sides arrive flat, so the peak just flattens
-    # slightly rather than stepping.
+    # tooth is standing next to it. Every permanent and primary anatomy class
+    # now carries the column of the position it occupies, so generation never
+    # guesses from a shared compromise template.
     col_px: float = 44.0
 
 
@@ -80,15 +89,14 @@ class ToothSpec:
 # give 0.642 against 0.593; and the lower molar a lower one than the lower
 # incisor (0.62 against 0.68) where the plates give 0.680 against 0.640.
 #
-# The same cell counts also CONFIRM `length_rel`: normalized to the canine they
-# agree with the values below to within 0.02 on six of the nine templates. That
-# agreement is what establishes the Linienraster as ONE shared scale across the
+# The same cell counts also confirm the class length order. Normalized to the
+# canine, that agreement establishes the Linienraster as one shared scale across the
 # archive - which no measurement of the photographs themselves could settle,
 # since the pages are photographed at different distances. The one exception is
 # tpl 15 at +0.104, the GRAFTED template, whose length may have been set to
 # serve the graft rather than the plate; left alone here, noted in
 # odontogram-3y9.
-# `width_frac` is the tooth's MESIODISTAL CROWN WIDTH as a fraction of its own
+# `width_frac` is each class's MESIODISTAL CROWN WIDTH as a fraction of its own
 # length, and the rendered width comes out as `width_frac * length_rel *
 # size_scale * H_REF` - so the number below is an anatomical width-to-length
 # ratio, not a display choice.
@@ -103,13 +111,15 @@ class ToothSpec:
 # tpl 31 and a clipped specimen for tpl 46, the same failure mode that made the
 # cervical line unreadable (odontogram-3y9). They are the standard mean
 # mesiodistal crown diameters (Wheeler / Ash & Nelson), averaged over the
-# positions each template actually serves:
+# anatomy class. The old nine-template averages were split during the
+# 2026-08-27 overhaul so arch-specific canines, both lower incisors, all four
+# premolar classes and first/second/third molars no longer share compromise
+# dimensions. The underlying means remain the Wheeler / Ash & Nelson values
+# documented in README.md:
 #
-#   11  8.5    12  6.5    13  7.25 (7.5 upper / 7.0 lower)   14  7.0
-#   15  6.83 (6.5 upper / 7.0 lower)   16 10.0   17  8.75 (9.0 / 8.5 third)
-#   31  5.25 (5.0 central / 5.5 lateral)         46 10.5 (11.0 / 10.5 / 10.0)
-#   51  6.5    52  5.1    53  6.0    54  7.3    55  8.2
-#   71  4.15   74  7.7    75  9.9
+#   11 8.5  12 6.5  13 7.5  33 7.0   31 5.0  32 5.5
+#   14 7.0  15 6.5  34 7.0  35 7.2   16 10.0 17 9.0 18 8.5
+#   36 11.0 37 10.5 38 10.0
 #
 # Corrected AGAIN the same day, once the generator started measuring a crown
 # width as the outline's full extent rather than as the tooth material a
@@ -130,129 +140,22 @@ class ToothSpec:
 # teeth, and 43 therefore ends up in the embrasure between 12 and 13 without
 # anything being arranged by hand - see the note on `col_px` in ToothSpec.
 SPECS: list[ToothSpec] = [
-    ToothSpec(
-        key="11",
-        col_px=62,
-        label="Upper central incisor",
-        source="Fig. 32a (p. 49)",
-        src_template=11,
-        root_frac=0.59,
-        width_frac=0.412,
-        roots=1,
-        length_rel=0.87,
-        teeth=(11, 21),
-    ),
-    ToothSpec(
-        key="12",
-        col_px=49,
-        label="Upper lateral incisor",
-        source="Fig. 35a (p. 51)",
-        src_template=11,
-        root_frac=0.62,
-        width_frac=0.3363,
-        roots=1,
-        length_rel=0.815,
-        teeth=(12, 22),
-        note="narrower with a relatively longer root than the central incisor",
-    ),
-    ToothSpec(
-        key="31",
-        col_px=40,
-        label="Lower incisor",
-        source="Fig. 38a (p. 52)",
-        src_template=11,
-        root_frac=0.64,
-        width_frac=0.2917,
-        roots=1,
-        length_rel=0.759,
-        teeth=(31, 32, 41, 42),
-        note="smallest tooth in the dentition, distinctly narrow",
-    ),
-    ToothSpec(
-        key="13",
-        col_px=54,
-        label="Canine",
-        source="Fig. 45a (p. 61)",
-        src_template=13,
-        root_frac=0.64,
-        width_frac=0.3057,
-        roots=1,
-        length_rel=1.0,
-        teeth=(13, 23, 33, 43),
-        note="longest root in the dentition",
-    ),
-    ToothSpec(
-        key="14",
-        col_px=52,
-        label="Upper first premolar",
-        source="Fig. 54a (p. 71)",
-        src_template=14,
-        root_frac=0.63,
-        width_frac=0.3544,
-        roots=2,
-        length_rel=0.833,
-        furc_frac=0.55,
-        root_converge=0.45,
-        teeth=(14, 24),
-        note="only regularly two-rooted premolar (Fig. 62, section 2.3.3)",
-    ),
-    ToothSpec(
-        key="15",
-        col_px=51,
-        label="Single-rooted premolar",
-        source="Fig. 56a (p. 73) / Fig. 62a (p. 78)",
-        src_template=14,
-        root_frac=0.66,
-        width_frac=0.3536,
-        roots=1,
-        length_rel=0.815,
-        teeth=(15, 25, 34, 35, 44, 45),
-        graft_root_from=13,
-        note="two-cusped crown from the premolar, root from the canine - the "
-        "only drawn single root in the sources; synthesising one out of two is "
-        "what produced the seam and the twin canals (odontogram-ay4)",
-    ),
-    ToothSpec(
-        key="16",
-        col_px=72,
-        label="Upper first molar",
-        source="derived from Fig. 70a and Fig. 3",
-        src_template=16,
-        root_frac=0.61,
-        width_frac=0.5691,
-        roots=3,
-        length_rel=0.741,
-        furc_frac=0.58,
-        teeth=(16, 26),
-        note="no dedicated scan available; derived from the second molar and overview plate",
-    ),
-    ToothSpec(
-        key="17",
-        col_px=63,
-        label="Upper second/third molar",
-        source="Fig. 70a (p. 88)",
-        src_template=16,
-        root_frac=0.60,
-        width_frac=0.5111,
-        roots=3,
-        length_rel=0.722,
-        furc_frac=0.62,
-        teeth=(17, 18, 27, 28),
-        note="roots are more convergent than on the first molar",
-    ),
-    ToothSpec(
-        key="46",
-        col_px=75,
-        label="Lower molar",
-        source="Fig. 76a (p. 95)",
-        src_template=16,
-        root_frac=0.68,
-        width_frac=0.5563,
-        roots=2,
-        length_rel=0.796,
-        furc_frac=0.62,
-        teeth=(36, 37, 38, 46, 47, 48),
-    ),
+    ToothSpec(key="11", col_px=62, label="Upper central incisor", source="Fig. 32a (p. 49)", src_template=11, root_frac=0.59, width_frac=0.4120, roots=1, arch="maxillary", family="incisor", sequence=1, crown_taper=0.04, length_rel=0.870, teeth=(11, 21)),
+    ToothSpec(key="12", col_px=49, label="Upper lateral incisor", source="Fig. 35a (p. 51)", src_template=11, root_frac=0.62, width_frac=0.3363, roots=1, arch="maxillary", family="incisor", sequence=2, crown_taper=-0.02, length_rel=0.815, teeth=(12, 22), note="narrower with a relatively longer root than the central incisor"),
+    ToothSpec(key="13", col_px=55, label="Maxillary canine", source="Fig. 45a (p. 61)", src_template=13, root_frac=0.64, width_frac=0.3163, roots=1, arch="maxillary", family="canine", sequence=1, crown_taper=0.02, length_rel=1.000, teeth=(13, 23), note="longest-rooted representative class"),
+    ToothSpec(key="14", col_px=52, label="Upper first premolar", source="Fig. 54a (p. 71)", src_template=14, root_frac=0.63, width_frac=0.3544, roots=2, arch="maxillary", family="premolar", sequence=1, crown_taper=0.02, length_rel=0.833, furc_frac=0.55, root_converge=0.45, teeth=(14, 24), note="representative bifurcated/two-root form; close buccal projection"),
+    ToothSpec(key="15", col_px=49, label="Maxillary second premolar", source="Fig. 56a (p. 73)", src_template=14, root_frac=0.66, width_frac=0.3363, roots=1, arch="maxillary", family="premolar", sequence=2, crown_taper=-0.02, cervical_bulge=0.02, length_rel=0.815, teeth=(15, 25), graft_root_from=13, note="predominantly single-rooted class; continuous grafted root"),
+    ToothSpec(key="16", col_px=72, label="Upper first molar", source="derived from Fig. 70a and Fig. 3", src_template=16, root_frac=0.61, width_frac=0.5691, roots=3, arch="maxillary", family="molar", sequence=1, root_spread=1.12, crown_taper=0.03, length_rel=0.741, furc_frac=0.58, teeth=(16, 26), note="broadest and most divergent maxillary molar representative"),
+    ToothSpec(key="17", col_px=65, label="Upper second molar", source="Fig. 70a (p. 88)", src_template=16, root_frac=0.60, width_frac=0.5256, roots=3, arch="maxillary", family="molar", sequence=2, root_spread=0.94, length_rel=0.722, furc_frac=0.62, teeth=(17, 27), note="smaller and more convergent than the first molar"),
+    ToothSpec(key="18", col_px=62, label="Upper third molar", source="Fig. 70a (p. 88), simplified representative", src_template=16, root_frac=0.60, width_frac=0.5271, roots=3, arch="maxillary", family="molar", sequence=3, root_spread=0.78, crown_taper=-0.05, length_rel=0.680, furc_frac=0.66, teeth=(18, 28), note="variable class represented by a compact convergent three-root form"),
+    ToothSpec(key="31", col_px=39, label="Lower central incisor", source="Fig. 38a (p. 52)", src_template=11, root_frac=0.64, width_frac=0.2778, roots=1, arch="mandibular", family="incisor", sequence=1, crown_taper=-0.06, length_rel=0.759, teeth=(31, 41), note="narrowest permanent tooth"),
+    ToothSpec(key="32", col_px=42, label="Lower lateral incisor", source="Fig. 38a (p. 52), lateral dimensions", src_template=11, root_frac=0.64, width_frac=0.2973, roots=1, arch="mandibular", family="incisor", sequence=2, crown_taper=-0.03, length_rel=0.780, teeth=(32, 42)),
+    ToothSpec(key="33", col_px=52, label="Mandibular canine", source="Fig. 45a (p. 61), mandibular dimensions", src_template=13, root_frac=0.64, width_frac=0.3075, roots=1, arch="mandibular", family="canine", sequence=1, crown_taper=-0.03, length_rel=0.960, teeth=(33, 43), note="narrower and slightly shorter than the maxillary canine"),
+    ToothSpec(key="34", col_px=52, label="Mandibular first premolar", source="Fig. 62a (p. 78)", src_template=14, root_frac=0.65, width_frac=0.3514, roots=1, arch="mandibular", family="premolar", sequence=1, crown_taper=-0.12, cervical_bulge=0.03, length_rel=0.840, teeth=(34, 44), graft_root_from=13, note="single root; strong buccal cusp and reduced lingual cusp"),
+    ToothSpec(key="35", col_px=53, label="Mandibular second premolar", source="Fig. 62a (p. 78)", src_template=14, root_frac=0.64, width_frac=0.3658, roots=1, arch="mandibular", family="premolar", sequence=2, crown_taper=0.05, cervical_bulge=0.04, length_rel=0.830, teeth=(35, 45), graft_root_from=13, note="single root; broader and more molar-like crown"),
+    ToothSpec(key="36", col_px=78, label="Lower first molar", source="Fig. 76a (p. 95)", src_template=16, root_frac=0.68, width_frac=0.5827, roots=2, arch="mandibular", family="molar", sequence=1, root_spread=1.12, crown_taper=0.04, length_rel=0.796, furc_frac=0.60, teeth=(36, 46), note="broadest and most divergent mandibular molar representative"),
+    ToothSpec(key="37", col_px=75, label="Lower second molar", source="Fig. 76a (p. 95), second-molar dimensions", src_template=16, root_frac=0.66, width_frac=0.5826, roots=2, arch="mandibular", family="molar", sequence=2, root_spread=0.92, length_rel=0.760, furc_frac=0.63, teeth=(37, 47), note="more regular and convergent than the first molar"),
+    ToothSpec(key="38", col_px=72, label="Lower third molar", source="Fig. 76a (p. 95), simplified representative", src_template=16, root_frac=0.64, width_frac=0.6024, roots=2, arch="mandibular", family="molar", sequence=3, root_spread=0.75, crown_taper=-0.06, length_rel=0.700, furc_frac=0.67, teeth=(38, 48), note="variable class represented by a compact convergent two-root form"),
 ]
 
 SPEC_BY_KEY = {s.key: s for s in SPECS}
@@ -335,12 +238,6 @@ PRIMARY_PULP_SCALE = 1.05
 
 PRIMARY_ROOT_SPREAD = 1.25
 
-# The lower primary canine is not drawn separately. It is template 53 rendered
-# about a tenth smaller, which is the observed difference between the arches and
-# saves a template that would otherwise differ in nothing else.
-PRIMARY_LOWER_CANINE_SCALE = 0.9
-
-
 PRIMARY_SPECS: list[ToothSpec] = [
     ToothSpec(
         key="51",
@@ -351,6 +248,10 @@ PRIMARY_SPECS: list[ToothSpec] = [
         root_frac=0.62,
         width_frac=0.3938,
         roots=1,
+        arch="maxillary",
+        family="incisor",
+        sequence=1,
+        cervical_bulge=0.07,
         length_rel=0.87,
         size_scale=PRIMARY_SIZE_SCALE,
         primary=True,
@@ -365,6 +266,10 @@ PRIMARY_SPECS: list[ToothSpec] = [
         root_frac=0.65,
         width_frac=0.3299,
         roots=1,
+        arch="maxillary",
+        family="incisor",
+        sequence=2,
+        cervical_bulge=0.06,
         length_rel=0.815,
         size_scale=PRIMARY_SIZE_SCALE,
         primary=True,
@@ -372,19 +277,22 @@ PRIMARY_SPECS: list[ToothSpec] = [
     ),
     ToothSpec(
         key="53",
-        col_px=54,
-        label="Primary canine",
+        col_px=55,
+        label="Maxillary primary canine",
         source="Bild 89 (p. 111) / Bild 90 (p. 112) + Bild 83",
         src_template=13,
         root_frac=0.62,
         width_frac=0.3163,
         roots=1,
+        arch="maxillary",
+        family="canine",
+        sequence=1,
+        cervical_bulge=0.08,
         length_rel=1.0,
         size_scale=PRIMARY_SIZE_SCALE,
         primary=True,
-        teeth=(53, 63, 73, 83),
-        note="one drawing for both arches; the lower is rendered at "
-        "PRIMARY_LOWER_CANINE_SCALE",
+        teeth=(53, 63),
+        note="upper primary canine class",
     ),
     ToothSpec(
         key="54",
@@ -395,6 +303,10 @@ PRIMARY_SPECS: list[ToothSpec] = [
         root_frac=0.69,
         width_frac=0.5193,
         roots=3,
+        arch="maxillary",
+        family="molar",
+        sequence=1,
+        cervical_bulge=0.12,
         length_rel=0.741,
         size_scale=PRIMARY_SIZE_SCALE,
         primary=True,
@@ -409,13 +321,17 @@ PRIMARY_SPECS: list[ToothSpec] = [
     ),
     ToothSpec(
         key="55",
-        col_px=51,
+        col_px=49,
         label="Upper second primary molar",
         source="Bild 92 (p. 114)",
         src_template=16,
         root_frac=0.62,
         width_frac=0.5577,
         roots=3,
+        arch="maxillary",
+        family="molar",
+        sequence=2,
+        cervical_bulge=0.10,
         length_rel=0.775,
         size_scale=PRIMARY_SIZE_SCALE,
         primary=True,
@@ -430,27 +346,72 @@ PRIMARY_SPECS: list[ToothSpec] = [
     ),
     ToothSpec(
         key="71",
-        col_px=40,
-        label="Lower primary incisor",
+        col_px=39,
+        label="Lower primary central incisor",
         source="derived from 31, Bild 83 (overview)",
         src_template=11,
         root_frac=0.68,
-        width_frac=0.2882,
+        width_frac=0.2779,
         roots=1,
+        arch="mandibular",
+        family="incisor",
+        sequence=1,
+        cervical_bulge=0.06,
         length_rel=0.759,
         size_scale=PRIMARY_SIZE_SCALE,
         primary=True,
-        teeth=(71, 72, 81, 82),
+        teeth=(71, 81),
+    ),
+    ToothSpec(
+        key="72",
+        col_px=42,
+        label="Lower primary lateral incisor",
+        source="derived from 32, Bild 83 (overview)",
+        src_template=11,
+        root_frac=0.67,
+        width_frac=0.3041,
+        roots=1,
+        arch="mandibular",
+        family="incisor",
+        sequence=2,
+        cervical_bulge=0.06,
+        length_rel=0.780,
+        size_scale=PRIMARY_SIZE_SCALE,
+        primary=True,
+        teeth=(72, 82),
+    ),
+    ToothSpec(
+        key="73",
+        col_px=52,
+        label="Lower primary canine",
+        source="Bild 90 (p. 112) + Bild 83",
+        src_template=13,
+        root_frac=0.62,
+        width_frac=0.3163,
+        roots=1,
+        arch="mandibular",
+        family="canine",
+        sequence=1,
+        cervical_bulge=0.08,
+        length_rel=0.900,
+        size_scale=PRIMARY_SIZE_SCALE,
+        primary=True,
+        teeth=(73, 83),
+        note="separate lower-arch proportions; not a runtime scale exception",
     ),
     ToothSpec(
         key="74",
-        col_px=51,
+        col_px=52,
         label="Lower first primary molar",
         source="Bild 93 (p. 117)",
         src_template=16,
         root_frac=0.69,
         width_frac=0.5341,
         roots=2,
+        arch="mandibular",
+        family="molar",
+        sequence=1,
+        cervical_bulge=0.13,
         length_rel=0.760,
         size_scale=PRIMARY_SIZE_SCALE,
         primary=True,
@@ -465,20 +426,25 @@ PRIMARY_SPECS: list[ToothSpec] = [
     ),
     ToothSpec(
         key="75",
-        col_px=51,
+        col_px=53,
         label="Lower second primary molar",
-        source="p. 117 section 3.4.3.2 + derived from 46",
+        source="p. 117 section 3.4.3.2 + derived from 36",
         src_template=16,
         root_frac=0.62,
         width_frac=0.6556,
         roots=2,
+        arch="mandibular",
+        family="molar",
+        sequence=2,
+        cervical_bulge=0.11,
         length_rel=0.796,
         size_scale=PRIMARY_SIZE_SCALE,
         primary=True,
         teeth=(75, 85),
         note="the text on that page states it outright - the lower second "
         "primary molar is the scaled-down lower first permanent molar - so "
-        "this one keeps 46 as its parent where 74 must not. Bild 94 itself "
+        "this one keeps the lower first-permanent-molar class as its parent "
+        "where 74 must not. Bild 94 itself "
         "was not supplied; the citation is the text, not the plate",
     ),
 ]

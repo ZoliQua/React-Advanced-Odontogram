@@ -458,7 +458,7 @@ export default function OdontogramClient() {
 通过顶部工具栏的齿轮图标打开；这是一个具有焦点陷阱、ARIA `dialog` 角色的带标签页弹窗（Esc 键或点击背景可关闭，方向键可切换标签页）。除非另有说明，所有设置均仅为会话级界面状态——都不会修改按牙位数据或导出数据。
 
 - **常规：** 编号系统（FDI/通用编号法/Palmer）、语言、深色/浅色主题、牙齿信息面板可见性
-- **牙位图：** 牙齿解剖轮廓（`classic` 默认 / `measured`）——`measured` 以双牙弓、逐牙宽度布局渲染九个依据文献测量的牙齿模板；可在运行时切换，不影响 `classic` 默认值；其图形位于独立分块中，仅在切换到它时才会下载，因此默认的 `classic` 不会带来任何额外体积
+- **牙位图：** 牙齿解剖轮廓（`classic` 默认 / `measured`）——`measured` 以双牙弓、逐牙宽度布局渲染十六个依据文献测量的牙齿模板——每个临床上独立的牙位各有一个，因此每颗磨牙都有自己的牙冠轮廓和牙根数量；可在运行时切换，不影响 `classic` 默认值；其图形位于独立分块中，仅在切换到它时才会下载，因此默认的 `classic` 不会带来任何额外体积
 - **面板：** 独立显示/隐藏全口“状态”卡片和“正畸”卡片（默认均可见）
 - **牙齿详情：** 磨耗详情级别与变色详情级别（简单/复杂，默认均为复杂）、牙面记法（简单/完整，默认完整）
 - **龋齿：** ICDAS II 评分开关（`enableIcdas`）、龋齿深度开关（`cariesDepthEnabled`）、根面龋粒度（`rootCariesMode`：简单/严重度）、继发龋/CARS 粒度（`secondaryCariesMode`：简单/标准/完整）、影像学深度粒度（`radiographicDepthMode`：关闭/三级/详细）——原先独立的“继发龋”标签页已合并入本标签页，CARS 控件位置紧邻影像学深度之上
@@ -866,6 +866,7 @@ React Advanced Odontogram 由 Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 - [@yassine-bhn](https://github.com/yassine-bhn): 法语翻译以及提议的测量解剖结构
 - [@saegerdirk-star](https://github.com/saegerdirk-star): 测量的牙齿解剖结构和牙齿生成器，以及可组合接口的提案；以及采纳自其分支的三项修复（PDF 中的患者身份、牙周图中的牙齿方向、选择速度）
 - [@sofia-cluadette](https://github.com/sofia-cluadette): `getSelectedTeeth()` 选择 API
+- [@Ditherys](https://github.com/Ditherys)：扩充后的实测牙齿集——解剖生成器针对恒牙与乳牙的完整规格、叠加层的配准元数据及其校验套件，自其分支移植而来
 
 **基于** [jsPDF](https://github.com/parallax/jsPDF)、[DOMPurify](https://github.com/cure53/DOMPurify)、[React](https://react.dev)、[Vite](https://vite.dev)、[TypeScript](https://www.typescriptlang.org) 和 [Tailwind CSS](https://tailwindcss.com) 构建。
 

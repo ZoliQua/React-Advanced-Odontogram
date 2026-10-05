@@ -456,7 +456,7 @@ Az `endo` és a `pulpDx` egyetlen összevont "Pulpa / Endo státusz" `<select>` 
 A fejléc fogaskerék ikonjával nyitható; egy focus-trapped, ARIA `dialog` lapozott (tabos) elrendezéssel (Esc/háttérre kattintás a bezáráshoz, nyílbillentyűk a fülek közti váltáshoz). Minden beállítás csak munkamenet-szintű UI állapot, hacsak másképp nincs jelezve — egyik sem módosítja a fogankénti adatokat vagy az export payloadot.
 
 - **Általános:** számozási rendszer (FDI/Universal/Palmer), nyelv, sötét/világos téma, fogadatok panel láthatósága
-- **Odontogram:** fogazatanatómia-profil (`classic` alapértelmezett / `measured`) — a `measured` kilenc, szakirodalom alapján bemért fogsablont jelenít meg két fogív, fogankénti szélesség elrendezésben; futásidőben váltható, a `classic` alapértelmezésre nincs hatással; a hozzá tartozó grafika külön chunk, amely csak átváltáskor töltődik le, így a `classic` alapértelmezés semmibe nem kerül
+- **Odontogram:** fogazatanatómia-profil (`classic` alapértelmezett / `measured`) — a `measured` tizenhat, szakirodalom alapján bemért fogsablont jelenít meg — pozíciónként egyet, így minden őrlőfog a saját koronakörvonalát és gyökérszámát viseli — két fogív, fogankénti szélesség elrendezésben; futásidőben váltható, a `classic` alapértelmezésre nincs hatással; a hozzá tartozó grafika külön chunk, amely csak átváltáskor töltődik le, így a `classic` alapértelmezés semmibe nem kerül
 - **Panelek:** a teljes szájüreg Státusz kártya és az Ortodoncia kártya egymástól függetlenül elrejthető/megjeleníthető (mindkettő alapértelmezésben látható)
 - **Fogadatok:** kopás részletezettségi szint és elszíneződés részletezettségi szint (egyszerű/összetett, mindkettő alapértelmezetten összetett), felület-jelölés (egyszerű/teljes, alapértelmezett: teljes)
 - **Caries:** ICDAS II pontozás kapcsoló (`enableIcdas`), caries-mélység kapcsoló (`cariesDepthEnabled`), gyökér-caries részletezettség (`rootCariesMode`: simple/severity), szekunder/CARS részletezettség (`secondaryCariesMode`: simple/standard/full), radiológiai-mélység részletezettség (`radiographicDepthMode`: off/threeLevel/detailed) — a korábban különálló "Szekunder caries" fül ebbe olvadt bele, a CARS vezérlő közvetlenül a radiológiai mélység fölé kerülve
@@ -873,6 +873,7 @@ A React Advanced Odontogramot Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 - [@yassine-bhn](https://github.com/yassine-bhn): francia fordítás és a felmért anatómia jelöltje
 - [@saegerdirk-star](https://github.com/saegerdirk-star): felmért foganatómia és a foggenerátor, valamint a komponálható felület javaslata; három javítás a forkjából (betegazonosító adatok a PDF-ben, fogorientáció a parodontális diagramon, kijelölési sebesség)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): a `getSelectedTeeth()` kijelölési API
+- [@Ditherys](https://github.com/Ditherys): a bővített, bemért fogkészlet — az anatómiagenerátor teljes maradó és tejfogazati specifikációja, a rárajzolt rétegek regisztrációs metaadatai és az ellenőrző készlet, az ő forkjukból átültetve
 
 **Felhasznált eszközök:** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) és [Tailwind CSS](https://tailwindcss.com).
 

@@ -75,8 +75,8 @@ describe("measured anatomy: load ordering", () => {
     expect(getToothAnatomy()).toBe("measured");
     const p = activeAnatomyProfile();
     expect(p.layout).toBe("twoArch");
-    expect(p.tplNos).toEqual([11, 12, 13, 14, 15, 16, 17, 31, 46]);
-    expect(Object.keys(p.templates)).toHaveLength(9);
+    expect(p.tplNos).toEqual([11, 12, 13, 14, 15, 16, 17, 18, 31, 32, 33, 34, 35, 36, 37, 38]);
+    expect(Object.keys(p.templates)).toHaveLength(16);
     expect(p.occlusalTemplate).toBeDefined();
   });
 

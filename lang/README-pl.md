@@ -456,7 +456,7 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 Otwierane za pomocą ikony trybika na pasku górnym; okno dialogowe ARIA `dialog` z pułapką fokusu i układem zakładkowym (Esc/klik w tło zamyka, strzałki przełączają zakładki). Wszystkie ustawienia są wyłącznie stanem interfejsu na poziomie sesji, chyba że zaznaczono inaczej — żadne z nich nie zmienia danych na ząb ani struktury eksportu.
 
 - **Ogólne:** system numeracji (FDI/Universal/Palmer), język, motyw jasny/ciemny, widoczność panelu informacji o zębach
-- **Odontogram:** profil anatomii zębów (`classic` domyślny / `measured`) — `measured` renderuje dziewięć szablonów zębów zmierzonych na podstawie literatury w układzie dwułukowym z szerokością na ząb; przełączalny w czasie działania, bez wpływu na domyślny `classic`; jego grafika to osobny chunk pobierany dopiero przy przełączeniu, więc domyślny `classic` nic nie kosztuje
+- **Odontogram:** profil anatomii zębów (`classic` domyślny / `measured`) — `measured` renderuje szesnaście szablonów zębów zmierzonych na podstawie literatury — po jednym na każdą klinicznie odrębną pozycję, dzięki czemu każdy trzonowiec ma własny zarys korony i własną liczbę korzeni — w układzie dwułukowym z szerokością na ząb; przełączalny w czasie działania, bez wpływu na domyślny `classic`; jego grafika to osobny chunk pobierany dopiero przy przełączeniu, więc domyślny `classic` nic nie kosztuje
 - **Panele:** niezależne pokazywanie/ukrywanie karty podsumowania Statusów oraz karty Ortodoncji dla całej jamy ustnej (obie domyślnie widoczne)
 - **Szczegóły zęba:** poziom szczegółowości starcia i poziom szczegółowości przebarwienia (prosty/złożony, oba domyślnie złożone), notacja powierzchni (prosta/pełna, domyślnie pełna)
 - **Próchnica:** przełącznik punktowania ICDAS II (`enableIcdas`), przełącznik głębokości próchnicy (`cariesDepthEnabled`), szczegółowość próchnicy korzenia (`rootCariesMode`: simple/severity), szczegółowość wtórna/CARS (`secondaryCariesMode`: simple/standard/full), szczegółowość głębokości radiologicznej (`radiographicDepthMode`: off/threeLevel/detailed) — dawna osobna zakładka „Próchnica wtórna” została połączona z tą zakładką, a kontrolka CARS umieszczona bezpośrednio nad głębokością radiologiczną
@@ -866,6 +866,7 @@ React Advanced Odontogram jest tworzony i utrzymywany przez Zoltan Dul ([@ZoliQu
 - [@yassine-bhn](https://github.com/yassine-bhn): tłumaczenie na francuski i proponowana zmierzona anatomia
 - [@saegerdirk-star](https://github.com/saegerdirk-star): zmierzona anatomia zęba i generator zębów, a także propozycja komponowalnego interfejsu; trzy poprawki przejęte z ich forka (dane pacjenta w PDF, orientacja zębów na wykresie periodontologicznym, szybkość zaznaczania)
 - [@sofia-cluadette](https://github.com/sofia-cluadette): API zaznaczania `getSelectedTeeth()`
+- [@Ditherys](https://github.com/Ditherys): rozszerzony zmierzony zestaw zębów — pełna specyfikacja generatora anatomii dla uzębienia stałego i mlecznego, metadane rejestracji nakładek oraz zestaw weryfikacyjny, przeniesione z ich forka
 
 **Zbudowano przy użyciu** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) i [Tailwind CSS](https://tailwindcss.com).
 

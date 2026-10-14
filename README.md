@@ -97,3 +97,5 @@ Per-language guides are linked at the top of this file. Full API reference (Type
 ## 📄 License & citation
 
 MIT © [Zoltán Dul](https://www.linkedin.com/in/zoltandul/). If you use this software in research, please cite it — see [`CITATION.cff`](CITATION.cff) and the [Zenodo record](https://doi.org/10.5281/zenodo.21156787).
+
+Commercial use is included, and that covers the tooth drawings — they are original work, not third-party assets. The embedded PDF fonts (Roboto, Noto Naskh Arabic, Noto Sans SC) and the runtime dependencies keep their own, also permissive, terms: see [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md). Redistributing the library? Ship that file alongside `LICENSE` and you have covered them.

@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`THIRD-PARTY-NOTICES.md`, and it ships with the package.** Prompted by
+  [#28](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/28), which
+  asked whether the MIT license covers the tooth drawings for commercial use.
+  It does — they are original work, and every SVG has said so in its own file
+  header all along. The notices file now states that explicitly, records where
+  the measured templates' geometry comes from (generated over this
+  repository's own donor drawings; the cited anatomy figures are the source of
+  *measurements*, not of artwork), and inventories the components that are
+  genuinely under other terms: the embedded PDF font subsets — Roboto
+  (Apache-2.0), Noto Naskh Arabic and Noto Sans SC (SIL OFL 1.1, full text
+  included) — plus jsPDF (MIT) and DOMPurify (MPL-2.0 or Apache-2.0).
+
+  `package.json`'s `files` was `["dist"]`, so a notices file would never have
+  reached an npm consumer; it is now listed explicitly and appears in
+  `npm pack`. The root README and all twelve translated READMEs point to it.
+
+
 - **The measured anatomy now draws every position from its own template, and
   the generator that produces it lives in the repository.** The measured set
   grew from nine templates to sixteen — one per clinically distinct position,

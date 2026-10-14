@@ -877,4 +877,6 @@ A React Advanced Odontogramot Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 
 **Felhasznált eszközök:** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) és [Tailwind CSS](https://tailwindcss.com).
 
+**Licenc.** A projekt MIT-licencű, a kereskedelmi használatot is beleértve — és ez a fograjzokra is vonatkozik, amelyek saját munkák. A beágyazott PDF-betűtípusok és a futásidejű függőségek a saját (szintén megengedő) feltételeiket viszik: lásd [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
+
 A hozzájárulásokat szívesen fogadjuk. Nyiss egy pull requestet a GitHubon, és itt feltüntetünk. Ha hasznosnak találod a projektet, kérlek [csillagozd a GitHubon](https://github.com/ZoliQua/React-Advanced-Odontogram).

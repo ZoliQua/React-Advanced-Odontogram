@@ -30,7 +30,8 @@
     "**/*.css"
   ],
   "files": [
-    "dist"
+    "dist",
+    "THIRD-PARTY-NOTICES.md"
   ],
   "main": "./dist/odontogram.js",
   "module": "./dist/odontogram.js",

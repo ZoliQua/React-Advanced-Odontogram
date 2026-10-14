@@ -870,4 +870,6 @@ React Advanced Odontogram è creato e mantenuto da Zoltan Dul ([@ZoliQua](https:
 
 **Realizzato con** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) e [Tailwind CSS](https://tailwindcss.com).
 
+**Licenze.** Questo progetto è rilasciato con licenza MIT, uso commerciale incluso, e ciò vale anche per i disegni dentali, che sono opera originale. I font PDF incorporati e le dipendenze a runtime mantengono i propri termini (anch'essi permissivi): vedi [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
+
 I contributi sono benvenuti. Apri una pull request su GitHub e verrai accreditato qui. Se il progetto ti è utile, per favore [mettici una stella su GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

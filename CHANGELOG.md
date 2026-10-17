@@ -9,6 +9,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **The tooth drawings are themable.** `themeConfig` gains a `tooth` group —
+  `enamel`, `outline`, `highlight`, `milktoothEnamel`, `cusp`, `groove`,
+  `pulpHealthy`, `pulpInflamed`, `gum`, `bone`, `caries`, `wear`, `calculus`
+  and the two outline colours — plus a `tokens` map for any palette token by
+  name (the per-material restoration colours, the e.max and metal-ceramic
+  gradient stops). Keys outside the `--odon-` prefix are ignored, so a config
+  can never reach an unrelated custom property.
+
+  The artwork now paints through CSS custom properties with the colour it is
+  drawn in as the fallback (`fill: var(--odon-tooth-enamel, #ebebeb)`), so this
+  is additive by construction: **set nothing and nothing changes** — all 46
+  installed assets are rendering-identical to the previous release, and every
+  parity golden is byte-identical. 2382 declarations across 64 tokens.
+
+  Both anatomy profiles follow one setting, even where they are drawn in
+  different shades of the same material — the classic set paints composite
+  `#feffbf` against the measured set's `#2f7a4d`, zircon `#feffbf` against
+  `#cfe3ee`, gold `#ece614` against `#e0a80d`. The rules key on the layer, not
+  the colour, so unset each keeps its own look and set they finally agree.
+
+  33 of the tokens are not new: every restoration and filling MATERIAL has
+  carried one since the measured set landed. They were undocumented and
+  unreachable — no config field, no mention in any README. They are now part of
+  the published table.
+
+  The canonical token table is `tools/toothgen/palette.py`, applied to the
+  hand-drawn sources by `tools/toothgen/tokenize.py`; the generated templates
+  inherit it, since `build.py` copies style attributes verbatim. The
+  photorealistic implant fixture and parapulpal pin are deliberately left
+  literal: their ~85 near-identical greys encode a light source, not a clinical
+  surface, and recolouring them one by one would destroy the shading.
+
+  Exports resolve the tokens before the markup leaves the page
+  (`flattenThemeTokens`). A standalone SVG is rendered in an isolated context
+  where the host's variables do not reach it, so without this a themed chart
+  would have silently exported in the stock colours. An unthemed export
+  flattens to exactly the previous bytes.
+
+  Not included: a default dark-mode palette. That is the one change that would
+  alter how the chart looks out of the box, so it stays a separate decision.
+
+
 - **`THIRD-PARTY-NOTICES.md`, and it ships with the package.** Prompted by
   [#28](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/28), which
   asked whether the MIT license covers the tooth drawings for commercial use.

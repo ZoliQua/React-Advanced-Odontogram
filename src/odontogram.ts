@@ -6,6 +6,7 @@ import { t, onI18nChange, getI18nLanguage } from "./i18n/useI18n";
 import { toLabel, type NumberingSystem } from "./utils/numbering";
 import { type OdontogramPlugin, getQuadrant, LAYER_Z } from "./plugin";
 import { sanitizePluginSvg } from "./pluginSanitize";
+import { flattenThemeTokens } from "./theme";
 import { buildFhirBundle } from "./fhir/toFhir";
 import { computeFinalClassification, type FinalPerioClassification } from "./fhir/toFhirPerio";
 import { comparePerioExams, type PerioExamComparison } from "./state/examCompare";
@@ -6492,7 +6493,10 @@ function buildOdontogramSvgMeasured(grid: HTMLElement, opts: { labelFontScale?: 
     bg.setAttribute("width", String(outW));
   }
 
-  const xml = new XMLSerializer().serializeToString(out);
+  // Resolve the artwork's palette tokens against the LIVE chart before the
+  // markup leaves the document — a standalone SVG is rendered in an isolated
+  // context where the host's --odon-* values do not reach it.
+  const xml = flattenThemeTokens(new XMLSerializer().serializeToString(out), grid ?? null);
   return { xml: `<?xml version="1.0" encoding="UTF-8"?>\n${xml}`, width: outW, height: H };
 }
 

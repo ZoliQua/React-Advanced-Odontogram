@@ -1,6 +1,39 @@
 # Themable tooth artwork — design and plan
 
-**Status:** planned, not started. Raised by [issue #28](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/28).
+**Status:** implemented 2026-10-17, except Stage 5 (default dark palette), which
+is a visual-design decision and is deliberately left open. Raised by
+[issue #28](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/28).
+
+## What the implementation changed about this plan
+
+Two things turned up once the artwork was actually inventoried, and both made
+the work smaller than planned:
+
+1. **The mechanism already existed.** 33 tokens — every restoration and filling
+   MATERIAL (`--odon-rest-gold`, `--odon-fill-composite`, the e.max and
+   metal-ceramic gradient stops) — were already in the measured artwork,
+   flowing through the generator untouched. They were simply undocumented and
+   unreachable: no entry in `OdontogramThemeConfig`, no mention in any README.
+   So `var()` in an inline style was already proven in-tree, and Stage 2's risk
+   largely evaporated.
+2. **Threading a palette through `build.py` was unnecessary.** Because the
+   generator copies style attributes verbatim, tokenizing the six donor
+   drawings is enough for all 40 generated templates. Only the two colours
+   `occlusal.py` synthesizes itself (cusp field, fissure lines) needed a change
+   in Python. `tools/toothgen/tokenize.py` applies the table to the donors and
+   to the six classic assets in one idempotent pass.
+
+A third finding was not a simplification: **the classic and measured sets are
+drawn in different colours for the same material** — composite `#feffbf` vs
+`#2f7a4d`, zircon `#feffbf` vs `#cfe3ee`, gold `#ece614` vs `#e0a80d`, gradia
+`#55ff98` vs `#57b285`. Keying the rules on the LAYER rather than the colour
+means one token drives both profiles: unset, each keeps the colour it has
+today; set, they finally agree.
+
+Result: **2382 declarations tokenized across 64 tokens in 12 hand-edited
+files**, and every one of the 46 installed assets is rendering-identical to
+before when no variable is set (verified by flattening `var(token, fallback)`
+back to the fallback on both sides and diffing — zero differences).
 
 > **Why this file is not in `docs/`.** `typedoc.json` has `out: "docs"`, and
 > typedoc clears that directory on every run — it already destroyed the previous

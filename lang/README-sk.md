@@ -535,8 +535,21 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      enamel: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
   }}
 />
+
+Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`.
 ```
 
 **Integrácia pluginu:**

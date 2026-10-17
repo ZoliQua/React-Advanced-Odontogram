@@ -537,8 +537,21 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      enamel: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
   }}
 />
+
+牙齿图形以 CSS 自定义属性承载颜色，并以随附颜色作为回退值，因此两种解剖轮廓都遵循同一处设置，导出时也会在离开页面前完成解析。完整的 token 表位于 `tools/toothgen/palette.py`。
 ```
 
 **插件集成：**

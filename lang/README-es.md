@@ -535,8 +535,21 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      enamel: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
   }}
 />
+
+Los dibujos llevan sus colores como propiedades personalizadas de CSS con el color de serie como valor de reserva, de modo que ambos perfiles de anatomía siguen un mismo ajuste y la exportación los resuelve antes de salir de la página. La tabla completa de tokens está en `tools/toothgen/palette.py`.
 ```
 
 **Integración de plugins:**

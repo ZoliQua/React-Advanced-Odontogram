@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import palette
 import roots
 import fillings  # noqa: E402
 import overlays  # noqa: E402
@@ -246,7 +247,7 @@ def apply_baseline_anatomy(txt: str, spec: OcclSpec) -> str:
 
     cusp_paths = "\n".join(
         f'        <path d="{_cusp_path(*cell)}" data-active="1" '
-        f'style="fill: #f4f1e8;" />'
+        f'style="fill: {palette.css("--odon-tooth-cusp")};" />'
         for cell in _cusp_cells(spec.cusp_count, x0, y0, x1, y1)
     )
     cusp_body = (
@@ -259,7 +260,8 @@ def apply_baseline_anatomy(txt: str, spec: OcclSpec) -> str:
 
     groove_paths = "\n".join(
         f'        <path d="{path}" data-active="1" '
-        f'style="fill: none; stroke: #8f8f8f; stroke-linecap: round; '
+        f'style="fill: none; stroke: {palette.css("--odon-tooth-groove")}; '
+        f'stroke-linecap: round; '
         f'stroke-linejoin: round; stroke-width: .65px;" />'
         for path in _groove_paths(spec.groove_pattern, x0, y0, x1, y1)
     )

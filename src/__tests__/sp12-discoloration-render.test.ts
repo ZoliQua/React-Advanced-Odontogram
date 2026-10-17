@@ -17,11 +17,25 @@ const hexToRgb = (hex: string) => {
   return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`;
 };
 
-// Asset-original crown fills for 11.svg (baked into the SVG's inline `style`
-// attribute — the ONLY place these colors live; see odontogram.ts SP12 tint
-// block comment). tooth-base: "fill: #ebebeb"; milktooth-base: "fill: #fff".
-const TOOTH_BASE_ORIGINAL = hexToRgb("#ebebeb");
-const MILKTOOTH_BASE_ORIGINAL = hexToRgb("#ffffff");
+// Asset-original crown fills for 11.svg, read out of the SVG's inline `style`
+// attribute — still the ONLY place these colors live, but since the artwork
+// was tokenized they are palette tokens carrying the same colour as their
+// fallback: `fill: var(--odon-tooth-enamel, #ebebeb)`.
+//
+// Derived from the asset rather than restated as a literal, because the
+// invariant under test is a ROUND TRIP: whatever the asset's own value is, the
+// tint must restore exactly that. Pinning a hex here made the test fail when
+// the value legitimately changed shape, while a genuine regression — restoring
+// "" and blackening the crown, which the odontogram.ts comment warns about —
+// is what the assertions below actually have to catch.
+const assetFill = (layerId: string) => {
+  const m = new RegExp(`id="${layerId}"[^>]*style="([^"]*)"`).exec(svg11);
+  const f = /(?:^|;)\s*fill:\s*([^;]+)/.exec(m?.[1] ?? "");
+  if (!f) throw new Error(`no inline fill on #${layerId} in 11.svg`);
+  return f[1].trim();
+};
+const TOOTH_BASE_ORIGINAL = assetFill("tooth-base");
+const MILKTOOTH_BASE_ORIGINAL = assetFill("milktooth-base");
 
 describe("SP12 Task 2: discoloration crown tint", () => {
   it("tints tooth-base for a permanent tooth", () => {

@@ -549,7 +549,7 @@ export default function Host(){
   }}
 />
 
-A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`.
+A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram az felülettel együtt sötétedik, nem világít bele.
 ```
 
 **Plugin integráció:**

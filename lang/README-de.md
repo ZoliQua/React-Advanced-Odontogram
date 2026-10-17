@@ -551,7 +551,7 @@ export default function Host(){
   }}
 />
 
-Die Zeichnungen tragen ihre Farben als CSS-Custom-Properties mit der ausgelieferten Farbe als Fallback, sodass beide Anatomieprofile einer Einstellung folgen und ein Export sie auflöst, bevor er die Seite verlässt. Die vollständige Token-Tabelle steht in `tools/toothgen/palette.py`.
+Die Zeichnungen tragen ihre Farben als CSS-Custom-Properties mit der ausgelieferten Farbe als Fallback, sodass beide Anatomieprofile einer Einstellung folgen und ein Export sie auflöst, bevor er die Seite verlässt. Die vollständige Token-Tabelle steht in `tools/toothgen/palette.py`. Der Dunkelmodus bringt eine eigene Zeichnungspalette mit, sodass das Schema mit der Oberfläche abdunkelt statt zu blenden.
 ```
 
 **Plugin-Integration:**

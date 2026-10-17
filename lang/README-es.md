@@ -549,7 +549,7 @@ export default function Host(){
   }}
 />
 
-Los dibujos llevan sus colores como propiedades personalizadas de CSS con el color de serie como valor de reserva, de modo que ambos perfiles de anatomía siguen un mismo ajuste y la exportación los resuelve antes de salir de la página. La tabla completa de tokens está en `tools/toothgen/palette.py`.
+Los dibujos llevan sus colores como propiedades personalizadas de CSS con el color de serie como valor de reserva, de modo que ambos perfiles de anatomía siguen un mismo ajuste y la exportación los resuelve antes de salir de la página. La tabla completa de tokens está en `tools/toothgen/palette.py`. El modo oscuro trae su propia paleta para los dibujos, de modo que el odontograma se oscurece junto con la interfaz en lugar de deslumbrar.
 ```
 
 **Integración de plugins:**

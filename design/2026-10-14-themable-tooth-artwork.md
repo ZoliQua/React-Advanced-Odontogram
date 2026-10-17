@@ -1,8 +1,13 @@
 # Themable tooth artwork — design and plan
 
-**Status:** implemented 2026-10-17, except Stage 5 (default dark palette), which
-is a visual-design decision and is deliberately left open. Raised by
+**Status:** implemented 2026-10-17, all seven stages. Raised by
 [issue #28](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/28).
+
+Stage 5 (the default dark palette) was resolved by measurement rather than
+taste: light mode puts the crown at only 1.10:1 against the page, so the dark
+palette reproduces that relationship instead of dimming a light crown, and
+caries flips polarity to stay visible. The reasoning and the full ratio table
+live with the values, in the `.dark` artwork block in `src/index.css`.
 
 ## What the implementation changed about this plan
 

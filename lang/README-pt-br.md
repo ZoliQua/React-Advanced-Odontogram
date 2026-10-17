@@ -549,7 +549,7 @@ export default function Host(){
   }}
 />
 
-Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`.
+Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`. O modo escuro traz sua própria paleta para os desenhos, de modo que o odontograma escurece junto com a interface em vez de ofuscar.
 ```
 
 **Integração de plugins:**

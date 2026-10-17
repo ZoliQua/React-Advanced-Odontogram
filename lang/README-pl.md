@@ -549,7 +549,7 @@ export default function Host(){
   }}
 />
 
-Rysunki niosą swoje kolory jako właściwości niestandardowe CSS z kolorem fabrycznym jako wartością zapasową, dzięki czemu oba profile anatomii podążają za jednym ustawieniem, a eksport rozwiązuje je, zanim opuszczą stronę. Pełna tabela tokenów znajduje się w `tools/toothgen/palette.py`.
+Rysunki niosą swoje kolory jako właściwości niestandardowe CSS z kolorem fabrycznym jako wartością zapasową, dzięki czemu oba profile anatomii podążają za jednym ustawieniem, a eksport rozwiązuje je, zanim opuszczą stronę. Pełna tabela tokenów znajduje się w `tools/toothgen/palette.py`. Tryb ciemny ma własną paletę rysunków, więc diagram ciemnieje razem z interfejsem, zamiast razić.
 ```
 
 **Integracja wtyczki:**

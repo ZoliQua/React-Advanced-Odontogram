@@ -15,6 +15,22 @@ import tooth11 from "../assets/teeth-svgs/11.svg?raw";
 import measured11 from "../assets/teeth-svgs/measured/11.svg?raw";
 import measured16Occl from "../assets/teeth-svgs/measured/16_occl.svg?raw";
 
+import { readFileSync } from "node:fs";
+
+/** Relative luminance / WCAG contrast — used to assert the dark palette keeps
+ *  the light palette's RELATIONSHIPS, which is the actual design rule. */
+function luminance(hex: string): number {
+  let h = hex.trim().replace("#", "");
+  if (h.length === 3) h = [...h].map((c) => c + c).join("");
+  const ch = (v: number) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+  const [r, g, b] = [0, 2, 4].map((i) => ch(parseInt(h.slice(i, i + 2), 16) / 255));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function contrast(a: string, b: string): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
 function inlineFill(svg: string, layerId: string): string {
   const el = new RegExp(`id="${layerId}"[^>]*style="([^"]*)"`).exec(svg);
   const fill = /(?:^|;)\s*fill:\s*([^;]+)/.exec(el?.[1] ?? "");
@@ -158,5 +174,82 @@ describe("tooth artwork: the export path is actually wired", () => {
     expect(built!.xml).not.toContain("var(--odon-");
     // …and the artwork is still painted: the flattened fallback is there.
     expect(built!.xml).toContain("#ebebeb");
+  });
+});
+
+describe("tooth artwork: the default dark palette", () => {
+  // Vitest runs with the engine root as cwd, so these resolve without a
+  // file-URL dance (import.meta.url is not a file: URL under the transform).
+  const CSS = readFileSync("src/index.css", "utf8");
+  const PALETTE = readFileSync("tools/toothgen/palette.py", "utf8");
+
+  /** The `--odon-*` declarations inside the dark artwork block. */
+  const darkBlock = (): Map<string, string> => {
+    const start = CSS.indexOf("/* ── Dark mode: tooth artwork");
+    expect(start, "dark artwork block").toBeGreaterThan(-1);
+    const open = CSS.indexOf("{", CSS.indexOf(".dark{", start));
+    const body = CSS.slice(open + 1, CSS.indexOf("}", open));
+    const out = new Map<string, string>();
+    for (const m of body.matchAll(/(--odon-[\w-]+)\s*:\s*([^;]+);/g)) out.set(m[1], m[2].trim());
+    return out;
+  };
+
+  it("declares only tokens the palette table actually defines", () => {
+    // A typo here would be silent: the artwork would keep its light fallback
+    // and nothing would error. This is the guard for that.
+    const known = new Set([...PALETTE.matchAll(/"(--odon-[\w-]+)":/g)].map((m) => m[1]));
+    expect(known.size).toBeGreaterThan(40);
+    for (const token of darkBlock().keys()) {
+      expect(known.has(token), `${token} is not in palette.py`).toBe(true);
+    }
+  });
+
+  it("covers the surfaces that would otherwise glare, and flips caries", () => {
+    const dark = darkBlock();
+    for (const token of [
+      "--odon-tooth-enamel", "--odon-tooth-outline", "--odon-tooth-highlight",
+      "--odon-milktooth-enamel", "--odon-tooth-cusp", "--odon-gum", "--odon-bone",
+      "--odon-caries", "--odon-caries-outline", "--odon-wear",
+    ]) {
+      expect(dark.has(token), `dark mode should redeclare ${token}`).toBe(true);
+    }
+    // Caries is near-black on a light crown; on a dark crown it must be light
+    // or it vanishes into the tooth it marks.
+    expect(luminance(dark.get("--odon-caries")!)).toBeGreaterThan(
+      luminance(dark.get("--odon-tooth-enamel")!),
+    );
+  });
+
+  it("keeps the clinical signal colours out of the dark block", () => {
+    const dark = darkBlock();
+    for (const token of [
+      "--odon-pulp-inflamed", "--odon-calculus", "--odon-fracture", "--odon-crown-leakage",
+      "--odon-plan-extraction", "--odon-endo-filling", "--odon-ortho-arrow",
+      "--odon-rest-gold", "--odon-fill-composite",
+    ]) {
+      expect(dark.has(token), `${token} should keep its light-mode colour`).toBe(false);
+    }
+  });
+
+  it("preserves the light-mode relationship: the crown barely separates from the page", () => {
+    const dark = darkBlock();
+    // Light mode: enamel #ebebeb on page #f3f6fb is 1.10:1 — the tooth is read
+    // from its outline, not from background contrast. Leaving the artwork
+    // alone in dark mode would put it at ~15:1.
+    const ratio = contrast(dark.get("--odon-tooth-enamel")!, "#0f172a");
+    expect(ratio).toBeGreaterThan(1.1);
+    expect(ratio).toBeLessThan(2.0);
+  });
+
+  it("lets a host theme override the dark default", () => {
+    // The dark block sets the property on <html>; applyThemeConfig sets it on
+    // the chart element, which is nearer in the inheritance chain and wins.
+    const el = document.createElement("div");
+    document.documentElement.classList.add("dark");
+    document.body.appendChild(el);
+    applyThemeConfig(el, { tooth: { enamel: "#123456" } });
+    expect(el.style.getPropertyValue("--odon-tooth-enamel")).toBe("#123456");
+    document.documentElement.classList.remove("dark");
+    el.remove();
   });
 });

@@ -47,8 +47,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   would have silently exported in the stock colours. An unthemed export
   flattens to exactly the previous bytes.
 
-  Not included: a default dark-mode palette. That is the one change that would
-  alter how the chart looks out of the box, so it stays a separate decision.
+- **Dark mode repaints the tooth artwork, not just the chrome.** Until now the
+  `.dark` theme restyled the interface around a chart whose crowns still
+  glared at ~15:1 against the dark page. A default dark palette now redeclares
+  the tokens that carry large light fields.
+
+  The values were measured, not eyeballed. The guiding number is a surprising
+  one: in LIGHT mode the crown sits at only **1.10:1** against the page — a
+  tooth is read from its outline and internal structure, not from contrast
+  with the background — so the dark palette reproduces that relationship
+  (1.36:1) instead of dimming a light crown. Caries flips polarity for the
+  same reason: near-black on a light crown would disappear into a dark one, so
+  it becomes light-on-dark and keeps a 10.5:1 separation.
+
+  Three outlines deliberately do not match their light-mode ratios: flipped to
+  light-on-dark, their 16-18:1 is unreachable, because pure white against the
+  dark enamel tops out at 13.1:1. They sit near that ceiling instead.
+
+  Clinical SIGNAL colours are untouched — the materials, inflamed pulp,
+  calculus, fracture, leakage, mobility, the plan markers, the endo and ortho
+  colours. They are saturated hues chosen to be recognised at a glance, they
+  read on either background, and shifting them risks changing what a clinician
+  thinks they are seeing.
+
+  A host's `themeConfig` still wins: it sets the property on the chart element,
+  which is nearer than the rule on `<html>`. Light mode is untouched, and every
+  parity golden is byte-identical.
 
 
 - **`THIRD-PARTY-NOTICES.md`, and it ships with the package.** Prompted by

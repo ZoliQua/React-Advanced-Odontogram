@@ -549,7 +549,7 @@ export default function Host(){
   }}
 />
 
-Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`.
+Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval.
 ```
 
 **Integrácia pluginu:**

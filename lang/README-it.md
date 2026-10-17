@@ -549,7 +549,7 @@ export default function Host(){
   }}
 />
 
-I disegni portano i propri colori come proprietà personalizzate CSS con il colore di serie come fallback, così entrambi i profili anatomici seguono un'unica impostazione e l'esportazione li risolve prima di lasciare la pagina. La tabella completa dei token è in `tools/toothgen/palette.py`.
+I disegni portano i propri colori come proprietà personalizzate CSS con il colore di serie come fallback, così entrambi i profili anatomici seguono un'unica impostazione e l'esportazione li risolve prima di lasciare la pagina. La tabella completa dei token è in `tools/toothgen/palette.py`. La modalità scura porta una propria palette per i disegni, così lo schema si scurisce insieme all'interfaccia invece di abbagliare.
 ```
 
 **Integrazione plugin:**

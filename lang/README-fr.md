@@ -551,7 +551,7 @@ export default function Host(){
   }}
 />
 
-Les dessins portent leurs couleurs sous forme de propriétés personnalisées CSS, la couleur livrée servant de valeur de repli ; les deux profils d'anatomie suivent donc un même réglage, et l'export les résout avant de quitter la page. La table complète des jetons se trouve dans `tools/toothgen/palette.py`.
+Les dessins portent leurs couleurs sous forme de propriétés personnalisées CSS, la couleur livrée servant de valeur de repli ; les deux profils d'anatomie suivent donc un même réglage, et l'export les résout avant de quitter la page. La table complète des jetons se trouve dans `tools/toothgen/palette.py`. Le mode sombre fournit sa propre palette pour les dessins : le schéma s'assombrit avec l'interface au lieu d'éblouir.
 ```
 
 **Intégration de plugins :**

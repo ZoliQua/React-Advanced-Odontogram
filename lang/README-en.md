@@ -549,7 +549,7 @@ export default function Host(){
   }}
 />
 
-The drawings carry their colours as CSS custom properties with the shipped colour as the fallback, so both anatomy profiles follow one setting and an export resolves them before it leaves the page. The full token table lives in `tools/toothgen/palette.py`.
+The drawings carry their colours as CSS custom properties with the shipped colour as the fallback, so both anatomy profiles follow one setting and an export resolves them before it leaves the page. The full token table lives in `tools/toothgen/palette.py`. Dark mode already ships its own artwork palette, so the chart darkens with the rest of the interface rather than glaring.
 ```
 
 **Plugin integration:**

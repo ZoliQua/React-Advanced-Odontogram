@@ -7,40 +7,40 @@
   </style>
   <defs>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-0" x1="15" y1="2119.6" x2="37.5" y2="2119.6" gradientTransform="translate(0 -2098.7732)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0eff0" data-active="1" />
-      <stop offset="1" stop-color="#cfcece" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0eff0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #cfcece)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-1" x1="13.4" y1="2119.6" x2="37.5" y2="2119.6" gradientTransform="translate(0 -2098.7732)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0eff0" data-active="1" />
-      <stop offset="1" stop-color="#cfcece" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0eff0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #cfcece)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-2" x1="14.9" y1="2119.7" x2="38.1" y2="2119.7" gradientTransform="translate(0 -2098.7732)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0eff0" data-active="1" />
-      <stop offset="1" stop-color="#cfcece" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0eff0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #cfcece)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-3" x1="11.7" y1="2119.7" x2="38.1" y2="2119.7" gradientTransform="translate(0 -2098.7732)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0eff0" data-active="1" />
-      <stop offset="1" stop-color="#cfcece" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0eff0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #cfcece)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-4" x1="11.1" y1="2119.7" x2="38.1" y2="2119.7" gradientTransform="translate(0 -2098.7732)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0eff0" data-active="1" />
-      <stop offset="1" stop-color="#dcdcdc" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0eff0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #dcdcdc)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-5" x1="39.6" y1="2127.4" x2="29.5" y2="2109.6" gradientTransform="translate(0 -2098.7732)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0eff0" data-active="1" />
-      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0eff0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #e2d4c8)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-6" x1="8.8" y1="2113.2" x2="22.7" y2="2126.9" gradientTransform="translate(0 -2098.7732)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0eff0" data-active="1" />
-      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0eff0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #e2d4c8)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-7" x1="-875.9" y1="3230.3" x2="-875.9" y2="3246" gradientTransform="translate(-216.6865 -3335.1796) rotate(-19.3)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0f0f0" data-active="1" />
-      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0f0f0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #e2d4c8)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-8" x1="28" y1="2137" x2="17.8" y2="2119.1" gradientTransform="translate(0 -2098.7732)" gradientUnits="userSpaceOnUse" data-active="1">
-      <stop offset="0" stop-color="#f0eff0" data-active="1" />
-      <stop offset="1" stop-color="#e2d4c8" data-active="1" />
+      <stop offset="0" stop-color="var(--odon-tooth-occlusal-light, #f0eff0)" data-active="1" />
+      <stop offset="1" stop-color="var(--odon-tooth-occlusal-shade, #e2d4c8)" data-active="1" />
       </linearGradient>
     <linearGradient id="toothgen-14_occl-linear-gradient-14-occl-9" x1="24.5" y1="-4082.2" x2="24.5" y2="-4103.4" gradientTransform="translate(0 -4072.468) scale(1 -1)" gradientUnits="userSpaceOnUse" data-active="1">
       <stop offset="0" stop-color="#c8c9c9" data-active="1" />

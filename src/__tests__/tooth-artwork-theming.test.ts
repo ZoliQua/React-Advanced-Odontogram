@@ -72,6 +72,39 @@ describe("tooth artwork: the drawings are tokenized", () => {
   });
 });
 
+describe("tooth artwork: the occlusal crown gradients", () => {
+  // A gradient stop carries its colour as a presentation attribute, not as a
+  // style declaration, so the first tokenization pass walked straight past it
+  // and every occlusal tile kept a near-white crown in dark mode.
+  it("paints its stops through tokens, with no crown colour left literal", () => {
+    expect(measured16Occl).toContain(
+      'stop-color="var(--odon-tooth-occlusal-light, #f0eff0)"',
+    );
+    expect(measured16Occl).toContain(
+      'stop-color="var(--odon-tooth-occlusal-shade, #e2d4c8)"',
+    );
+    for (const literal of ['stop-color="#f0eff0"', 'stop-color="#e2d4c8"',
+                           'stop-color="#dcdcdc"', 'stop-color="#cfcece"']) {
+      expect(measured16Occl, `${literal} is still literal`).not.toContain(literal);
+    }
+  });
+
+  it("keeps the clinical-signal gradients literal", () => {
+    // The inflamed-pulp stops are a signal colour, deliberately untouched by
+    // the dark palette; tokenizing the crown must not have swept them up.
+    expect(measured11).toContain('stop-color="#ff422a"');
+  });
+
+  it("is reachable from the dark block and resolves on export", () => {
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    applyThemeConfig(el, { tokens: { "--odon-tooth-occlusal-light": "#2a3443" } });
+    const xml = '<stop stop-color="var(--odon-tooth-occlusal-light, #f0eff0)"/>';
+    expect(flattenThemeTokens(xml, el)).toBe('<stop stop-color="#2a3443"/>');
+    el.remove();
+  });
+});
+
 describe("tooth artwork: applyThemeConfig", () => {
   const host = () => document.createElement("div");
 
@@ -284,7 +317,7 @@ describe("tooth artwork: the default dark palette", () => {
     }
   });
 
-  it("covers the surfaces that would otherwise glare, and flips caries", () => {
+  it("covers the surfaces that would otherwise glare, and outlines caries", () => {
     const dark = darkBlock();
     for (const token of [
       "--odon-tooth-body", "--odon-tooth-outline", "--odon-tooth-highlight",
@@ -293,11 +326,15 @@ describe("tooth artwork: the default dark palette", () => {
     ]) {
       expect(dark.has(token), `dark mode should redeclare ${token}`).toBe(true);
     }
-    // Caries is near-black on a light crown; on a dark crown it must be light
-    // or it vanishes into the tooth it marks.
-    expect(luminance(dark.get("--odon-caries")!)).toBeGreaterThan(
-      luminance(dark.get("--odon-tooth-body")!),
-    );
+    // "Caries = dark" is read before any contrast ratio, so the lesion keeps
+    // its polarity in dark mode and the OUTLINE is what separates it from the
+    // crown. A light fill would be a different glyph.
+    const crown = dark.get("--odon-tooth-body")!;
+    expect(luminance(dark.get("--odon-caries")!)).toBeLessThan(luminance(crown));
+    expect(contrast(dark.get("--odon-caries-outline")!, crown)).toBeGreaterThan(7);
+    expect(
+      contrast(dark.get("--odon-caries-outline")!, dark.get("--odon-caries")!),
+    ).toBeGreaterThan(10);
   });
 
   it("keeps the clinical signal colours out of the dark block", () => {
@@ -319,6 +356,16 @@ describe("tooth artwork: the default dark palette", () => {
     const ratio = contrast(dark.get("--odon-tooth-body")!, "#0f172a");
     expect(ratio).toBeGreaterThan(1.1);
     expect(ratio).toBeLessThan(2.0);
+  });
+
+  it("covers the occlusal crown, which used to glare at 15.57:1", () => {
+    const dark = darkBlock();
+    expect(dark.get("--odon-tooth-occlusal-light")).toBeTruthy();
+    expect(dark.get("--odon-tooth-occlusal-shade")).toBeTruthy();
+    // Same rule as the side view: close to the page, not contrasting with it.
+    const page = "#0f172a";
+    expect(contrast(dark.get("--odon-tooth-occlusal-light")!, page)).toBeLessThan(2);
+    expect(contrast(dark.get("--odon-tooth-occlusal-shade")!, page)).toBeLessThan(2);
   });
 
   it("does not give the dentin a value of its own", () => {

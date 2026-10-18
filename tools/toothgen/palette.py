@@ -47,6 +47,12 @@ TOKENS: dict[str, tuple[str, str]] = {
     "--odon-tooth-outline": ("#c8c9c9", "crown and root outline"),
     "--odon-tooth-highlight": ("#fefefe", "crown sheen (the 'beauty' layer)"),
     "--odon-tooth-cusp": ("#f4f1e8", "occlusal cusp field"),
+    # The occlusal view paints its crown with gradients, and a gradient stop
+    # carries its colour as an attribute rather than a style declaration — so
+    # these stayed literal through the first tokenization pass, and the dark
+    # palette could not reach them.
+    "--odon-tooth-occlusal-light": ("#f0eff0", "occlusal crown gradient, lit stop"),
+    "--odon-tooth-occlusal-shade": ("#e2d4c8", "occlusal crown gradient, shaded stop"),
     "--odon-tooth-groove": ("#8f8f8f", "occlusal fissure lines"),
     "--odon-milktooth-body": ("#fff", "deciduous crown"),
     "--odon-milktooth-highlight": ("#eaeaea", "deciduous crown sheen"),
@@ -138,6 +144,16 @@ Rule = tuple[str, str, str, str]  # (path prefix, property, colour, token)
 
 RULES: tuple[Rule, ...] = (
     # tooth structure
+    #
+    # Gradient stops are matched on the gradient, not on the layer: a stop
+    # lives in <defs>, so the id chain it is reached by is the gradient's own.
+    # These five colours appear only in the two occlusal donors, and only on
+    # the crown field and its cusps.
+    ("linear-gradient", "stop-color", "#f0eff0", "--odon-tooth-occlusal-light"),
+    ("linear-gradient", "stop-color", "#f0f0f0", "--odon-tooth-occlusal-light"),
+    ("linear-gradient", "stop-color", "#e2d4c8", "--odon-tooth-occlusal-shade"),
+    ("linear-gradient", "stop-color", "#dcdcdc", "--odon-tooth-occlusal-shade"),
+    ("linear-gradient", "stop-color", "#cfcece", "--odon-tooth-occlusal-shade"),
     ("tooth/tooth-base-beauty", "fill", "#fefefe", "--odon-tooth-highlight"),
     ("tooth/tooth-base-beauty", "fill", "#fefdfd", "--odon-tooth-highlight"),
     ("tooth/tooth-healthy-pulp", "fill", "#fcc5bc", "--odon-pulp-healthy"),

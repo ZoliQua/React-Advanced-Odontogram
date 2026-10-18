@@ -39,9 +39,13 @@ test("dark mode darkens the page and keeps the text readable", async ({ page }) 
   expect(dark.contrast, "dark mode text contrast").toBeGreaterThanOrEqual(4.5);
 });
 
-/** The painted fill of a layer inside tooth 11's side-view tile, as rgb(). */
-async function paintedFill(page: import("@playwright/test").Page, layerId: string) {
-  const el = page.locator(`.tooth-tile.side-view[data-tooth="11"] [id="${layerId}"]`).first();
+/** The painted fill of a layer inside a tooth's tile, as rgb(). */
+async function paintedFill(
+  page: import("@playwright/test").Page,
+  layerId: string,
+  tile = '.tooth-tile.side-view[data-tooth="11"]',
+) {
+  const el = page.locator(`${tile} [id="${layerId}"]`).first();
   return el.evaluate((node) => {
     const parse = (c: string) => (c.match(/[\d.]+/g) ?? ["0", "0", "0"]).map(Number);
     const f = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
@@ -83,6 +87,40 @@ async function useMeasuredAnatomy(page: import("@playwright/test").Page) {
   await page.keyboard.press("Escape");
   await expect(page.locator("#toothGrid")).toHaveAttribute("data-anatomy", "measured");
 }
+
+// A gradient stop carries its colour as a presentation attribute rather than a
+// style declaration, which is how the occlusal crown escaped the first
+// tokenization pass: every occlusal tile kept a near-white field in dark mode
+// while the side views darkened. The unit tests can read the asset and the CSS
+// block, but only a browser resolves a gradient stop's token and paints it.
+test("dark mode darkens the occlusal crown too, not only the side views", async ({ page }) => {
+  await openChart(page);
+  await useMeasuredAnatomy(page);
+  const OCCL = '.tooth-tile.occl-view[data-tooth="16"]';
+
+  const light = await paintedFill(page, "background-cusp", OCCL);
+  await page.getByRole("button", { name: "Dark mode" }).click();
+  await expect(page.getByRole("button", { name: "Light mode" })).toBeVisible();
+  const dark = await paintedFill(page, "background-cusp", OCCL);
+
+  // A gradient fill reports as url(#…), so the fill string cannot be measured
+  // the way a flat one can — read the resolved stop colour instead.
+  const stops = await page.locator(`${OCCL} stop`).first().evaluate((node) => {
+    const cs = getComputedStyle(node);
+    return cs.getPropertyValue("stop-color").trim() || node.getAttribute("stop-color") || "";
+  });
+  expect(stops, "the stop still resolves to a concrete colour").toMatch(/rgb|#/);
+  const [r, g, b] = (stops.match(/[\d.]+/g) ?? ["255", "255", "255"]).map(Number);
+  const f = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
+  const lum = 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  const pageLum = 0.011;
+  const ratio = (Math.max(lum, pageLum) + 0.05) / (Math.min(lum, pageLum) + 0.05);
+  expect(ratio, "the occlusal crown glares against the dark page").toBeLessThan(2.0);
+  // Still the same gradient reference in both modes — the colour moved, the
+  // artwork did not.
+  expect(light.css, "the occlusal crown is gradient-filled in both modes").toBe(dark.css);
+  expect(light.css).toMatch(/^url\(/);
+});
 
 // The dentin core is the only layer painted through a NESTED token:
 //   fill: var(--odon-tooth-dentin, var(--odon-tooth-body, #ebebeb))

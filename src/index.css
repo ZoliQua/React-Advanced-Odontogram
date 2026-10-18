@@ -823,6 +823,8 @@ select:focus{
        relationship                light    dark
        enamel      vs page          1.10    1.36
        dentin      vs enamel        1.00    1.00   (follows the body)
+       occl. light vs enamel        1.04    1.04
+       occl. shade vs enamel        1.22    1.21
        outline     vs enamel        1.39    1.49
        highlight   vs enamel        1.18    1.19
        milktooth   vs enamel        1.19    1.16
@@ -830,7 +832,8 @@ select:focus{
        groove      vs cusp          2.86    2.62
        gum         vs page          1.87    2.51
        bone        vs page          1.08    1.46
-       caries      vs enamel       16.01   10.47
+       caries      vs enamel       16.01    1.45   (the rim carries it:
+       caries rim  vs enamel        1.00   10.27    dark-on-light needs none)
        wear        vs enamel        1.19    1.16
 
    Three values deliberately do NOT match: the outlines that are near-black on
@@ -861,14 +864,29 @@ select:focus{
   --odon-milktooth-highlight: #2a3545;
   --odon-tooth-cusp: #2d3744;
   --odon-tooth-groove: #6b7686;
+  /* The occlusal view paints its crown with gradients whose stops were still
+     literal: every occlusal tile kept a near-white #f0eff0 field at 15.57:1
+     against this page while the side views sat at 1.36:1. Same derivation as
+     the rest — the light stop keeps its 1.04 relationship to the crown, the
+     shaded stop its 1.22, and the shade stays warm against the light. */
+  --odon-tooth-occlusal-light: #2a3443;
+  --odon-tooth-occlusal-shade: #403d37;
   /* soft tissue and bone */
   --odon-gum: #7e4a46;
   --odon-bone: #3b3526;
   --odon-pulp-healthy: #8a5952;
-  /* caries flips polarity: dark-on-light becomes light-on-dark, or it would
-     disappear into the crown it is drawn on */
-  --odon-caries: #e2e6eb;
-  --odon-caries-highlight: #1a2230;
+  /* Caries stays DARK, and its outline carries the visibility.
+     This block first inverted the lesion to a light fill, reasoning that a
+     dark lesion disappears into a dark crown. The measurement is real — a
+     near-black lesion can reach only 1.45:1 against this crown, against
+     16.01:1 in light mode — but a clinician reads "caries = dark" before they
+     read any contrast ratio, and a white blob on a tooth is a different
+     glyph. So the fill keeps its polarity and the rim does the work: the
+     outline flips to light at 10.27:1 against the crown and 14.93:1 against
+     the lesion it encloses, which is what makes the shape legible. Reported
+     by a host integrator (issue #28). */
+  --odon-caries: #0a1018;
+  --odon-caries-highlight: #9aa6b5;
   --odon-caries-outline: #dfe4ea;
   /* surfaces that are white on a light crown, kept as faint as they are there */
   --odon-wear: #2f3b4c;

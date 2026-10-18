@@ -37,6 +37,10 @@ CLASSIC = sorted(p for p in (ROOT / "src/assets/teeth-svgs").glob("*.svg"))
 TAG = re.compile(r"<(/?)([A-Za-z][\w:.-]*)((?:[^>\"']|\"[^\"]*\"|'[^']*')*?)(/?)>", re.S)
 ID_ATTR = re.compile(r'\bid\s*=\s*"([^"]*)"')
 STYLE_ATTR = re.compile(r'\bstyle\s*=\s*"([^"]*)"')
+# A gradient stop carries its colour as a presentation ATTRIBUTE, not in a
+# style declaration — which is why the stops stayed literal when everything
+# else was tokenized, and why an occlusal crown kept glaring in dark mode.
+STOP_ATTR = re.compile(r'\bstop-color\s*=\s*"([^"]*)"')
 DECL = re.compile(r"(^|;)(\s*)(fill|stroke)(\s*:\s*)([^;]+)")
 
 VOID = {"path", "rect", "circle", "ellipse", "line", "polyline", "polygon", "use", "image", "stop"}
@@ -60,6 +64,20 @@ def _rewrite_style(style: str, path: str, stats: collections.Counter,
     return DECL.sub(sub, style)
 
 
+def _rewrite_value(raw: str, path: str, prop: str, stats: collections.Counter,
+                   literals: collections.Counter) -> str:
+    """Replace one standalone colour value — a presentation attribute."""
+    low = raw.strip().lower()
+    if low in ("none", "") or low.startswith(("var(", "url(")):
+        return raw
+    token = palette.lookup(path, prop, low)
+    if token is None:
+        literals[f"{path}  {prop}:{low}"] += 1
+        return raw
+    stats[token] += 1
+    return f"var({token}, {raw.strip()})"
+
+
 def process(text: str, stats: collections.Counter,
             literals: collections.Counter) -> str:
     """Walk the markup, tracking the id chain, and rewrite style attributes."""
@@ -80,14 +98,24 @@ def process(text: str, stats: collections.Counter,
         own = None if name == "svg" else ID_ATTR.search(attrs)
         chain = [i for i in stack if i] + ([own.group(1)] if own else [])
         path = "/".join(chain)
+        # Collect every rewrite this tag needs, then apply them in document
+        # order: a `<stop>` may carry both forms, and the cursor only moves
+        # forward.
+        edits: list[tuple[int, int, str]] = []
         sm = STYLE_ATTR.search(attrs)
         if sm:
             new_style = _rewrite_style(sm.group(1), path, stats, literals)
             if new_style != sm.group(1):
-                a0, a1 = m.start(3) + sm.start(1), m.start(3) + sm.end(1)
-                out.append(text[cursor:a0])
-                out.append(new_style)
-                cursor = a1
+                edits.append((m.start(3) + sm.start(1), m.start(3) + sm.end(1), new_style))
+        cm = STOP_ATTR.search(attrs)
+        if cm:
+            new_stop = _rewrite_value(cm.group(1), path, "stop-color", stats, literals)
+            if new_stop != cm.group(1):
+                edits.append((m.start(3) + cm.start(1), m.start(3) + cm.end(1), new_stop))
+        for a0, a1, replacement in sorted(edits):
+            out.append(text[cursor:a0])
+            out.append(replacement)
+            cursor = a1
         if not (selfclose or name in VOID):
             stack.append(own.group(1) if own else None)
     out.append(text[cursor:])

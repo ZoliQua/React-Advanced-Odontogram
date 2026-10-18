@@ -42,6 +42,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Dark mode left every occlusal crown glaring.** The side views darkened; the
+  occlusal tiles kept a near-white `#f0eff0` field at **15.57:1** against the
+  dark page, where the side crown sits at 1.36:1 — the exact glare the dark
+  palette was written to remove.
+
+  The cause was a blind spot in the tokenizer rather than a missing value: a
+  gradient stop carries its colour as a presentation ATTRIBUTE
+  (`stop-color="…"`), and the pass only rewrote `fill` / `stroke` inside
+  `style` declarations, so it walked past 4,469 of them. The occlusal crown
+  field and its cusps are painted by exactly those. `--odon-tooth-occlusal-light`
+  and `--odon-tooth-occlusal-shade` now cover them, with dark values derived
+  the same way as the rest (1.04 and 1.22 against the crown, as in light mode),
+  and a browser test measures the painted stop so this cannot come back.
+  Reported by a host integrator on issue #28.
+
+- **Caries keeps its polarity in dark mode.** The first dark palette inverted
+  the lesion to a near-white fill, reasoning that a dark lesion disappears into
+  a dark crown. The measurement behind it is real — a near-black lesion can
+  only reach 1.45:1 against the dark crown, against 16.01:1 in light mode — but
+  a clinician reads "caries = dark" before any contrast ratio, and a white blob
+  is a different glyph. The fill stays dark; the outline flips to light instead
+  and carries the shape at 10.27:1 against the crown and 14.93:1 against the
+  lesion. Raised by the same report.
+
 - **A themed export could paint a nested token black.** `flattenThemeTokens`
   ended its fallback at the first `)`, so a token whose default is another
   token — `--odon-tooth-dentin` is the first — survived into the exported file

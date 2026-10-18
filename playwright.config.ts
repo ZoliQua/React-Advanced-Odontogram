@@ -14,7 +14,11 @@
 // reasons that have nothing to do with the chart.
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 4173;
+// Overridable, because `reuseExistingServer` cannot tell OUR preview on this
+// port from a different project's: a stray `vite preview` on 4173 silently
+// serves the whole suite and every spec fails for the wrong reason.
+// `PORT=4188 npm run test:e2e` sidesteps it.
+const PORT = Number(process.env.PORT) || 4173;
 
 export default defineConfig({
   testDir: "./e2e",

@@ -104,13 +104,19 @@ test("dark mode darkens the occlusal crown too, not only the side views", async 
   const dark = await paintedFill(page, "background-cusp", OCCL);
 
   // A gradient fill reports as url(#…), so the fill string cannot be measured
-  // the way a flat one can — read the resolved stop colour instead.
-  const stops = await page.locator(`${OCCL} stop`).first().evaluate((node) => {
-    const cs = getComputedStyle(node);
-    return cs.getPropertyValue("stop-color").trim() || node.getAttribute("stop-color") || "";
+  // the way a flat one can. Follow the reference the crown itself carries
+  // rather than taking the tile's first <stop> — a tile holds the restoration
+  // and implant gradients too, and any of those could come first.
+  const stop = await page.locator(`${OCCL} [id="background-cusp"]`).first().evaluate((node) => {
+    const id = /url\(["']?#([^"')]+)/.exec(getComputedStyle(node).fill)?.[1];
+    const root = node.closest("svg");
+    const first = id && root ? root.querySelector(`#${CSS.escape(id)} stop`) : null;
+    if (!first) return "";
+    return getComputedStyle(first).getPropertyValue("stop-color").trim()
+      || first.getAttribute("stop-color") || "";
   });
-  expect(stops, "the stop still resolves to a concrete colour").toMatch(/rgb|#/);
-  const [r, g, b] = (stops.match(/[\d.]+/g) ?? ["255", "255", "255"]).map(Number);
+  expect(stop, "the crown's own stop resolves to a concrete colour").toMatch(/rgb|#/);
+  const [r, g, b] = (stop.match(/[\d.]+/g) ?? ["255", "255", "255"]).map(Number);
   const f = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
   const lum = 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
   const pageLum = 0.011;

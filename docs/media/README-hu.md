@@ -538,9 +538,11 @@ export default function Host(){
     // The tooth drawings are themable too. Omitted keys keep the colour the
     // artwork is drawn in, so this is additive — set nothing and nothing moves.
     tooth: {
-      // `body` is the tooth's own silhouette — crown AND root. The drawings
-      // do not separate enamel from dentin: one shape is the whole tooth.
+      // `body` is the tooth's own silhouette — crown AND root. In `classic`
+      // that is the whole tooth; in `measured` it is the outer shell around
+      // `dentin`, which takes its colour unless you set it.
       body: '#f2f2f2',
+      dentin: '#e6d7bf',
       outline: '#b9bdc2',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
@@ -554,7 +556,7 @@ export default function Host(){
   }}
 />
 
-A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram az felülettel együtt sötétedik, nem világít bele.
+A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram a felülettel együtt sötétedik, nem világít bele. A `measured` profilban a korona és a gyökér dentinmagot is visel: amíg a `dentin` nincs beállítva, a testszínt veszi fel, tehát a határvonal csak akkor jelenik meg, ha kéred.
 ```
 
 **Plugin integráció:**

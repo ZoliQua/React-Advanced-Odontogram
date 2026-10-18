@@ -540,9 +540,11 @@ export default function Host(){
     // The tooth drawings are themable too. Omitted keys keep the colour the
     // artwork is drawn in, so this is additive — set nothing and nothing moves.
     tooth: {
-      // `body` is the tooth's own silhouette — crown AND root. The drawings
-      // do not separate enamel from dentin: one shape is the whole tooth.
+      // `body` is the tooth's own silhouette — crown AND root. In `classic`
+      // that is the whole tooth; in `measured` it is the outer shell around
+      // `dentin`, which takes its colour unless you set it.
       body: '#f2f2f2',
+      dentin: '#e6d7bf',
       outline: '#b9bdc2',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
@@ -556,7 +558,7 @@ export default function Host(){
   }}
 />
 
-Les dessins portent leurs couleurs sous forme de propriétés personnalisées CSS, la couleur livrée servant de valeur de repli ; les deux profils d'anatomie suivent donc un même réglage, et l'export les résout avant de quitter la page. La table complète des jetons se trouve dans `tools/toothgen/palette.py`. Le mode sombre fournit sa propre palette pour les dessins : le schéma s'assombrit avec l'interface au lieu d'éblouir.
+Les dessins portent leurs couleurs sous forme de propriétés personnalisées CSS, la couleur livrée servant de valeur de repli ; les deux profils d'anatomie suivent donc un même réglage, et l'export les résout avant de quitter la page. La table complète des jetons se trouve dans `tools/toothgen/palette.py`. Le mode sombre fournit sa propre palette pour les dessins : le schéma s'assombrit avec l'interface au lieu d'éblouir. Dans le profil `measured`, la couronne et la racine portent en plus un noyau de dentine : il prend la couleur de `body` tant que `dentin` n'est pas défini, la limite n'apparaît donc que si vous la demandez.
 ```
 
 **Intégration de plugins :**

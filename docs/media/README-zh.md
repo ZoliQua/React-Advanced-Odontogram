@@ -540,9 +540,11 @@ export default function Host(){
     // The tooth drawings are themable too. Omitted keys keep the colour the
     // artwork is drawn in, so this is additive — set nothing and nothing moves.
     tooth: {
-      // `body` is the tooth's own silhouette — crown AND root. The drawings
-      // do not separate enamel from dentin: one shape is the whole tooth.
+      // `body` is the tooth's own silhouette — crown AND root. In `classic`
+      // that is the whole tooth; in `measured` it is the outer shell around
+      // `dentin`, which takes its colour unless you set it.
       body: '#f2f2f2',
+      dentin: '#e6d7bf',
       outline: '#b9bdc2',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
@@ -556,7 +558,7 @@ export default function Host(){
   }}
 />
 
-牙齿图形以 CSS 自定义属性承载颜色，并以随附颜色作为回退值，因此两种解剖轮廓都遵循同一处设置，导出时也会在离开页面前完成解析。完整的 token 表位于 `tools/toothgen/palette.py`。深色模式自带一套牙齿图形配色，因此牙位图会与界面一同变暗，而不会刺眼。
+牙齿图形以 CSS 自定义属性承载颜色，并以随附颜色作为回退值，因此两种解剖轮廓都遵循同一处设置，导出时也会在离开页面前完成解析。完整的 token 表位于 `tools/toothgen/palette.py`。深色模式自带一套牙齿图形配色，因此牙位图会与界面一同变暗，而不会刺眼。 在 `measured` 轮廓中，牙冠与牙根还带有牙本质核心：在未设置 `dentin` 之前它沿用 `body` 的颜色，因此只有在你需要时边界才会显现。
 ```
 
 **插件集成：**

@@ -822,6 +822,7 @@ select:focus{
 
        relationship                light    dark
        enamel      vs page          1.10    1.36
+       dentin      vs enamel        1.00    1.00   (follows the body)
        outline     vs enamel        1.39    1.49
        highlight   vs enamel        1.18    1.19
        milktooth   vs enamel        1.19    1.16
@@ -848,6 +849,12 @@ select:focus{
 .dark{
   /* tooth structure */
   --odon-tooth-body: #273140;
+  /* --odon-tooth-dentin is deliberately NOT declared here. The rule this block
+     follows is to reproduce the light-mode relationships, and in light mode the
+     dentin core is the same colour as the body: ratio 1.00, no visible
+     boundary. Its default is var(--odon-tooth-body, …), so it follows the line
+     above on its own and dark mode draws the tooth exactly as light mode does.
+     Giving it a value here would introduce a boundary in one mode only. */
   --odon-tooth-outline: #3e4b61;
   --odon-tooth-highlight: #313d4f;
   --odon-milktooth-body: #2f3b4c;

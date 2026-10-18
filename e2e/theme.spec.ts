@@ -74,3 +74,40 @@ test("dark mode repaints the tooth artwork, not just the chrome", async ({ page 
   const ratio = (Math.max(darkEnamel.lum, pageLum) + 0.05) / (Math.min(darkEnamel.lum, pageLum) + 0.05);
   expect(ratio, "the crown glares against the page").toBeLessThan(2.0);
 });
+
+/** Switch the chart to the generated `measured` anatomy and wait for it. */
+async function useMeasuredAnatomy(page: import("@playwright/test").Page) {
+  await page.getByRole("button", { name: "Settings" }).click();
+  await page.getByRole("tablist", { name: "Settings" }).getByRole("tab", { name: "Odontogram" }).click();
+  await page.getByRole("combobox", { name: "Tooth anatomy" }).selectOption("measured");
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#toothGrid")).toHaveAttribute("data-anatomy", "measured");
+}
+
+// The dentin core is the only layer painted through a NESTED token:
+//   fill: var(--odon-tooth-dentin, var(--odon-tooth-body, #ebebeb))
+// jsdom does not resolve var() at all, so the unit tests can only check the
+// string. Whether a browser walks that chain — and therefore whether the core
+// is invisible until it is asked for — can only be measured here.
+test("the dentin core follows the crown until a theme sets it", async ({ page }) => {
+  await openChart(page);
+  await useMeasuredAnatomy(page);
+
+  const body = await paintedFill(page, "tooth-base");
+  const core = await paintedFill(page, "tooth-base-dentin");
+  expect(core.css, "the core must take the crown's colour while unset").toBe(body.css);
+
+  await page.getByRole("button", { name: "Dark mode" }).click();
+  await expect(page.getByRole("button", { name: "Light mode" })).toBeVisible();
+
+  const darkBody = await paintedFill(page, "tooth-base");
+  const darkCore = await paintedFill(page, "tooth-base-dentin");
+  expect(darkCore.css, "dark mode must not open a boundary light mode does not have").toBe(darkBody.css);
+  expect(darkBody.lum, "the crown did not darken").toBeLessThan(body.lum / 4);
+
+  // Ask for the boundary, and only then does it appear.
+  await page.evaluate(() => document.documentElement.style.setProperty("--odon-tooth-dentin", "#8a6b45"));
+  const themed = await paintedFill(page, "tooth-base-dentin");
+  expect(themed.css).toBe("rgb(138, 107, 69)");
+  expect((await paintedFill(page, "tooth-base")).css, "the crown must not follow the core").toBe(darkBody.css);
+});

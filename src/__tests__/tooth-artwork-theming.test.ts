@@ -305,6 +305,14 @@ describe("tooth artwork: the default dark palette", () => {
     expect(ratio).toBeLessThan(2.0);
   });
 
+  it("does not give the dentin a value of its own", () => {
+    // The block reproduces the light-mode relationships, and light mode has no
+    // visible enamel/dentin boundary. The nested default carries the core with
+    // the body, so the tooth is drawn the same way in both modes; a value here
+    // would show a boundary in one mode only.
+    expect(darkBlock().has("--odon-tooth-dentin")).toBe(false);
+  });
+
   it("lets a host theme override the dark default", () => {
     // The dark block sets the property on <html>; applyThemeConfig sets it on
     // the chart element, which is nearer in the inheritance chain and wins.

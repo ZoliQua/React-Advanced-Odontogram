@@ -5,9 +5,6 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { getCaseConditions, setCaseCondition, getReadOnly, onStateChange } from "./odontogram";
 import { CASE_DX_CODES, type CaseConditionKey, type Laterality } from "./dx/caseCodes";
 
-/** Translation function signature (subset of `useI18n`'s `t`). */
-type TFn = (key: string, params?: Record<string, string | number>) => string;
-
 const FOCUSABLE =
   'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -16,7 +13,7 @@ type CaseConditionsData = ReturnType<typeof getCaseConditions>;
 /**
  * The "Case / regional diagnoses" pop-up. Moved out of the perio-status sidebar
  * (`PerioSidebar`) into its own dialog, opened from the "Diagnoses" button next
- * to the Odontogram / Periodontal-status view toggle. Mirrors {@link CreditsModal}'s
+ * to the Odontogram / Periodontal-status view toggle. Mirrors `CreditsModal`'s
  * dialog contract: `role="dialog"` + `aria-modal`, Escape closes, backdrop click
  * closes, focus is trapped while open and returned to the opener on close.
  *
@@ -31,7 +28,8 @@ export default function CaseDiagnosesModal({
   onClose,
 }: {
   open: boolean;
-  t: TFn;
+  /** Translation function — the `t` from `useI18n`. */
+  t: (key: string, params?: Record<string, string | number>) => string;
   onClose: () => void;
 }) {
   const dialogRef = useRef<HTMLDivElement | null>(null);

@@ -100,7 +100,7 @@ Each tooth has:
 
 ## FHIR canonical URLs
 - The local code system is `LOCAL_SYSTEM` (`src/fhir/codesystems.ts`), under the base `FHIR_BASE` (`src/fhir/primitives.ts`). EXPORT always writes these.
-- READERS must match a local code with `isLocalSystem(system)`, never `system === LOCAL_SYSTEM`: `LOCAL_SYSTEMS` also holds the pre-2.6.0 canonical (`…/React-Odontogram-Modul/…`, from before the project was renamed), and bundles exported under it must keep importing. `fhir-legacy-canonical.test.ts` guards every reader.
+- READERS must match a local code with `isLocalSystem(system)`, never `system === LOCAL_SYSTEM`: `LOCAL_SYSTEMS` also holds the pre-2.7.0 canonical (`…/React-Odontogram-Modul/…`, from before the project was renamed), and bundles exported under it must keep importing. `fhir-legacy-canonical.test.ts` guards every reader.
 
 ## Integration with DentalQuoteCreator
 - Used as git submodule at: `src/modules/odontogram/engine`

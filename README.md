@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](https://raw.githubusercontent.com/ZoliQua/React-Advanced-Odontogram/main/src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
 
@@ -53,6 +53,7 @@ The imperative state API, the standalone `PerioChart` component, the guided tour
 import {
   OdontogramShell,        // also the default export
   PerioChart,             // standalone periodontal chart
+  PerioSidebar,           // its patient-data / classification / summary sidebar
   getOdontogramSummary,
   exportStatus, importStatus,   // JSON state serialization / hydration
   exportFhir, exportSvg, exportImage,
@@ -73,6 +74,8 @@ Per-site probing depth, gingival margin, bleeding on probing (+ suppuration) at 
 ## ✨ Highlights
 
 - 🦷 Permanent / primary / implant / missing teeth; substrate, restorations (crown/inlay/onlay/veneer/bridge × materials), removable & implant prosthetics
+- 📐 **Two anatomy profiles.** The schematic `classic` set, or `measured` — one literature-measured template per clinically distinct position, permanent and deciduous, generated from a millimetre specification. In `measured` the crown and root carry a **dentin core**, so enamel and dentin can be coloured apart.
+- 🎨 **Themable tooth artwork.** Every colour in the drawings is a CSS custom property with the shipped colour as its fallback, set through `themeConfig.tooth` / `themeConfig.tokens`; a dark palette ships with it, and an export resolves the tokens before the file leaves the page.
 - 🔍 Multi-surface caries & fillings (ICDAS / CARS severity, root & radiographic caries), endo & AAE pulp diagnosis, apical diagnosis, peri-implant status, wear, discoloration, orthodontics
 - 🩺 Full periodontal module (see above) + 2017 classification
 - 🔗 **HL7 FHIR R4** export/import; JSON export/import with migrations

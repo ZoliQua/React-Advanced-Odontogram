@@ -2,7 +2,7 @@
   "resourceType": "CodeSystem",
   "id": "odontogram",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/CodeSystem/odontogram",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "name": "ReactAdvancedOdontogramLocalCodes",
   "title": "React Advanced Odontogram — engine-local codes",
   "status": "active",

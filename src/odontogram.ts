@@ -108,10 +108,10 @@ let anatomyTarget: ToothAnatomy | null = null;
 
 /** Switch the tooth-anatomy profile, and rebuild the chart onto it.
  *
- *  ASYNC since 2.6.0: the measured artwork is code-split, so selecting it first
+ *  ASYNC since 2.7.0: the measured artwork is code-split, so selecting it first
  *  awaits its chunk — the profile is always loaded before the flag flips, which
  *  keeps `activeAnatomyProfile()` synchronous for every render path. The grid is
- *  then rebuilt HERE (a no-op until `initOdontogram()`), so the pre-2.6.0
+ *  then rebuilt HERE (a no-op until `initOdontogram()`), so the pre-2.7.0
  *  `setToothAnatomy(v); rebuildGrid();` idiom stays correct without awaiting:
  *  the caller's own rebuild may run early on the old profile, and this one puts
  *  the grid right once the profile is in place.

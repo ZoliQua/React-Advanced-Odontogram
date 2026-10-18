@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -178,7 +178,7 @@ function Workspace() {
 
 `OdontogramProvider` przyjmuje te same propsy co `OdontogramShell`. Dostępny jest hook `useOdontogramUi()` (oraz typ `OdontogramUiContextValue`) do budowania własnych powierzchni. Aktualne ograniczenie: używaj jednego dostawcy na stronę. Powierzchnie można montować i odmontowywać na żądanie — po ponownym zamontowaniu automatycznie się ponownie wiążą. Sam `OdontogramShell` jest niezmieniony — to dokładnie ta kompozycja w domyślnym układzie.
 
-Aby uzyskać jeszcze bardziej precyzyjną kompozycję, eksportowane są również poszczególne karty sterujące — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` i `ToothDetailsCard` — każda samodzielny, deklaratywny komponent, który odczytuje i zapisuje współdzieloną sesję za pośrednictwem API silnika (eksportowany jest hook `useEngineState()` do budowania własnych). Montuj tylko te karty, których potrzebuje dany układ, w dowolnej konfiguracji, pod jednym `OdontogramProvider`.
+Aby uzyskać jeszcze bardziej precyzyjną kompozycję, eksportowane są również poszczególne karty sterujące — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` i `ToothDetailsCard` — każda samodzielny, deklaratywny komponent, który odczytuje i zapisuje współdzieloną sesję za pośrednictwem API silnika (eksportowany jest hook `useEngineState()` do budowania własnych). Montuj tylko te karty, których potrzebuje dany układ, w dowolnej konfiguracji, pod jednym `OdontogramProvider`. Eksportowane są także boczny panel kontekstu periodontologicznego i okno dialogowe diagnoz przypadku — `PerioSidebar` i `CaseDiagnosesModal` — dzięki czemu układ zastępujący powłokę nadal może wyrenderować oba.
 
 #### Użycie z Next.js (App Router)
 
@@ -555,9 +555,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-Rysunki niosą swoje kolory jako właściwości niestandardowe CSS z kolorem fabrycznym jako wartością zapasową, dzięki czemu oba profile anatomii podążają za jednym ustawieniem, a eksport rozwiązuje je, zanim opuszczą stronę. Pełna tabela tokenów znajduje się w `tools/toothgen/palette.py`. Tryb ciemny ma własną paletę rysunków, więc diagram ciemnieje razem z interfejsem, zamiast razić. W profilu `measured` korona i korzeń mają dodatkowo rdzeń zębinowy: przejmuje kolor `body`, dopóki nie ustawisz `dentin`, więc granica pojawia się dopiero wtedy, gdy o nią poprosisz.
 ```
+
+Rysunki niosą swoje kolory jako właściwości niestandardowe CSS z kolorem fabrycznym jako wartością zapasową, dzięki czemu oba profile anatomii podążają za jednym ustawieniem, a eksport rozwiązuje je, zanim opuszczą stronę. Pełna tabela tokenów znajduje się w `tools/toothgen/palette.py`. Tryb ciemny ma własną paletę rysunków, więc diagram ciemnieje razem z interfejsem, zamiast razić. W profilu `measured` korona i korzeń mają dodatkowo rdzeń zębinowy: przejmuje kolor `body`, dopóki nie ustawisz `dentin`, więc granica pojawia się dopiero wtedy, gdy o nią poprosisz. W trybie ciemnym kafelki okluzyjne ciemnieją razem z widokami bocznymi, a ognisko próchnicy zachowuje ciemne wypełnienie — to obrys zmienia się na jasny i niesie kształt, bo „próchnica = ciemna” czyta się wcześniej niż jakikolwiek współczynnik kontrastu.
 
 **Integracja wtyczki:**
 ```tsx

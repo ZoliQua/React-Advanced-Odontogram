@@ -853,7 +853,7 @@ function OdontogramProviderInner({
     toothAnatomy,
     onToothAnatomy: (v) => {
       // React state is deliberately NOT set optimistically here, and the grid is
-      // NOT rebuilt here. setToothAnatomy is async since 2.6.0 (the measured
+      // NOT rebuilt here. setToothAnatomy is async since 2.7.0 (the measured
       // artwork is a lazily loaded chunk); it rebuilds the grid itself and only
       // then notifies, and the `onStateChange` mirror above is what flips
       // `toothAnatomy`. Setting the state up front instead put `data-anatomy=

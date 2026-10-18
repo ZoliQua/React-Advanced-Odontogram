@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-mobility",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-mobility",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "name": "OdontogramMobility",
   "title": "Odontogram — mobility values",
   "status": "active",

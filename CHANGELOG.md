@@ -5,7 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.7.0] - 2026-10-18
+
+> 2.6.0 was prepared but never published — no tag, no npm release. Everything
+> its section lists ships here for the first time, which is why npm goes
+> straight from 2.5.0 to 2.7.0.
+
+### Security
+
+- **The two runtime dependencies are on their patched versions.** `dompurify`'s
+  floor moves to `^3.4.16` (two DOM-XSS advisories in `IN_PLACE` sanitization
+  at `<=3.4.15`) and the lockfile takes `fflate` 0.8.3 through jsPDF (an
+  infinite loop on a malformed ZIP64 archive). Both are advisories against code
+  paths the engine does not call, but they travel with the package, so they are
+  not ours to leave in place. `npm audit --omit=dev` is clean.
 
 ### Added
 
@@ -303,7 +316,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of `void`, because it resolves the artwork *before* flipping the
   profile flag — that is what keeps `activeAnatomyProfile()` synchronous for
   every render path. **The setter rebuilds the grid itself** once the profile is
-  in place, so the pre-2.6.0 idiom keeps working unchanged and un-awaited:
+  in place, so the pre-2.7.0 idiom keeps working unchanged and un-awaited:
 
   ```ts
   setToothAnatomy("measured");   // the chart follows on its own

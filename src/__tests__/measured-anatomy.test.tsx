@@ -69,7 +69,7 @@ async function waitForGrid() {
 }
 
 /** Switch the active anatomy profile, exactly the way the Settings
- *  `onToothAnatomy` handler does. Since 2.6.0 that is the setter ALONE:
+ *  `onToothAnatomy` handler does. Since 2.7.0 that is the setter ALONE:
  *  `setToothAnatomy` resolves the profile's artwork and then rebuilds the grid
  *  itself. Calling `rebuildGrid()` after it as well (what this helper used to
  *  do, back when the handler did) is not wrong, just a second full rebuild of

@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -178,7 +178,7 @@ function Workspace() {
 
 `OdontogramProvider` takes the same props as `OdontogramShell`. A `useOdontogramUi()` hook (and the `OdontogramUiContextValue` type) is available for building your own surfaces. Current constraint: use one provider per page. Surfaces can be mounted and unmounted on demand — they rebind automatically on remount. `OdontogramShell` itself is unchanged — it is exactly this composition in the default arrangement.
 
-For even finer composition, the individual control cards are exported as well — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, and `ToothDetailsCard` — each a self-contained declarative component that reads and writes the shared session through the engine API (a `useEngineState()` hook is exported for building your own). Mount only the cards a given layout needs, in any arrangement, under one `OdontogramProvider`.
+For even finer composition, the individual control cards are exported as well — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard`, and `ToothDetailsCard` — each a self-contained declarative component that reads and writes the shared session through the engine API (a `useEngineState()` hook is exported for building your own). Mount only the cards a given layout needs, in any arrangement, under one `OdontogramProvider`. The perio-context sidebar and the case-diagnoses dialog are exported as well — `PerioSidebar` and `CaseDiagnosesModal` — so a layout that replaces the shell can still render both.
 
 #### Using it with Next.js (App Router)
 
@@ -555,9 +555,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-The drawings carry their colours as CSS custom properties with the shipped colour as the fallback, so both anatomy profiles follow one setting and an export resolves them before it leaves the page. The full token table lives in `tools/toothgen/palette.py`. Dark mode already ships its own artwork palette, so the chart darkens with the rest of the interface rather than glaring. In the `measured` profile the crown and root also carry a dentin core: it takes the body's colour until `dentin` is set, so the boundary appears only when you ask for it.
 ```
+
+The drawings carry their colours as CSS custom properties with the shipped colour as the fallback, so both anatomy profiles follow one setting and an export resolves them before it leaves the page. The full token table lives in `tools/toothgen/palette.py`. Dark mode already ships its own artwork palette, so the chart darkens with the rest of the interface rather than glaring. In the `measured` profile the crown and root also carry a dentin core: it takes the body's colour until `dentin` is set, so the boundary appears only when you ask for it. In dark mode the occlusal tiles darken with the side views, and a carious lesion keeps its dark fill — the outline flips to light and carries the shape, because "caries = dark" is read before any contrast ratio.
 
 **Plugin integration:**
 ```tsx

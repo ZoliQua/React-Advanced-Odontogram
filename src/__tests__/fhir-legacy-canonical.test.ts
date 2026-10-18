@@ -2,7 +2,7 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 // The project was renamed from React-Odontogram-Modul to React Advanced
-// Odontogram in 2.6.0, and the FHIR canonical URLs moved with it: the local code
+// Odontogram in 2.7.0, and the FHIR canonical URLs moved with it: the local code
 // system is now `…/React-Advanced-Odontogram/fhir/CodeSystem/odontogram`.
 //
 // A bundle exported BEFORE the rename carries the old canonical on every local
@@ -54,7 +54,7 @@ describe("FHIR: the pre-rename canonical URL still imports", () => {
 
   it("a bundle written under the OLD canonical imports exactly like the new one", () => {
     const current = richBundle();
-    // What the same chart looked like when exported before 2.6.0.
+    // What the same chart looked like when exported before 2.7.0.
     const legacy = JSON.parse(JSON.stringify(current).split(NEW_BASE).join(OLD_BASE));
     expect(JSON.stringify(legacy)).not.toContain(NEW_BASE);
 

@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -180,7 +180,7 @@ function Workspace() {
 
 `OdontogramProvider` 接受与 `OdontogramShell` 相同的 props。还提供了 `useOdontogramUi()` hook（以及 `OdontogramUiContextValue` 类型），用于构建你自己的界面区域。当前限制：每个页面只使用一个 provider。界面区域可以按需挂载和卸载——重新挂载时会自动重新绑定。`OdontogramShell` 本身没有变化——它正是这种组合在默认排布下的形态。
 
-为了实现更精细的组合，各个控制卡片也已导出——`OrthodonticsCard`、`StatusesCard`、`CariesCard`、`FillingsCard`、`RootPeriodontiumCard` 和 `ToothDetailsCard`——每一个都是自包含的声明式组件，通过引擎 API 读取和写入共享会话（还导出了 `useEngineState()` hook 供你构建自己的卡片）。只需在单个 `OdontogramProvider` 下按任意排布挂载某个布局所需的卡片即可。
+为了实现更精细的组合，各个控制卡片也已导出——`OrthodonticsCard`、`StatusesCard`、`CariesCard`、`FillingsCard`、`RootPeriodontiumCard`、`DiagnosesCard` 和 `ToothDetailsCard`——每一个都是自包含的声明式组件，通过引擎 API 读取和写入共享会话（还导出了 `useEngineState()` hook 供你构建自己的卡片）。只需在单个 `OdontogramProvider` 下按任意排布挂载某个布局所需的卡片即可。 牙周上下文侧栏与病例诊断对话框同样已导出——`PerioSidebar` 和 `CaseDiagnosesModal`——因此替换外壳的布局仍可渲染这两者。
 
 #### 与 Next.js（App Router）搭配使用
 
@@ -557,9 +557,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-牙齿图形以 CSS 自定义属性承载颜色，并以随附颜色作为回退值，因此两种解剖轮廓都遵循同一处设置，导出时也会在离开页面前完成解析。完整的 token 表位于 `tools/toothgen/palette.py`。深色模式自带一套牙齿图形配色，因此牙位图会与界面一同变暗，而不会刺眼。 在 `measured` 轮廓中，牙冠与牙根还带有牙本质核心：在未设置 `dentin` 之前它沿用 `body` 的颜色，因此只有在你需要时边界才会显现。
 ```
+
+牙齿图形以 CSS 自定义属性承载颜色，并以随附颜色作为回退值，因此两种解剖轮廓都遵循同一处设置，导出时也会在离开页面前完成解析。完整的 token 表位于 `tools/toothgen/palette.py`。深色模式自带一套牙齿图形配色，因此牙位图会与界面一同变暗，而不会刺眼。 在 `measured` 轮廓中，牙冠与牙根还带有牙本质核心：在未设置 `dentin` 之前它沿用 `body` 的颜色，因此只有在你需要时边界才会显现。 在深色模式下，咬合面图块与侧面视图一同变暗；龋损则保留其深色填充——改为浅色的是轮廓线，由它来承载形状，因为「龋坏＝深色」会先于任何对比度被读出。
 
 **插件集成：**
 ```tsx

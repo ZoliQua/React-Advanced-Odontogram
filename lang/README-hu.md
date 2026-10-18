@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -178,7 +178,7 @@ function Workspace() {
 
 Az `OdontogramProvider` ugyanazokat a propokat fogadja, mint az `OdontogramShell`. Egy `useOdontogramUi()` hook (és az `OdontogramUiContextValue` típus) is elérhető saját felületek építéséhez. Jelenlegi korlát: oldalanként egy providert használjon. A felületek igény szerint fel- és leválaszthatók — újracsatoláskor automatikusan visszakapcsolódnak. Maga az `OdontogramShell` változatlan — pontosan ez az összeállítás az alapértelmezett elrendezésben.
 
-A még finomabb összeállításhoz az egyes vezérlőkártyák is exportálva vannak — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` és `ToothDetailsCard` —, mindegyik önálló, deklaratív komponens, amely a motor API-ján keresztül olvassa és írja a megosztott munkamenetet (a saját felületek építéséhez egy `useEngineState()` hook is exportálva van). Csak azokat a kártyákat csatolja, amelyekre az adott elrendezésnek szüksége van, tetszőleges elrendezésben, egyetlen `OdontogramProvider` alatt.
+A még finomabb összeállításhoz az egyes vezérlőkártyák is exportálva vannak — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` és `ToothDetailsCard` —, mindegyik önálló, deklaratív komponens, amely a motor API-ján keresztül olvassa és írja a megosztott munkamenetet (a saját felületek építéséhez egy `useEngineState()` hook is exportálva van). Csak azokat a kártyákat csatolja, amelyekre az adott elrendezésnek szüksége van, tetszőleges elrendezésben, egyetlen `OdontogramProvider` alatt. A parodontális oldalsáv és az eset-diagnózis párbeszédablak is exportálva van — `PerioSidebar` és `CaseDiagnosesModal` —, így a héjat lecserélő elrendezés is meg tudja jeleníteni mindkettőt.
 
 #### Használat Next.js-szel (App Router)
 
@@ -555,9 +555,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram a felülettel együtt sötétedik, nem világít bele. A `measured` profilban a korona és a gyökér dentinmagot is visel: amíg a `dentin` nincs beállítva, a testszínt veszi fel, tehát a határvonal csak akkor jelenik meg, ha kéred.
 ```
+
+A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram a felülettel együtt sötétedik, nem világít bele. A `measured` profilban a korona és a gyökér dentinmagot is visel: amíg a `dentin` nincs beállítva, a testszínt veszi fel, tehát a határvonal csak akkor jelenik meg, ha kéred. Sötét módban a rágófelszíni csempék az oldalnézetekkel együtt sötétednek, a szuvas lézió pedig megtartja a sötét kitöltését — a körvonala vált világosra és az viszi a formát, mert a „szuvasodás = sötét” hamarabb olvasódik ki, mint bármilyen kontrasztarány.
 
 **Plugin integráció:**
 ```tsx

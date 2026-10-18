@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -178,7 +178,7 @@ function Workspace() {
 
 `OdontogramProvider` принимает те же пропсы, что и `OdontogramShell`. Для создания собственных поверхностей доступны хук `useOdontogramUi()` (и тип `OdontogramUiContextValue`). Текущее ограничение: используйте один провайдер на страницу. Поверхности можно монтировать и размонтировать по мере необходимости — при повторном монтировании они автоматически перепривязываются. Сам `OdontogramShell` не изменился — это именно такая композиция в компоновке по умолчанию.
 
-Для ещё более тонкой композиции также экспортируются отдельные карточки управления — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` и `ToothDetailsCard` — каждая представляет собой самостоятельный декларативный компонент, который читает и записывает общий сеанс через API движка (для создания собственных экспортируется хук `useEngineState()`). Монтируйте только те карточки, которые нужны конкретной компоновке, в любом порядке, под одним `OdontogramProvider`.
+Для ещё более тонкой композиции также экспортируются отдельные карточки управления — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` и `ToothDetailsCard` — каждая представляет собой самостоятельный декларативный компонент, который читает и записывает общий сеанс через API движка (для создания собственных экспортируется хук `useEngineState()`). Монтируйте только те карточки, которые нужны конкретной компоновке, в любом порядке, под одним `OdontogramProvider`. Также экспортируются боковая панель пародонтального контекста и диалог диагнозов случая — `PerioSidebar` и `CaseDiagnosesModal` — так что компоновка, заменяющая оболочку, по-прежнему может отрисовать оба.
 
 #### Использование с Next.js (App Router)
 
@@ -555,9 +555,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-Рисунки несут свои цвета как пользовательские свойства CSS, а поставляемый цвет служит запасным значением, поэтому оба профиля анатомии следуют одной настройке, а экспорт разрешает их до того, как покинет страницу. Полная таблица токенов — в `tools/toothgen/palette.py`. У тёмной темы есть собственная палитра для рисунков, поэтому схема темнеет вместе с интерфейсом, а не слепит. В профиле `measured` коронка и корень дополнительно несут дентинное ядро: оно принимает цвет `body`, пока не задан `dentin`, поэтому граница появляется только тогда, когда её запрашивают.
 ```
+
+Рисунки несут свои цвета как пользовательские свойства CSS, а поставляемый цвет служит запасным значением, поэтому оба профиля анатомии следуют одной настройке, а экспорт разрешает их до того, как покинет страницу. Полная таблица токенов — в `tools/toothgen/palette.py`. У тёмной темы есть собственная палитра для рисунков, поэтому схема темнеет вместе с интерфейсом, а не слепит. В профиле `measured` коронка и корень дополнительно несут дентинное ядро: оно принимает цвет `body`, пока не задан `dentin`, поэтому граница появляется только тогда, когда её запрашивают. В тёмной теме окклюзионные плитки темнеют вместе с боковыми видами, а кариозный очаг сохраняет тёмную заливку — на светлый переключается контур, и именно он несёт форму, потому что «кариес = тёмный» считывается раньше любого коэффициента контраста.
 
 **Интеграция плагинов:**
 ```tsx

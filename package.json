@@ -66,7 +66,7 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "dompurify": "^3.4.13",
+    "dompurify": "^3.4.16",
     "jspdf": "^4.2.1"
   },
   "devDependencies": {

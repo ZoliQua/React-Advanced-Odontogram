@@ -1,6 +1,7 @@
 # A dentin layer for the measured artwork — design and plan
 
-**Status:** stage 1 (geometry) landed 2026-10-18; stages 2-5 open. Raised by
+**Status:** closed 2026-10-18. Stages 1-3 and 5 landed; **stage 4 was tried and
+rejected** — see below. Raised by
 [issue #28](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/28) —
 the one item of Jose's seven that the themable-artwork work could not deliver,
 because there was nothing to theme: a tooth in these drawings is one silhouette
@@ -152,7 +153,7 @@ the single-root, two-root, three-root and cusp-split geometries · **visual
 gate**: render all 40 side templates and look at them before going further.
 No number proves a drawing looks right.
 
-### Stage 2 — token and API
+### Stage 2 — token and API — DONE
 
 `--odon-tooth-dentin` in `palette.py`; `tooth.dentin` in
 `OdontogramThemeConfig` + `TOOTH_COLOR_MAP`; balanced-paren `TOKEN_REF`.
@@ -161,26 +162,50 @@ No number proves a drawing looks right.
 one that sets both and asserts dentin wins; one that exports a themed chart and
 asserts no `var(` survives and no paren is stranded.
 
-### Stage 3 — dark palette
+### Stage 3 — dark palette — DONE (as a decision not to)
 
 One value in the `.dark` block, derived the way the others were: from the
 measured light-mode relationship, with the ratio recorded in the comment.
 
-### Stage 4 — the clinical payoff (separate commit)
+### Stage 4 — the clinical payoff — TRIED AND REJECTED
 
-Caries depth rendered against the boundary: an E1/E2 lesion stays within the
-enamel shell, a D1–D3 lesion crosses into the dentin. The depth is already in
-the state model and already refines the ICD-10 code (`K02.0` vs `K02.1`), so
-this adds no new data — only the drawing that was missing.
+The plan: an E1/E2 lesion stays within the enamel shell, a D1–D3 lesion crosses
+into the dentin. The depth is already in the state model and already refines
+the ICD-10 code (`K02.0` vs `K02.1`), so it would have added no new data — only
+the drawing that was missing.
 
-This changes default rendering for measured-profile hosts, which is why it is
-last and alone in its commit.
+The mechanism worked on the first try. A `clipPath` holding the silhouette and
+the core under `clip-rule="evenodd"` is exactly the enamel shell, and clipping
+a lesion to it needs no new geometry and no new state.
 
-### Stage 5 — documentation
+**The picture it produced was wrong.** Measured on the shipped artwork:
 
-CHANGELOG, the 12 READMEs, and a note that `tooth.body` now means the outer
-shell — enamel over the crown, cementum over the root — wherever a dentin
-region exists. The field is NOT renamed again.
+| | |
+| --- | --- |
+| lesion width, `caries-buccal` | 3.1 mm (16), 3.3 mm (36), **5.0 mm** (11) |
+| enamel shell, at its thickest | **2.0 mm** |
+
+A 5 mm blob clipped into a 2 mm band is not a shallow lesion; it is a black
+crescent along the crown's edge, and it reads as a damaged outline. Every
+template looked like that.
+
+The finding underneath is worth keeping: **the existing lesion shapes are drawn
+at dentin-reaching size.** The deep case is therefore already right, and what is
+missing is a shallow shape — new artwork, not a new token, and a piece of work
+that would need its own visual gate. Depth continues to read as the opacity
+tier it has been since before this.
+
+Two follow-ups remain possible, neither started:
+
+1. Derive a shallower lesion in the generator (`caries-<surface>-enamel`), by
+   pulling each lesion path toward the tooth surface.
+2. Leave the lesion alone and tint the core under a dentinal one.
+
+### Stage 5 — documentation — DONE
+
+CHANGELOG, the 12 READMEs, the typedoc reference, and a note that `tooth.body`
+now means the outer shell — enamel over the crown, cementum over the root —
+wherever a dentin region exists. The field is NOT renamed again.
 
 ## Risks
 

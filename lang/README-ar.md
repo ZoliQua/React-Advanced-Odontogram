@@ -540,9 +540,11 @@ export default function Host(){
     // The tooth drawings are themable too. Omitted keys keep the colour the
     // artwork is drawn in, so this is additive — set nothing and nothing moves.
     tooth: {
-      // `body` is the tooth's own silhouette — crown AND root. The drawings
-      // do not separate enamel from dentin: one shape is the whole tooth.
+      // `body` is the tooth's own silhouette — crown AND root. In `classic`
+      // that is the whole tooth; in `measured` it is the outer shell around
+      // `dentin`, which takes its colour unless you set it.
       body: '#f2f2f2',
+      dentin: '#e6d7bf',
       outline: '#b9bdc2',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
@@ -556,7 +558,7 @@ export default function Host(){
   }}
 />
 
-تحمل الرسوم ألوانها كخصائص CSS مخصَّصة مع اللون المُضمَّن كقيمة احتياطية، فيتبع كلا ملفَّي التشريح إعدادًا واحدًا، ويحلّ التصدير هذه القيم قبل مغادرتها الصفحة. جدول الرموز الكامل في `tools/toothgen/palette.py`. ويأتي الوضع الداكن بلوحة ألوان خاصة بالرسوم، فيَعتِم المخطط مع بقية الواجهة بدل أن يبهر العين.
+تحمل الرسوم ألوانها كخصائص CSS مخصَّصة مع اللون المُضمَّن كقيمة احتياطية، فيتبع كلا ملفَّي التشريح إعدادًا واحدًا، ويحلّ التصدير هذه القيم قبل مغادرتها الصفحة. جدول الرموز الكامل في `tools/toothgen/palette.py`. ويأتي الوضع الداكن بلوحة ألوان خاصة بالرسوم، فيَعتِم المخطط مع بقية الواجهة بدل أن يبهر العين. وفي ملف `measured` يحمل التاجُ والجذرُ أيضًا لبًّا عاجيًّا: يأخذ لون `body` ما لم تُضبط `dentin`، فلا يظهر الحدّ إلا عندما تطلبه.
 ```
 
 **تكامل الإضافات:**

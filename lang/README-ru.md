@@ -538,9 +538,11 @@ export default function Host(){
     // The tooth drawings are themable too. Omitted keys keep the colour the
     // artwork is drawn in, so this is additive — set nothing and nothing moves.
     tooth: {
-      // `body` is the tooth's own silhouette — crown AND root. The drawings
-      // do not separate enamel from dentin: one shape is the whole tooth.
+      // `body` is the tooth's own silhouette — crown AND root. In `classic`
+      // that is the whole tooth; in `measured` it is the outer shell around
+      // `dentin`, which takes its colour unless you set it.
       body: '#f2f2f2',
+      dentin: '#e6d7bf',
       outline: '#b9bdc2',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
@@ -554,7 +556,7 @@ export default function Host(){
   }}
 />
 
-Рисунки несут свои цвета как пользовательские свойства CSS, а поставляемый цвет служит запасным значением, поэтому оба профиля анатомии следуют одной настройке, а экспорт разрешает их до того, как покинет страницу. Полная таблица токенов — в `tools/toothgen/palette.py`. У тёмной темы есть собственная палитра для рисунков, поэтому схема темнеет вместе с интерфейсом, а не слепит.
+Рисунки несут свои цвета как пользовательские свойства CSS, а поставляемый цвет служит запасным значением, поэтому оба профиля анатомии следуют одной настройке, а экспорт разрешает их до того, как покинет страницу. Полная таблица токенов — в `tools/toothgen/palette.py`. У тёмной темы есть собственная палитра для рисунков, поэтому схема темнеет вместе с интерфейсом, а не слепит. В профиле `measured` коронка и корень дополнительно несут дентинное ядро: оно принимает цвет `body`, пока не задан `dentin`, поэтому граница появляется только тогда, когда её запрашивают.
 ```
 
 **Интеграция плагинов:**

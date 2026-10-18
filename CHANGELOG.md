@@ -9,6 +9,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **The measured teeth have a dentin core.** The drawings carried one silhouette
+  per tooth — crown and root in a single shape, no inner structure — so there
+  was nothing to colour between the outline and the pulp. `tools/toothgen`
+  derives a core now: the finished silhouette inset by the enamel thickness
+  over the crown (2.0 mm at the cusp tip, tapering to a knife edge at the
+  cervical line) and by a cementum hairline along the root. A multi-rooted
+  tooth splits into one lobe per root at the furcation with no case
+  distinction, because the construction follows the contour rather than a
+  description of it.
+
+  `themeConfig.tooth.dentin` colours it. Its default is the only one in the
+  table that is another token (`var(--odon-tooth-body, …)`), which is what
+  keeps this additive: unset, the core takes the crown's colour and the
+  boundary cannot be seen, and setting `tooth.body` alone carries the core with
+  it rather than exposing a boundary nobody asked about. Dark mode declares no
+  value for the same reason — light mode has no visible boundary either, so the
+  core simply follows the darkened crown.
+
+  Three silhouettes carry a core: the intact tooth, the prepared crown (ground
+  away, so what is left of it IS dentin up to the rim) and the retained root.
+  The classic profile and the occlusal views have none — the schematic drawings
+  have no boundary, and nothing of the dentin shows from above. The measured
+  assets grow 3.4%.
+
+  Caries depth is NOT yet drawn against the boundary. Clipping a lesion to the
+  enamel shell was tried and rejected: the lesion artwork is 3.1–5.0 mm across
+  against a 2.0 mm shell, so a shallow lesion came out as a black crescent
+  along the crown's edge rather than a shallow lesion. An enamel-only lesion
+  needs its own shape, which is new artwork rather than a new token. Depth
+  continues to read as the opacity tier it has been.
+
+### Fixed
+
+- **A themed export could paint a nested token black.** `flattenThemeTokens`
+  ended its fallback at the first `)`, so a token whose default is another
+  token — `--odon-tooth-dentin` is the first — survived into the exported file
+  as a `var()` reference. An export is rendered in an isolated document where
+  no `--odon-*` is defined, so that reference resolved to nothing and the fill
+  fell back to the SVG initial value: black, with no error raised anywhere. The
+  closing paren is now found by counting, fallbacks resolve recursively, and
+  markup that cannot be parsed is left alone instead of mangled.
+
 - **The tooth drawings are themable.** `themeConfig` gains a `tooth` group —
   `body`, `outline`, `highlight`, `milktoothBody`, `cusp`, `groove`,
   `pulpHealthy`, `pulpInflamed`, `gum`, `bone`, `caries`, `wear`, `calculus`

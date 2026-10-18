@@ -538,9 +538,11 @@ export default function Host(){
     // The tooth drawings are themable too. Omitted keys keep the colour the
     // artwork is drawn in, so this is additive — set nothing and nothing moves.
     tooth: {
-      // `body` is the tooth's own silhouette — crown AND root. The drawings
-      // do not separate enamel from dentin: one shape is the whole tooth.
+      // `body` is the tooth's own silhouette — crown AND root. In `classic`
+      // that is the whole tooth; in `measured` it is the outer shell around
+      // `dentin`, which takes its colour unless you set it.
       body: '#f2f2f2',
+      dentin: '#e6d7bf',
       outline: '#b9bdc2',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
@@ -554,7 +556,7 @@ export default function Host(){
   }}
 />
 
-Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval.
+Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval. V profile `measured` nesie korunka aj koreň navyše dentínové jadro: preberá farbu `body`, kým nenastavíte `dentin`, takže hranica sa objaví až vtedy, keď si ju vyžiadate.
 ```
 
 **Integrácia pluginu:**

@@ -63,10 +63,9 @@ export type OdontogramThemeConfig = {
      *
      *  In the `classic` profile this is the whole tooth: those drawings are one
      *  shape, with no inner structure. In `measured` it is the outer shell —
-     *  enamel over the crown, cementum over the root — around
-     *  {@link OdontogramThemeConfig.tooth.dentin}, which takes this colour
-     *  unless it is set. Setting only `body` therefore looks the same in both
-     *  profiles. */
+     *  enamel over the crown, cementum over the root — around `dentin` below,
+     *  which takes this colour unless it is set. Setting only `body` therefore
+     *  looks the same in both profiles. */
     body?: string;
     /** The dentin core inside the crown and root (`measured` profile only —
      *  the classic drawings have no enamel/dentin boundary to colour).

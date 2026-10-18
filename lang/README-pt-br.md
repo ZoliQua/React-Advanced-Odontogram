@@ -538,9 +538,11 @@ export default function Host(){
     // The tooth drawings are themable too. Omitted keys keep the colour the
     // artwork is drawn in, so this is additive — set nothing and nothing moves.
     tooth: {
-      // `body` is the tooth's own silhouette — crown AND root. The drawings
-      // do not separate enamel from dentin: one shape is the whole tooth.
+      // `body` is the tooth's own silhouette — crown AND root. In `classic`
+      // that is the whole tooth; in `measured` it is the outer shell around
+      // `dentin`, which takes its colour unless you set it.
       body: '#f2f2f2',
+      dentin: '#e6d7bf',
       outline: '#b9bdc2',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
@@ -554,7 +556,7 @@ export default function Host(){
   }}
 />
 
-Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`. O modo escuro traz sua própria paleta para os desenhos, de modo que o odontograma escurece junto com a interface em vez de ofuscar.
+Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`. O modo escuro traz sua própria paleta para os desenhos, de modo que o odontograma escurece junto com a interface em vez de ofuscar. No perfil `measured`, a coroa e a raiz também têm um núcleo de dentina: ele assume a cor de `body` enquanto `dentin` não for definido, de modo que o limite só aparece quando você o pede.
 ```
 
 **Integração de plugins:**

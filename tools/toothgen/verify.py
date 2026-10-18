@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import dentin  # noqa: E402
 import roots  # noqa: E402
 from build import ASSETS, SOURCE, curve_extent, tooth_base_d  # noqa: E402
 from spec import PRIMARY_SPECS, SPECS, display_targets  # noqa: E402
@@ -253,6 +254,20 @@ def geometry_style(value: str) -> str:
         if name in GEOMETRY_STYLE_PROPERTIES:
             kept.append(f"{name}:{' '.join(setting.split())}")
     return ";".join(kept)
+
+
+def without_derived(value: str) -> str:
+    """Drop the layers the generator derives rather than inherits.
+
+    The three checks below hold the generated template against its donor: same
+    ids, same tags, same frozen geometry digest. A dentin core is derived from
+    the warped silhouette and has no counterpart in the donor, so it is removed
+    before comparing — which keeps the guards doing their job instead of being
+    re-frozen around the new layer. Everything the generator inherits must
+    still match the drawing exactly.
+    """
+
+    return re.sub(r'<path id="[^"]*-dentin"[^>]*/>', "", value)
 
 
 def clinical_ids(txt: str) -> list[str]:
@@ -606,6 +621,51 @@ def check_clinical_registration(out_dir: Path, failures: list[str]) -> None:
 
 
 
+
+def check_dentin(out_dir: Path, specs, failures: list[str]) -> None:
+    """Validate the derived dentin cores against the silhouettes they came from.
+
+    A core that escapes its own silhouette is the one failure mode here that
+    would be plain on the chart and invisible in a diff, so it is measured
+    rather than eyeballed: every sampled point of the core must fall inside the
+    owner's outline. The margin absorbs the 2-decimal path serialization.
+    """
+    checked = 0
+    for s in specs:
+        txt = (out_dir / f"{s.key}.svg").read_text()
+        for owner, _exposed in dentin.OWNERS:
+            om = re.search(dentin.TAG_RE % re.escape(owner), txt)
+            dm = re.search(dentin.TAG_RE % re.escape(owner + "-dentin"), txt)
+            if om is None:
+                continue
+            if dm is None:
+                failures.append(f"{s.key}: {owner} has no dentin core")
+                continue
+            owner_d = re.search(r'\sd="([^"]+)"', om.group(0)).group(1)
+            core_d = re.search(r'\sd="([^"]+)"', dm.group(0)).group(1)
+            outside = dentin.contains(owner_d, core_d, margin=0.02)
+            if outside:
+                failures.append(
+                    f"{s.key}: {owner}-dentin has {len(outside)} point(s) outside "
+                    f"its silhouette, first at {outside[0][0]:.2f},{outside[0][1]:.2f}"
+                )
+            lobes = core_d.count("M")
+            # One lobe per root plus the crown mass, and one more where the
+            # occlusal surface parts the core between cusps.
+            if not 1 <= lobes <= s.roots + 3:
+                failures.append(
+                    f"{s.key}: {owner}-dentin has {lobes} lobes for {s.roots} root(s)"
+                )
+            if dentin.STYLE not in dm.group(0):
+                failures.append(f"{s.key}: {owner}-dentin is not painted through its token")
+            if ("display: none" in om.group(0)) != ("display: none" in dm.group(0)):
+                failures.append(
+                    f"{s.key}: {owner}-dentin ships with a different visibility than {owner}"
+                )
+            checked += 1
+    print(f"dentin cores checked: {checked}")
+
+
 def main(argv):
     argv = list(argv)
     which = DEFAULT_SET
@@ -660,14 +720,15 @@ def main(argv):
             )
 
         src = (SOURCE / f"{s.src_template}.svg").read_text()
-        ids_ok = clinical_ids(src) == clinical_ids(txt)
-        tags_ok = re.findall(r"<(\w+)", src) == re.findall(r"<(\w+)", txt)
+        inherited = without_derived(txt)
+        ids_ok = clinical_ids(src) == clinical_ids(inherited)
+        tags_ok = re.findall(r"<(\w+)", src) == re.findall(r"<(\w+)", inherited)
         # A template with no recorded digest is not yet frozen, which is a
         # state, not a fault. The digests exist to report geometry that moved
         # when nobody meant it to; they are not a gate a new drawing has to pass
         # before it may exist (odontogram-0ak).
         frozen = AUTHORED_GEOMETRY_SHA256.get(s.key)
-        geometry_ok = frozen is None or geometry_digest(txt) == frozen
+        geometry_ok = frozen is None or geometry_digest(inherited) == frozen
 
         base_d = tooth_base_d(txt)
         x0, apex, x1, inc = curve_extent(base_d)
@@ -840,6 +901,7 @@ def main(argv):
     check_occlusal(out_dir, failures)
     check_fillings(out_dir, failures)
     check_clinical_registration(out_dir, failures)
+    check_dentin(out_dir, specs, failures)
     check_columns(specs, failures)
 
     if occl_offsets:

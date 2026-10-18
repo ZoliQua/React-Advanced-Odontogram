@@ -133,6 +133,7 @@ class ToothSpec:
 # The scale is 4.048 units per mm, chosen so the upper arch's columns still add
 # up to the width the chart had. The correction redistributes width between
 # tooth classes; it does not make the chart wider or narrower.
+UNITS_PER_MM = 4.048
 #
 # `col_px` follows from the same numbers: each column is its tooth plus 6 px, so
 # every contact is 10 px. That is also where the Class I canine relationship now

@@ -17,6 +17,22 @@ ASSET_GROUPS = (
 )
 D_RE = re.compile(r'\sd="([^"]+)"')
 
+# Paths the generator DERIVES at build time rather than inheriting from a
+# drawing. They are excluded here, and the exclusion is reported rather than
+# silent.
+#
+# This check measures what a parse-and-reserialize cycle costs, because every
+# authored path goes through one when `build.py` warps it. A dentin core never
+# does: it is computed from the already-warped silhouette, after the last warp,
+# and recomputed from scratch on the next build. What it does have is a dense
+# polyline of 40-110 points, and `svgpath.serialize` writes RELATIVE commands,
+# so this check's own 2-decimal reserialization accumulates ~0.1 u along such a
+# chain — a property of the measurement, not of the asset.
+#
+# The cores are verified where it matters instead: `verify.py` checks every
+# sampled point of the SHIPPED path against the silhouette it must stay inside.
+DERIVED_RE = re.compile(r'<path id="[^"]*-dentin"[^>]*/>')
+
 
 def sample(d: str, n: int = 400):
 
@@ -82,6 +98,7 @@ def main():
         for file in sorted(directory.glob("*.svg"))
     ]
     total = 0
+    skipped = 0
     worst_overall = 0.0
     worst_where = ""
     current_group = None
@@ -90,6 +107,8 @@ def main():
             print(f"\n[{group}]")
             current_group = group
         txt = f.read_text()
+        txt, derived = DERIVED_RE.subn("", txt)
+        skipped += derived
         ds = D_RE.findall(txt)
         worst = 0.0
         for d in ds:
@@ -105,7 +124,8 @@ def main():
         if worst > worst_overall:
             worst_overall, worst_where = worst, f"{group}/{f.name}"
     print(
-        f"\n{total} paths checked. Worst deviation {worst_overall:.4f} ({worst_where})"
+        f"\n{total} paths checked ({skipped} derived paths excluded, see DERIVED_RE)."
+        f" Worst deviation {worst_overall:.4f} ({worst_where})"
     )
     print(
         "Tolerance 0.05 units (viewBox approximately 40x71) ->",

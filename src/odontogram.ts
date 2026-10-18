@@ -257,6 +257,24 @@ function setActive(node: Any, on: Any){
   node.setAttribute("data-active", on ? "1":"0");
 }
 
+/** Keep each dentin core in step with the silhouette it was derived from.
+ *
+ *  The measured templates carry a `<id>-dentin` path after the silhouettes that
+ *  have an enamel/dentin boundary (`tooth-base`, `tooth-crownprep`,
+ *  `tooth-radix` — see tools/toothgen/dentin.py). A core is meaningless without
+ *  its owner, and exactly one owner is ever shown, so visibility is derived
+ *  rather than decided here: whatever the blocks above settled on, the matching
+ *  core follows. Deriving it also means a template that gains another cored
+ *  silhouette needs no change on this side.
+ *
+ *  A no-op on the classic profile, which has no such layers. */
+function syncDentinLayers(svg: Any){
+  for(const el of $$('[id$="-dentin"]', svg)){
+    const owner = svgGetById(svg, el.id.slice(0, -"-dentin".length));
+    setActive(el, !!owner && owner.getAttribute("data-active") === "1");
+  }
+}
+
 function stripDisplayNoneToDataActive(root: Any){
   // Convert inline style display:none -> data-active=0, and remove display property from style.
   const nodes = $$("[id]", root);
@@ -3142,6 +3160,8 @@ function applyStateToSvgSingle(toothNo: Any, svg: Any, state: Any = toothState.g
   if(state.toothSelection === "none" && state.extractionWound){
     setActive(svgGetById(svg, "no-tooth-after-extraction"), true);
   }
+
+  syncDentinLayers(svg);
 
   // Discoloration — tint the shown natural crown's fill. Symmetric: reset
   // BOTH crown paths every render so a reused per-tooth node never keeps a stale

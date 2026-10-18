@@ -21,6 +21,7 @@ import graft  # noqa: E402
 import gum  # noqa: E402
 import fillings  # noqa: E402
 import overlays  # noqa: E402
+import dentin  # noqa: E402
 from spec import (  # noqa: E402
     PRIMARY_PULP_SCALE,
     PRIMARY_ROOT_SPREAD,
@@ -687,6 +688,14 @@ def build_one(s: ToothSpec, out_dir: Path, dry: bool, root_scale: float | None =
         roots.crossings_at,
         (vb_new[0], vb_new[0] + vb_new[2]),
     )
+
+    # The dentin core is derived from the FINAL silhouettes, in the output
+    # scale: enamel thickness is a clinical quantity in millimetres, and the
+    # donors are drawn in a different scale from the one `spec.UNITS_PER_MM`
+    # fixes here. See tools/toothgen/dentin.py.
+    out, dentin_lobes = dentin.insert_layers(out, cej=n_cej, occl=n_inc, apex=n_apex)
+    if dentin_lobes:
+        root_note += " +dentin " + "/".join(str(n) for n in dentin_lobes.values())
 
     got_root = (n_cej - n_apex) / (n_inc - n_apex)
     got_total = n_inc - n_apex

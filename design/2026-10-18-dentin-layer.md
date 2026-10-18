@@ -1,6 +1,6 @@
 # A dentin layer for the measured artwork — design and plan
 
-**Status:** proposed 2026-10-18. Raised by
+**Status:** stage 1 (geometry) landed 2026-10-18; stages 2-5 open. Raised by
 [issue #28](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/28) —
 the one item of Jose's seven that the themable-artwork work could not deliver,
 because there was nothing to theme: a tooth in these drawings is one silhouette
@@ -126,10 +126,24 @@ gated on looking at the result.
 
 Each lands on its own.
 
-### Stage 1 — geometry
+### Stage 1 — geometry — DONE
 
 `tools/toothgen/dentin.py`, called from `build_one`. Regenerate the 40 measured
 templates.
+
+Two things the implementation found, neither of them in this plan:
+
+- **`svgpath.serialize` writes RELATIVE commands, so its rounding
+  accumulates** — measured at 0.357 u over 120 points at 2 decimals. On the
+  crownprep shoulder of template 33, where the contour runs nearly horizontal,
+  a tenth of a unit in y moves the outline a whole unit in x, and the core
+  escaped its silhouette. The cores are written at 3 decimals (0.012 u) for
+  that reason. The same property is why `check_roundtrip.py` excludes them:
+  its own 2-decimal reserialization is what drifts, not the asset.
+- **Enamel is thinner than cementum for the first fraction of a millimetre
+  above the cervical line**, so following the clinical numbers literally put a
+  step in the outline just above the gum. The thickness is floored at the
+  cementum rim.
 
 **Verify:** `verify.py` (plus a new rule: the dentin contour must stay strictly
 inside its silhouette, and its subpath count must not exceed the template's

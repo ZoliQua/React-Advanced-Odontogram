@@ -13,6 +13,7 @@ source/*.svg canonical donor geometry (manual-edit boundary)
         ↓
 build.py + roots.py + graft.py + gum.py + fillings.py + overlays.py
 occlusal.py class-specific outline/cusp/groove generation
+dentin.py  enamel/dentin boundary, derived AFTER the warps
         ↓
 src/assets/teeth-svgs/measured/*.svg (generated; never hand-edit)
         ↓
@@ -37,6 +38,25 @@ the measured CEJ, cervical/crown span, furcation (when present), implant fixture
 span/platform, and bridge-tab Y/height. Runtime periodontal and bridge graphics
 consume these values after the same viewBox/orientation transform as the tooth;
 they do not maintain a second set of measured-tooth coordinates.
+
+`dentin.py` is the one transform that does not come from a donor. The drawings
+carry a single silhouette per tooth — crown and root in one shape, with no
+enamel/dentin boundary — so the core is derived by insetting the finished
+silhouette: by the enamel thickness over the crown, tapering to a knife edge at
+the cervical line, and by a cementum hairline along the root. It runs at the end
+of `build_one`, after every warp, because enamel thickness is a clinical
+quantity in millimetres and only the output is in the scale `spec.UNITS_PER_MM`
+fixes; the donors are drawn in their own.
+
+Three silhouettes get a core (`tooth-base`, `tooth-crownprep`, `tooth-radix`),
+each as a sibling `<owner>-dentin` path that the renderer keeps in step with its
+owner. The occlusal templates get none: nothing of the dentin shows from above.
+Because the layer is derived rather than inherited, `verify.py` and
+`check_roundtrip.py` exclude it from the comparisons they make against the
+donor — and the frozen authored-geometry digests therefore still have to match,
+which is what proves the drawings themselves did not move. The core has its own
+check instead: every sampled point of the shipped path must lie inside the
+silhouette it was derived from.
 
 `overlays.py` keeps geometry and presentation separate. Full-coverage material
 variants reuse the class-specific crown envelope while retaining their existing

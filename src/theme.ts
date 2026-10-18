@@ -59,9 +59,22 @@ export type OdontogramThemeConfig = {
    */
   tooth?: {
     /** The tooth's own silhouette — crown AND root — and every broken or
-     *  prepared variant of it. The drawings do not separate enamel from
-     *  dentin or cementum: one shape is the whole tooth. */
+     *  prepared variant of it.
+     *
+     *  In the `classic` profile this is the whole tooth: those drawings are one
+     *  shape, with no inner structure. In `measured` it is the outer shell —
+     *  enamel over the crown, cementum over the root — around
+     *  {@link OdontogramThemeConfig.tooth.dentin}, which takes this colour
+     *  unless it is set. Setting only `body` therefore looks the same in both
+     *  profiles. */
     body?: string;
+    /** The dentin core inside the crown and root (`measured` profile only —
+     *  the classic drawings have no enamel/dentin boundary to colour).
+     *
+     *  Unset, it follows `body`, so the boundary is invisible until you ask
+     *  for it. The occlusal view has no core: nothing of the dentin shows from
+     *  above. */
+    dentin?: string;
     /** Crown and root outline. */
     outline?: string;
     /** Crown sheen (the "beauty" layer). */
@@ -133,6 +146,7 @@ export type OdontogramThemeConfig = {
  *  `tools/toothgen/palette.py`; these are the ones worth a named API field. */
 const TOOTH_COLOR_MAP: Record<string, string> = {
   body: '--odon-tooth-body',
+  dentin: '--odon-tooth-dentin',
   outline: '--odon-tooth-outline',
   highlight: '--odon-tooth-highlight',
   milktoothBody: '--odon-milktooth-body',
@@ -231,8 +245,41 @@ export function applyThemeConfig(
   if (applied.length) appliedProps.set(element, applied);
 }
 
-/** Matches one `var(--odon-token, fallback)` reference in a style value. */
-const TOKEN_REF = /var\(\s*(--odon-[\w-]+)\s*,\s*([^)]*)\)/g;
+/** Where a `var(--odon-…)` reference begins. The closing paren is found by
+ *  counting, not by matching: a fallback may be another token reference
+ *  (`--odon-tooth-dentin` defaults to `var(--odon-tooth-body, #ebebeb)`), and a
+ *  `[^)]*` fallback group stops at the inner `)`. That leaves the inner
+ *  reference in the exported markup, where nothing resolves it and the fill
+ *  falls back to the SVG initial value — black, silently. */
+const TOKEN_START = 'var(--odon-';
+
+/** Replace every token reference in `text`, resolving fallbacks recursively.
+ *  `valueOf` returns the host's value for a token, or `""` when it is unset. */
+function resolveTokenRefs(text: string, valueOf: (token: string) => string): string {
+  let out = '';
+  let cursor = 0;
+  for (;;) {
+    const open = text.indexOf(TOKEN_START, cursor);
+    if (open < 0) return out + text.slice(cursor);
+    // `open + 3` is the '(' of `var(`.
+    let depth = 0;
+    let end = -1;
+    for (let i = open + 3; i < text.length; i++) {
+      const ch = text[i];
+      if (ch === '(') depth++;
+      else if (ch === ')' && --depth === 0) { end = i; break; }
+    }
+    // Unbalanced markup is not ours to repair: leave the rest untouched.
+    if (end < 0) return out + text.slice(cursor);
+    const inner = text.slice(open + 4, end);
+    const comma = inner.indexOf(',');
+    const token = (comma < 0 ? inner : inner.slice(0, comma)).trim();
+    const fallback = comma < 0 ? '' : inner.slice(comma + 1).trim();
+    const value = valueOf(token);
+    out += text.slice(cursor, open) + (value || resolveTokenRefs(fallback, valueOf));
+    cursor = end + 1;
+  }
+}
 
 /**
  * Resolve every palette token in serialized SVG markup to a concrete colour.
@@ -259,16 +306,16 @@ export function flattenThemeTokens(xml: string, element?: Element | null): strin
   if (!xml.includes('var(--odon-')) return xml;
   const scope = element ?? (typeof document !== 'undefined' ? document.documentElement : null);
   if (!scope || typeof getComputedStyle !== 'function') {
-    return xml.replace(TOKEN_REF, (_m, _token, fallback) => String(fallback).trim());
+    return resolveTokenRefs(xml, () => '');
   }
   const computed = getComputedStyle(scope);
   const cache = new Map<string, string>();
-  return xml.replace(TOKEN_REF, (_m, token: string, fallback: string) => {
+  return resolveTokenRefs(xml, token => {
     let value = cache.get(token);
     if (value === undefined) {
       value = computed.getPropertyValue(token).trim();
       cache.set(token, value);
     }
-    return value || String(fallback).trim();
+    return value;
   });
 }

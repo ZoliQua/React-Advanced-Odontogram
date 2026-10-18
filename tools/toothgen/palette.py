@@ -37,6 +37,13 @@ from __future__ import annotations
 TOKENS: dict[str, tuple[str, str]] = {
     # -- tooth structure ---------------------------------------------------
     "--odon-tooth-body": ("#ebebeb", "natural crown and every broken/prepared variant"),
+    # The only token whose default is another token. A core that defaulted to a
+    # literal would appear the moment a host set the body colour alone, which
+    # would make one documented field expose a boundary it never mentioned.
+    "--odon-tooth-dentin": (
+        "var(--odon-tooth-body, #ebebeb)",
+        "dentin core inside the crown and root; follows the body unless set",
+    ),
     "--odon-tooth-outline": ("#c8c9c9", "crown and root outline"),
     "--odon-tooth-highlight": ("#fefefe", "crown sheen (the 'beauty' layer)"),
     "--odon-tooth-cusp": ("#f4f1e8", "occlusal cusp field"),
@@ -276,6 +283,12 @@ SYNTHESIZED: dict[str, str] = {
     "#f4f1e8": "--odon-tooth-cusp",
     "#8f8f8f": "--odon-tooth-groove",
 }
+
+# Tokens that paint a layer the generator DERIVES rather than a declaration it
+# substitutes into a drawing (see dentin.py). They are part of the published
+# inventory, so they belong in the table; they will never be reported as
+# matching a source declaration, because there is no source declaration.
+DERIVED: tuple[str, ...] = ("--odon-tooth-dentin",)
 
 
 def css(token: str) -> str:

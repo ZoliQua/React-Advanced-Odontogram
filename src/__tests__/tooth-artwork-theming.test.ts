@@ -162,6 +162,70 @@ describe("tooth artwork: exports flatten the tokens", () => {
   });
 });
 
+describe("tooth artwork: the dentin core follows the body unless it is set", () => {
+  // `--odon-tooth-dentin` is the only token whose default is another token, so
+  // it is the only one whose export goes through a nested fallback.
+  const CORE = '<path style="fill: var(--odon-tooth-dentin, var(--odon-tooth-body, #ebebeb))"/>';
+
+  it("the measured assets paint the core through the nested token", () => {
+    expect(measured11).toContain(
+      'fill: var(--odon-tooth-dentin, var(--odon-tooth-body, #ebebeb))',
+    );
+    // Nothing of the dentin is visible from above.
+    expect(measured16Occl).not.toContain("--odon-tooth-dentin");
+  });
+
+  it("an unthemed export resolves the whole chain to the body's own colour", () => {
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    expect(flattenThemeTokens(CORE, el)).toBe('<path style="fill: #ebebeb"/>');
+    el.remove();
+  });
+
+  it("setting the body alone carries the core with it", () => {
+    // The point of the nesting: colouring the tooth through the documented
+    // field must not expose a boundary the host never asked about.
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    applyThemeConfig(el, { tooth: { body: "#273140" } });
+    expect(flattenThemeTokens(CORE, el)).toBe('<path style="fill: #273140"/>');
+    el.remove();
+  });
+
+  it("setting the dentin wins over the body", () => {
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    applyThemeConfig(el, { tooth: { body: "#273140", dentin: "#8a6b45" } });
+    expect(flattenThemeTokens(CORE, el)).toBe('<path style="fill: #8a6b45"/>');
+    el.remove();
+  });
+
+  it("leaves no inner reference behind — the failure mode that exports black", () => {
+    // A fallback group that stops at the first ')' passes the inner var()
+    // through into the exported file, where nothing resolves it and the fill
+    // falls back to the SVG initial value: black, with no error anywhere.
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    for (const xml of [
+      CORE,
+      '<path style="fill: var(--odon-tooth-dentin, var(--odon-tooth-body, var(--odon-gum, #f79f9a)))"/>',
+      '<g><path style="fill: var(--odon-tooth-dentin, var(--odon-tooth-body, #ebebeb))"/>' +
+        '<path style="stroke: var(--odon-tooth-outline, #c8c9c9)"/></g>',
+    ]) {
+      expect(flattenThemeTokens(xml, el)).not.toContain("var(");
+    }
+    el.remove();
+  });
+
+  it("leaves markup it cannot parse alone instead of mangling it", () => {
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    const broken = '<path style="fill: var(--odon-tooth-body, #ebebeb"/>';
+    expect(flattenThemeTokens(broken, el)).toBe(broken);
+    el.remove();
+  });
+});
+
 describe("tooth artwork: the export path is actually wired", () => {
   it("buildPerioSvg emits no unresolved token", async () => {
     // The unit tests above prove the flattener; this proves it is CALLED.

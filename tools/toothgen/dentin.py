@@ -33,6 +33,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import palette  # noqa: E402
 import roots  # noqa: E402
 import spec  # noqa: E402
 import svgpath  # noqa: E402
@@ -233,7 +234,8 @@ def dentin_d(base_d: str, *, cej: float, occl: float, apex: float,
 # Nested deliberately: unset, the core is the body colour and the boundary is
 # invisible; set `--odon-tooth-body` alone and the core follows it, so colouring
 # the tooth through the documented field cannot expose an undocumented seam.
-STYLE = "fill: var(--odon-tooth-dentin, var(--odon-tooth-body, #ebebeb))"
+# The nesting comes from the token table, which is where the defaults live.
+STYLE = f"fill: {palette.css('--odon-tooth-dentin')}"
 
 # The silhouettes that get a core, and whether their enamel is gone. A prepared
 # crown has been ground away, so what is left of it IS dentin up to a

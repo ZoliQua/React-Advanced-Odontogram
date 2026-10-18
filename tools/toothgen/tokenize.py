@@ -116,7 +116,12 @@ def main() -> int:
     print(f"\n{sum(stats.values())} declarations tokenized across {len(stats)} tokens"
           f" in {changed} file(s){'' if args.write else '  (dry run — pass --write)'}")
 
-    unused = sorted(set(palette.TOKENS) - set(stats) - set(palette.SYNTHESIZED.values()))
+    unused = sorted(
+        set(palette.TOKENS)
+        - set(stats)
+        - set(palette.SYNTHESIZED.values())
+        - set(palette.DERIVED)
+    )
     if unused:
         print(f"\ntokens in the table that matched nothing ({len(unused)}):")
         for t in unused:

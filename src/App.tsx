@@ -53,6 +53,11 @@ export { default as FillingsCard } from "./surfaces/cards/FillingsCard";
 export { default as RootPeriodontiumCard } from "./surfaces/cards/RootPeriodontiumCard";
 export { default as DiagnosesCard } from "./surfaces/cards/DiagnosesCard";
 export { default as SurfaceCross } from "./surfaces/cards/SurfaceCross";
+// The two surfaces the composable-UI work left behind: a host that replaces
+// the shell has to render the perio sidebar and the case-diagnoses dialog
+// itself, and both were importable only through a deep path into the package.
+export { default as PerioSidebar } from "./PerioSidebar";
+export { default as CaseDiagnosesModal } from "./CaseDiagnosesModal";
 export { useEngineState } from "./surfaces/useEngineState";
 export {
   getActiveOrtho,

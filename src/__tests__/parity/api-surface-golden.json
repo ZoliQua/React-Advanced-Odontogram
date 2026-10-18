@@ -1,6 +1,7 @@
 {
   "App": {
     "CariesCard": "function",
+    "CaseDiagnosesModal": "function",
     "DiagnosesCard": "function",
     "FillingsCard": "function",
     "OdontogramChartSurface": "function",
@@ -9,6 +10,7 @@
     "OrthodonticsCard": "function",
     "PROGRESSION_MM": "number",
     "PerioChart": "function",
+    "PerioSidebar": "function",
     "RootPeriodontiumCard": "function",
     "StatusesCard": "function",
     "SurfaceCross": "function",

@@ -66,6 +66,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and carries the shape at 10.27:1 against the crown and 14.93:1 against the
   lesion. Raised by the same report.
 
+- **`PerioSidebar` and `CaseDiagnosesModal` are exported.** Every other surface
+  and control card became importable in the composable-UI work; these two were
+  reachable only through a deep path into the package, so a host replacing the
+  shell could not render the perio sidebar or the case-diagnoses dialog.
+
 - **A themed export could paint a nested token black.** `flattenThemeTokens`
   ended its fallback at the first `)`, so a token whose default is another
   token — `--odon-tooth-dentin` is the first — survived into the exported file

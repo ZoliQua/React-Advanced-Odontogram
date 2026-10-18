@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -178,7 +178,7 @@ function Workspace() {
 
 `OdontogramProvider` recebe as mesmas props que `OdontogramShell`. Um hook `useOdontogramUi()` (e o tipo `OdontogramUiContextValue`) está disponível para construir suas próprias superfícies. Restrição atual: use um provider por página. As superfícies podem ser montadas e desmontadas sob demanda — elas se revinculam automaticamente ao remontar. O próprio `OdontogramShell` permanece inalterado — é exatamente essa composição no arranjo padrão.
 
-Para uma composição ainda mais fina, os cartões de controle individuais também são exportados — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` e `ToothDetailsCard` —, cada um um componente declarativo autônomo que lê e grava a sessão compartilhada por meio da API do motor (um hook `useEngineState()` é exportado para construir as suas próprias). Monte apenas os cartões de que um determinado layout precisa, em qualquer arranjo, sob um único `OdontogramProvider`.
+Para uma composição ainda mais fina, os cartões de controle individuais também são exportados — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` e `ToothDetailsCard` —, cada um um componente declarativo autônomo que lê e grava a sessão compartilhada por meio da API do motor (um hook `useEngineState()` é exportado para construir as suas próprias). Monte apenas os cartões de que um determinado layout precisa, em qualquer arranjo, sob um único `OdontogramProvider`. A barra lateral de contexto periodontal e o diálogo de diagnósticos do caso também são exportados — `PerioSidebar` e `CaseDiagnosesModal` —, de modo que um layout que substitua o shell ainda consegue renderizar os dois.
 
 #### Usando com Next.js (App Router)
 
@@ -555,9 +555,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`. O modo escuro traz sua própria paleta para os desenhos, de modo que o odontograma escurece junto com a interface em vez de ofuscar. No perfil `measured`, a coroa e a raiz também têm um núcleo de dentina: ele assume a cor de `body` enquanto `dentin` não for definido, de modo que o limite só aparece quando você o pede.
 ```
+
+Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`. O modo escuro traz sua própria paleta para os desenhos, de modo que o odontograma escurece junto com a interface em vez de ofuscar. No perfil `measured`, a coroa e a raiz também têm um núcleo de dentina: ele assume a cor de `body` enquanto `dentin` não for definido, de modo que o limite só aparece quando você o pede. No modo escuro os ladrilhos oclusais escurecem junto com as vistas laterais, e uma lesão de cárie mantém seu preenchimento escuro: é o contorno que passa a claro e carrega a forma, porque «cárie = escuro» se lê antes de qualquer razão de contraste.
 
 **Integração de plugins:**
 ```tsx

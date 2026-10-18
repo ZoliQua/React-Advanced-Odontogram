@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -178,7 +178,7 @@ function Workspace() {
 
 `OdontogramProvider` prijíma rovnaké props ako `OdontogramShell`. Na tvorbu vlastných povrchov je k dispozícii hook `useOdontogramUi()` (a typ `OdontogramUiContextValue`). Aktuálne obmedzenie: použite jeden provider na stránku. Povrchy možno pripájať a odpájať podľa potreby — pri opätovnom pripojení sa automaticky znova naviažu. Samotný `OdontogramShell` je nezmenený — je to presne táto kompozícia v predvolenom usporiadaní.
 
-Pre ešte jemnejšie skladanie sú exportované aj jednotlivé ovládacie karty — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` a `ToothDetailsCard` — každá je samostatný deklaratívny komponent, ktorý číta a zapisuje zdieľanú reláciu cez API motora (na tvorbu vlastných je exportovaný hook `useEngineState()`). Pripojte len tie karty, ktoré dané rozloženie potrebuje, v ľubovoľnom usporiadaní, pod jediným `OdontogramProvider`.
+Pre ešte jemnejšie skladanie sú exportované aj jednotlivé ovládacie karty — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` a `ToothDetailsCard` — každá je samostatný deklaratívny komponent, ktorý číta a zapisuje zdieľanú reláciu cez API motora (na tvorbu vlastných je exportovaný hook `useEngineState()`). Pripojte len tie karty, ktoré dané rozloženie potrebuje, v ľubovoľnom usporiadaní, pod jediným `OdontogramProvider`. Exportovaný je aj bočný panel parodontálneho kontextu a dialóg diagnóz prípadu — `PerioSidebar` a `CaseDiagnosesModal` —, takže rozloženie, ktoré nahrádza shell, ich dokáže vykresliť oba.
 
 #### Použitie s Next.js (App Router)
 
@@ -555,9 +555,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval. V profile `measured` nesie korunka aj koreň navyše dentínové jadro: preberá farbu `body`, kým nenastavíte `dentin`, takže hranica sa objaví až vtedy, keď si ju vyžiadate.
 ```
+
+Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval. V profile `measured` nesie korunka aj koreň navyše dentínové jadro: preberá farbu `body`, kým nenastavíte `dentin`, takže hranica sa objaví až vtedy, keď si ju vyžiadate. V tmavom režime okluzálne dlaždice tmavnú spolu s bočnými pohľadmi a kazivá lézia si ponecháva tmavú výplň — na svetlú sa prepne obrys a ten nesie tvar, pretože „kaz = tmavý“ sa prečíta skôr než akýkoľvek kontrastný pomer.
 
 **Integrácia pluginu:**
 ```tsx

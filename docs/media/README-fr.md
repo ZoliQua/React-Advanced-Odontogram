@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -180,7 +180,7 @@ function Workspace() {
 
 `OdontogramProvider` accepte les mêmes props que `OdontogramShell`. Un hook `useOdontogramUi()` (et le type `OdontogramUiContextValue`) est disponible pour créer vos propres surfaces. Contrainte actuelle : utilisez un seul provider par page. Les surfaces peuvent être montées et démontées à la demande — elles se relient automatiquement au remontage. `OdontogramShell` lui-même est inchangé — il s'agit exactement de cette composition dans la disposition par défaut.
 
-Pour une composition encore plus fine, les cartes de contrôle individuelles sont également exportées — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` et `ToothDetailsCard` —, chacune un composant déclaratif autonome qui lit et écrit la session partagée via l'API du moteur (un hook `useEngineState()` est exporté pour créer les vôtres). Ne montez que les cartes dont une mise en page donnée a besoin, dans n'importe quel agencement, sous un seul `OdontogramProvider`.
+Pour une composition encore plus fine, les cartes de contrôle individuelles sont également exportées — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` et `ToothDetailsCard` —, chacune un composant déclaratif autonome qui lit et écrit la session partagée via l'API du moteur (un hook `useEngineState()` est exporté pour créer les vôtres). Ne montez que les cartes dont une mise en page donnée a besoin, dans n'importe quel agencement, sous un seul `OdontogramProvider`. La barre latérale de contexte parodontal et la boîte de dialogue des diagnostics du cas sont également exportées — `PerioSidebar` et `CaseDiagnosesModal` —, de sorte qu'une mise en page qui remplace le shell peut toujours les rendre toutes les deux.
 
 #### Utilisation avec Next.js (App Router)
 
@@ -557,9 +557,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-Les dessins portent leurs couleurs sous forme de propriétés personnalisées CSS, la couleur livrée servant de valeur de repli ; les deux profils d'anatomie suivent donc un même réglage, et l'export les résout avant de quitter la page. La table complète des jetons se trouve dans `tools/toothgen/palette.py`. Le mode sombre fournit sa propre palette pour les dessins : le schéma s'assombrit avec l'interface au lieu d'éblouir. Dans le profil `measured`, la couronne et la racine portent en plus un noyau de dentine : il prend la couleur de `body` tant que `dentin` n'est pas défini, la limite n'apparaît donc que si vous la demandez.
 ```
+
+Les dessins portent leurs couleurs sous forme de propriétés personnalisées CSS, la couleur livrée servant de valeur de repli ; les deux profils d'anatomie suivent donc un même réglage, et l'export les résout avant de quitter la page. La table complète des jetons se trouve dans `tools/toothgen/palette.py`. Le mode sombre fournit sa propre palette pour les dessins : le schéma s'assombrit avec l'interface au lieu d'éblouir. Dans le profil `measured`, la couronne et la racine portent en plus un noyau de dentine : il prend la couleur de `body` tant que `dentin` n'est pas défini, la limite n'apparaît donc que si vous la demandez. En mode sombre, les vignettes occlusales s'assombrissent avec les vues latérales, et une lésion carieuse conserve son remplissage sombre : c'est le contour qui passe au clair et porte la forme, car « carie = sombre » se lit avant tout rapport de contraste.
 
 **Intégration de plugins :**
 ```tsx

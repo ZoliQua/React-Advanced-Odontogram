@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -178,7 +178,7 @@ function Workspace() {
 
 `OdontogramProvider` accetta le stesse props di `OdontogramShell`. È disponibile un hook `useOdontogramUi()` (e il tipo `OdontogramUiContextValue`) per costruire le tue superfici. Vincolo attuale: usa un solo provider per pagina. Le superfici possono essere montate e smontate su richiesta — si ricollegano automaticamente al rimontaggio. `OdontogramShell` stesso è invariato — è esattamente questa composizione nella disposizione predefinita.
 
-Per una composizione ancora più fine, vengono esportate anche le singole schede di controllo — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` e `ToothDetailsCard` —, ciascuna un componente dichiarativo autonomo che legge e scrive la sessione condivisa tramite l'API del motore (viene esportato un hook `useEngineState()` per costruire le tue). Monta solo le schede di cui un determinato layout ha bisogno, in qualsiasi disposizione, sotto un unico `OdontogramProvider`.
+Per una composizione ancora più fine, vengono esportate anche le singole schede di controllo — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` e `ToothDetailsCard` —, ciascuna un componente dichiarativo autonomo che legge e scrive la sessione condivisa tramite l'API del motore (viene esportato un hook `useEngineState()` per costruire le tue). Monta solo le schede di cui un determinato layout ha bisogno, in qualsiasi disposizione, sotto un unico `OdontogramProvider`. Anche la barra laterale del contesto parodontale e la finestra di dialogo delle diagnosi del caso vengono esportate — `PerioSidebar` e `CaseDiagnosesModal` —, così un layout che sostituisce la shell può comunque renderizzarle entrambe.
 
 #### Utilizzo con Next.js (App Router)
 
@@ -555,9 +555,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-I disegni portano i propri colori come proprietà personalizzate CSS con il colore di serie come fallback, così entrambi i profili anatomici seguono un'unica impostazione e l'esportazione li risolve prima di lasciare la pagina. La tabella completa dei token è in `tools/toothgen/palette.py`. La modalità scura porta una propria palette per i disegni, così lo schema si scurisce insieme all'interfaccia invece di abbagliare. Nel profilo `measured` corona e radice portano anche un nucleo di dentina: prende il colore di `body` finché `dentin` non viene impostato, quindi il confine compare solo quando lo si chiede.
 ```
+
+I disegni portano i propri colori come proprietà personalizzate CSS con il colore di serie come fallback, così entrambi i profili anatomici seguono un'unica impostazione e l'esportazione li risolve prima di lasciare la pagina. La tabella completa dei token è in `tools/toothgen/palette.py`. La modalità scura porta una propria palette per i disegni, così lo schema si scurisce insieme all'interfaccia invece di abbagliare. Nel profilo `measured` corona e radice portano anche un nucleo di dentina: prende il colore di `body` finché `dentin` non viene impostato, quindi il confine compare solo quando lo si chiede. In modalità scura le caselle occlusali si scuriscono insieme alle viste laterali e una lesione cariosa mantiene il suo riempimento scuro: è il contorno a passare al chiaro e a portare la forma, perché «carie = scuro» si legge prima di qualsiasi rapporto di contrasto.
 
 **Integrazione plugin:**
 ```tsx

@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -178,7 +178,7 @@ function Workspace() {
 
 `OdontogramProvider` acepta las mismas props que `OdontogramShell`. Hay disponible un hook `useOdontogramUi()` (y el tipo `OdontogramUiContextValue`) para crear sus propias superficies. Restricción actual: use un proveedor por página. Las superficies se pueden montar y desmontar bajo demanda: se revinculan automáticamente al volver a montarse. `OdontogramShell` en sí no ha cambiado: es exactamente esta composición en la disposición predeterminada.
 
-Para una composición aún más fina, las tarjetas de control individuales también se exportan — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` y `ToothDetailsCard` —, cada una un componente declarativo autónomo que lee y escribe la sesión compartida a través de la API del motor (se exporta un hook `useEngineState()` para construir las suyas propias). Monte solo las tarjetas que necesite un diseño dado, en cualquier disposición, bajo un único `OdontogramProvider`.
+Para una composición aún más fina, las tarjetas de control individuales también se exportan — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` y `ToothDetailsCard` —, cada una un componente declarativo autónomo que lee y escribe la sesión compartida a través de la API del motor (se exporta un hook `useEngineState()` para construir las suyas propias). Monte solo las tarjetas que necesite un diseño dado, en cualquier disposición, bajo un único `OdontogramProvider`. La barra lateral de contexto periodontal y el diálogo de diagnósticos del caso también se exportan — `PerioSidebar` y `CaseDiagnosesModal` —, de modo que un diseño que sustituya al shell puede seguir renderizando ambos.
 
 #### Uso con Next.js (App Router)
 
@@ -555,9 +555,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-Los dibujos llevan sus colores como propiedades personalizadas de CSS con el color de serie como valor de reserva, de modo que ambos perfiles de anatomía siguen un mismo ajuste y la exportación los resuelve antes de salir de la página. La tabla completa de tokens está en `tools/toothgen/palette.py`. El modo oscuro trae su propia paleta para los dibujos, de modo que el odontograma se oscurece junto con la interfaz en lugar de deslumbrar. En el perfil `measured`, la corona y la raíz llevan además un núcleo de dentina: toma el color de `body` mientras no se defina `dentin`, así que el límite solo aparece cuando se pide.
 ```
+
+Los dibujos llevan sus colores como propiedades personalizadas de CSS con el color de serie como valor de reserva, de modo que ambos perfiles de anatomía siguen un mismo ajuste y la exportación los resuelve antes de salir de la página. La tabla completa de tokens está en `tools/toothgen/palette.py`. El modo oscuro trae su propia paleta para los dibujos, de modo que el odontograma se oscurece junto con la interfaz en lugar de deslumbrar. En el perfil `measured`, la corona y la raíz llevan además un núcleo de dentina: toma el color de `body` mientras no se defina `dentin`, así que el límite solo aparece cuando se pide. En modo oscuro las casillas oclusales se oscurecen junto con las vistas laterales, y una lesión de caries conserva su relleno oscuro: el contorno pasa a claro y es el que lleva la forma, porque «caries = oscuro» se lee antes que cualquier relación de contraste.
 
 **Integración de plugins:**
 ```tsx

@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -180,7 +180,7 @@ function Workspace() {
 
 `OdontogramProvider` nimmt dieselben Props wie `OdontogramShell` entgegen. Ein `useOdontogramUi()`-Hook (und der Typ `OdontogramUiContextValue`) steht zum Erstellen eigener Oberflächen zur Verfügung. Aktuelle Einschränkung: Verwenden Sie einen Provider pro Seite. Oberflächen können bei Bedarf ein- und ausgehängt werden — sie binden sich beim erneuten Einhängen automatisch wieder an. `OdontogramShell` selbst ist unverändert — es ist genau diese Zusammensetzung in der Standardanordnung.
 
-Für eine noch feinere Zusammensetzung werden auch die einzelnen Steuerungskarten exportiert — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard` und `ToothDetailsCard` — jede eine eigenständige deklarative Komponente, die die gemeinsame Sitzung über die Engine-API liest und schreibt (ein `useEngineState()`-Hook wird zum Erstellen eigener bereitgestellt). Binden Sie nur die Karten ein, die ein bestimmtes Layout benötigt, in beliebiger Anordnung, unter einem einzigen `OdontogramProvider`.
+Für eine noch feinere Zusammensetzung werden auch die einzelnen Steuerungskarten exportiert — `OrthodonticsCard`, `StatusesCard`, `CariesCard`, `FillingsCard`, `RootPeriodontiumCard`, `DiagnosesCard` und `ToothDetailsCard` — jede eine eigenständige deklarative Komponente, die die gemeinsame Sitzung über die Engine-API liest und schreibt (ein `useEngineState()`-Hook wird zum Erstellen eigener bereitgestellt). Binden Sie nur die Karten ein, die ein bestimmtes Layout benötigt, in beliebiger Anordnung, unter einem einzigen `OdontogramProvider`. Auch die Perio-Kontext-Seitenleiste und der Fall-Diagnosen-Dialog werden exportiert — `PerioSidebar` und `CaseDiagnosesModal` —, sodass ein Layout, das die Shell ersetzt, beide weiterhin rendern kann.
 
 #### Verwendung mit Next.js (App Router)
 
@@ -557,9 +557,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-Die Zeichnungen tragen ihre Farben als CSS-Custom-Properties mit der ausgelieferten Farbe als Fallback, sodass beide Anatomieprofile einer Einstellung folgen und ein Export sie auflöst, bevor er die Seite verlässt. Die vollständige Token-Tabelle steht in `tools/toothgen/palette.py`. Der Dunkelmodus bringt eine eigene Zeichnungspalette mit, sodass das Schema mit der Oberfläche abdunkelt statt zu blenden. Im Profil `measured` tragen Krone und Wurzel zusätzlich einen Dentinkern: Er übernimmt die Farbe von `body`, bis `dentin` gesetzt wird — die Grenze erscheint also erst, wenn man sie anfordert.
 ```
+
+Die Zeichnungen tragen ihre Farben als CSS-Custom-Properties mit der ausgelieferten Farbe als Fallback, sodass beide Anatomieprofile einer Einstellung folgen und ein Export sie auflöst, bevor er die Seite verlässt. Die vollständige Token-Tabelle steht in `tools/toothgen/palette.py`. Der Dunkelmodus bringt eine eigene Zeichnungspalette mit, sodass das Schema mit der Oberfläche abdunkelt statt zu blenden. Im Profil `measured` tragen Krone und Wurzel zusätzlich einen Dentinkern: Er übernimmt die Farbe von `body`, bis `dentin` gesetzt wird — die Grenze erscheint also erst, wenn man sie anfordert. Im Dunkelmodus dunkeln die Okklusalkacheln zusammen mit den Seitenansichten ab, und eine kariöse Läsion behält ihre dunkle Füllung — die Kontur wechselt ins Helle und trägt die Form, denn „Karies = dunkel“ wird vor jedem Kontrastverhältnis gelesen.
 
 **Plugin-Integration:**
 ```tsx

@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.6.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -180,7 +180,7 @@ function Workspace() {
 
 يأخذ `OdontogramProvider` نفس خصائص `OdontogramShell`. ويتوفّر خطّاف `useOdontogramUi()` (والنوع `OdontogramUiContextValue`) لبناء أسطحك الخاصة. القيد الحالي: استخدم موفّرًا واحدًا لكل صفحة. يمكن تركيب الأسطح وإزالتها عند الحاجة — فهي تُعيد الارتباط تلقائيًا عند إعادة التركيب. أما `OdontogramShell` نفسه فلم يتغيّر — فهو بالضبط هذا التركيب في الترتيب الافتراضي.
 
-ولمزيد من دقّة التركيب، تُصدَّر أيضًا بطاقات التحكّم الفردية — `OrthodonticsCard` و`StatusesCard` و`CariesCard` و`FillingsCard` و`RootPeriodontiumCard` و`ToothDetailsCard` — وكلٌّ منها مكوّن تصريحي مستقل يقرأ ويكتب الجلسة المشتركة عبر واجهة برمجة المحرّك (ويُصدَّر خطّاف `useEngineState()` لبناء بطاقاتك الخاصة). ركّب فقط البطاقات التي يحتاجها تخطيط معيّن، بأي ترتيب، ضمن `OdontogramProvider` واحد.
+ولمزيد من دقّة التركيب، تُصدَّر أيضًا بطاقات التحكّم الفردية — `OrthodonticsCard` و`StatusesCard` و`CariesCard` و`FillingsCard` و`RootPeriodontiumCard` و`DiagnosesCard` و`ToothDetailsCard` — وكلٌّ منها مكوّن تصريحي مستقل يقرأ ويكتب الجلسة المشتركة عبر واجهة برمجة المحرّك (ويُصدَّر خطّاف `useEngineState()` لبناء بطاقاتك الخاصة). ركّب فقط البطاقات التي يحتاجها تخطيط معيّن، بأي ترتيب، ضمن `OdontogramProvider` واحد. كذلك يُصدَّر الشريط الجانبي لسياق دواعم السن وحوار تشخيصات الحالة — `PerioSidebar` و`CaseDiagnosesModal` — حتى يتمكّن أي تخطيط يستبدل الغلاف من عرضهما معًا.
 
 #### الاستخدام مع Next.js (موجِّه التطبيق App Router)
 
@@ -557,9 +557,9 @@ export default function Host(){
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
-
-تحمل الرسوم ألوانها كخصائص CSS مخصَّصة مع اللون المُضمَّن كقيمة احتياطية، فيتبع كلا ملفَّي التشريح إعدادًا واحدًا، ويحلّ التصدير هذه القيم قبل مغادرتها الصفحة. جدول الرموز الكامل في `tools/toothgen/palette.py`. ويأتي الوضع الداكن بلوحة ألوان خاصة بالرسوم، فيَعتِم المخطط مع بقية الواجهة بدل أن يبهر العين. وفي ملف `measured` يحمل التاجُ والجذرُ أيضًا لبًّا عاجيًّا: يأخذ لون `body` ما لم تُضبط `dentin`، فلا يظهر الحدّ إلا عندما تطلبه.
 ```
+
+تحمل الرسوم ألوانها كخصائص CSS مخصَّصة مع اللون المُضمَّن كقيمة احتياطية، فيتبع كلا ملفَّي التشريح إعدادًا واحدًا، ويحلّ التصدير هذه القيم قبل مغادرتها الصفحة. جدول الرموز الكامل في `tools/toothgen/palette.py`. ويأتي الوضع الداكن بلوحة ألوان خاصة بالرسوم، فيَعتِم المخطط مع بقية الواجهة بدل أن يبهر العين. وفي ملف `measured` يحمل التاجُ والجذرُ أيضًا لبًّا عاجيًّا: يأخذ لون `body` ما لم تُضبط `dentin`، فلا يظهر الحدّ إلا عندما تطلبه. في الوضع الداكن تَعتِم مربّعات السطح الإطباقي مع المناظر الجانبية، ويحتفظ التسوّس بتعبئته الداكنة — إذ ينقلب المحيط إلى الفاتح وهو ما يحمل الشكل، لأن «التسوّس = داكن» يُقرأ قبل أي نسبة تباين.
 
 **تكامل الإضافات:**
 ```tsx

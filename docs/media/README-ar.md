@@ -537,8 +537,26 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      // `body` is the tooth's own silhouette — crown AND root. The drawings
+      // do not separate enamel from dentin: one shape is the whole tooth.
+      body: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
+    // The selection highlight. Not artwork — the chart draws it around a
+    // tile — but it lives here so one object covers the whole palette.
+    selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
+
+تحمل الرسوم ألوانها كخصائص CSS مخصَّصة مع اللون المُضمَّن كقيمة احتياطية، فيتبع كلا ملفَّي التشريح إعدادًا واحدًا، ويحلّ التصدير هذه القيم قبل مغادرتها الصفحة. جدول الرموز الكامل في `tools/toothgen/palette.py`. ويأتي الوضع الداكن بلوحة ألوان خاصة بالرسوم، فيَعتِم المخطط مع بقية الواجهة بدل أن يبهر العين.
 ```
 
 **تكامل الإضافات:**
@@ -870,5 +888,7 @@ React Advanced Odontogram من إنشاء وصيانة Zoltan Dul ([@ZoliQua](ht
 - [@Ditherys](https://github.com/Ditherys): مجموعة الأسنان المقاسة الموسَّعة — المواصفة الكاملة لمولّد التشريح للأسنان الدائمة واللبنية، وبيانات تسجيل الطبقات الفوقية، ومجموعة التحقق، منقولة من نسختهم المتفرّعة
 
 **مبني باستخدام** [jsPDF](https://github.com/parallax/jsPDF)، [DOMPurify](https://github.com/cure53/DOMPurify)، [React](https://react.dev)، [Vite](https://vite.dev)، [TypeScript](https://www.typescriptlang.org) و[Tailwind CSS](https://tailwindcss.com).
+
+**الترخيص.** هذا المشروع مرخَّص بموجب MIT، بما في ذلك الاستخدام التجاري — وهذا يشمل رسوم الأسنان، وهي عمل أصلي. أما خطوط PDF المضمَّنة وتبعيات التشغيل فتحتفظ بشروطها الخاصة (المتساهلة أيضًا): انظر [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 المساهمات مرحّب بها. افتح pull request على GitHub وسيُذكر اسمك هنا. إذا كان المشروع مفيدًا لك، من فضلك [امنحه نجمة على GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

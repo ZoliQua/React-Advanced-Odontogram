@@ -537,8 +537,26 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      // `body` is the tooth's own silhouette — crown AND root. The drawings
+      // do not separate enamel from dentin: one shape is the whole tooth.
+      body: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
+    // The selection highlight. Not artwork — the chart draws it around a
+    // tile — but it lives here so one object covers the whole palette.
+    selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
+
+牙齿图形以 CSS 自定义属性承载颜色，并以随附颜色作为回退值，因此两种解剖轮廓都遵循同一处设置，导出时也会在离开页面前完成解析。完整的 token 表位于 `tools/toothgen/palette.py`。深色模式自带一套牙齿图形配色，因此牙位图会与界面一同变暗，而不会刺眼。
 ```
 
 **插件集成：**
@@ -869,5 +887,7 @@ React Advanced Odontogram 由 Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 - [@Ditherys](https://github.com/Ditherys)：扩充后的实测牙齿集——解剖生成器针对恒牙与乳牙的完整规格、叠加层的配准元数据及其校验套件，自其分支移植而来
 
 **基于** [jsPDF](https://github.com/parallax/jsPDF)、[DOMPurify](https://github.com/cure53/DOMPurify)、[React](https://react.dev)、[Vite](https://vite.dev)、[TypeScript](https://www.typescriptlang.org) 和 [Tailwind CSS](https://tailwindcss.com) 构建。
+
+**许可。** 本项目采用 MIT 许可，包含商业用途——牙齿图形同样适用，它们均为原创作品。内嵌的 PDF 字体与运行时依赖保留各自的（同样宽松的）条款：参见 [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md)。
 
 欢迎贡献。在 GitHub 上开启一个 pull request，您的名字就会被记入此处。如果本项目对您有用，请[在 GitHub 上给它点亮星标](https://github.com/ZoliQua/React-Advanced-Odontogram)。

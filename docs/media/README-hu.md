@@ -535,8 +535,26 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      // `body` is the tooth's own silhouette — crown AND root. The drawings
+      // do not separate enamel from dentin: one shape is the whole tooth.
+      body: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
+    // The selection highlight. Not artwork — the chart draws it around a
+    // tile — but it lives here so one object covers the whole palette.
+    selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
+
+A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram az felülettel együtt sötétedik, nem világít bele.
 ```
 
 **Plugin integráció:**
@@ -876,5 +894,7 @@ A React Advanced Odontogramot Zoltan Dul ([@ZoliQua](https://github.com/ZoliQua)
 - [@Ditherys](https://github.com/Ditherys): a bővített, bemért fogkészlet — az anatómiagenerátor teljes maradó és tejfogazati specifikációja, a rárajzolt rétegek regisztrációs metaadatai és az ellenőrző készlet, az ő forkjukból átültetve
 
 **Felhasznált eszközök:** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) és [Tailwind CSS](https://tailwindcss.com).
+
+**Licenc.** A projekt MIT-licencű, a kereskedelmi használatot is beleértve — és ez a fograjzokra is vonatkozik, amelyek saját munkák. A beágyazott PDF-betűtípusok és a futásidejű függőségek a saját (szintén megengedő) feltételeiket viszik: lásd [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 A hozzájárulásokat szívesen fogadjuk. Nyiss egy pull requestet a GitHubon, és itt feltüntetünk. Ha hasznosnak találod a projektet, kérlek [csillagozd a GitHubon](https://github.com/ZoliQua/React-Advanced-Odontogram).

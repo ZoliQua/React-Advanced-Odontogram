@@ -95,7 +95,7 @@ Two facts make that tractable:
 Every themable colour becomes:
 
 ```xml
-style="fill: var(--odon-tooth-enamel, #ebebeb)"
+style="fill: var(--odon-tooth-body, #ebebeb)"
 ```
 
 CSS custom properties resolve inside inline `style` attributes, so this needs no
@@ -207,7 +207,7 @@ unchanged from today.
 `applyStateToSvgSingle` is the sole runtime writer of `.style.fill`, on
 `tooth-base` / `milktooth-base`. It captures the asset's own fill once into
 `data-base-fill` and restores it on every non-tinted render. After Stage 2 that
-captured value is the literal `var(--odon-tooth-enamel, #ebebeb)` string, which
+captured value is the literal `var(--odon-tooth-body, #ebebeb)` string, which
 restores correctly — but the behaviour must be pinned.
 
 **Verify:** a test that tints a tooth, clears the tint, and asserts the crown

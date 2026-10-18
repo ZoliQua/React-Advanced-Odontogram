@@ -535,8 +535,26 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      // `body` is the tooth's own silhouette — crown AND root. The drawings
+      // do not separate enamel from dentin: one shape is the whole tooth.
+      body: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
+    // The selection highlight. Not artwork — the chart draws it around a
+    // tile — but it lives here so one object covers the whole palette.
+    selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
+
+Рисунки несут свои цвета как пользовательские свойства CSS, а поставляемый цвет служит запасным значением, поэтому оба профиля анатомии следуют одной настройке, а экспорт разрешает их до того, как покинет страницу. Полная таблица токенов — в `tools/toothgen/palette.py`. У тёмной темы есть собственная палитра для рисунков, поэтому схема темнеет вместе с интерфейсом, а не слепит.
 ```
 
 **Интеграция плагинов:**
@@ -869,5 +887,7 @@ React Advanced Odontogram создаётся и поддерживается Zol
 - [@Ditherys](https://github.com/Ditherys): расширенный набор измеренных зубов — полная спецификация генератора анатомии для постоянного и молочного прикуса, метаданные привязки накладок и набор проверок, перенесённые из их форка
 
 **Создано с помощью** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) и [Tailwind CSS](https://tailwindcss.com).
+
+**Лицензирование.** Проект распространяется по лицензии MIT, включая коммерческое использование, — и это относится к рисункам зубов, которые являются собственной работой. Встроенные шрифты для PDF и зависимости времени выполнения сохраняют свои (также разрешительные) условия: см. [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 Вклад приветствуется. Откройте pull request на GitHub, и вы будете указаны здесь. Если проект вам полезен, пожалуйста, [поставьте ему звезду на GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

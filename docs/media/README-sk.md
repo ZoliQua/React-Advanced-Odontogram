@@ -535,8 +535,26 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      // `body` is the tooth's own silhouette — crown AND root. The drawings
+      // do not separate enamel from dentin: one shape is the whole tooth.
+      body: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
+    // The selection highlight. Not artwork — the chart draws it around a
+    // tile — but it lives here so one object covers the whole palette.
+    selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
+
+Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval.
 ```
 
 **Integrácia pluginu:**
@@ -868,5 +886,7 @@ React Advanced Odontogram vytvára a spravuje Zoltan Dul ([@ZoliQua](https://git
 - [@Ditherys](https://github.com/Ditherys): rozšírená sada odmeraných zubov — úplná špecifikácia generátora anatómie pre trvalý aj mliečny chrup, registračné metadáta prekryvov a overovacia sada, prenesené z ich forku
 
 **Vytvorené pomocou** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) a [Tailwind CSS](https://tailwindcss.com).
+
+**Licencovanie.** Projekt je pod licenciou MIT vrátane komerčného použitia — a vzťahuje sa to aj na kresby zubov, ktoré sú vlastnou prácou. Vložené PDF písma a behové závislosti si ponechávajú vlastné (tiež permisívne) podmienky: pozri [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 Príspevky sú vítané. Otvorte pull request na GitHub a budete tu uvedení. Ak je pre vás projekt užitočný, [pridajte mu hviezdu na GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

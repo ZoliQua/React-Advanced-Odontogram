@@ -535,8 +535,26 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      // `body` is the tooth's own silhouette — crown AND root. The drawings
+      // do not separate enamel from dentin: one shape is the whole tooth.
+      body: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
+    // The selection highlight. Not artwork — the chart draws it around a
+    // tile — but it lives here so one object covers the whole palette.
+    selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
+
+The drawings carry their colours as CSS custom properties with the shipped colour as the fallback, so both anatomy profiles follow one setting and an export resolves them before it leaves the page. The full token table lives in `tools/toothgen/palette.py`. Dark mode already ships its own artwork palette, so the chart darkens with the rest of the interface rather than glaring.
 ```
 
 **Plugin integration:**
@@ -868,6 +886,8 @@ React Advanced Odontogram is created and maintained by Zoltan Dul ([@ZoliQua](ht
 - [@Ditherys](https://github.com/Ditherys): the expanded measured tooth set — the anatomy generator's full permanent and deciduous specification, its overlay-registration metadata and its verification suite, ported here from their fork
 
 **Built with** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) and [Tailwind CSS](https://tailwindcss.com).
+
+**Licensing.** This project is MIT-licensed, commercial use included — and that covers the tooth drawings, which are original work. The embedded PDF fonts and the runtime dependencies keep their own (also permissive) terms: see [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 Contributions are welcome. Open a pull request on GitHub and you will be credited here. If the project is useful to you, please [star it on GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).
 

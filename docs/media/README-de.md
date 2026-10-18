@@ -537,8 +537,26 @@ export default function Host(){
       background: '#fafafa',
       text: '#222222',
     },
+    // The tooth drawings are themable too. Omitted keys keep the colour the
+    // artwork is drawn in, so this is additive — set nothing and nothing moves.
+    tooth: {
+      // `body` is the tooth's own silhouette — crown AND root. The drawings
+      // do not separate enamel from dentin: one shape is the whole tooth.
+      body: '#f2f2f2',
+      outline: '#b9bdc2',
+      gum: '#e8a5a0',
+      bone: '#f6e6c8',
+    },
+    // Any palette token by name, for the surfaces `tooth` does not cover
+    // (per-material restoration colours, gradient stops).
+    tokens: { '--odon-rest-gold': '#d4af37' },
+    // The selection highlight. Not artwork — the chart draws it around a
+    // tile — but it lives here so one object covers the whole palette.
+    selection: { color: '#3b7bff', borderStyle: 'dashed' },
   }}
 />
+
+Die Zeichnungen tragen ihre Farben als CSS-Custom-Properties mit der ausgelieferten Farbe als Fallback, sodass beide Anatomieprofile einer Einstellung folgen und ein Export sie auflöst, bevor er die Seite verlässt. Die vollständige Token-Tabelle steht in `tools/toothgen/palette.py`. Der Dunkelmodus bringt eine eigene Zeichnungspalette mit, sodass das Schema mit der Oberfläche abdunkelt statt zu blenden.
 ```
 
 **Plugin-Integration:**
@@ -871,5 +889,7 @@ React Advanced Odontogram wird von Zoltan Dul ([@ZoliQua](https://github.com/Zol
 - [@Ditherys](https://github.com/Ditherys): der erweiterte vermessene Zahnsatz — die vollständige Spezifikation des Anatomiegenerators für bleibende und Milchzähne, die Registrierungs-Metadaten der Overlays und die Prüfsuite, aus ihrem Fork übernommen
 
 **Erstellt mit** [jsPDF](https://github.com/parallax/jsPDF), [DOMPurify](https://github.com/cure53/DOMPurify), [React](https://react.dev), [Vite](https://vite.dev), [TypeScript](https://www.typescriptlang.org) und [Tailwind CSS](https://tailwindcss.com).
+
+**Lizenzierung.** Dieses Projekt steht unter der MIT-Lizenz, kommerzielle Nutzung eingeschlossen — und das gilt auch für die Zahnzeichnungen, die eigene Werke sind. Die eingebetteten PDF-Schriften und die Laufzeitabhängigkeiten behalten ihre eigenen (ebenfalls permissiven) Bedingungen: siehe [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md).
 
 Beiträge sind willkommen. Öffnen Sie einen pull request auf GitHub, dann werden Sie hier genannt. Wenn Ihnen das Projekt nützt, geben Sie ihm bitte [einen Stern auf GitHub](https://github.com/ZoliQua/React-Advanced-Odontogram).

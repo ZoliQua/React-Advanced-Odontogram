@@ -217,6 +217,22 @@ describe("tooth artwork: the dentin core follows the body unless it is set", () 
     el.remove();
   });
 
+  it("resolves a token written with whitespace, and one nested in a foreign var()", () => {
+    // flattenThemeTokens is public, so the markup handed to it need not be
+    // ours: `var( --odon-x, … )` is valid CSS, and a host's own variable may
+    // wrap one of ours.
+    const el = document.createElement("div");
+    document.body.appendChild(el);
+    applyThemeConfig(el, { tooth: { dentin: "#8a6b45" } });
+    expect(flattenThemeTokens('<path style="fill: var( --odon-tooth-dentin , #ebebeb )"/>', el))
+      .toBe('<path style="fill: #8a6b45"/>');
+    // A var() that is not ours is stepped over, not skipped: the --odon- one
+    // inside it still resolves, and the outer reference is left intact.
+    expect(flattenThemeTokens('<path style="fill: var(--app-ink, var(--odon-tooth-dentin, #ebebeb))"/>', el))
+      .toBe('<path style="fill: var(--app-ink, #8a6b45)"/>');
+    el.remove();
+  });
+
   it("leaves markup it cannot parse alone instead of mangling it", () => {
     const el = document.createElement("div");
     document.body.appendChild(el);

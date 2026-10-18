@@ -108,6 +108,19 @@ class GeometryTests(unittest.TestCase):
         self.assertGreaterEqual(core.count("M"), 3)
         self.assertEqual(dentin.contains(d, core, margin=0.02), [])
 
+    def test_a_wobble_does_not_become_a_floating_speck(self) -> None:
+        # A notch two rows deep in an otherwise straight flank used to chain
+        # into a lobe of its own — 0.04 mm tall on template 35, invisible until
+        # someone themes the dentin and finds a speck in the crown.
+        w, nick = 10 * U, 0.1 * U
+        d = (f"M 0,{RECT_APEX} L {w},{RECT_APEX} L {w},{RECT_OCCL} "
+             f"L {w / 2 + nick},{RECT_OCCL} L {w / 2},{RECT_OCCL - nick} "
+             f"L {w / 2 - nick},{RECT_OCCL} L 0,{RECT_OCCL} Z")
+        core = dentin.dentin_d(d, cej=RECT_CEJ, occl=RECT_OCCL, apex=RECT_APEX)
+        for lobe in roots._polylines(core):
+            ys = [y for _, y in lobe]
+            self.assertGreaterEqual(max(ys) - min(ys), dentin.MIN_LOBE_MM * U * 0.99)
+
     def test_derivation_is_deterministic(self) -> None:
         args = dict(cej=RECT_CEJ, occl=RECT_OCCL, apex=RECT_APEX)
         self.assertEqual(dentin.dentin_d(RECT, **args), dentin.dentin_d(RECT, **args))
@@ -162,6 +175,32 @@ class ShippedAssetTests(unittest.TestCase):
                     self.assertEqual(
                         "display: none" in own, "display: none" in core
                     )
+
+    def test_no_shipped_lobe_is_a_sliver(self) -> None:
+        for key, txt in _templates():
+            for owner, _exposed in dentin.OWNERS:
+                core = re.search(dentin.TAG_RE % re.escape(owner + "-dentin"), txt)
+                d = re.search(r'\sd="([^"]+)"', core.group(0)).group(1)
+                for i, lobe in enumerate(roots._polylines(d)):
+                    ys = [y for _, y in lobe]
+                    with self.subTest(template=key, owner=owner, lobe=i):
+                        self.assertGreaterEqual(
+                            (max(ys) - min(ys)) / U, dentin.MIN_LOBE_MM * 0.99
+                        )
+
+    def test_a_core_follows_a_space_less_display_none(self) -> None:
+        # The variants ship "display: none"; nothing guarantees the spelling,
+        # and matching the literal would put a visible core over a hidden
+        # silhouette.
+        self.assertTrue(dentin.HIDDEN_RE.search('style="display:none;fill:#fff"'))
+        self.assertTrue(dentin.HIDDEN_RE.search('style="display: none; fill:#fff"'))
+        self.assertIsNone(dentin.HIDDEN_RE.search('style="fill:#fff"'))
+        tight = ('<path id="tooth-radix" d="%s" style="display:none;fill:#fff" />'
+                 % RECT)
+        out, _ = dentin.insert_layers(tight, cej=RECT_CEJ, occl=RECT_OCCL,
+                                      apex=RECT_APEX)
+        core = re.search(dentin.TAG_RE % "tooth-radix-dentin", out).group(0)
+        self.assertIn("display: none", core)
 
     def test_occlusal_templates_have_no_core(self) -> None:
         # Nothing of the dentin is visible from above on an intact tooth.

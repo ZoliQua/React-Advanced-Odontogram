@@ -49,7 +49,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   no `--odon-*` is defined, so that reference resolved to nothing and the fill
   fell back to the SVG initial value: black, with no error raised anywhere. The
   closing paren is now found by counting, fallbacks resolve recursively, and
-  markup that cannot be parsed is left alone instead of mangled.
+  markup that cannot be parsed is left alone instead of mangled. The function
+  is public, so it also stopped assuming the markup is ours: `var( --odon-x,
+  … )` resolves despite the whitespace, and a token nested inside a host's own
+  `var()` is resolved without disturbing the wrapper.
 
 - **The tooth drawings are themable.** `themeConfig` gains a `tooth` group —
   `body`, `outline`, `highlight`, `milktoothBody`, `cusp`, `groove`,

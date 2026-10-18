@@ -658,7 +658,9 @@ def check_dentin(out_dir: Path, specs, failures: list[str]) -> None:
                 )
             if dentin.STYLE not in dm.group(0):
                 failures.append(f"{s.key}: {owner}-dentin is not painted through its token")
-            if ("display: none" in om.group(0)) != ("display: none" in dm.group(0)):
+            own_hidden = dentin.HIDDEN_RE.search(om.group(0)) is not None
+            core_hidden = dentin.HIDDEN_RE.search(dm.group(0)) is not None
+            if own_hidden != core_hidden:
                 failures.append(
                     f"{s.key}: {owner}-dentin ships with a different visibility than {owner}"
                 )

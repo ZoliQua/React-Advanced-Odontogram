@@ -48,6 +48,13 @@ CEMENTUM_MM = 0.15
 # Below this the core is a sliver that reads as a rendering artefact.
 MIN_CORE_MM = 0.35
 
+# And below this a whole lobe is one: where a contour wobbles, two rows can
+# chain into a lobe 0.04 mm tall. Invisible while the core is the body colour,
+# a speck of dentin floating in the crown as soon as anyone themes it. The
+# measured gap between noise and signal is wide — the smallest real lobe on any
+# template is 3.8 mm tall, the largest sliver 0.39 mm.
+MIN_LOBE_MM = 0.5
+
 # Rows across the whole silhouette. 180 puts a sample every ~0.35 u on the
 # tallest template, well under one device pixel at PX_PER_UNIT = 1.62.
 ROWS = 180
@@ -168,7 +175,9 @@ def _lobes(rows: list[tuple[float, list[Span]]],
         prev_y = y
 
     closed.extend(open_lobes)
-    return [lb for lb in closed if len(lb) >= 2]
+    tall = MIN_LOBE_MM * spec.UNITS_PER_MM
+    return [lb for lb in closed
+            if len(lb) >= 2 and lb[-1][0] - lb[0][0] >= tall]
 
 
 def _simplify(points: list[tuple[float, float]], tol: float) -> list[tuple[float, float]]:
@@ -252,6 +261,11 @@ OWNERS: tuple[tuple[str, bool], ...] = (
 # space are both non-word characters.
 TAG_RE = r'<path id="%s"[^>]*/>'
 
+# A hidden layer, however the drawing spells it. Matching the literal
+# "display: none" would ship a VISIBLE core over a variant hidden as
+# "display:none" — and a check written the same way could not see it either.
+HIDDEN_RE = re.compile(r"display\s*:\s*none")
+
 
 def insert_layers(txt: str, *, cej: float, occl: float,
                   apex: float) -> tuple[str, dict[str, int]]:
@@ -272,7 +286,7 @@ def insert_layers(txt: str, *, cej: float, occl: float,
         d = dentin_d(dm.group(1), cej=cej, occl=occl, apex=apex, exposed=exposed)
         if not d:
             continue
-        hidden = "display: none" in owner_tag
+        hidden = HIDDEN_RE.search(owner_tag) is not None
         style = ("display: none; " if hidden else "") + STYLE
         tag = f'<path id="{owner}-dentin" d="{d}" data-active="1" style="{style}" />'
         txt = txt[:m.end()] + tag + txt[m.end():]

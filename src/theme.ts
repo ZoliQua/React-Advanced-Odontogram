@@ -250,10 +250,13 @@ export function applyThemeConfig(
  *  `[^)]*` fallback group stops at the inner `)`. That leaves the inner
  *  reference in the exported markup, where nothing resolves it and the fill
  *  falls back to the SVG initial value — black, silently. */
-const TOKEN_START = 'var(--odon-';
+const TOKEN_START = 'var(';
 
 /** Replace every token reference in `text`, resolving fallbacks recursively.
- *  `valueOf` returns the host's value for a token, or `""` when it is unset. */
+ *  `valueOf` returns the host's value for a token, or `""` when it is unset.
+ *
+ *  A `var()` that is not ours is stepped over rather than skipped, so an
+ *  `--odon-` reference nested inside someone else's is still resolved. */
 function resolveTokenRefs(text: string, valueOf: (token: string) => string): string {
   let out = '';
   let cursor = 0;
@@ -273,6 +276,11 @@ function resolveTokenRefs(text: string, valueOf: (token: string) => string): str
     const inner = text.slice(open + 4, end);
     const comma = inner.indexOf(',');
     const token = (comma < 0 ? inner : inner.slice(0, comma)).trim();
+    if (!token.startsWith('--odon-')) {
+      out += text.slice(cursor, open + 4);
+      cursor = open + 4;
+      continue;
+    }
     const fallback = comma < 0 ? '' : inner.slice(comma + 1).trim();
     const value = valueOf(token);
     out += text.slice(cursor, open) + (value || resolveTokenRefs(fallback, valueOf));
@@ -302,7 +310,9 @@ function resolveTokenRefs(text: string, valueOf: (token: string) => string): str
  *   document element; pass the chart's own container when one is at hand.
  */
 export function flattenThemeTokens(xml: string, element?: Element | null): string {
-  if (!xml.includes('var(--odon-')) return xml;
+  // Deliberately not `var(--odon-`: `var( --odon-x, … )` is valid CSS, and
+  // this function is public — markup it is handed need not be ours.
+  if (!xml.includes('var(')) return xml;
   const scope = element ?? (typeof document !== 'undefined' ? document.documentElement : null);
   if (!scope || typeof getComputedStyle !== 'function') {
     return resolveTokenRefs(xml, () => '');

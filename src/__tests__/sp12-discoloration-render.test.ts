@@ -20,7 +20,7 @@ const hexToRgb = (hex: string) => {
 // Asset-original crown fills for 11.svg, read out of the SVG's inline `style`
 // attribute — still the ONLY place these colors live, but since the artwork
 // was tokenized they are palette tokens carrying the same colour as their
-// fallback: `fill: var(--odon-tooth-enamel, #ebebeb)`.
+// fallback: `fill: var(--odon-tooth-body, #ebebeb)`.
 //
 // Derived from the asset rather than restated as a literal, because the
 // invariant under test is a ROUND TRIP: whatever the asset's own value is, the

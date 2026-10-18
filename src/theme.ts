@@ -23,6 +23,8 @@
  * <App themeConfig={myTheme} />
  * ```
  */
+import type { SelectionBorderStyle } from "./state/displaySettings";
+
 export type OdontogramThemeConfig = {
   colors?: {
     /** Primary background. Default: `#f3f6fb` (light) / `#0f172a` (dark). */
@@ -46,7 +48,7 @@ export type OdontogramThemeConfig = {
    * Tooth-artwork colours.
    *
    * The drawings carry their colours as palette tokens with today's colour as
-   * the fallback (`fill: var(--odon-tooth-enamel, #ebebeb)`), so an omitted
+   * the fallback (`fill: var(--odon-tooth-body, #ebebeb)`), so an omitted
    * key leaves that surface exactly as drawn. Setting a key recolours that
    * surface across BOTH anatomy profiles at once, even where the classic and
    * measured artwork happen to be drawn in different shades.
@@ -56,14 +58,16 @@ export type OdontogramThemeConfig = {
    * {@link OdontogramThemeConfig.tokens}.
    */
   tooth?: {
-    /** Natural crown, and every broken/prepared variant of it. */
-    enamel?: string;
+    /** The tooth's own silhouette — crown AND root — and every broken or
+     *  prepared variant of it. The drawings do not separate enamel from
+     *  dentin or cementum: one shape is the whole tooth. */
+    body?: string;
     /** Crown and root outline. */
     outline?: string;
     /** Crown sheen (the "beauty" layer). */
     highlight?: string;
-    /** Deciduous crown. */
-    milktoothEnamel?: string;
+    /** The deciduous tooth's silhouette. */
+    milktoothBody?: string;
     /** Deciduous crown sheen. */
     milktoothHighlight?: string;
     /** Occlusal cusp field. */
@@ -104,6 +108,23 @@ export type OdontogramThemeConfig = {
    * { tokens: { "--odon-rest-gold": "#d4af37", "--odon-fill-composite": "#eae0c8" } }
    */
   tokens?: Record<string, string>;
+  /**
+   * The tooth-selection highlight.
+   *
+   * Selection is an interaction state, not artwork — it is drawn by the chart
+   * around a tile, not by any tooth drawing — but hosts look for it here when
+   * they are deciding "what colour is everything". It is applied through the
+   * existing session setters (`setSelectionColor` / `setSelectionBorderStyle`),
+   * so it is NOT a CSS custom property and does not appear on the themed
+   * element.
+   *
+   * The dedicated `selectionColor` / `selectionBorderStyle` props on the
+   * provider are the more specific control and win when both are given.
+   */
+  selection?: {
+    color?: string;
+    borderStyle?: SelectionBorderStyle;
+  };
 };
 
 /** CSS custom property names mapped from theme config keys. */
@@ -111,10 +132,10 @@ export type OdontogramThemeConfig = {
  *  authoritative token table lives with the artwork, in
  *  `tools/toothgen/palette.py`; these are the ones worth a named API field. */
 const TOOTH_COLOR_MAP: Record<string, string> = {
-  enamel: '--odon-tooth-enamel',
+  body: '--odon-tooth-body',
   outline: '--odon-tooth-outline',
   highlight: '--odon-tooth-highlight',
-  milktoothEnamel: '--odon-milktooth-enamel',
+  milktoothBody: '--odon-milktooth-body',
   milktoothHighlight: '--odon-milktooth-highlight',
   cusp: '--odon-tooth-cusp',
   groove: '--odon-tooth-groove',

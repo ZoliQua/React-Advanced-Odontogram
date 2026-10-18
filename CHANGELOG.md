@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **The tooth drawings are themable.** `themeConfig` gains a `tooth` group —
-  `enamel`, `outline`, `highlight`, `milktoothEnamel`, `cusp`, `groove`,
+  `body`, `outline`, `highlight`, `milktoothBody`, `cusp`, `groove`,
   `pulpHealthy`, `pulpInflamed`, `gum`, `bone`, `caries`, `wear`, `calculus`
   and the two outline colours — plus a `tokens` map for any palette token by
   name (the per-material restoration colours, the e.max and metal-ceramic
@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   can never reach an unrelated custom property.
 
   The artwork now paints through CSS custom properties with the colour it is
-  drawn in as the fallback (`fill: var(--odon-tooth-enamel, #ebebeb)`), so this
+  drawn in as the fallback (`fill: var(--odon-tooth-body, #ebebeb)`), so this
   is additive by construction: **set nothing and nothing changes** — all 46
   installed assets are rendering-identical to the previous release, and every
   parity golden is byte-identical. 2382 declarations across 64 tokens.
@@ -73,6 +73,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   A host's `themeConfig` still wins: it sets the property on the chart element,
   which is nearer than the rule on `<html>`. Light mode is untouched, and every
   parity golden is byte-identical.
+
+- **`themeConfig.selection`.** The tooth-selection highlight is an interaction
+  state, not artwork — the chart draws it around a tile — and it already had
+  `setSelectionColor()` / `setSelectionBorderStyle()` plus provider props. It
+  is now also reachable from `themeConfig`, where a host setting up a palette
+  looks for it, instead of requiring a second API. Applied through the same
+  session setters, so it is not a CSS custom property; the dedicated props
+  stay the more specific control and win when both are given.
+
+### Changed
+
+- **`--odon-tooth-enamel` is now `--odon-tooth-body`** (and
+  `--odon-milktooth-enamel` → `--odon-milktooth-body`; the config fields are
+  `tooth.body` / `tooth.milktoothBody`). The token never painted enamel: it
+  paints the tooth's whole silhouette, **crown and root** — the perio chart
+  extracts the root from that very layer — and the root is cementum and
+  dentin, not enamel.
+
+  The name was flagged by the first person to use the API, who asked for
+  "enamel" and "dentin" as separate controls. There is no dentin layer to
+  control: the drawings are one body shape plus a sheen and the pulp. A name
+  that implies a distinction the artwork does not make is worse than a plain
+  one, so it changed before the tokens were in a release. Rendering is
+  unaffected — all 46 assets are byte-identical once tokens are flattened.
 
 
 - **`THIRD-PARTY-NOTICES.md`, and it ships with the package.** Prompted by

@@ -3,10 +3,10 @@
 Every themable colour in the drawings is emitted as a CSS custom property with
 the colour that is there today as its fallback::
 
-    style="fill: var(--odon-tooth-enamel, #ebebeb)"
+    style="fill: var(--odon-tooth-body, #ebebeb)"
 
 A host that sets nothing gets a pixel-identical chart; a host that sets
-``--odon-tooth-enamel`` recolours every enamel surface in both profiles at
+``--odon-tooth-body`` recolours every enamel surface in both profiles at
 once. This is backward compatible by construction.
 
 The mechanism is not new. The restoration and filling MATERIALS have carried
@@ -36,12 +36,12 @@ from __future__ import annotations
 
 TOKENS: dict[str, tuple[str, str]] = {
     # -- tooth structure ---------------------------------------------------
-    "--odon-tooth-enamel": ("#ebebeb", "natural crown and every broken/prepared variant"),
+    "--odon-tooth-body": ("#ebebeb", "natural crown and every broken/prepared variant"),
     "--odon-tooth-outline": ("#c8c9c9", "crown and root outline"),
     "--odon-tooth-highlight": ("#fefefe", "crown sheen (the 'beauty' layer)"),
     "--odon-tooth-cusp": ("#f4f1e8", "occlusal cusp field"),
     "--odon-tooth-groove": ("#8f8f8f", "occlusal fissure lines"),
-    "--odon-milktooth-enamel": ("#fff", "deciduous crown"),
+    "--odon-milktooth-body": ("#fff", "deciduous crown"),
     "--odon-milktooth-highlight": ("#eaeaea", "deciduous crown sheen"),
     "--odon-pulp-healthy": ("#fcc5bc", "healthy pulp chamber"),
     "--odon-pulp-inflamed": ("#ff422a", "inflamed pulp"),
@@ -139,16 +139,16 @@ RULES: tuple[Rule, ...] = (
     ("tooth/tooth-inflam-pulp", "fill", "#ffa46a", "--odon-pulp-inflamed-halo"),
     ("tooth/tooth-bruxism", "fill", "#fff", "--odon-wear"),
     ("tooth/tooth-bruxism", "stroke", "#aaa", "--odon-wear-outline"),
-    ("milktooth/milktooth-base", "fill", "#fff", "--odon-milktooth-enamel"),
+    ("milktooth/milktooth-base", "fill", "#fff", "--odon-milktooth-body"),
     ("milktooth/milktooth-beauty", "fill", "#eaeaea", "--odon-milktooth-highlight"),
     ("milktooth/milktooth-healthy-pulp", "fill", "#fcc5bc", "--odon-pulp-healthy"),
     ("milktooth/milktooth-inflam-pulp", "fill", "#b70000", "--odon-pulp-inflamed"),
     ("base/gum-base", "fill", "#f79f9a", "--odon-gum"),
     ("base/bone-base", "fill", "#fdecc5", "--odon-bone"),
     # enamel + outline across the crown and all its variants
-    ("tooth/tooth-base", "fill", "#ebebeb", "--odon-tooth-enamel"),
-    ("tooth-variants/", "fill", "#ebebeb", "--odon-tooth-enamel"),
-    ("tooth-variants/tooth-crownprep", "fill", "#eaeaea", "--odon-tooth-enamel"),
+    ("tooth/tooth-base", "fill", "#ebebeb", "--odon-tooth-body"),
+    ("tooth-variants/", "fill", "#ebebeb", "--odon-tooth-body"),
+    ("tooth-variants/tooth-crownprep", "fill", "#eaeaea", "--odon-tooth-body"),
     ("tooth/tooth-base", "stroke", "#c8c9c9", "--odon-tooth-outline"),
     ("tooth/tooth-base", "stroke", "#c8c8c8", "--odon-tooth-outline"),
     ("tooth/tooth-base", "stroke", "#9f9f9f", "--odon-tooth-outline"),

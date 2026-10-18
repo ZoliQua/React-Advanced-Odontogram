@@ -741,6 +741,20 @@ function OdontogramProviderInner({
   useEffect(() => { if (selectionBorderStyleProp !== undefined) setSelectionBorderStyle(selectionBorderStyleProp); }, [selectionBorderStyleProp]);
   useEffect(() => { if (toothInfoProp !== undefined) setToothInfoVisible(toothInfoProp); }, [toothInfoProp]);
 
+  // `themeConfig.selection` is the discoverable home for the selection
+  // colours — a host setting up its palette finds them next to the rest
+  // rather than having to know a second API. It is applied through the same
+  // session setters, and the dedicated props stay the more specific control:
+  // when both are given, the prop wins.
+  useEffect(() => {
+    const sel = themeConfig?.selection;
+    if (!sel) return;
+    if (sel.color !== undefined && selectionColorProp === undefined) setSelectionColor(sel.color);
+    if (sel.borderStyle !== undefined && selectionBorderStyleProp === undefined) {
+      setSelectionBorderStyle(sel.borderStyle);
+    }
+  }, [themeConfig, selectionColorProp, selectionBorderStyleProp]);
+
   // Mirror the module-level tooth-anatomy profile the same way perioViewMode is
   // mirrored above.
   useEffect(() => {

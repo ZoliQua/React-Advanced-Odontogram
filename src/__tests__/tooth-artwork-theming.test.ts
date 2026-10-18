@@ -41,7 +41,7 @@ function inlineFill(svg: string, layerId: string): string {
 describe("tooth artwork: the drawings are tokenized", () => {
   it("paints the crown, gum and bone through tokens in BOTH profiles", () => {
     for (const [name, svg] of [["classic", tooth11], ["measured", measured11]] as const) {
-      expect(inlineFill(svg, "tooth-base"), name).toBe("var(--odon-tooth-enamel, #ebebeb)");
+      expect(inlineFill(svg, "tooth-base"), name).toBe("var(--odon-tooth-body, #ebebeb)");
       expect(inlineFill(svg, "gum-base"), name).toBe("var(--odon-gum, #f79f9a)");
       expect(inlineFill(svg, "bone-base"), name).toBe("var(--odon-bone, #fdecc5)");
     }
@@ -77,8 +77,8 @@ describe("tooth artwork: applyThemeConfig", () => {
 
   it("sets a curated field's token, and nothing for omitted keys", () => {
     const el = host();
-    applyThemeConfig(el, { tooth: { enamel: "#102030" } });
-    expect(el.style.getPropertyValue("--odon-tooth-enamel")).toBe("#102030");
+    applyThemeConfig(el, { tooth: { body: "#102030" } });
+    expect(el.style.getPropertyValue("--odon-tooth-body")).toBe("#102030");
     expect(el.style.getPropertyValue("--odon-gum")).toBe("");
   });
 
@@ -101,17 +101,17 @@ describe("tooth artwork: applyThemeConfig", () => {
   it("lets a raw token win over the curated field naming the same one", () => {
     const el = host();
     applyThemeConfig(el, {
-      tooth: { enamel: "#111111" },
-      tokens: { "--odon-tooth-enamel": "#222222" },
+      tooth: { body: "#111111" },
+      tokens: { "--odon-tooth-body": "#222222" },
     });
-    expect(el.style.getPropertyValue("--odon-tooth-enamel")).toBe("#222222");
+    expect(el.style.getPropertyValue("--odon-tooth-body")).toBe("#222222");
   });
 
   it("clears what the previous call set, including raw tokens", () => {
     const el = host();
-    applyThemeConfig(el, { tooth: { enamel: "#102030" }, tokens: { "--odon-rest-gold": "#d4af37" } });
+    applyThemeConfig(el, { tooth: { body: "#102030" }, tokens: { "--odon-rest-gold": "#d4af37" } });
     applyThemeConfig(el, { tooth: { gum: "#aabbcc" } });
-    expect(el.style.getPropertyValue("--odon-tooth-enamel")).toBe("");
+    expect(el.style.getPropertyValue("--odon-tooth-body")).toBe("");
     expect(el.style.getPropertyValue("--odon-rest-gold")).toBe("");
     expect(el.style.getPropertyValue("--odon-gum")).toBe("#aabbcc");
   });
@@ -119,17 +119,17 @@ describe("tooth artwork: applyThemeConfig", () => {
   it("leaves an --odon-* property the host set outside the config alone", () => {
     const el = host();
     el.style.setProperty("--odon-something-of-mine", "#abcdef");
-    applyThemeConfig(el, { tooth: { enamel: "#102030" } });
+    applyThemeConfig(el, { tooth: { body: "#102030" } });
     applyThemeConfig(el, null);
     expect(el.style.getPropertyValue("--odon-something-of-mine")).toBe("#abcdef");
-    expect(el.style.getPropertyValue("--odon-tooth-enamel")).toBe("");
+    expect(el.style.getPropertyValue("--odon-tooth-body")).toBe("");
   });
 
   it("still applies the UI chrome colours", () => {
     const el = host();
-    applyThemeConfig(el, { colors: { accent: "#ff0000" }, tooth: { enamel: "#102030" } });
+    applyThemeConfig(el, { colors: { accent: "#ff0000" }, tooth: { body: "#102030" } });
     expect(el.style.getPropertyValue("--odon-accent")).toBe("#ff0000");
-    expect(el.style.getPropertyValue("--odon-tooth-enamel")).toBe("#102030");
+    expect(el.style.getPropertyValue("--odon-tooth-body")).toBe("#102030");
   });
 });
 
@@ -137,8 +137,8 @@ describe("tooth artwork: exports flatten the tokens", () => {
   it("resolves a themed token to its value, and an unset one to its fallback", () => {
     const el = document.createElement("div");
     document.body.appendChild(el);
-    applyThemeConfig(el, { tooth: { enamel: "#102030" } });
-    const xml = '<path style="fill: var(--odon-tooth-enamel, #ebebeb); stroke: var(--odon-gum, #f79f9a)"/>';
+    applyThemeConfig(el, { tooth: { body: "#102030" } });
+    const xml = '<path style="fill: var(--odon-tooth-body, #ebebeb); stroke: var(--odon-gum, #f79f9a)"/>';
     const out = flattenThemeTokens(xml, el);
     expect(out).toContain("fill: #102030");
     expect(out).toContain("stroke: #f79f9a");
@@ -156,7 +156,7 @@ describe("tooth artwork: exports flatten the tokens", () => {
     // the exported markup carries the same colours it always did.
     const el = document.createElement("div");
     document.body.appendChild(el);
-    const xml = '<path style="fill: var(--odon-tooth-enamel, #ebebeb)"/>';
+    const xml = '<path style="fill: var(--odon-tooth-body, #ebebeb)"/>';
     expect(flattenThemeTokens(xml, el)).toBe('<path style="fill: #ebebeb"/>');
     el.remove();
   });
@@ -207,8 +207,8 @@ describe("tooth artwork: the default dark palette", () => {
   it("covers the surfaces that would otherwise glare, and flips caries", () => {
     const dark = darkBlock();
     for (const token of [
-      "--odon-tooth-enamel", "--odon-tooth-outline", "--odon-tooth-highlight",
-      "--odon-milktooth-enamel", "--odon-tooth-cusp", "--odon-gum", "--odon-bone",
+      "--odon-tooth-body", "--odon-tooth-outline", "--odon-tooth-highlight",
+      "--odon-milktooth-body", "--odon-tooth-cusp", "--odon-gum", "--odon-bone",
       "--odon-caries", "--odon-caries-outline", "--odon-wear",
     ]) {
       expect(dark.has(token), `dark mode should redeclare ${token}`).toBe(true);
@@ -216,7 +216,7 @@ describe("tooth artwork: the default dark palette", () => {
     // Caries is near-black on a light crown; on a dark crown it must be light
     // or it vanishes into the tooth it marks.
     expect(luminance(dark.get("--odon-caries")!)).toBeGreaterThan(
-      luminance(dark.get("--odon-tooth-enamel")!),
+      luminance(dark.get("--odon-tooth-body")!),
     );
   });
 
@@ -236,7 +236,7 @@ describe("tooth artwork: the default dark palette", () => {
     // Light mode: enamel #ebebeb on page #f3f6fb is 1.10:1 — the tooth is read
     // from its outline, not from background contrast. Leaving the artwork
     // alone in dark mode would put it at ~15:1.
-    const ratio = contrast(dark.get("--odon-tooth-enamel")!, "#0f172a");
+    const ratio = contrast(dark.get("--odon-tooth-body")!, "#0f172a");
     expect(ratio).toBeGreaterThan(1.1);
     expect(ratio).toBeLessThan(2.0);
   });
@@ -247,9 +247,40 @@ describe("tooth artwork: the default dark palette", () => {
     const el = document.createElement("div");
     document.documentElement.classList.add("dark");
     document.body.appendChild(el);
-    applyThemeConfig(el, { tooth: { enamel: "#123456" } });
-    expect(el.style.getPropertyValue("--odon-tooth-enamel")).toBe("#123456");
+    applyThemeConfig(el, { tooth: { body: "#123456" } });
+    expect(el.style.getPropertyValue("--odon-tooth-body")).toBe("#123456");
     document.documentElement.classList.remove("dark");
     el.remove();
+  });
+});
+
+describe("themeConfig.selection", () => {
+  it("is not a CSS variable — applyThemeConfig leaves the element untouched", () => {
+    // Selection is an interaction state applied through the session setters,
+    // so it must not leak onto the themed element as a custom property.
+    const el = document.createElement("div");
+    applyThemeConfig(el, { selection: { color: "#ff0000", borderStyle: "solid" } });
+    expect(el.getAttribute("style") ?? "").not.toContain("selection");
+    expect(el.style.getPropertyValue("--odon-selection-color")).toBe("");
+  });
+
+  it("the provider applies it, and a dedicated prop still wins", async () => {
+    const { render, cleanup } = await import("@testing-library/react");
+    const { createElement } = await import("react");
+    const App = (await import("../App")).default;
+    const { getSelectionColor } = await import("../odontogram");
+
+    cleanup();
+    render(createElement(App, { language: "en", themeConfig: { selection: { color: "#abcdef" } } }));
+    expect(getSelectionColor()).toBe("#abcdef");
+
+    cleanup();
+    render(createElement(App, {
+      language: "en",
+      themeConfig: { selection: { color: "#abcdef" } },
+      selectionColor: "#123456",
+    }));
+    expect(getSelectionColor(), "the explicit prop is the more specific control").toBe("#123456");
+    cleanup();
   });
 });

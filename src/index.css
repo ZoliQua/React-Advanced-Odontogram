@@ -847,10 +847,10 @@ select:focus{
    and shifting them risks changing what a clinician thinks they are seeing. */
 .dark{
   /* tooth structure */
-  --odon-tooth-enamel: #273140;
+  --odon-tooth-body: #273140;
   --odon-tooth-outline: #3e4b61;
   --odon-tooth-highlight: #313d4f;
-  --odon-milktooth-enamel: #2f3b4c;
+  --odon-milktooth-body: #2f3b4c;
   --odon-milktooth-highlight: #2a3545;
   --odon-tooth-cusp: #2d3744;
   --odon-tooth-groove: #6b7686;

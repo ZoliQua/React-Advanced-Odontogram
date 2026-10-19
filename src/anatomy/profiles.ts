@@ -32,6 +32,9 @@ import tooth16OcclSvg from "../assets/teeth-svgs/16_occl.svg?raw";
 // tooth-base artwork for the perio "Dental Chart" tooth-row graphic without
 // re-importing or duplicating this SVG text. Purely additive — no existing
 // call site or behavior changes. Values are inlined SVG markup (see above).
+import { resolveOverrides, type TemplateRejection, type ToothTemplateOverrides } from "./templateOverrides";
+export type { TemplateRejection, ToothTemplateOverrides, ToothTemplateSet } from "./templateOverrides";
+
 export const TEMPLATES = {
   11: tooth11Svg,
   13: tooth13Svg,
@@ -206,8 +209,33 @@ export function applyToothAnatomy(v: ToothAnatomy): boolean {
 export function activeAnatomyProfile(): AnatomyProfile {
   // Falls back to classic when "measured" is selected but its chunk has not
   // resolved yet — a state setToothAnatomy() prevents, and a safe default.
-  return toothAnatomy === "measured" ? (measuredProfile ?? CLASSIC_PROFILE) : CLASSIC_PROFILE;
+  const base = toothAnatomy === "measured" ? (measuredProfile ?? CLASSIC_PROFILE) : CLASSIC_PROFILE;
+  if(!toothTemplateOverrides) return base;
+  // Host-supplied templates, resolved per profile and cached: this runs on every render path.
+  const name: ToothAnatomy = base === CLASSIC_PROFILE ? "classic" : "measured";
+  const hit = resolvedOverrides.get(name);
+  if(hit) return hit;
+  const profile = resolveOverrides(base, name, toothTemplateOverrides, templateRejections);
+  resolvedOverrides.set(name, profile);
+  return profile;
 }
+
+let toothTemplateOverrides: ToothTemplateOverrides | null = null;
+const resolvedOverrides = new Map<ToothAnatomy, AnatomyProfile>();
+let templateRejections: TemplateRejection[] = [];
+
+/** Set (or clear, with `null`) the host-supplied tooth templates. Per profile, vetted (see `templateOverrides.ts`), and kept across a
+ *  change of profile. The public `setToothTemplateOverrides()` in odontogram.ts calls this and then invalidates the perio template cache. */
+export function applyToothTemplateOverrides(overrides: ToothTemplateOverrides | null): void {
+  toothTemplateOverrides = overrides;
+  resolvedOverrides.clear();
+  templateRejections = [];
+  // Resolve now what can be resolved, so the rejections are known as soon as the host has set them.
+  if(overrides){ activeAnatomyProfile(); }
+}
+
+/** Templates refused so far (and why). A profile whose artwork is not loaded yet reports when it loads. */
+export function getToothTemplateRejections(): readonly TemplateRejection[] { return templateRejections; }
 
 // Arch helper (upper vs. lower jaw) — quadrants 1/2 (permanent upper) and 5/6
 // (milk upper) are "upper"; 3/4 (permanent lower) and 7/8 (milk lower) are

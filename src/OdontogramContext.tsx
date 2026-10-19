@@ -35,6 +35,8 @@ import {
   initOdontogram,
   setNumberingSystem,
   registerPlugins,
+  setToothTemplateOverrides,
+  rebuildGrid,
   getOdontogramSummary,
   onStateChange,
   setReadOnly,
@@ -107,6 +109,7 @@ import type { Language } from "./i18n/languages";
 import type { NumberingSystem } from "./utils/numbering";
 import { applyThemeConfig, type OdontogramThemeConfig } from "./theme";
 import type { OdontogramPlugin } from "./plugin";
+import type { ToothTemplateOverrides } from "./odontogram";
 
 // Languages whose native reading direction is right-to-left (only Arabic today).
 // The shell root's `dir` reacts to the active `lang` and never mutates
@@ -149,6 +152,11 @@ export type OdontogramProviderProps = {
    * overlays and per-tooth custom state. See {@link OdontogramPlugin}.
    */
   plugins?: OdontogramPlugin[];
+  /**
+   * Tooth drawings (SVG text) that replace the factory ones, per anatomy profile. The markup is vetted and a refused template keeps the
+   * factory one; see {@link ToothTemplateOverrides} and `getToothTemplateRejections()`. Omitted (the default): the factory artwork.
+   */
+  toothTemplates?: ToothTemplateOverrides;
   /**
    * When true, disables all interactions (click, touch, keyboard).
    * Useful for print/report/view modes.
@@ -413,6 +421,7 @@ function OdontogramProviderInner({
   onDarkModeChange,
   themeConfig,
   plugins,
+  toothTemplates,
   readOnly: readOnlyProp,
   enableNotes,
   enableIcdas,
@@ -567,6 +576,17 @@ function OdontogramProviderInner({
     setInternalNumbering(next);
     onNumberingChange?.(next);
   };
+
+  // Host-supplied tooth templates. Declared BEFORE the init effect so the first grid is built with them; a later change rebuilds the grid.
+  // Nothing is touched while the prop was never given.
+  const firstTemplates = useRef(true);
+  useEffect(() => {
+    const first = firstTemplates.current;
+    firstTemplates.current = false;
+    if(first && !toothTemplates) return;
+    setToothTemplateOverrides(toothTemplates ?? null);
+    if(!first) void rebuildGrid();
+  }, [toothTemplates]);
 
   useEffect(() => {
     initOdontogram();

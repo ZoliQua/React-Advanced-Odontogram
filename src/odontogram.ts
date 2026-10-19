@@ -34,10 +34,19 @@ import {
 import { buildPerioSvg } from "./perioExport";
 import { resetTemplateCache as resetPerioTemplateCache } from "./perioGraphic";
 import { assemblePdf, PDF_PALETTES, DEFAULT_PDF_THEME, type PdfExportOptions, type PdfAssembleData, type PdfDocLike, type PdfColorTheme } from "./perioPdf";
-import { TEMPLATES, TOOTH_TEMPLATE, ALL_TEETH, isUpperTooth, activeAnatomyProfile, applyToothAnatomy, getToothAnatomy, ensureMeasuredProfile, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
+import { TEMPLATES, TOOTH_TEMPLATE, ALL_TEETH, isUpperTooth, activeAnatomyProfile, applyToothAnatomy, applyToothTemplateOverrides, getToothTemplateRejections, type ToothTemplateOverrides, getToothAnatomy, ensureMeasuredProfile, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
 export { isUpperTooth } from "./anatomy/profiles";
 // Re-exported so the public API surface is unchanged by the extraction.
-export { getToothAnatomy, activeAnatomyProfile } from "./anatomy/profiles";
+export { getToothAnatomy, activeAnatomyProfile, getToothTemplateRejections } from "./anatomy/profiles";
+export type { ToothTemplateOverrides, ToothTemplateSet, TemplateRejection } from "./anatomy/profiles";
+
+/** Replace the factory tooth drawings with host-supplied SVG, per anatomy profile (see `anatomy/templateOverrides.ts`: the markup is vetted,
+ *  a refused template is reported by `getToothTemplateRejections()` and the factory one stays). Pass `null` to go back to the factory artwork.
+ *  Invalidates the perio-chart template cache; the grid is rebuilt by the caller (`OdontogramProvider`'s `toothTemplates` prop does it). */
+export function setToothTemplateOverrides(overrides: ToothTemplateOverrides | null): void {
+  applyToothTemplateOverrides(overrides);
+  resetPerioTemplateCache();
+}
 import { notifyStateChange, setPostNotifyHook } from "./state/notify";
 import { caseMeta, getCaseMeta, resetCaseMeta, caseMetaIsEmpty, serializeCaseMeta, hydrateCaseMeta, caseContextSummaryFragment, caseDiagnosesSummaryFragment } from "./state/caseMeta";
 // ---- Dual-chart core (extracted to ./state/chart) ----

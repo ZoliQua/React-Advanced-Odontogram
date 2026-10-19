@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`setToothTemplateOverrides()` / `<OdontogramProvider toothTemplates>`: a host can draw its own teeth.** The overrides are keyed per anatomy
+  profile (`{ classic: {...}, measured: {...} }`), because a template number is a different drawing in each, and each profile has four maps:
+  `templates`, `templatesOccl` and, for a profile that draws milk teeth as their own artwork (`measured`), `primaryTemplates` and
+  `primaryTemplatesOccl`. They survive a change of profile: switching back and forth never loses or leaks one.
+
+  A template is untrusted markup that ends up in the live DOM, so it is vetted first (`anatomy/templateOverrides.ts`): a single `<svg>` root,
+  DOMPurify with the SVG profile and the script-capable elements forbidden, **rejected rather than silently cleaned** when DOMPurify has to
+  remove anything, no reference that leaves the document (`href` only to `#id`; no `url(` or `@import` in a `<style>` or a `style`
+  attribute), and every layer id of the factory template it replaces (the engine toggles layers by id; the classic profile's milk-tooth
+  layers are among them). A refused template is listed by `getToothTemplateRejections()` and the factory one stays: the chart is never left
+  without a tooth. With nothing supplied `activeAnatomyProfile()` returns exactly the same object as before.
+
 ## [2.7.0] - 2026-10-18
 
 > 2.6.0 was prepared but never published — no tag, no npm release. Everything

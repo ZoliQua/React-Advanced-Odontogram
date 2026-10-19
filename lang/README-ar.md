@@ -481,6 +481,23 @@ export default function OdontogramClient() {
 **أيقونات SVG** (في `src/assets/icon-svgs/`):
 `icon_8.svg` (أسنان العقل), `icon_gum.svg` (العظم), `icon_no_selection.svg` (مسح التحديد), `icon_occl.svg` (المنظر الإطباقي), `icon_pulp.svg` (اللب)
 
+**رسومات يقدّمها التطبيق المضيف** *(غير مُصدَر بعد — موجود في `main`، وسيصدر في الإصدار التالي)*. يمكن لتطبيق مضيف أن يستبدل أيًّا من هذه القوالب برسم SVG خاص به، دون نسخ المكتبة (fork)، عبر `setToothTemplateOverrides()` أو الخاصية `toothTemplates`. تُفهرَس عمليات الاستبدال **لكل ملف تشريحي على حدة**، لأن القالب رقم N رسم مختلف في `classic` وفي `measured`:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — قُبِل كل شيء
+```
+
+يقبل كل ملف تشريحي أربع خرائط — `templates` و`templatesOccl`، وفي ملف يرسم الأسنان اللبنية برسم خاص بها (`measured`) أيضًا `primaryTemplates` و`primaryTemplatesOccl`. يبقى الاستبدال قائمًا بعد تبديل الملف التشريحي، ويعيد `null` الرسومات الأصلية، وإن لم يُقدَّم شيء فإن المحرّك يقدّم الرسومات نفسها كما كان دائمًا.
+
+القالب ترميز غير موثوق ينتهي داخل DOM الحيّ، لذلك **يُفحَص قبل أن يُرسم** — انظر ملاحظات الأمان أدناه. يُدرِج `getToothTemplateRejections()` أي قالب مرفوض، ويبقى الرسم الأصلي في مكانه: لا يفقد المخطط سنًّا أبدًا.
+
 ### 🔢 أنظمة الترقيم
 
 **FDI (وفق ISO 3950):** الأسنان الدائمة 11-18، 21-28، 31-38، 41-48. الأسنان اللبنية 51-55، 61-65، 71-75، 81-85.
@@ -611,6 +628,7 @@ npm run docs           # توليد توثيق TypeDoc داخل docs/
 | `onDarkModeChange` | `(dark) => void` | — | استدعاء عند تبديل الوضع الداكن. مطلوب للوضع المتحكَّم به. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | تجاوزات ألوان مخصصة عبر خصائص CSS المخصصة (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | إضافات SVG مخصصة للتراكبات البصرية وحالة كل سن. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | رسومات أسنان يقدّمها المضيف (نص SVG) بدل الأصلية، لكل ملف تشريحي. مفحوصة؛ والقالب المرفوض يُبقي الرسم الأصلي. *(غير مُصدَر)* |
 | `readOnly` | `boolean` | `undefined` | تعطيل كل التفاعلات (نقر، لمس، لوحة مفاتيح). مفيد لعروض الطباعة/التقارير. |
 | `enableNotes` | `boolean` | `undefined` | تفعيل الملاحظات لكل سن. نقر مزدوج على سن لإضافة/تعديل الملاحظات. |
 
@@ -636,6 +654,8 @@ npm run docs           # توليد توثيق TypeDoc داخل docs/
 | `registerPlugins(plugins)` | تسجيل إضافات SVG مخصصة |
 | `setPluginState(toothNo, pluginId, value)` | ضبط حالة إضافة مخصصة لسن معين |
 | `getPluginState(toothNo, pluginId)` | قراءة حالة إضافة مخصصة لسن معين |
+| `setToothTemplateOverrides(overrides)` | استبدال رسومات الأسنان الأصلية بـ SVG من المضيف، لكل ملف تشريحي؛ و`null` يعيد الرسومات الأصلية. يُفحَص الترميز، والقالب المرفوض يُبقي الرسم الأصلي *(غير مُصدَر)* |
+| `getToothTemplateRejections()` | قوالب المضيف المرفوضة حتى الآن وسببها — `{ profile, set, key, reason }[]` *(غير مُصدَر)* |
 | `getToothStateSummary(toothNo)` | الحصول على ملخص مترجم لكل الحالات النشطة لسن معين |
 | `getOdontogramSummary()` | الحصول على ملخص نصي منظَّم ومترجم لكامل المخطط (أعداد، أقسام) |
 | `onStateChange(callback)` | الاشتراك في تغييرات الحالة؛ تُعيد دالة لإلغاء الاشتراك |
@@ -853,6 +873,7 @@ enablePersistence({
 ### 🔒 ملاحظات أمنية
 
 - **الإضافات تعمل ككود موثوق.** يتم حقن القيمة التي تُرجعها دالة `renderSvg()` الخاصة بالإضافة داخل SVG المخطط الحي. تُنقَّى تلك المخرجات باستخدام [DOMPurify](https://github.com/cure53/DOMPurify) (نمط SVG، بالإضافة إلى `svgFilters`) قبل الإدراج — يُمنع تمامًا كل من `<script>` و`<iframe>` و`<object>` و`<embed>` و`<foreignObject>`، ويتم إسقاط المخرجات الخبيثة بالكامل بدلًا من عرضها جزئيًا. يقلّل هذا من نطاق الضرر الناتج عن إضافة مخترَقة أو معطوبة، لكن يجب أن تظل الإضافات محمَّلة فقط من مصادر تثق بها — فالتنقية شبكة أمان، لا بديلًا عن التحقق.
+- **قوالب الأسنان التي يقدّمها المضيف تُرفَض ولا تُنظَّف.** يُفحَص أي رسم يُمرَّر إلى `setToothTemplateOverrides()` قبل أن يُرسم: جذر `<svg>` واحد فقط؛ وDOMPurify (ملف SVG، مع حظر `<script>` و`<iframe>` و`<object>` و`<embed>` و`<foreignObject>` و`<image>` و`<a>` وعناصر الحركة) — وإذا اضطر DOMPurify إلى إزالة *أي شيء* فإن القالب كاملًا **يُرفَض** بدل تنظيفه بصمت، حتى لا يرسم المضيف ترميزًا يختلف عمّا قدّمه؛ و`href` إلى جزء `#id` فقط، ولا `url(` ولا `@import` داخل عنصر `<style>` أو سمة `style`، كي لا يستطيع أي شيء في القالب الوصول إلى الشبكة؛ وأخيرًا يجب أن يحمل القالب كل معرّفات الطبقات الخاصة بالرسم الأصلي الذي يحلّ محلّه، لأن المحرّك يبدّل الطبقات بالمعرّف. يُبلَّغ عن القالب المرفوض عبر `getToothTemplateRejections()` ويبقى الرسم الأصلي ساريًا.
 - **سياسة أمان المحتوى (Content-Security-Policy).** يُدرج إصدار **الإنتاج (production build)** الخاص بالنسخة التجريبية هذه السياسة عبر وسم `<meta http-equiv="Content-Security-Policy">` (خادم التطوير غير متأثر):
 
   ```

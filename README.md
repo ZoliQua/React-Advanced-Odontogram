@@ -76,6 +76,7 @@ Per-site probing depth, gingival margin, bleeding on probing (+ suppuration) at 
 - 🦷 Permanent / primary / implant / missing teeth; substrate, restorations (crown/inlay/onlay/veneer/bridge × materials), removable & implant prosthetics
 - 📐 **Two anatomy profiles.** The schematic `classic` set, or `measured` — one literature-measured template per clinically distinct position, permanent and deciduous, generated from a millimetre specification. In `measured` the crown and root carry a **dentin core**, so enamel and dentin can be coloured apart.
 - 🎨 **Themable tooth artwork.** Every colour in the drawings is a CSS custom property with the shipped colour as its fallback, set through `themeConfig.tooth` / `themeConfig.tokens`; a dark palette ships with it, and an export resolves the tokens before the file leaves the page.
+- 🖌️ **Host-supplied tooth drawings** *(unreleased — on `main`)*. `setToothTemplateOverrides()` and the `toothTemplates` prop let a host replace the factory SVG per anatomy profile, without forking. A template is vetted before it can be drawn — rejected outright rather than quietly sanitized — and a refused one is reported while the factory drawing stays in place.
 - 🔍 Multi-surface caries & fillings (ICDAS / CARS severity, root & radiographic caries), endo & AAE pulp diagnosis, apical diagnosis, peri-implant status, wear, discoloration, orthodontics
 - 🩺 Full periodontal module (see above) + 2017 classification
 - 🔗 **HL7 FHIR R4** export/import; JSON export/import with migrations

@@ -479,6 +479,23 @@ A sablonok az alsó állcsontnál 180 fokkal elforgatva, a bal oldalnál vízszi
 **Ikon SVG-k** (`src/assets/icon-svgs/`):
 `icon_8.svg` (bölcsesség), `icon_gum.svg` (csont), `icon_no_selection.svg` (törlés), `icon_occl.svg` (okkluzális nézet), `icon_pulp.svg` (pulpa)
 
+**Saját fograjzok** *(még kiadatlan — a `main`-en, a következő kiadásban jelenik meg)*. A host alkalmazás bármelyik sablont lecserélheti a sajátjára, a könyvtár forkolása nélkül, a `setToothTemplateOverrides()` függvénnyel vagy a `toothTemplates` proppal. A felülírások kulcsa **anatómiai profilonként** külön van, mert az N-es sablonszám a `classic` és a `measured` profilban más-más rajzot jelent:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — minden sablont elfogadott
+```
+
+Profilonként négy térkép adható meg — `templates`, `templatesOccl`, és olyan profilnál, amely a tejfogakat önálló rajzként rajzolja (`measured`), `primaryTemplates` és `primaryTemplatesOccl`. A felülírás túléli az anatómiai profil váltását, a `null` visszaállítja a gyári rajzokat, és ha semmit nem adsz meg, a motor pontosan ugyanazokat a rajzokat szolgálja ki, mint eddig.
+
+A sablon nem megbízható markup, amely az élő DOM-ba kerül, ezért **a kirajzolás előtt ellenőrzésen megy át** — lásd lent a biztonsági megjegyzéseket. Az elutasított sablont a `getToothTemplateRejections()` sorolja fel, és a gyári rajz marad a helyén: a chartról soha nem tűnik el egy fog.
+
 ### 🔢 Számozási rendszerek
 
 **FDI (ISO 3950):** Felnőtt fogak 11-18, 21-28, 31-38, 41-48. Tejfogak 51-55, 61-65, 71-75, 81-85.
@@ -609,6 +626,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `onDarkModeChange` | `(dark) => void` | — | Callback sötét mód váltáskor. Szükséges vezérelt módhoz. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Egyedi szín felülírások CSS custom property-kkel (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Egyedi SVG pluginek vizuális fedvényekhez és foganként egyedi állapothoz. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Host által megadott fograjzok (SVG szöveg) a gyáriak helyett, anatómiai profilonként. Ellenőrzött; elutasítás esetén a gyári rajz marad. *(kiadatlan)* |
 | `readOnly` | `boolean` | `undefined` | Összes interakció letiltása (kattintás, érintés, billentyűzet). Nyomtatási/jelentés nézetekhez. |
 | `enableNotes` | `boolean` | `undefined` | Fogankénti megjegyzések engedélyezése. Dupla kattintás a fogra megjegyzés hozzáadásához/szerkesztéséhez. |
 
@@ -634,6 +652,8 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `registerPlugins(plugins)` | Egyedi SVG pluginek regisztrálása |
 | `setPluginState(toothNo, pluginId, value)` | Plugin egyedi állapot beállítása egy foghoz |
 | `getPluginState(toothNo, pluginId)` | Plugin egyedi állapot lekérdezése egy foghoz |
+| `setToothTemplateOverrides(overrides)` | A gyári fograjzok lecserélése host által megadott SVG-re, anatómiai profilonként; a `null` visszaállítja a gyári rajzokat. A markup ellenőrzésen megy át, elutasítás esetén a gyári rajz marad *(kiadatlan)* |
+| `getToothTemplateRejections()` | Az eddig elutasított host-sablonok és az elutasítás oka — `{ profile, set, key, reason }[]` *(kiadatlan)* |
 | `getToothStateSummary(toothNo)` | Lokalizált összesítés az összes aktív állapotról |
 | `getOdontogramSummary()` | Strukturált, lokalizált szöveges összegzés a teljes státuszról (fogszámok, szekciók) |
 | `onStateChange(callback)` | Feliratkozás állapotváltozásra; leiratkozó függvényt ad vissza |
@@ -853,6 +873,7 @@ Az odontogram saját Státusz JSON / FHIR / PNG / JPG / SVG exportján túl a **
 ### 🔒 Biztonsági megjegyzések
 
 - **A pluginok megbízható kódként futnak.** Egy plugin `renderSvg()` visszatérési értéke bekerül az élő diagram SVG-jébe. Ez a kimenet a beszúrás előtt [DOMPurify](https://github.com/cure53/DOMPurify)-jal van megtisztítva (SVG profil, plusz `svgFilters`) — a `<script>`, `<iframe>`, `<object>`, `<embed>` és `<foreignObject>` elemek eleve tiltottak, és egy teljesen rosszindulatú kimenet inkább eldobásra kerül, mintsem részlegesen renderelődjön. Ez csökkenti egy kompromittált vagy hibás plugin okozta kárt, de a pluginokat továbbra is csak megbízható forrásból szabad betölteni — a tisztítás egy biztonsági háló, nem az ellenőrzés helyettesítője.
+- **A host által megadott fogsablonokat elutasítjuk, nem megtisztítjuk.** A `setToothTemplateOverrides()`-nak átadott rajz a kirajzolás előtt ellenőrzésen megy át: egyetlen `<svg>` gyökérelem; DOMPurify (SVG-profil, tiltott `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` és animációs elemek) — és ha a DOMPurify-nak *bármit* el kell távolítania, a teljes sablon **elutasításra kerül**, nem pedig csendben megtisztul, így a host soha nem rajzol olyan markupot, amely eltér attól, amit megadott; `href` csak `#id` töredékre mutathat, és sem `<style>` elemben, sem `style` attribútumban nem lehet `url(` vagy `@import`, így a sablon semmilyen tartalma nem érheti el a hálózatot; végül tartalmaznia kell a lecserélt gyári rajz minden rétegazonosítóját, mert a motor azonosító alapján kapcsolja a rétegeket. Az elutasított sablont a `getToothTemplateRejections()` jelenti, és a gyári rajz marad érvényben.
 - **Content-Security-Policy.** A demó **production build-je** ezt a szabályzatot szúrja be egy `<meta http-equiv="Content-Security-Policy">` tag formájában (a dev szervert ez nem érinti):
 
   ```

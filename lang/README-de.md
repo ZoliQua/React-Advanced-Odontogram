@@ -481,6 +481,23 @@ Vorlagen werden für den Unterkiefer um 180 Grad gedreht und für die linke Seit
 **Icon-SVGs** (in `src/assets/icon-svgs/`):
 `icon_8.svg` (Weisheitszahn), `icon_gum.svg` (Knochen), `icon_no_selection.svg` (Auswahl löschen), `icon_occl.svg` (Okklusionsansicht), `icon_pulp.svg` (Pulpa)
 
+**Vom Host gelieferte Zeichnungen** *(noch nicht veröffentlicht — auf `main`, erscheint im nächsten Release)*. Eine Host-Anwendung kann jedes dieser Templates durch eigenes SVG ersetzen, ohne die Bibliothek zu forken — über `setToothTemplateOverrides()` oder den Prop `toothTemplates`. Die Overrides werden **pro Anatomieprofil** angegeben, denn die Template-Nummer N ist in `classic` und in `measured` eine andere Zeichnung:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — alles akzeptiert
+```
+
+Jedes Profil nimmt vier Maps — `templates`, `templatesOccl` und, bei einem Profil, das Milchzähne als eigene Zeichnung führt (`measured`), `primaryTemplates` und `primaryTemplatesOccl`. Ein Override übersteht einen Wechsel des Anatomieprofils, `null` stellt die Werkszeichnungen wieder her, und ohne Angabe liefert die Engine exakt die bisherigen Zeichnungen.
+
+Ein Template ist nicht vertrauenswürdiges Markup, das im lebenden DOM landet, und wird deshalb **vor dem Zeichnen geprüft** — siehe die Sicherheitshinweise weiter unten. Ein abgelehntes Template listet `getToothTemplateRejections()` auf, und die Werkszeichnung bleibt bestehen: Im Zahnschema fehlt nie ein Zahn.
+
 ### 🔢 Nummerierungssysteme
 
 **FDI (ISO 3950):** Erwachsenenzähne 11-18, 21-28, 31-38, 41-48. Milchzähne 51-55, 61-65, 71-75, 81-85.
@@ -611,6 +628,7 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `onDarkModeChange` | `(dark) => void` | — | Callback beim Umschalten des Dunkelmodus. Erforderlich für gesteuerten Modus. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Benutzerdefinierte Farbüberschreibungen über CSS Custom Properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Benutzerdefinierte SVG-Plugins für visuelle Overlays und per-Zahn Custom State. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Vom Host gelieferte Zahnzeichnungen (SVG-Text) anstelle der Werkszeichnungen, pro Anatomieprofil. Geprüft; bei Ablehnung bleibt die Werkszeichnung. *(unveröffentlicht)* |
 | `readOnly` | `boolean` | `undefined` | Alle Interaktionen deaktivieren (Klick, Touch, Tastatur). Nützlich für Druck-/Berichtsansichten. |
 | `enableNotes` | `boolean` | `undefined` | Per-Zahn Notizen aktivieren. Doppelklick auf einen Zahn zum Hinzufügen/Bearbeiten. |
 
@@ -636,6 +654,8 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `registerPlugins(plugins)` | Benutzerdefinierte SVG-Plugins registrieren |
 | `setPluginState(toothNo, pluginId, value)` | Plugin Custom State für einen Zahn setzen |
 | `getPluginState(toothNo, pluginId)` | Plugin Custom State eines Zahns abrufen |
+| `setToothTemplateOverrides(overrides)` | Ersetzt die Werks-Zahnzeichnungen durch vom Host geliefertes SVG, pro Anatomieprofil; `null` stellt die Werkszeichnungen wieder her. Das Markup wird geprüft, bei Ablehnung bleibt die Werkszeichnung *(unveröffentlicht)* |
+| `getToothTemplateRejections()` | Die bisher abgelehnten Host-Templates und der Grund — `{ profile, set, key, reason }[]` *(unveröffentlicht)* |
 | `getToothStateSummary(toothNo)` | Lokalisierte Zusammenfassung aller aktiven Zustände eines Zahns abrufen |
 | `getOdontogramSummary()` | Strukturierte, lokalisierte Textzusammenfassung des gesamten Befunds abrufen (Zählungen, Abschnitte) |
 | `onStateChange(callback)` | Auf Zustandsänderungen abonnieren; gibt eine Abmeldefunktion zurück |
@@ -853,6 +873,7 @@ Parodontale Daten laufen jetzt auch über den FHIR-Import im Kreis, nicht nur ü
 ### 🔒 Sicherheitshinweise
 
 - **Plugins laufen als vertrauenswürdiger Code.** Der Rückgabewert von `renderSvg()` eines Plugins wird in das SVG des Live-Befunds eingefügt. Diese Ausgabe wird vor dem Einfügen mit [DOMPurify](https://github.com/cure53/DOMPurify) (SVG-Profil, plus `svgFilters`) bereinigt — `<script>`, `<iframe>`, `<object>`, `<embed>` und `<foreignObject>` sind grundsätzlich verboten, und vollständig bösartige Ausgaben werden verworfen statt teilweise gerendert. Das verringert die Angriffsfläche eines kompromittierten oder fehlerhaften Plugins, aber Plugins sollten dennoch nur aus vertrauenswürdigen Quellen geladen werden — die Bereinigung ist ein Sicherheitsnetz, kein Ersatz für eine Prüfung.
+- **Vom Host gelieferte Zahn-Templates werden abgelehnt, nicht bereinigt.** Eine an `setToothTemplateOverrides()` übergebene Zeichnung wird vor dem Zeichnen geprüft: ein einziges `<svg>`-Wurzelelement; DOMPurify (SVG-Profil, verboten sind `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` sowie die Animationselemente) — und wenn DOMPurify *irgendetwas* entfernen muss, wird das gesamte Template **abgelehnt** statt stillschweigend bereinigt, damit ein Host nie anderes Markup zeichnet als das gelieferte; `href` nur auf ein `#id`-Fragment, und kein `url(` oder `@import` in einem `<style>`-Element oder `style`-Attribut, sodass nichts aus einem Template ins Netz greifen kann; und es muss jede Layer-ID der ersetzten Werkszeichnung tragen, denn die Engine schaltet Layer über die ID. Ein abgelehntes Template meldet `getToothTemplateRejections()`, und die Werkszeichnung bleibt erhalten.
 - **Content-Security-Policy.** Der **Produktions-Build** der Demo fügt über ein `<meta http-equiv="Content-Security-Policy">`-Tag folgende Policy ein (der Dev-Server ist davon nicht betroffen):
 
   ```

@@ -479,6 +479,23 @@ Otvárané cez ikonu ozubeného kolieska na hornej lište; dialóg s uzamknutým
 **Ikony SVG** (v `src/assets/icon-svgs/`):
 `icon_8.svg` (múdrosť), `icon_gum.svg` (kosť), `icon_no_selection.svg` (zrušiť), `icon_occl.svg` (oklúzny pohľad), `icon_pulp.svg` (dreň)
 
+**Vlastné kresby hostiteľskej aplikácie** *(zatiaľ nevydané — v `main`, príde v ďalšom vydaní)*. Hostiteľská aplikácia môže ktorúkoľvek z týchto šablón nahradiť vlastným SVG bez forkovania knižnice, cez `setToothTemplateOverrides()` alebo prop `toothTemplates`. Prepisy sú kľúčované **podľa anatomického profilu**, pretože šablóna číslo N je v `classic` a v `measured` iná kresba:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — všetko prijaté
+```
+
+Každý profil prijíma štyri mapy — `templates`, `templatesOccl` a pri profile, ktorý kreslí mliečne zuby vlastnou grafikou (`measured`), `primaryTemplates` a `primaryTemplatesOccl`. Prepis prežije zmenu anatomického profilu, `null` obnoví továrenskú grafiku a ak nie je zadané nič, engine servíruje presne tie isté kresby ako doteraz.
+
+Šablóna je nedôveryhodný markup, ktorý skončí v živom DOM, preto sa **pred vykreslením preveruje** — pozri bezpečnostné poznámky nižšie. Odmietnutú šablónu vypíše `getToothTemplateRejections()` a továrenská kresba zostáva na mieste: v diagrame nikdy nechýba zub.
+
 ### 🔢 Systémy číslovania
 
 **FDI (ISO 3950):** Trvalé zuby 11-18, 21-28, 31-38, 41-48. Mliečne zuby 51-55, 61-65, 71-75, 81-85.
@@ -609,6 +626,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `onDarkModeChange` | `(dark) => void` | — | Spätné volanie pri prepnutí tmavého režimu. Vyžadované pre riadený režim. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Vlastné prepísanie farieb cez CSS vlastné vlastnosti (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Vlastné SVG pluginy pre vizuálne prekrytia a vlastný stav každého zuba. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Kresby zubov od hostiteľa (SVG text) namiesto továrenských, podľa anatomického profilu. Preverené; odmietnutá šablóna ponechá továrenskú kresbu. *(nevydané)* |
 | `readOnly` | `boolean` | `undefined` | Zakázanie všetkých interakcií (klik, dotyk, klávesnica). Užitočné pre zobrazenia tlače/správ. |
 | `enableNotes` | `boolean` | `undefined` | Povolenie poznámok ku každému zubu. Dvojklik na zub pre pridanie/úpravu poznámok. |
 
@@ -634,6 +652,8 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `registerPlugins(plugins)` | Registrovať vlastné SVG pluginy |
 | `setPluginState(toothNo, pluginId, value)` | Nastaviť vlastný stav pluginu pre zub |
 | `getPluginState(toothNo, pluginId)` | Získať vlastný stav pluginu pre zub |
+| `setToothTemplateOverrides(overrides)` | Nahradí továrenské kresby zubov SVG od hostiteľa, podľa anatomického profilu; `null` obnoví továrenskú grafiku. Markup sa preveruje a odmietnutá šablóna ponechá továrenskú kresbu *(nevydané)* |
+| `getToothTemplateRejections()` | Doteraz odmietnuté šablóny hostiteľa a dôvod — `{ profile, set, key, reason }[]` *(nevydané)* |
 | `getToothStateSummary(toothNo)` | Získať lokalizovaný súhrn všetkých aktívnych stavov |
 | `getOdontogramSummary()` | Získať štruktúrovaný, lokalizovaný textový súhrn celého odontogramu (počty, sekcie) |
 | `onStateChange(callback)` | Prihlásiť sa na odber zmien stavu; vracia funkciu na odhlásenie |
@@ -851,6 +871,7 @@ Okrem vlastného exportu odontogramu Stav JSON / FHIR / PNG / JPG / SVG má **pa
 ### 🔒 Bezpečnostné poznámky
 
 - **Pluginy bežia ako dôveryhodný kód.** Návratová hodnota `renderSvg()` pluginu sa vkladá do SVG živého grafu. Tento výstup je pred vložením sanitizovaný knižnicou [DOMPurify](https://github.com/cure53/DOMPurify) (SVG profil plus `svgFilters`) — `<script>`, `<iframe>`, `<object>`, `<embed>` a `<foreignObject>` sú úplne zakázané a úplne škodlivý výstup je zahodený namiesto čiastočného vykreslenia. Toto znižuje dosah kompromitovaného alebo chybného pluginu, no pluginy by sa mali naďalej načítavať iba zo zdrojov, ktorým dôverujete — sanitizácia je poistka, nie náhrada za preverenie.
+- **Šablóny zubov od hostiteľa sa odmietajú, nie čistia.** Kresba odovzdaná do `setToothTemplateOverrides()` sa pred vykreslením preveruje: jediný koreň `<svg>`; DOMPurify (profil SVG, zakázané `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` a animačné elementy) — a ak musí DOMPurify odstrániť *čokoľvek*, celá šablóna sa **odmietne** namiesto tichého vyčistenia, takže hostiteľ nikdy nekreslí iný markup, než aký dodal; `href` len na fragment `#id` a žiadne `url(` ani `@import` v elemente `<style>` či atribúte `style`, aby sa nič zo šablóny nedostalo na sieť; a musí niesť každé id vrstvy továrenskej kresby, ktorú nahrádza, lebo engine prepína vrstvy podľa id. Odmietnutú šablónu ohlási `getToothTemplateRejections()` a továrenská kresba zostáva v platnosti.
 - **Content-Security-Policy.** Produkčný build dema vkladá túto politiku cez tag `<meta http-equiv="Content-Security-Policy">` (vývojový server nie je ovplyvnený):
 
   ```

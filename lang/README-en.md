@@ -479,6 +479,23 @@ Templates are rotated 180 degrees for the lower jaw and mirrored horizontally fo
 **Icon SVGs** (in `src/assets/icon-svgs/`):
 `icon_8.svg` (wisdom), `icon_gum.svg` (bone), `icon_no_selection.svg` (clear), `icon_occl.svg` (occlusal view), `icon_pulp.svg` (pulp)
 
+**Host-supplied drawings** *(unreleased — on `main`, ships in the next release)*. A host app can replace any of these templates with its own SVG, without forking the library, through `setToothTemplateOverrides()` or the `toothTemplates` prop. Overrides are keyed **per anatomy profile**, because template number N is a different drawing in `classic` and in `measured`:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — everything was accepted
+```
+
+Each profile takes four maps — `templates`, `templatesOccl` and, for a profile that draws milk teeth as their own artwork (`measured`), `primaryTemplates` and `primaryTemplatesOccl`. An override survives a change of anatomy profile, `null` restores the factory artwork, and with nothing supplied the engine serves exactly the drawings it always did.
+
+A template is untrusted markup that ends up in the live DOM, so it is **vetted before it can be drawn** — see the security notes below. A refused template is listed by `getToothTemplateRejections()` and the factory drawing stays in place: the chart is never left without a tooth.
+
 ### 🔢 Numbering Systems
 
 **FDI (ISO 3950):** Adult teeth 11-18, 21-28, 31-38, 41-48. Primary teeth 51-55, 61-65, 71-75, 81-85.
@@ -609,6 +626,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `onDarkModeChange` | `(dark) => void` | — | Callback when dark mode toggles. Required for controlled mode. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Custom color overrides via CSS custom properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Custom SVG plugins for visual overlays and per-tooth custom state. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Host-supplied tooth drawings (SVG text) in place of the factory ones, per anatomy profile. Vetted; a refused template keeps the factory drawing. *(unreleased)* |
 | `readOnly` | `boolean` | `undefined` | Disable all interactions (click, touch, keyboard). Useful for print/report views. |
 | `enableNotes` | `boolean` | `undefined` | Enable per-tooth notes. Double-click a tooth to add/edit notes. |
 
@@ -634,6 +652,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `registerPlugins(plugins)` | Register custom SVG plugins |
 | `setPluginState(toothNo, pluginId, value)` | Set a plugin's custom state for a tooth |
 | `getPluginState(toothNo, pluginId)` | Get a plugin's custom state for a tooth |
+| `setToothTemplateOverrides(overrides)` | Replace the factory tooth drawings with host-supplied SVG, per anatomy profile; `null` restores the factory artwork. The markup is vetted and a refused template keeps the factory drawing *(unreleased)* |
+| `getToothTemplateRejections()` | The host templates refused so far, and why — `{ profile, set, key, reason }[]` *(unreleased)* |
 | `getToothStateSummary(toothNo)` | Get localized summary of all active states |
 | `getOdontogramSummary()` | Get a structured, localized text summary of the whole chart (counts, sections) |
 | `onStateChange(callback)` | Subscribe to state changes; returns an unsubscribe function |
@@ -851,6 +871,7 @@ Beyond the odontogram's own Status JSON / FHIR / PNG / JPG / SVG export, the **p
 ### 🔒 Security notes
 
 - **Plugins run as trusted code.** A plugin's `renderSvg()` return value is injected into the live chart's SVG. That output is sanitized with [DOMPurify](https://github.com/cure53/DOMPurify) (SVG profile, plus `svgFilters`) before insertion — `<script>`, `<iframe>`, `<object>`, `<embed>` and `<foreignObject>` are forbidden outright, and wholly-malicious output is dropped rather than partially rendered. This reduces the blast radius of a compromised or buggy plugin, but plugins should still only be loaded from sources you trust — sanitization is a safety net, not a substitute for vetting.
+- **Host-supplied tooth templates are rejected, not cleaned.** A drawing passed to `setToothTemplateOverrides()` is vetted before it can be drawn: a single `<svg>` root; DOMPurify (SVG profile, with `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` and the animation elements forbidden) — and if DOMPurify has to remove *anything*, the whole template is **refused** rather than quietly sanitized, so a host never draws markup that differs from what it supplied; `href` only to a `#id` fragment, and no `url(` or `@import` in a `<style>` element or a `style` attribute, so nothing a template contains can reach the network; and it must carry every layer id of the factory drawing it replaces, because the engine toggles layers by id. A refused template is reported by `getToothTemplateRejections()` and the factory drawing is kept.
 - **Content-Security-Policy.** The demo's **production build** injects this policy via a `<meta http-equiv="Content-Security-Policy">` tag (the dev server is unaffected):
 
   ```

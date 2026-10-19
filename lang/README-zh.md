@@ -481,6 +481,23 @@ export default function OdontogramClient() {
 **图标 SVG**（位于 `src/assets/icon-svgs/`）：
 `icon_8.svg`（智齿）、`icon_gum.svg`（骨组织）、`icon_no_selection.svg`（清除）、`icon_occl.svg`（咬合面视图）、`icon_pulp.svg`（牙髓）
 
+**宿主提供的牙齿绘图** *（尚未发布 —— 已在 `main`，将随下一个版本发布）*。宿主应用无需 fork 本库，即可通过 `setToothTemplateOverrides()` 或 `toothTemplates` 属性，用自己的 SVG 替换其中任意模板。覆盖项**按解剖轮廓分别指定**，因为同一个模板编号 N 在 `classic` 与 `measured` 中是不同的绘图：
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — 全部接受
+```
+
+每个轮廓接受四张映射表——`templates`、`templatesOccl`，以及在将乳牙画成独立图形的轮廓（`measured`）中的 `primaryTemplates` 与 `primaryTemplatesOccl`。覆盖项在切换解剖轮廓后依然保留，`null` 可恢复出厂绘图；若未提供任何内容，引擎提供的仍然是一贯的绘图。
+
+模板是会进入活动 DOM 的不可信标记，因此在**能够绘制之前先经过校验**——参见下文的安全说明。被拒绝的模板会列在 `getToothTemplateRejections()` 中，出厂绘图保持不变：牙位图上绝不会缺少一颗牙。
+
 ### 🔢 编号系统
 
 **FDI（ISO 3950）：** 恒牙 11-18、21-28、31-38、41-48。乳牙 51-55、61-65、71-75、81-85。
@@ -611,6 +628,7 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `onDarkModeChange` | `(dark) => void` | — | 深色模式切换时的回调。受控模式下必填。 |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | 通过 CSS 自定义属性（`--odon-*`）自定义配色方案。 |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | 用于视觉叠加层和按牙位自定义状态的自定义 SVG 插件。 |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | 宿主提供的牙齿绘图（SVG 文本），按解剖轮廓替换出厂绘图。经过校验；被拒绝时保留出厂绘图。*（尚未发布）* |
 | `readOnly` | `boolean` | `undefined` | 禁用所有交互（点击、触控、键盘）。适用于打印/报告视图。 |
 | `enableNotes` | `boolean` | `undefined` | 启用每颗牙齿的备注。双击某颗牙齿即可添加/编辑备注。 |
 
@@ -636,6 +654,8 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `registerPlugins(plugins)` | 注册自定义 SVG 插件 |
 | `setPluginState(toothNo, pluginId, value)` | 设置某颗牙齿的插件自定义状态 |
 | `getPluginState(toothNo, pluginId)` | 获取某颗牙齿的插件自定义状态 |
+| `setToothTemplateOverrides(overrides)` | 按解剖轮廓，用宿主提供的 SVG 替换出厂牙齿绘图；`null` 恢复出厂绘图。标记会经过校验，被拒绝时保留出厂绘图 *（尚未发布）* |
+| `getToothTemplateRejections()` | 迄今被拒绝的宿主模板及原因 —— `{ profile, set, key, reason }[]` *（尚未发布）* |
 | `getToothStateSummary(toothNo)` | 获取某颗牙齿全部当前状态的本地化摘要 |
 | `getOdontogramSummary()` | 获取整个图表的结构化本地化文字摘要（计数、各区块） |
 | `onStateChange(callback)` | 订阅状态变化；返回一个取消订阅函数 |
@@ -853,6 +873,7 @@ enablePersistence({
 ### 🔒 安全说明
 
 - **插件作为受信任代码运行。** 插件 `renderSvg()` 的返回值会被注入到实时图表的 SVG 中。该输出在插入前会经过 [DOMPurify](https://github.com/cure53/DOMPurify)（SVG 配置文件，含 `svgFilters`）净化——`<script>`、`<iframe>`、`<object>`、`<embed>` 及 `<foreignObject>` 一律被禁止，完全恶意的输出会被整体丢弃，而非部分渲染。此举降低了因插件被攻破或存在缺陷而带来的影响范围，但插件仍应仅从可信来源加载——净化是一道安全防线，而非审查把关的替代品。
+- **宿主提供的牙齿模板是被拒绝，而不是被清洗。** 传给 `setToothTemplateOverrides()` 的绘图在能够绘制之前先经过校验：单一的 `<svg>` 根元素；DOMPurify（SVG 配置，禁止 `<script>`、`<iframe>`、`<object>`、`<embed>`、`<foreignObject>`、`<image>`、`<a>` 及动画元素）——并且只要 DOMPurify *需要移除任何内容*，整个模板就会被**拒绝**，而不是悄悄清洗，这样宿主绝不会绘制出与其提供的内容不一致的标记；`href` 只能指向 `#id` 片段，`<style>` 元素与 `style` 属性中不得出现 `url(` 或 `@import`，因此模板中的任何内容都无法访问网络；最后，它必须带有被替换的出厂绘图的每一个图层 id，因为引擎是按 id 切换图层的。被拒绝的模板由 `getToothTemplateRejections()` 报告，出厂绘图继续生效。
 - **内容安全策略（CSP）。** 演示站点的**生产构建**会通过 `<meta http-equiv="Content-Security-Policy">` 标签注入以下策略（开发服务器不受影响）：
 
   ```

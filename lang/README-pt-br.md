@@ -479,6 +479,23 @@ Os modelos são rotacionados 180 graus para a arcada inferior e espelhados horiz
 **SVGs de ícones** (em `src/assets/icon-svgs/`):
 `icon_8.svg` (siso), `icon_gum.svg` (osso), `icon_no_selection.svg` (limpar), `icon_occl.svg` (vista oclusal), `icon_pulp.svg` (polpa)
 
+**Desenhos fornecidos pela aplicação hospedeira** *(ainda não publicado — em `main`, chega na próxima versão)*. Uma aplicação hospedeira pode substituir qualquer um desses modelos pelo próprio SVG, sem fazer fork da biblioteca, por `setToothTemplateOverrides()` ou pela prop `toothTemplates`. As substituições são indexadas **por perfil anatômico**, porque o modelo de número N é um desenho diferente em `classic` e em `measured`:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — tudo aceito
+```
+
+Cada perfil aceita quatro mapas — `templates`, `templatesOccl` e, num perfil que desenha os dentes decíduos com arte própria (`measured`), `primaryTemplates` e `primaryTemplatesOccl`. Uma substituição sobrevive à troca de perfil anatômico, `null` restaura a arte de fábrica e, sem nada fornecido, o motor serve exatamente os desenhos de sempre.
+
+Um modelo é marcação não confiável que vai parar no DOM vivo, por isso **é verificado antes de poder ser desenhado** — veja as notas de segurança abaixo. Um modelo recusado é listado por `getToothTemplateRejections()` e o desenho de fábrica permanece: o odontograma nunca fica sem um dente.
+
 ### 🔢 Sistemas de numeração
 
 **FDI (ISO 3950):** Dentes adultos 11-18, 21-28, 31-38, 41-48. Dentes decíduos 51-55, 61-65, 71-75, 81-85.
@@ -609,6 +626,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `onDarkModeChange` | `(dark) => void` | — | Callback quando o modo escuro alterna. Obrigatório para o modo controlado. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Sobrescritas de cor personalizadas via propriedades CSS personalizadas (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Plugins SVG personalizados para sobreposições visuais e estado personalizado por dente. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Desenhos de dentes da hospedeira (texto SVG) no lugar dos de fábrica, por perfil anatômico. Verificados; um modelo recusado mantém o desenho de fábrica. *(não publicado)* |
 | `readOnly` | `boolean` | `undefined` | Desativa todas as interações (clique, toque, teclado). Útil para vistas de impressão/relatório. |
 | `enableNotes` | `boolean` | `undefined` | Habilita anotações por dente. Clique duplo em um dente para adicionar/editar anotações. |
 
@@ -634,6 +652,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `registerPlugins(plugins)` | Registra plugins SVG personalizados |
 | `setPluginState(toothNo, pluginId, value)` | Define o estado personalizado de um plugin para um dente |
 | `getPluginState(toothNo, pluginId)` | Obtém o estado personalizado de um plugin para um dente |
+| `setToothTemplateOverrides(overrides)` | Substitui os desenhos de dentes de fábrica por SVG da hospedeira, por perfil anatômico; `null` restaura a arte de fábrica. A marcação é verificada e um modelo recusado mantém o desenho de fábrica *(não publicado)* |
+| `getToothTemplateRejections()` | Os modelos da hospedeira recusados até agora, e por quê — `{ profile, set, key, reason }[]` *(não publicado)* |
 | `getToothStateSummary(toothNo)` | Obtém o resumo localizado de todos os estados ativos |
 | `getOdontogramSummary()` | Obtém um resumo textual estruturado e localizado de todo o gráfico (contagens, seções) |
 | `onStateChange(callback)` | Assina mudanças de estado; retorna uma função de cancelamento |
@@ -851,6 +871,7 @@ Além da própria exportação Status JSON / FHIR / PNG / JPG / SVG do odontogra
 ### 🔒 Notas de segurança
 
 - **Plugins rodam como código confiável.** O valor de retorno de `renderSvg()` de um plugin é injetado no SVG do gráfico ao vivo. Essa saída é sanitizada com [DOMPurify](https://github.com/cure53/DOMPurify) (perfil SVG, mais `svgFilters`) antes da inserção — `<script>`, `<iframe>`, `<object>`, `<embed>` e `<foreignObject>` são proibidos por completo, e saídas totalmente maliciosas são descartadas em vez de parcialmente renderizadas. Isso reduz o raio de impacto de um plugin comprometido ou com bugs, mas os plugins ainda devem ser carregados apenas de fontes em que você confia — a sanitização é uma rede de segurança, não um substituto para a análise cuidadosa.
+- **Modelos de dentes fornecidos pela hospedeira são recusados, não limpos.** Um desenho passado a `setToothTemplateOverrides()` é verificado antes de poder ser desenhado: uma única raiz `<svg>`; DOMPurify (perfil SVG, com `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` e os elementos de animação proibidos) — e se o DOMPurify precisar remover *qualquer coisa*, o modelo inteiro é **recusado** em vez de higienizado em silêncio, de modo que a hospedeira nunca desenhe marcação diferente da que entregou; `href` apenas para um fragmento `#id`, e nenhum `url(` ou `@import` em um elemento `<style>` ou atributo `style`, para que nada contido num modelo alcance a rede; e ele precisa carregar todos os ids de camada do desenho de fábrica que substitui, porque o motor liga e desliga camadas por id. Um modelo recusado é reportado por `getToothTemplateRejections()` e o desenho de fábrica é mantido.
 - **Content-Security-Policy.** O **build de produção** do demo injeta esta política via uma tag `<meta http-equiv="Content-Security-Policy">` (o dev server não é afetado):
 
   ```

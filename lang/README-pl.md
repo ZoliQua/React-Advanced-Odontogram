@@ -479,6 +479,23 @@ Szablony są obracane o 180 stopni dla żuchwy i odbijane poziomo dla lewej stro
 **Ikony SVG** (w `src/assets/icon-svgs/`):
 `icon_8.svg` (mądrość), `icon_gum.svg` (kość), `icon_no_selection.svg` (wyczyść), `icon_occl.svg` (widok okluzyjny), `icon_pulp.svg` (miazga)
 
+**Rysunki dostarczone przez aplikację hosta** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Aplikacja hosta może zastąpić dowolny z tych szablonów własnym SVG, bez forkowania biblioteki, przez `setToothTemplateOverrides()` albo prop `toothTemplates`. Nadpisania są kluczowane **według profilu anatomicznego**, ponieważ szablon numer N to inny rysunek w `classic` i w `measured`:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — wszystko przyjęte
+```
+
+Każdy profil przyjmuje cztery mapy — `templates`, `templatesOccl` oraz, w profilu rysującym zęby mleczne jako osobną grafikę (`measured`), `primaryTemplates` i `primaryTemplatesOccl`. Nadpisanie przeżywa zmianę profilu anatomicznego, `null` przywraca grafikę fabryczną, a gdy nic nie podano, silnik serwuje dokładnie te same rysunki co dotąd.
+
+Szablon to niezaufany znacznik, który trafia do żywego DOM, więc **jest weryfikowany, zanim zostanie narysowany** — patrz uwagi o bezpieczeństwie poniżej. Odrzucony szablon wymienia `getToothTemplateRejections()`, a rysunek fabryczny zostaje na swoim miejscu: na diagramie nigdy nie brakuje zęba.
+
 ### 🔢 Systemy numeracji
 
 **FDI (ISO 3950):** Zęby dorosłych 11-18, 21-28, 31-38, 41-48. Zęby mleczne 51-55, 61-65, 71-75, 81-85.
@@ -609,6 +626,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `onDarkModeChange` | `(dark) => void` | — | Wywołanie zwrotne przy przełączeniu trybu ciemnego. Wymagane dla trybu kontrolowanego. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Niestandardowe zastąpienia kolorów za pomocą właściwości niestandardowych CSS (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Niestandardowe wtyczki SVG do nakładek wizualnych i niestandardowego stanu na ząb. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Rysunki zębów od hosta (tekst SVG) zamiast fabrycznych, według profilu anatomicznego. Weryfikowane; odrzucony szablon zostawia rysunek fabryczny. *(niewydane)* |
 | `readOnly` | `boolean` | `undefined` | Wyłączenie wszystkich interakcji (klik, dotyk, klawiatura). Przydatne do drukowania/raportowania. |
 | `enableNotes` | `boolean` | `undefined` | Włącz notatki do zębów. Dwuklik na ząb, aby dodać/edytować notatki. |
 
@@ -634,6 +652,8 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `registerPlugins(plugins)` | Zarejestruj niestandardowe wtyczki SVG |
 | `setPluginState(toothNo, pluginId, value)` | Ustaw niestandardowy stan wtyczki dla zęba |
 | `getPluginState(toothNo, pluginId)` | Pobierz niestandardowy stan wtyczki dla zęba |
+| `setToothTemplateOverrides(overrides)` | Zastępuje fabryczne rysunki zębów SVG od hosta, według profilu anatomicznego; `null` przywraca grafikę fabryczną. Znaczniki są weryfikowane, a odrzucony szablon zostawia rysunek fabryczny *(niewydane)* |
+| `getToothTemplateRejections()` | Szablony hosta odrzucone do tej pory i powód — `{ profile, set, key, reason }[]` *(niewydane)* |
 | `getToothStateSummary(toothNo)` | Pobierz zlokalizowane podsumowanie wszystkich aktywnych stanów |
 | `getOdontogramSummary()` | Pobierz ustrukturyzowane, zlokalizowane tekstowe podsumowanie całego wykresu (liczby, sekcje) |
 | `onStateChange(callback)` | Subskrybuj zmiany stanu; zwraca funkcję anulowania subskrypcji |
@@ -851,6 +871,7 @@ Poza własnym eksportem Status JSON / FHIR / PNG / JPG / SVG odontogramu, **wykr
 ### 🔒 Uwagi dotyczące bezpieczeństwa
 
 - **Wtyczki działają jako zaufany kod.** Zwracana wartość `renderSvg()` wtyczki jest wstrzykiwana do SVG aktywnego wykresu. To wyjście jest oczyszczane przez [DOMPurify](https://github.com/cure53/DOMPurify) (profil SVG, plus `svgFilters`) przed wstawieniem — `<script>`, `<iframe>`, `<object>`, `<embed>` i `<foreignObject>` są całkowicie zabronione, a w pełni złośliwe dane wyjściowe są odrzucane zamiast częściowo renderowane. Zmniejsza to zasięg skutków skompromitowanej lub błędnej wtyczki, ale wtyczki nadal powinny być ładowane wyłącznie z zaufanych źródeł — sanityzacja to siatka bezpieczeństwa, a nie substytut weryfikacji.
+- **Szablony zębów od hosta są odrzucane, a nie czyszczone.** Rysunek przekazany do `setToothTemplateOverrides()` jest weryfikowany, zanim zostanie narysowany: pojedynczy korzeń `<svg>`; DOMPurify (profil SVG, z zakazanymi `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` i elementami animacji) — a jeśli DOMPurify musi usunąć *cokolwiek*, cały szablon zostaje **odrzucony**, zamiast po cichu oczyszczony, dzięki czemu host nigdy nie rysuje znaczników innych niż dostarczone; `href` tylko do fragmentu `#id` i żadnego `url(` ani `@import` w elemencie `<style>` lub atrybucie `style`, więc nic z zawartości szablonu nie sięgnie do sieci; na koniec szablon musi nieść każdy identyfikator warstwy zastępowanego rysunku fabrycznego, bo silnik przełącza warstwy po identyfikatorze. Odrzucony szablon zgłasza `getToothTemplateRejections()`, a rysunek fabryczny zostaje zachowany.
 - **Content-Security-Policy.** **Produkcyjny build** wersji demo wstawia poniższą politykę przez znacznik `<meta http-equiv="Content-Security-Policy">` (serwer deweloperski jest nieobjęty):
 
   ```

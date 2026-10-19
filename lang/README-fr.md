@@ -481,6 +481,23 @@ Les modèles sont pivotés de 180 degrés pour la mâchoire inférieure et refl�
 **SVG d'icônes** (dans `src/assets/icon-svgs/`) :
 `icon_8.svg` (sagesse), `icon_gum.svg` (os), `icon_no_selection.svg` (effacer), `icon_occl.svg` (vue occlusale), `icon_pulp.svg` (pulpe)
 
+**Dessins fournis par l'application hôte** *(non publié — sur `main`, disponible à la prochaine version)*. Une application hôte peut remplacer n'importe lequel de ces gabarits par son propre SVG, sans forker la bibliothèque, via `setToothTemplateOverrides()` ou la prop `toothTemplates`. Les remplacements sont indexés **par profil anatomique**, car le gabarit numéro N est un dessin différent en `classic` et en `measured` :
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — tout a été accepté
+```
+
+Chaque profil accepte quatre tables — `templates`, `templatesOccl` et, pour un profil qui dessine les dents temporaires avec un tracé propre (`measured`), `primaryTemplates` et `primaryTemplatesOccl`. Un remplacement survit à un changement de profil anatomique, `null` rétablit les dessins d'origine, et sans rien fournir le moteur sert exactement les dessins habituels.
+
+Un gabarit est du balisage non fiable qui atterrit dans le DOM vivant : il est donc **vérifié avant de pouvoir être dessiné** — voir les notes de sécurité ci-dessous. Un gabarit refusé est listé par `getToothTemplateRejections()` et le dessin d'origine reste en place : le schéma dentaire ne perd jamais une dent.
+
 ### 🔢 Systèmes de numérotation
 
 **FDI (ISO 3950) :** Dents permanentes 11-18, 21-28, 31-38, 41-48. Dents temporaires 51-55, 61-65, 71-75, 81-85.
@@ -611,6 +628,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `onDarkModeChange` | `(dark) => void` | — | Callback lorsque le mode sombre bascule. Requis pour le mode contrôlé. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Surcharges de couleurs personnalisées via des propriétés CSS personnalisées (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Plugins SVG personnalisés pour les superpositions visuelles et l'état personnalisé par dent. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Dessins de dents fournis par l'hôte (texte SVG) à la place de ceux d'origine, par profil anatomique. Vérifiés ; un gabarit refusé laisse le dessin d'origine. *(non publié)* |
 | `readOnly` | `boolean` | `undefined` | Désactive toutes les interactions (clic, tactile, clavier). Utile pour les vues impression/rapport. |
 | `enableNotes` | `boolean` | `undefined` | Active les notes par dent. Double-cliquez sur une dent pour ajouter/modifier des notes. |
 
@@ -636,6 +654,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `registerPlugins(plugins)` | Enregistre des plugins SVG personnalisés |
 | `setPluginState(toothNo, pluginId, value)` | Définit l'état personnalisé d'un plugin pour une dent |
 | `getPluginState(toothNo, pluginId)` | Obtient l'état personnalisé d'un plugin pour une dent |
+| `setToothTemplateOverrides(overrides)` | Remplace les dessins de dents d'origine par du SVG fourni par l'hôte, par profil anatomique ; `null` rétablit les dessins d'origine. Le balisage est vérifié et un gabarit refusé laisse le dessin d'origine *(non publié)* |
+| `getToothTemplateRejections()` | Les gabarits de l'hôte refusés jusqu'ici, et pourquoi — `{ profile, set, key, reason }[]` *(non publié)* |
 | `getToothStateSummary(toothNo)` | Obtient un résumé localisé de tous les états actifs |
 | `getOdontogramSummary()` | Obtient un résumé textuel structuré et localisé de l'ensemble du schéma (comptages, sections) |
 | `onStateChange(callback)` | S'abonne aux changements d'état ; renvoie une fonction de désabonnement |
@@ -853,6 +873,7 @@ Au-delà de l'export propre à l'odontogramme (JSON d'état / FHIR / PNG / JPG /
 ### 🔒 Notes de sécurité
 
 - **Les plugins s'exécutent comme du code de confiance.** La valeur de retour de `renderSvg()` d'un plugin est injectée dans le SVG du schéma en direct. Cette sortie est désinfectée avec [DOMPurify](https://github.com/cure53/DOMPurify) (profil SVG, plus `svgFilters`) avant insertion — `<script>`, `<iframe>`, `<object>`, `<embed>` et `<foreignObject>` sont catégoriquement interdits, et une sortie entièrement malveillante est abandonnée plutôt que partiellement rendue. Cela réduit le rayon d'impact d'un plugin compromis ou bogué, mais les plugins ne devraient toujours être chargés que depuis des sources fiables — la désinfection est un filet de sécurité, pas un substitut à une vérification.
+- **Les gabarits de dents fournis par l'hôte sont refusés, pas nettoyés.** Un dessin passé à `setToothTemplateOverrides()` est vérifié avant de pouvoir être dessiné : une racine `<svg>` unique ; DOMPurify (profil SVG, avec `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` et les éléments d'animation interdits) — et si DOMPurify doit retirer *quoi que ce soit*, le gabarit entier est **refusé** plutôt que nettoyé en silence, afin que l'hôte ne dessine jamais un balisage différent de celui qu'il a fourni ; `href` uniquement vers un fragment `#id`, et aucun `url(` ni `@import` dans un élément `<style>` ou un attribut `style`, pour que rien dans un gabarit ne puisse atteindre le réseau ; enfin il doit porter chaque identifiant de calque du dessin d'origine qu'il remplace, car le moteur bascule les calques par identifiant. Un gabarit refusé est signalé par `getToothTemplateRejections()` et le dessin d'origine est conservé.
 - **Content-Security-Policy.** La **build de production** de la démo injecte cette politique via une balise `<meta http-equiv="Content-Security-Policy">` (le serveur de développement n'est pas concerné) :
 
   ```

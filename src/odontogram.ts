@@ -34,7 +34,7 @@ import {
 import { buildPerioSvg } from "./perioExport";
 import { resetTemplateCache as resetPerioTemplateCache } from "./perioGraphic";
 import { assemblePdf, PDF_PALETTES, DEFAULT_PDF_THEME, type PdfExportOptions, type PdfAssembleData, type PdfDocLike, type PdfColorTheme } from "./perioPdf";
-import { TEMPLATES, TOOTH_TEMPLATE, ALL_TEETH, isUpperTooth, activeAnatomyProfile, applyToothAnatomy, applyToothTemplateOverrides, getToothTemplateRejections, type ToothTemplateOverrides, getToothAnatomy, ensureMeasuredProfile, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
+import { TEMPLATES, TOOTH_TEMPLATE, ALL_TEETH, isUpperTooth, activeAnatomyProfile, applyToothAnatomy, applyToothTemplateOverrides, type ToothTemplateOverrides, getToothAnatomy, ensureMeasuredProfile, type ToothAnatomy, type AnatomyProfile } from "./anatomy/profiles";
 export { isUpperTooth } from "./anatomy/profiles";
 // Re-exported so the public API surface is unchanged by the extraction.
 export { getToothAnatomy, activeAnatomyProfile, getToothTemplateRejections } from "./anatomy/profiles";

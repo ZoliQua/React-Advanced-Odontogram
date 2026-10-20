@@ -21,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   layers are among them). A refused template is listed by `getToothTemplateRejections()` and the factory one stays: the chart is never left
   without a tooth. With nothing supplied `activeAnatomyProfile()` returns exactly the same object as before.
 
+### Fixed
+
+- **The `language` prop reached the periodontal chart too late, so its labels rendered in English** ([#38](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/38),
+  reported by @jsampedroc). Not a translation gap: an ordering one. React runs child effects before the parent's, and the periodontal chart
+  builds its DOM imperatively in a passive effect, resolving labels through the module-level `t()` — which reads the *global* language. The
+  provider set that global language in a passive effect of its own, so it landed after the labels had already been built against the English
+  fallback, and nothing rebuilt them. `useI18n` sets the language in a layout effect now, which React runs before any passive effect. Affected
+  every non-English language under `<OdontogramProvider language="…">`.
+
 ## [2.7.0] - 2026-10-18
 
 > 2.6.0 was prepared but never published — no tag, no npm release. Everything

@@ -1,7 +1,7 @@
 // Part of React Advanced Odontogram - https://github.com/ZoliQua/React-Advanced-Odontogram
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { FALLBACK_LANGUAGE, type Language } from "./languages";
 import { getLoadedTable, isLanguageLoaded, loadLanguage } from "./loader";
 
@@ -118,7 +118,21 @@ export function useI18n(options: UseI18nOptions = {}){
   const [, bump] = useState(0);
   useEffect(() => onI18nChange(() => bump((n) => n + 1)), []);
 
-  useEffect(() => {
+  // A LAYOUT effect, not a passive one (issue #38). React runs every layout
+  // effect before any passive effect, and child effects before the parent's.
+  // Parts of the chart — the periodontal chart above all — build their DOM
+  // imperatively in a passive effect and resolve their labels through the
+  // module-level `t()`, which reads the GLOBAL language. As a passive effect
+  // this one ran after them, so those labels were built against the English
+  // fallback and never rebuilt: `<OdontogramProvider language="es">` painted
+  // the perio chart in English. Setting the language in a layout effect puts
+  // it in place before any child's passive effect can read it.
+  //
+  // It is synchronous here by construction: `OdontogramProvider` holds its
+  // first render until the requested language has loaded, so `setI18nLanguage`
+  // takes its already-loaded path. The component is client-only (it reads the
+  // DOM on mount), as are the four cards that already use `useLayoutEffect`.
+  useLayoutEffect(() => {
     void setI18nLanguage(requested);
   }, [requested]);
 

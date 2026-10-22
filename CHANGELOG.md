@@ -30,6 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fallback, and nothing rebuilt them. `useI18n` sets the language in a layout effect now, which React runs before any passive effect. Affected
   every non-English language under `<OdontogramProvider language="…">`.
 
+- **Changing the UI language after mount left the periodontal chart in the old one.** The same defect from the other side, found while
+  verifying the one above: the chart's grid is built once, no effect in it depends on the language, and a language switch does not go through
+  `notifyStateChange()`, so nothing ever rebuilt the labels. The grid effect now treats the language exactly as it already treats
+  row visibility — part of the signature it compares, with a matching `onI18nChange` subscription that rebuilds the grid when it differs.
+  A rebuild recreates the grid's inputs, so a focused perio cell loses focus on a language switch; changing the language is a deliberate act
+  performed from the Settings modal, which holds focus at the time.
+
 ## [2.7.0] - 2026-10-18
 
 > 2.6.0 was prepared but never published — no tag, no npm release. Everything

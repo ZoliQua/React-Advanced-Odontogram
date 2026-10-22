@@ -2,7 +2,7 @@
 // Created by Zoltan Dul (https://github.com/ZoliQua) 2025-2026
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { t } from "./i18n/useI18n";
+import { getI18nLanguage, onI18nChange, t } from "./i18n/useI18n";
 import { optionsFor } from "./registry/uiOptions";
 import {
   PERIO_SITES,
@@ -1953,6 +1953,13 @@ export default function PerioChart({
     const visibilitySig = () => JSON.stringify([
       getPerioRowVisibility(),
       getPerioIndexNameMode(),
+      // The row LABELS are resolved by `buildArch` through the module-level
+      // `t()`, which reads the global language — so a language switch changes
+      // the grid's text exactly the way a row-visibility flag changes its
+      // rows, and takes the same rebuild (issue #38). The language is part of
+      // the signature rather than a separate flag so one comparison decides
+      // every reason the grid has to be rebuilt.
+      getI18nLanguage(),
       // The mPI/mBI rows are gated per-arch on whether that arch contains an
       // implant (see `archHasImplant` in `buildArch`) — the
       // implant SET affects row presence, so a rebuild must also fire when it
@@ -2016,10 +2023,26 @@ export default function PerioChart({
       if (visibilitySig() !== lastVisibilitySig) buildGrid();
       fullResync();
     });
+    // A language switch does not go through `notifyStateChange()`, so the
+    // subscription above never sees one — hence a second one (issue #38).
+    // NOT gated on `suppressResyncRef`: that flag exists to skip a redundant
+    // resync triggered by the grid's OWN edit, and a language change is never
+    // that. `onI18nChange` fires from `applyLanguage()`, which runs only once
+    // the strings have arrived, so the rebuild always has them.
+    //
+    // Known trade-off: a rebuild recreates every input, so a focused perio
+    // cell loses focus. Changing the UI language is a deliberate act performed
+    // from the Settings modal, which holds focus at the time.
+    const unsubscribeI18n = onI18nChange(() => {
+      if (visibilitySig() === lastVisibilitySig) return;
+      buildGrid();
+      fullResync();
+    });
     return () => {
       container.removeEventListener("keydown", handleGridKeyDown);
       container.removeEventListener("focusout", handleGridFocusOut);
       unsubscribe();
+      unsubscribeI18n();
       // The info popover is appended to document.body (outside `container`),
       // so it would otherwise be orphaned when the grid is torn down (dialog
       // close / inline unmount) — close it explicitly.

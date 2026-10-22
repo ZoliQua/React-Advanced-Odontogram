@@ -14,11 +14,17 @@
 // `useI18n` sets the language in a LAYOUT effect now, which React runs before
 // any passive effect, child or parent.
 //
-// Both cases below assert behaviour, not the hook it is implemented with: the
-// first pins the invariant directly, the second pins what the user sees.
+// A language change AFTER mount is the same bug from the other side: the grid
+// is built once and no effect in `PerioChart` depends on the language, so the
+// labels stayed in whatever language they were built in. The chart subscribes
+// to `onI18nChange` now and rebuilds the grid, exactly as it already does for a
+// row-visibility change.
+//
+// Every case below asserts behaviour, not the hook it is implemented with: the
+// first pins the invariant directly, the others pin what the user sees.
 import { describe, it, expect, afterEach, beforeEach } from "vitest";
 import { createElement, useEffect } from "react";
-import { render, cleanup } from "@testing-library/react";
+import { act, render, cleanup } from "@testing-library/react";
 import { OdontogramProvider } from "../OdontogramContext";
 import PerioChart from "../PerioChart";
 import { getI18nLanguage, setI18nLanguage, t } from "../i18n/useI18n";
@@ -58,5 +64,24 @@ describe("the provider's language is in place before its children's effects run 
     const text = container.textContent ?? "";
     expect(text, "the Spanish label is missing").toContain(t("perio.mobility", "es"));
     expect(text, "the English fallback label is still on screen").not.toContain(t("perio.mobility", "en"));
+  });
+});
+
+describe("a language change after mount relabels the periodontal chart (#38, second defect)", () => {
+  it("switching the provider's language rebuilds the grid in the new language", () => {
+    const chart = () => createElement(PerioChart, { open: true, onClose: () => {} });
+    const { container, rerender } = render(
+      createElement(OdontogramProvider, { language: "en" }, chart()),
+    );
+    expect(container.textContent ?? "", "the English label should be there to begin with")
+      .toContain(t("perio.mobility", "en"));
+
+    act(() => {
+      rerender(createElement(OdontogramProvider, { language: "es" }, chart()));
+    });
+
+    const text = container.textContent ?? "";
+    expect(text, "the Spanish label did not arrive").toContain(t("perio.mobility", "es"));
+    expect(text, "the English label survived the switch").not.toContain(t("perio.mobility", "en"));
   });
 });

@@ -7,13 +7,24 @@ on:
     branches: [main]
 
 jobs:
+  # Runs on every SUPPORTED Node LTS line, not just the one `.nvmrc` pins, so a
+  # break on a newer Node shows up here rather than in a consumer's install.
+  # `.nvmrc` (the version used for local development and for publishing) must
+  # stay one of these; the floor the package DECLARES is `engines.node` in
+  # package.json, which is lower than the lines exercised here because Node 20
+  # reached end-of-life on 2026-04-30 and is not worth spending CI time on.
   build-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22', '24']
+    name: build-and-test (node ${{ matrix.node }})
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version-file: .nvmrc
+          node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
       - name: Type check

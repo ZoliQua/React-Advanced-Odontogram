@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   layers are among them). A refused template is listed by `getToothTemplateRejections()` and the factory one stays: the chart is never left
   without a tooth. With nothing supplied `activeAnatomyProfile()` returns exactly the same object as before.
 
+### Changed
+
+- **`engines.node` is `>=20.19.0`** (was `>=18`). Node 18 reached end-of-life on 2025-04-30 and the build toolchain had already moved past
+  it: Vite 7 requires `^20.19.0 || >=22.12.0`. The new floor states what the package actually builds against rather than a version nobody
+  supports. Nothing in the library's runtime changed — it is a browser component; Node matters only to whatever bundles it.
+
 ### Fixed
 
 - **The `language` prop reached the periodontal chart too late, so its labels rendered in English** ([#38](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/38),

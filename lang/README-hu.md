@@ -566,7 +566,11 @@ export default function Host(){
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Nem szín: CSS-szűrő az implantátum egészén.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -575,6 +579,8 @@ export default function Host(){
 ```
 
 A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram a felülettel együtt sötétedik, nem világít bele. A `measured` profilban a korona és a gyökér dentinmagot is visel: amíg a `dentin` nincs beállítva, a testszínt veszi fel, tehát a határvonal csak akkor jelenik meg, ha kéred. Sötét módban a rágófelszíni csempék az oldalnézetekkel együtt sötétednek, a szuvas lézió pedig megtartja a sötét kitöltését — a körvonala vált világosra és az viszi a formát, mert a „szuvasodás = sötét” hamarabb olvasódik ki, mint bármilyen kontrasztarány.
+
+**Az implantátumot színezzük, nem átfestjük** *(még kiadatlan — a `main`-en, a következő kiadásban jelenik meg)*. A rajza körülbelül 65 egymáshoz közeli fémszürkét hordoz, amelyek egy fényforrást kódolnak, ezért szándékosan nem témázhatók egyenként: külön-külön beállítva az árnyalás ellaposodna, nem újraszíneződne. Az `--odon-implant-tint` az egész implantátumra tett CSS-szűrő, így minden szürke együtt mozdul, és a köztük lévő viszonyok megmaradnak — `hue-rotate(205deg) saturate(.85)`, vagy saját `url(#…)` szűrő. Alapértelmezésben `none`, és nem érinti a peri-implantáris csontvesztés rétegét: az a szűrt csoporton kívül van, így kozmetikai beállítás soha nem mozdíthat el klinikai jelet.
 
 **Plugin integráció:**
 ```tsx

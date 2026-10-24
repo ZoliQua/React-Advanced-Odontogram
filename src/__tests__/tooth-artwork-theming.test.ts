@@ -10,7 +10,7 @@
 import { describe, it, expect } from "vitest";
 import { applyThemeConfig, flattenThemeTokens } from "../theme";
 import { buildPerioSvg } from "../perioExport";
-import { __resetChartStateForTest, setPerioSite } from "../odontogram";
+import { __resetChartStateForTest, __setToothStateForTest, setPerioSite } from "../odontogram";
 import tooth11 from "../assets/teeth-svgs/11.svg?raw";
 import measured11 from "../assets/teeth-svgs/measured/11.svg?raw";
 import measured16Occl from "../assets/teeth-svgs/measured/16_occl.svg?raw";
@@ -66,9 +66,77 @@ describe("tooth artwork: the drawings are tokenized", () => {
     // ~65 near-identical metal greys encoding a light source, not a surface.
     // #b7c0c3 is one of the fixture's shading greys: still a bare literal,
     // and never wrapped in a token.
+    //
+    // This used to assert `not.toContain("var(--odon-implant")`, which was a
+    // proxy for "no grey is tokenized". The fixture now carries exactly one
+    // implant reference — the whole-group tint, a FILTER — so the assertion
+    // states the actual rule instead of the proxy: the colours stay literal,
+    // and the single token is not one of them.
     expect(measured11).toContain("fill: #b7c0c3");
     expect(measured11).not.toContain("#b7c0c3)");
-    expect(measured11).not.toContain("var(--odon-implant");
+    for (const svg of [tooth11, measured11]) {
+      const refs = svg.match(/var\(--odon-implant[\w-]*/g) ?? [];
+      expect(refs).toEqual(["var(--odon-implant-tint"]);
+    }
+  });
+});
+
+describe("tooth artwork: the implant tint", () => {
+  /** The attributes of the one tag carrying `id="<layerId>"`. */
+  function tagOf(svg: string, layerId: string): string {
+    const m = new RegExp(`<[a-z]+[^>]*\\bid="${layerId}"[^>]*>`).exec(svg);
+    if (!m) throw new Error(`no #${layerId} in this template`);
+    return m[0];
+  }
+
+  it("hooks the whole fixture group in BOTH profiles", () => {
+    for (const [name, svg] of [["classic", tooth11], ["measured", measured11]] as const) {
+      expect(tagOf(svg, "implant-base"), name)
+        .toContain("filter: var(--odon-implant-tint, none);");
+    }
+  });
+
+  it("does not reach the peri-implant bone-loss overlay", () => {
+    // The overlay is a clinical signal, and a cosmetic setting must never
+    // shift one. It is a SIBLING of `implant-base`, not a child, which is the
+    // whole reason the tint can be a single group filter at all. Asserted
+    // structurally rather than on the markup, because the claim IS about the
+    // tree: a future regrouping would otherwise break it silently.
+    for (const [name, svg] of [["classic", tooth11], ["measured", measured11]] as const) {
+      const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+      const base = doc.querySelector("#implant-base");
+      const overlay = doc.querySelector("#peri-implant-bone-loss");
+      expect(base, name).not.toBeNull();
+      expect(overlay, name).not.toBeNull();
+      expect(base!.contains(overlay!), `${name}: the overlay is inside the filtered group`)
+        .toBe(false);
+      expect(overlay!.getAttribute("style") ?? "", name).not.toContain("filter");
+    }
+  });
+
+  it("is settable through themeConfig.tokens and leaves other tokens alone", () => {
+    const el = document.createElement("div");
+    applyThemeConfig(el, { tokens: { "--odon-implant-tint": "hue-rotate(205deg) saturate(.85)" } });
+    expect(el.style.getPropertyValue("--odon-implant-tint")).toBe("hue-rotate(205deg) saturate(.85)");
+    expect(el.style.getPropertyValue("--odon-tooth-body")).toBe("");
+  });
+
+  it("resolves on export — set, and unset to its own fallback", () => {
+    const xml = '<g style="filter: var(--odon-implant-tint, none);"/>';
+
+    const themed = document.createElement("div");
+    document.body.appendChild(themed);
+    applyThemeConfig(themed, { tokens: { "--odon-implant-tint": "hue-rotate(205deg)" } });
+    const out = flattenThemeTokens(xml, themed);
+    expect(out).toContain("filter: hue-rotate(205deg)");
+    expect(out).not.toContain("var(");
+    themed.remove();
+
+    // Unset: the export is exactly what it was before the hook existed.
+    const plain = document.createElement("div");
+    document.body.appendChild(plain);
+    expect(flattenThemeTokens(xml, plain)).toBe('<g style="filter: none;"/>');
+    plain.remove();
   });
 });
 
@@ -287,6 +355,32 @@ describe("tooth artwork: the export path is actually wired", () => {
     expect(built!.xml).not.toContain("var(--odon-");
     // …and the artwork is still painted: the flattened fallback is there.
     expect(built!.xml).toContain("#ebebeb");
+  });
+
+  it("flattens the implant tint on a charted implant, themed and unthemed", async () => {
+    // The perio export draws an implant tooth from the fixture group, so this
+    // is the tint travelling the REAL export path rather than a hand-written
+    // snippet. A `var()` surviving into a standalone file would resolve to
+    // nothing in whatever document opens it.
+    __resetChartStateForTest();
+    __setToothStateForTest(11, { toothSelection: "implant" });
+    setPerioSite(11, "MB", { pd: 4 });
+
+    const plain = await buildPerioSvg();
+    expect(plain).not.toBeNull();
+    expect(plain!.xml).not.toContain("var(--odon-");
+    expect(plain!.xml, "an unthemed export keeps the fixture's own default").toContain("filter: none");
+
+    applyThemeConfig(document.documentElement, {
+      tokens: { "--odon-implant-tint": "hue-rotate(205deg)" },
+    });
+    try {
+      const themed = await buildPerioSvg();
+      expect(themed!.xml).not.toContain("var(--odon-");
+      expect(themed!.xml).toContain("filter: hue-rotate(205deg)");
+    } finally {
+      applyThemeConfig(document.documentElement, {});
+    }
   });
 });
 

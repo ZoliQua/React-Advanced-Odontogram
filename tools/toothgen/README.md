@@ -131,6 +131,37 @@ renderer restores the root scale around the generated CEJ. No external
 illustration is copied; the generator uses anatomical facts and independently
 generated geometry over repository-owned donors.
 
+## Palette: rewriting versus inserting
+
+`palette.py` is the single inventory of themable values, and it drives two
+different operations in `tokenize.py`.
+
+`RULES` **rewrite** a literal the drawing already carries: a `fill` or
+`stroke` whose colour matches a rule becomes `var(<token>, <that colour>)`.
+The matched path is a prefix of the owning layer's id chain, and the most
+specific rule wins.
+
+`ENSURE` **inserts** a declaration the drawing never had, so that a host has
+something to override at all. Its fallback is what the artwork renders at
+today, which is what keeps an unthemed chart — and the render-parity goldens —
+unchanged. Two properties of the insertion matter:
+
+- It is matched on the **exact** layer path and applied only to the element
+  that owns that id. The path is built from ids alone, so an anonymous child
+  shares its parent's path; without the ownership check every child inside the
+  group would get its own copy.
+- It appends to an existing `style` attribute, or creates one, always **after**
+  the existing attributes. `build.py` locates the implant fixture with a
+  literal `<g id="implant-base"` search, which an attribute inserted in front
+  of the id would silently defeat.
+
+`UNTOKENIZED_BY_DESIGN` does not apply to `ENSURE`. That list exists because
+recolouring the implant fixture's greys one by one would destroy its shading —
+which is exactly why the fixture instead gets one filter hook over the whole
+group (`--odon-implant-tint`), moving every grey together.
+
+`test_tokenize.py` covers the insertion half.
+
 ## Build and verification
 
 With `uv` installed, use:

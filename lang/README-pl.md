@@ -566,7 +566,11 @@ export default function Host(){
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // To nie kolor: filtr CSS na całym implancie.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -575,6 +579,8 @@ export default function Host(){
 ```
 
 Rysunki niosą swoje kolory jako właściwości niestandardowe CSS z kolorem fabrycznym jako wartością zapasową, dzięki czemu oba profile anatomii podążają za jednym ustawieniem, a eksport rozwiązuje je, zanim opuszczą stronę. Pełna tabela tokenów znajduje się w `tools/toothgen/palette.py`. Tryb ciemny ma własną paletę rysunków, więc diagram ciemnieje razem z interfejsem, zamiast razić. W profilu `measured` korona i korzeń mają dodatkowo rdzeń zębinowy: przejmuje kolor `body`, dopóki nie ustawisz `dentin`, więc granica pojawia się dopiero wtedy, gdy o nią poprosisz. W trybie ciemnym kafelki okluzyjne ciemnieją razem z widokami bocznymi, a ognisko próchnicy zachowuje ciemne wypełnienie — to obrys zmienia się na jasny i niesie kształt, bo „próchnica = ciemna” czyta się wcześniej niż jakikolwiek współczynnik kontrastu.
+
+**Implant jest tonowany, a nie przemalowywany** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Jego rysunek niesie około 65 niemal identycznych metalicznych szarości kodujących źródło światła, dlatego celowo nie są one motywowalne pojedynczo: ustawione osobno spłaszczyłyby cieniowanie zamiast je przebarwić. `--odon-implant-tint` to filtr CSS nałożony na cały implant, więc każda szarość przesuwa się razem z pozostałymi, a relacje między nimi zostają zachowane — `hue-rotate(205deg) saturate(.85)` albo własny filtr `url(#…)`. Dopóki go nie ustawisz, wynosi `none`, a warstwy utraty kości okołowszczepowej nie dotyka: leży ona poza filtrowaną grupą, więc ustawienie kosmetyczne nigdy nie przesunie sygnału klinicznego.
 
 **Integracja wtyczki:**
 ```tsx

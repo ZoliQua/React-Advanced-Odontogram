@@ -568,7 +568,11 @@ export default function Host(){
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Pas une couleur : un filtre CSS sur l'implant entier.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -577,6 +581,8 @@ export default function Host(){
 ```
 
 Les dessins portent leurs couleurs sous forme de propriétés personnalisées CSS, la couleur livrée servant de valeur de repli ; les deux profils d'anatomie suivent donc un même réglage, et l'export les résout avant de quitter la page. La table complète des jetons se trouve dans `tools/toothgen/palette.py`. Le mode sombre fournit sa propre palette pour les dessins : le schéma s'assombrit avec l'interface au lieu d'éblouir. Dans le profil `measured`, la couronne et la racine portent en plus un noyau de dentine : il prend la couleur de `body` tant que `dentin` n'est pas défini, la limite n'apparaît donc que si vous la demandez. En mode sombre, les vignettes occlusales s'assombrissent avec les vues latérales, et une lésion carieuse conserve son remplissage sombre : c'est le contour qui passe au clair et porte la forme, car « carie = sombre » se lit avant tout rapport de contraste.
+
+**L'implant est teinté, pas recoloré** *(non publié — sur `main`, disponible à la prochaine version)*. Son dessin porte environ 65 gris métalliques quasi identiques qui encodent une source lumineuse ; ils ne sont donc délibérément pas thématisables un par un : les régler séparément aplatirait l'ombrage au lieu de le recolorer. `--odon-implant-tint` est un filtre CSS appliqué à l'implant dans son ensemble, de sorte que tous les gris se déplacent ensemble et que leurs rapports sont préservés — `hue-rotate(205deg) saturate(.85)`, ou votre propre filtre `url(#…)`. Il vaut `none` tant que vous ne le définissez pas, et il laisse intacte la couche de perte osseuse péri-implantaire : celle-ci se trouve hors du groupe filtré, si bien qu'un réglage cosmétique ne peut jamais déplacer un signal clinique.
 
 **Intégration de plugins :**
 ```tsx

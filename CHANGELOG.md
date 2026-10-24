@@ -21,6 +21,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   layers are among them). A refused template is listed by `getToothTemplateRejections()` and the factory one stays: the chart is never left
   without a tooth. With nothing supplied `activeAnatomyProfile()` returns exactly the same object as before.
 
+- **`--odon-implant-tint`: the implant fixture can be tinted toward a host's palette** ([#40](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/40),
+  asked for by @jsampedroc). The fixture's drawing carries ~65 near-identical metal greys that encode a light source, which is why it is
+  deliberately excluded from the colour-token table — setting those greys one by one flattens the shading instead of retheming it. The
+  fixture's group now carries `filter: var(--odon-implant-tint, none)`, so one filter moves every grey together and keeps the relationships
+  between them intact. Set it through `themeConfig.tokens`; it needs no new API. The peri-implant bone-loss overlay is **not** affected: it is
+  a sibling of the filtered group, not a child, so a cosmetic setting cannot shift a clinical signal — pinned by a test on the tree, not on
+  the markup.
+
+  The generator gained the mechanism this needed. `palette.RULES` rewrite a literal the artwork already carries; the new `palette.ENSURE`
+  inserts a declaration it never had, creating the `style` attribute where there is none, matched on the exact layer path so an anonymous
+  child cannot inherit a copy. Parity-safe: the render fingerprint covers `{id, opacity, cls}`, not style, and an unset token resolves to its
+  own fallback, so an unthemed export is byte-identical to one produced before the hook existed.
+
 ### Changed
 
 - **`engines.node` is `>=20.19.0`** (was `>=18`). Node 18 reached end-of-life on 2025-04-30 and the build toolchain had already moved past

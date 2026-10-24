@@ -566,7 +566,11 @@ export default function Host(){
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Non è un colore: un filtro CSS sull'intero impianto.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -575,6 +579,8 @@ export default function Host(){
 ```
 
 I disegni portano i propri colori come proprietà personalizzate CSS con il colore di serie come fallback, così entrambi i profili anatomici seguono un'unica impostazione e l'esportazione li risolve prima di lasciare la pagina. La tabella completa dei token è in `tools/toothgen/palette.py`. La modalità scura porta una propria palette per i disegni, così lo schema si scurisce insieme all'interfaccia invece di abbagliare. Nel profilo `measured` corona e radice portano anche un nucleo di dentina: prende il colore di `body` finché `dentin` non viene impostato, quindi il confine compare solo quando lo si chiede. In modalità scura le caselle occlusali si scuriscono insieme alle viste laterali e una lesione cariosa mantiene il suo riempimento scuro: è il contorno a passare al chiaro e a portare la forma, perché «carie = scuro» si legge prima di qualsiasi rapporto di contrasto.
+
+**L'impianto viene tinto, non ricolorato** *(non ancora pubblicato — su `main`, arriva nella prossima release)*. Il suo disegno porta circa 65 grigi metallici quasi identici che codificano una sorgente luminosa, perciò non sono deliberatamente tematizzabili uno per uno: impostarli singolarmente appiattirebbe l'ombreggiatura invece di ricolorarla. `--odon-implant-tint` è un filtro CSS sull'impianto nel suo insieme, così ogni grigio si sposta insieme agli altri e i loro rapporti restano intatti — `hue-rotate(205deg) saturate(.85)`, oppure un filtro `url(#…)` tuo. Vale `none` finché non lo imposti, e lascia intatto il livello di perdita ossea perimplantare: quel livello sta fuori dal gruppo filtrato, quindi un'impostazione cosmetica non può mai spostare un segnale clinico.
 
 **Integrazione plugin:**
 ```tsx

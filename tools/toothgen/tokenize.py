@@ -1,5 +1,9 @@
 """Rewrite literal colours in the hand-drawn sources as palette tokens.
 
+Also ADDS the declarations in `palette.ENSURE` — a property the artwork never
+carried, inserted so a host has something to override (the implant tint). That
+half creates the `style` attribute when the element has none.
+
 The generator copies style attributes through untouched, so tokenizing the six
 donor SVGs is enough for all 40 generated templates. The six classic assets are
 not generated, so they are rewritten in place by the same pass.
@@ -42,6 +46,9 @@ STYLE_ATTR = re.compile(r'\bstyle\s*=\s*"([^"]*)"')
 # else was tokenized, and why an occlusal crown kept glaring in dark mode.
 STOP_ATTR = re.compile(r'\bstop-color\s*=\s*"([^"]*)"')
 DECL = re.compile(r"(^|;)(\s*)(fill|stroke)(\s*:\s*)([^;]+)")
+# Property NAMES already present in a style attribute. Matched rather than
+# split on ";" so a value that contains one (a data: URL) cannot confuse it.
+PROP_NAME = re.compile(r"(?:^|;)\s*([A-Za-z-]+)\s*:")
 
 VOID = {"path", "rect", "circle", "ellipse", "line", "polyline", "polygon", "use", "image", "stop"}
 
@@ -78,6 +85,31 @@ def _rewrite_value(raw: str, path: str, prop: str, stats: collections.Counter,
     return f"var({token}, {raw.strip()})"
 
 
+def _ensure_decls(style: str, path: str, stats: collections.Counter) -> str:
+    """Add the declarations this layer must carry but the drawing never had.
+
+    Appends rather than rebuilds: the existing text is preserved byte for
+    byte, so re-running this leaves a file that already has the declaration
+    completely untouched.
+    """
+    rules = palette.lookup_ensure(path)
+    if not rules:
+        return style
+    present = {m.group(1).lower() for m in PROP_NAME.finditer(style)}
+    additions: list[str] = []
+    for _path, prop, token, fallback in rules:
+        stats[token] += 1
+        if prop.lower() in present:
+            continue  # already there — idempotent
+        additions.append(f"{prop}: var({token}, {fallback});")
+    if not additions:
+        return style
+    base = style.rstrip()
+    if base and not base.endswith(";"):
+        base += ";"
+    return (base + " " if base else "") + " ".join(additions)
+
+
 def process(text: str, stats: collections.Counter,
             literals: collections.Counter) -> str:
     """Walk the markup, tracking the id chain, and rewrite style attributes."""
@@ -103,10 +135,25 @@ def process(text: str, stats: collections.Counter,
         # forward.
         edits: list[tuple[int, int, str]] = []
         sm = STYLE_ATTR.search(attrs)
+        style = sm.group(1) if sm else ""
+        new_style = _rewrite_style(style, path, stats, literals) if sm else ""
+        # Only on the element that OWNS the id. The layer path is built from
+        # ids alone, so an anonymous child shares its parent's path — which is
+        # what the colour rules want ("this declaration belongs to that
+        # layer") and the opposite of what an insertion wants: without this
+        # guard every child path inside the group gets its own copy.
+        if own:
+            new_style = _ensure_decls(new_style, path, stats)
         if sm:
-            new_style = _rewrite_style(sm.group(1), path, stats, literals)
-            if new_style != sm.group(1):
+            if new_style != style:
                 edits.append((m.start(3) + sm.start(1), m.start(3) + sm.end(1), new_style))
+        elif new_style:
+            # The layer needs a declaration and the tag carries no `style` at
+            # all (every `implant-base` is such a group). Appended AFTER the
+            # existing attributes, never before: build.py finds the group with
+            # a `<g id="implant-base"` literal, which an attribute inserted in
+            # front of the id would break.
+            edits.append((m.end(3), m.end(3), f' style="{new_style}"'))
         cm = STOP_ATTR.search(attrs)
         if cm:
             new_stop = _rewrite_value(cm.group(1), path, "stop-color", stats, literals)

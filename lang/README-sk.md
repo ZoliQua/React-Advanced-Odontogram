@@ -566,7 +566,11 @@ export default function Host(){
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Nie je to farba: CSS filter nad celým implantátom.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -575,6 +579,8 @@ export default function Host(){
 ```
 
 Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval. V profile `measured` nesie korunka aj koreň navyše dentínové jadro: preberá farbu `body`, kým nenastavíte `dentin`, takže hranica sa objaví až vtedy, keď si ju vyžiadate. V tmavom režime okluzálne dlaždice tmavnú spolu s bočnými pohľadmi a kazivá lézia si ponecháva tmavú výplň — na svetlú sa prepne obrys a ten nesie tvar, pretože „kaz = tmavý“ sa prečíta skôr než akýkoľvek kontrastný pomer.
+
+**Implantát sa tónuje, nie prefarbuje** *(zatiaľ nevydané — v `main`, príde v ďalšom vydaní)*. Jeho kresba nesie približne 65 takmer zhodných kovových sivých odtieňov, ktoré kódujú zdroj svetla, preto zámerne nie sú tematizovateľné jeden po druhom: nastavené jednotlivo by sa tieňovanie sploštilo namiesto prefarbenia. `--odon-implant-tint` je CSS filter nad implantátom ako celkom, takže každý odtieň sa posunie spoločne a vzťahy medzi nimi ostanú zachované — `hue-rotate(205deg) saturate(.85)`, alebo vlastný `url(#…)` filter. Kým ho nenastavíte, je `none`, a vrstvu periimplantátovej straty kosti nechá na pokoji: tá leží mimo filtrovanej skupiny, takže kozmetické nastavenie nikdy nemôže posunúť klinický signál.
 
 **Integrácia pluginu:**
 ```tsx

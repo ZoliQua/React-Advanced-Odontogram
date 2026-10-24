@@ -110,6 +110,13 @@ TOKENS: dict[str, tuple[str, str]] = {
     "--odon-rest-denture-tooth": ("#a8ddb9", "denture tooth"),
     "--odon-rest-denture-base": ("#f9ae94", "denture base"),
     "--odon-rest-denture-gum": ("#ffa46a", "denture gum over an implant"),
+    # Not a colour: a FILTER over the whole implant fixture. The fixture is
+    # deliberately left untokenized (see UNTOKENIZED_BY_DESIGN below) because
+    # its ~65 greys encode a light source, and recolouring them one by one
+    # would destroy the shading. One filter over the group moves every grey
+    # together and keeps their relationships intact, which is what a host
+    # asking to bring the fixture "toward our palette" actually wants.
+    "--odon-implant-tint": ("none", "implant fixture tint (a filter, not a colour)"),
     # e.max and metal-ceramic are drawn with a nine-stop gradient each; the
     # stops are individually themable so a host can retune the ramp.
     **{f"--odon-rest-emax-{i}": (c, f"e.max gradient stop {i}") for i, c in enumerate(
@@ -292,6 +299,29 @@ UNTOKENIZED_BY_DESIGN: tuple[str, ...] = (
     "specials/parapulpal-pin",
 )
 
+# --------------------------------------------------------------------------
+# Ensured declarations.
+#
+# RULES rewrite a literal the drawing already carries. These do the opposite:
+# they ADD a declaration the artwork does not have at all, so a host has
+# something to override. The fallback is what the drawing renders at today,
+# so an unthemed chart is unchanged and the parity goldens cannot move.
+#
+# Matched on the EXACT layer path, not as a prefix: a declaration is inserted
+# on one element, and a prefix match would scatter it over every descendant.
+#
+# UNTOKENIZED_BY_DESIGN deliberately does not apply here. That list exists
+# because recolouring the implant's greys individually would wreck the
+# shading — which is precisely why the fixture gets a single filter hook over
+# the whole group instead of per-colour tokens. The two rules agree.
+# --------------------------------------------------------------------------
+
+Ensure = tuple[str, str, str, str]  # (exact layer path, property, token, fallback)
+
+ENSURE: tuple[Ensure, ...] = (
+    ("restorations/implant/implant-base", "filter", "--odon-implant-tint", "none"),
+)
+
 # Colours the generator synthesizes itself rather than copying from a source
 # drawing (see occlusal.py); listed here so the table stays the single
 # inventory even though the substitution happens in Python.
@@ -332,3 +362,13 @@ def lookup(path: str, prop: str, colour: str) -> str | None:
         if best is None or len(prefix) > best[0]:
             best = (len(prefix), token)
     return best[1] if best else None
+
+
+def lookup_ensure(path: str) -> tuple[Ensure, ...]:
+    """The declarations that must be present on this exact layer.
+
+    Unlike :func:`lookup`, which answers "what token replaces this literal",
+    this answers "what declaration does this layer have to carry even though
+    the drawing never had one".
+    """
+    return tuple(e for e in ENSURE if path == e[0])

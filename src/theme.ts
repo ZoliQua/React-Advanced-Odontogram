@@ -116,8 +116,17 @@ export type OdontogramThemeConfig = {
    * Keys must start with `--odon-`; anything else is ignored, so this cannot
    * be used to set unrelated custom properties on the host's element.
    *
+   * Not every token is a colour. `--odon-implant-tint` is a **CSS filter**
+   * over the implant fixture as a whole: the drawing's ~65 metal greys encode
+   * a light source, so they are deliberately not themable one by one, and a
+   * filter shifts them together instead of flattening the shading. It is
+   * `none` unless set, and it does not touch the peri-implant bone-loss
+   * overlay, which sits outside the filtered group.
+   *
    * @example
    * { tokens: { "--odon-rest-gold": "#d4af37", "--odon-fill-composite": "#eae0c8" } }
+   * @example
+   * { tokens: { "--odon-implant-tint": "hue-rotate(205deg) saturate(.85)" } }
    */
   tokens?: Record<string, string>;
   /**

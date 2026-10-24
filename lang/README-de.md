@@ -568,7 +568,11 @@ export default function Host(){
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Keine Farbe: ein CSS-Filter über das gesamte Implantat.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -577,6 +581,8 @@ export default function Host(){
 ```
 
 Die Zeichnungen tragen ihre Farben als CSS-Custom-Properties mit der ausgelieferten Farbe als Fallback, sodass beide Anatomieprofile einer Einstellung folgen und ein Export sie auflöst, bevor er die Seite verlässt. Die vollständige Token-Tabelle steht in `tools/toothgen/palette.py`. Der Dunkelmodus bringt eine eigene Zeichnungspalette mit, sodass das Schema mit der Oberfläche abdunkelt statt zu blenden. Im Profil `measured` tragen Krone und Wurzel zusätzlich einen Dentinkern: Er übernimmt die Farbe von `body`, bis `dentin` gesetzt wird — die Grenze erscheint also erst, wenn man sie anfordert. Im Dunkelmodus dunkeln die Okklusalkacheln zusammen mit den Seitenansichten ab, und eine kariöse Läsion behält ihre dunkle Füllung — die Kontur wechselt ins Helle und trägt die Form, denn „Karies = dunkel“ wird vor jedem Kontrastverhältnis gelesen.
+
+**Das Implantat wird getönt, nicht umgefärbt** *(noch nicht veröffentlicht — auf `main`, erscheint im nächsten Release)*. Seine Zeichnung trägt rund 65 nahezu identische Metallgrautöne, die eine Lichtquelle codieren; sie sind deshalb bewusst nicht einzeln themenfähig: einzeln gesetzt würde die Schattierung verflachen statt neu eingefärbt zu werden. `--odon-implant-tint` ist ein CSS-Filter über das Implantat als Ganzes, sodass sich jeder Grauton mitbewegt und die Beziehungen zwischen ihnen erhalten bleiben — `hue-rotate(205deg) saturate(.85)` oder ein eigener `url(#…)`-Filter. Ohne Setzen ist er `none`, und die periimplantäre Knochenverlust-Ebene bleibt unberührt: Sie liegt außerhalb der gefilterten Gruppe, sodass eine kosmetische Einstellung niemals ein klinisches Signal verschieben kann.
 
 **Plugin-Integration:**
 ```tsx

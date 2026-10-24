@@ -566,7 +566,11 @@ export default function Host(){
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Not a colour: a CSS filter over the implant fixture as a whole.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -575,6 +579,8 @@ export default function Host(){
 ```
 
 The drawings carry their colours as CSS custom properties with the shipped colour as the fallback, so both anatomy profiles follow one setting and an export resolves them before it leaves the page. The full token table lives in `tools/toothgen/palette.py`. Dark mode already ships its own artwork palette, so the chart darkens with the rest of the interface rather than glaring. In the `measured` profile the crown and root also carry a dentin core: it takes the body's colour until `dentin` is set, so the boundary appears only when you ask for it. In dark mode the occlusal tiles darken with the side views, and a carious lesion keeps its dark fill — the outline flips to light and carries the shape, because "caries = dark" is read before any contrast ratio.
+
+**The implant fixture is tinted, not recoloured** *(unreleased — on `main`, ships in the next release)*. Its drawing carries around 65 near-identical metal greys that encode a light source, so they are deliberately not themable one by one: setting them individually would flatten the shading instead of retheming it. `--odon-implant-tint` is a CSS filter over the fixture as a whole, so every grey moves together and the relationships between them survive — `hue-rotate(205deg) saturate(.85)`, or a `url(#…)` filter of your own. It is `none` unless you set it, and it leaves the peri-implant bone-loss overlay untouched: that layer sits outside the filtered group, so a cosmetic setting can never shift a clinical signal.
 
 **Plugin integration:**
 ```tsx

@@ -96,21 +96,36 @@ describe("tooth artwork: the implant tint", () => {
     }
   });
 
-  it("does not reach the peri-implant bone-loss overlay", () => {
-    // The overlay is a clinical signal, and a cosmetic setting must never
-    // shift one. It is a SIBLING of `implant-base`, not a child, which is the
-    // whole reason the tint can be a single group filter at all. Asserted
-    // structurally rather than on the markup, because the claim IS about the
-    // tree: a future regrouping would otherwise break it silently.
+  it("reaches the fixture and nothing else in the implant group", () => {
+    // `peri-implant-bone-loss` is the one that matters: it is a clinical
+    // signal, and a cosmetic setting must never shift one. It is a SIBLING of
+    // `implant-base`, not a child — which is the whole reason the tint can be
+    // a single group filter at all. The connector, bar, locator screw and
+    // healing abutment sit outside too, so the tint covers the fixture only,
+    // which is the scope that was asked for.
+    //
+    // Asserted structurally rather than on the markup, because the claim IS
+    // about the tree: a future regrouping would otherwise break it silently.
+    const outside = [
+      "peri-implant-bone-loss",
+      "implant-connector",
+      "implant-bar",
+      "implant-locator-screw",
+      "implant-healing-abutment",
+    ];
     for (const [name, svg] of [["classic", tooth11], ["measured", measured11]] as const) {
       const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
       const base = doc.querySelector("#implant-base");
-      const overlay = doc.querySelector("#peri-implant-bone-loss");
       expect(base, name).not.toBeNull();
-      expect(overlay, name).not.toBeNull();
-      expect(base!.contains(overlay!), `${name}: the overlay is inside the filtered group`)
-        .toBe(false);
-      expect(overlay!.getAttribute("style") ?? "", name).not.toContain("filter");
+      for (const id of outside) {
+        const el = doc.querySelector(`#${id}`);
+        if (!el) continue;   // the occlusal views carry no connector
+        expect(base!.contains(el), `${name}: #${id} is inside the filtered group`).toBe(false);
+        expect(el.getAttribute("style") ?? "", `${name}: #${id}`).not.toContain("filter");
+      }
+      // …and the one that must be there, is.
+      expect(doc.querySelector("#peri-implant-bone-loss"), `${name}: no bone-loss overlay to check`)
+        .not.toBeNull();
     }
   });
 

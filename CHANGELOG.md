@@ -81,8 +81,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   verifying the one above: the chart's grid is built once, no effect in it depends on the language, and a language switch does not go through
   `notifyStateChange()`, so nothing ever rebuilt the labels. The grid effect now treats the language exactly as it already treats
   row visibility — part of the signature it compares, with a matching `onI18nChange` subscription that rebuilds the grid when it differs.
-  A rebuild recreates the grid's inputs, so a focused perio cell loses focus on a language switch; changing the language is a deliberate act
-  performed from the Settings modal, which holds focus at the time.
+
+- **A language switch no longer costs the clinician their place in the periodontal chart.** Rebuilding the grid replaces every control, so
+  whatever was focused became a detached node. The first fix above shipped with that as a stated trade-off, on the assumption that the
+  language is switched from the Settings modal, which holds focus at the time — a guess about the host's UI, and @jsampedroc reported that
+  theirs puts the toggle in the app header, where a clinician can be part-way through a perio cell when it is used.
+
+  The rebuild now puts focus back on the same control, found by its id. Only when focus was inside the grid to begin with: a rebuild
+  triggered from a settings dialog must not pull focus out of that dialog and into the chart behind it. The row-label info buttons were the
+  one kind of control in the grid built without an id, so they gained one; a test pins that every focusable control in the grid has a unique
+  locator, since without one the restore silently degrades to the old behaviour instead of failing visibly.
 
 ## [2.7.0] - 2026-10-18
 

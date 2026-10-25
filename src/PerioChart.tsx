@@ -688,7 +688,7 @@ function toggleInfoPopover(infoKey: string, anchor: HTMLButtonElement): void {
  *  {@link toggleInfoPopover}). Rows with no label (the tooth-number header /
  *  tooth-graphic placeholder rows) call this with no `infoKey` and get no
  *  button. */
-function mkRowLabelCell(text: string, infoKey?: string): HTMLDivElement {
+function mkRowLabelCell(text: string, infoKey?: string, scope?: string): HTMLDivElement {
   const cell = mkEl("div", "perio-fullgrid-row-label");
   const label = mkEl("span", "perio-fullgrid-row-label-text");
   label.textContent = text;
@@ -696,6 +696,12 @@ function mkRowLabelCell(text: string, infoKey?: string): HTMLDivElement {
   if (infoKey) {
     const btn = mkEl("button", "perio-info-btn") as HTMLButtonElement;
     btn.type = "button";
+    // A stable locator, like every other control in the grid: a rebuild
+    // replaces this button too, and focus is put back by id. `scope`
+    // disambiguates the rows that repeat — PD/GM/CAL/BOP appear once per
+    // aspect per arch and share one explanation, so the key alone is not
+    // unique.
+    btn.id = `perio-fg-info-${infoKey.slice("perio.info.".length)}${scope ? `-${scope}` : ""}`;
     btn.textContent = "i";
     btn.setAttribute("aria-label", t("perio.info.button", { label: text }));
     btn.setAttribute("aria-haspopup", "dialog");
@@ -1185,6 +1191,9 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
   const arch = mkEl("div", "perio-fullgrid-arch");
   arch.style.gridTemplateColumns = `${ROW_LABEL_WIDTH}px repeat(${teeth.length}, ${PROVISIONAL_COL_WIDTH}px)`;
   const isUpper = teeth.length > 0 && isUpperTooth(teeth[0]);
+  // Disambiguates the row-label info buttons' ids: `buildArch` runs once per
+  // arch, and both arches build the same rows.
+  const archId = isUpper ? "upper" : "lower";
   // Per-index row visibility (Settings -> Periodontal tab). Read ONCE per
   // build — a rebuild is triggered by the caller whenever the
   // underlying flag changes (see the grid effect's `visibilitySig`/`buildGrid`
@@ -1229,7 +1238,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
     aspect: "buccal" | "palatal",
     label: string,
   ) => {
-    arch.appendChild(mkRowLabelCell(label, `perio.info.${field}`));
+    arch.appendChild(mkRowLabelCell(label, `perio.info.${field}`, `${archId}-${aspect}`));
     for (const toothNo of teeth) {
       arch.appendChild(buildFieldCell(toothNo, field, sites, aspect, registry.get(toothNo)!, handlers));
     }
@@ -1248,7 +1257,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
   //     area — recession classification reads next to the tooth numbers,
   //     closest to the buccal aspect it's measured on. ---
   if (visible.miller) {
-    arch.appendChild(mkRowLabelCell(indexName("miller"), "perio.info.miller"));
+    arch.appendChild(mkRowLabelCell(indexName("miller"), "perio.info.miller", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildMillerClassCell(toothNo, registry.get(toothNo)!, handlers));
     }
@@ -1265,7 +1274,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
 
   // --- Furcation row, nearest the teeth (just above the buccal graphic) ---
   if (visible.furcation) {
-    arch.appendChild(mkRowLabelCell(indexName("furcation"), "perio.info.furcation"));
+    arch.appendChild(mkRowLabelCell(indexName("furcation"), "perio.info.furcation", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildFurcationCell(toothNo, registry.get(toothNo)!, handlers));
     }
@@ -1301,7 +1310,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
   // --- Central perio index band: Plaque -> PI -> GI -> mPI -> mBI, between
   //     the buccal and palatal graphics. ---
   if (visible.plaque) {
-    arch.appendChild(mkRowLabelCell(indexName("plaque"), "perio.info.plaque"));
+    arch.appendChild(mkRowLabelCell(indexName("plaque"), "perio.info.plaque", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildPlaqueCell(toothNo, registry.get(toothNo)!, handlers));
     }
@@ -1310,7 +1319,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
   // --- PI row (Silness-Löe Plaque Index, per-surface graded 0-3) — mirrors
   //     the O'Leary plaque row's 4-quadrant shape. ---
   if (visible.pi) {
-    arch.appendChild(mkRowLabelCell(indexName("pi"), "perio.info.pi"));
+    arch.appendChild(mkRowLabelCell(indexName("pi"), "perio.info.pi", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildGradeCell(toothNo, "pi", registry.get(toothNo)!, handlers));
     }
@@ -1318,7 +1327,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
 
   // --- GI row (Löe-Silness Gingival Index, per-surface graded 0-3). ---
   if (visible.gi) {
-    arch.appendChild(mkRowLabelCell(indexName("gi"), "perio.info.gi"));
+    arch.appendChild(mkRowLabelCell(indexName("gi"), "perio.info.gi", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildGradeCell(toothNo, "gi", registry.get(toothNo)!, handlers));
     }
@@ -1328,7 +1337,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
   //     graded 0-3). Built for EVERY tooth like PI/GI, but the cells are only
   //     ACTIVE on an implant tooth (see syncToothCells). ---
   if (visible.mpi && archHasImplant) {
-    arch.appendChild(mkRowLabelCell(indexName("mpi"), "perio.info.mpi"));
+    arch.appendChild(mkRowLabelCell(indexName("mpi"), "perio.info.mpi", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildGradeCell(toothNo, "mpi", registry.get(toothNo)!, handlers));
     }
@@ -1336,7 +1345,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
 
   // --- mBI row (Mombelli modified sulcus Bleeding Index, implant-only). ---
   if (visible.mbi && archHasImplant) {
-    arch.appendChild(mkRowLabelCell(indexName("mbi"), "perio.info.mbi"));
+    arch.appendChild(mkRowLabelCell(indexName("mbi"), "perio.info.mbi", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildGradeCell(toothNo, "mbi", registry.get(toothNo)!, handlers));
     }
@@ -1372,7 +1381,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
 
   // --- Mobility row: one select per tooth, no site subdivision. ---
   if (visible.mobility) {
-    arch.appendChild(mkRowLabelCell(indexName("mobility"), "perio.info.mobility"));
+    arch.appendChild(mkRowLabelCell(indexName("mobility"), "perio.info.mobility", archId));
     const mobilityOptions = optionsFor("mobility").map((o) => ({ value: o.value, label: t(o.labelKey) }));
     for (const toothNo of teeth) {
       const cell = mkEl("div", "perio-fullgrid-cell perio-fullgrid-cell-mobility");
@@ -1394,7 +1403,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
   // --- CEJ-visibility row: single per-tooth cycle button, no site
   //     subdivision (mirrors the mobility row above). ---
   if (visible.cej) {
-    arch.appendChild(mkRowLabelCell(indexName("cej"), "perio.info.cej"));
+    arch.appendChild(mkRowLabelCell(indexName("cej"), "perio.info.cej", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildCejVisibilityCell(toothNo, registry.get(toothNo)!, handlers));
     }
@@ -1402,7 +1411,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
 
   // --- Root-concavity row: mirrors the CEJ-visibility row above. ---
   if (visible.rootConcavity) {
-    arch.appendChild(mkRowLabelCell(indexName("rootConcavity"), "perio.info.rootConcavity"));
+    arch.appendChild(mkRowLabelCell(indexName("rootConcavity"), "perio.info.rootConcavity", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildRootConcavityCell(toothNo, registry.get(toothNo)!, handlers));
     }
@@ -1410,7 +1419,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
 
   // --- KG row (keratinized gingiva width, single per-tooth mm cell). ---
   if (visible.kg) {
-    arch.appendChild(mkRowLabelCell(indexName("kg"), "perio.info.kg"));
+    arch.appendChild(mkRowLabelCell(indexName("kg"), "perio.info.kg", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildKgCell(toothNo, registry.get(toothNo)!, handlers));
     }
@@ -1418,7 +1427,7 @@ function buildArch(teeth: readonly number[], registry: Map<number, ToothCellRefs
 
   // --- GT row (gingival thickness, single per-tooth cycle button). ---
   if (visible.gt) {
-    arch.appendChild(mkRowLabelCell(indexName("gt"), "perio.info.gt"));
+    arch.appendChild(mkRowLabelCell(indexName("gt"), "perio.info.gt", archId));
     for (const toothNo of teeth) {
       arch.appendChild(buildGingivalThicknessCell(toothNo, registry.get(toothNo)!, handlers));
     }
@@ -2013,6 +2022,32 @@ export default function PerioChart({
       }
     };
 
+    // A rebuild replaces every control in the grid, so whatever had focus is
+    // a detached node by the time it returns. Clinicians switch the UI
+    // language from wherever their host puts the control — a header toggle,
+    // not necessarily a modal — so the switch can land while a perio cell is
+    // being filled in, and losing the caret mid-charting costs them their
+    // place in the mouth.
+    //
+    // Restores by `id`: every control the grid builds carries a stable one by
+    // construction (`perio-fg-pd-11-MB`, `perio-fg-furc-16-buccal`, …), which
+    // is what makes finding the same cell in the new DOM possible at all.
+    //
+    // Only when focus was INSIDE the grid. A rebuild triggered from the
+    // Settings modal (a row toggled on or off) must not yank focus out of the
+    // modal and into the chart behind it.
+    const rebuildGrid = () => {
+      const previous = document.activeElement;
+      const restoreId =
+        previous instanceof HTMLElement && container.contains(previous) ? previous.id : "";
+      buildGrid();
+      if (!restoreId) return;
+      const again = container.querySelector<HTMLElement>(`#${CSS.escape(restoreId)}`);
+      // A row the rebuild removed, or a cell it disabled, has nowhere to put
+      // focus back — leave it where the browser put it rather than guessing.
+      if (again && !(again as HTMLInputElement).disabled) again.focus();
+    };
+
     buildGrid();
     fullResync();
     container.addEventListener("keydown", handleGridKeyDown);
@@ -2020,7 +2055,7 @@ export default function PerioChart({
 
     const unsubscribe = onStateChange(() => {
       if (suppressResyncRef.current) return;
-      if (visibilitySig() !== lastVisibilitySig) buildGrid();
+      if (visibilitySig() !== lastVisibilitySig) rebuildGrid();
       fullResync();
     });
     // A language switch does not go through `notifyStateChange()`, so the
@@ -2030,12 +2065,14 @@ export default function PerioChart({
     // that. `onI18nChange` fires from `applyLanguage()`, which runs only once
     // the strings have arrived, so the rebuild always has them.
     //
-    // Known trade-off: a rebuild recreates every input, so a focused perio
-    // cell loses focus. Changing the UI language is a deliberate act performed
-    // from the Settings modal, which holds focus at the time.
+    // The rebuild keeps the focused cell (see `rebuildGrid`). An earlier
+    // version did not, on the stated assumption that the language is switched
+    // from the Settings modal, which holds focus at the time — that was a
+    // guess about the host's UI, and a host whose switch sits in its app
+    // header lets a clinician change language mid-entry.
     const unsubscribeI18n = onI18nChange(() => {
       if (visibilitySig() === lastVisibilitySig) return;
-      buildGrid();
+      rebuildGrid();
       fullResync();
     });
     return () => {

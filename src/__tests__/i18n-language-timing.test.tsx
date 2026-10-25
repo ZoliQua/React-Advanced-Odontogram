@@ -84,4 +84,85 @@ describe("a language change after mount relabels the periodontal chart (#38, sec
     expect(text, "the Spanish label did not arrive").toContain(t("perio.mobility", "es"));
     expect(text, "the English label survived the switch").not.toContain(t("perio.mobility", "en"));
   });
+
+  // The rebuild replaces every control, so the clinician's place in the grid
+  // has to be put back explicitly. Reported by a host whose language toggle
+  // sits in the app header rather than in a settings dialog: a clinician can
+  // be part-way through a perio cell when the switch happens, and the chart
+  // losing the caret costs them their place in the mouth.
+  it("puts focus back on the cell that had it", () => {
+    const chart = () => createElement(PerioChart, { open: true, onClose: () => {} });
+    const { container, rerender } = render(
+      createElement(OdontogramProvider, { language: "en" }, chart()),
+    );
+
+    const cell = container.querySelector<HTMLInputElement>("#perio-fg-pd-11-MB");
+    expect(cell, "the probing cell this test is about is not in the grid").not.toBeNull();
+    cell!.focus();
+    expect(document.activeElement).toBe(cell);
+
+    act(() => {
+      rerender(createElement(OdontogramProvider, { language: "es" }, chart()));
+    });
+
+    // The node is a different object now — the grid was rebuilt — so identity
+    // is checked through the locator, which is the thing that must survive.
+    const rebuilt = container.querySelector<HTMLInputElement>("#perio-fg-pd-11-MB");
+    expect(rebuilt, "the cell is gone after the rebuild").not.toBeNull();
+    expect(rebuilt).not.toBe(cell);
+    expect(document.activeElement, "the clinician lost their place in the chart").toBe(rebuilt);
+  });
+
+  it("does not steal focus from outside the chart", () => {
+    // The other half of the rule. A rebuild can also be triggered from the
+    // host's own UI — the language control itself, a settings dialog — and
+    // pulling focus into the chart from there would be worse than losing it.
+    const chart = () => createElement(PerioChart, { open: true, onClose: () => {} });
+    const { rerender } = render(
+      createElement(OdontogramProvider, { language: "en" }, chart()),
+    );
+
+    const outside = document.createElement("button");
+    outside.id = "host-language-toggle";
+    document.body.appendChild(outside);
+    outside.focus();
+    expect(document.activeElement).toBe(outside);
+
+    act(() => {
+      rerender(createElement(OdontogramProvider, { language: "es" }, chart()));
+    });
+
+    expect(document.activeElement, "the chart grabbed focus off the host's control").toBe(outside);
+    outside.remove();
+  });
+
+  it("gives every focusable control in the grid the locator the restore needs", () => {
+    // The load-bearing assumption. Focus is put back by `id`, so a control
+    // built without one silently degrades to the old lose-your-place
+    // behaviour instead of failing visibly — pin it here rather than find out
+    // from a report.
+    const { container } = render(
+      createElement(OdontogramProvider, { language: "en" }, 
+        createElement(PerioChart, { open: true, onClose: () => {} })),
+    );
+    // Scoped to the grid the rebuild actually replaces. The chrome around it
+    // — the overlay switch, the close button, the row info buttons — is
+    // rendered by React and survives a rebuild untouched, so it needs no
+    // locator.
+    const grid = container.querySelector<HTMLElement>(".perio-fullgrid-scroll");
+    expect(grid, "the grid container this test is scoped to is gone").not.toBeNull();
+    const focusable = Array.from(
+      grid!.querySelectorAll<HTMLElement>("input, button, select, textarea"),
+    );
+    expect(focusable.length, "no controls found — this test is not checking anything")
+      .toBeGreaterThan(50);
+    const anonymous = focusable.filter((el) => !el.id).map((el) => el.className);
+    expect(anonymous, "these controls cannot be refocused after a rebuild").toEqual([]);
+
+    // And the locator has to point at ONE control: a duplicate id would send
+    // focus to whichever copy came first, which is worse than losing it.
+    const ids = focusable.map((el) => el.id);
+    const duplicated = [...new Set(ids.filter((id, i) => ids.indexOf(id) !== i))];
+    expect(duplicated, "these ids appear more than once in the grid").toEqual([]);
+  });
 });

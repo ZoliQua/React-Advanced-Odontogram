@@ -45,6 +45,14 @@ TOKENS: dict[str, tuple[str, str]] = {
         "dentin core inside the crown and root; follows the body unless set",
     ),
     "--odon-tooth-outline": ("#c8c9c9", "crown and root outline"),
+    # Not a colour: the WIDTH of that outline, in user units. The drawings
+    # declare no stroke-width at all, so they render at the SVG initial value
+    # — hence the `1` default, which is what every contour strokes at today.
+    # It rides every layer that IS the tooth's own silhouette, so the contour
+    # keeps one width when a tooth is charted as a root remnant, a prepared
+    # crown or any of the seven fracture states; see ENSURE below for the
+    # exact list and for the two decorative layers deliberately left out.
+    "--odon-tooth-outline-width": ("1", "crown and root outline width (not a colour)"),
     "--odon-tooth-highlight": ("#fefefe", "crown sheen (the 'beauty' layer)"),
     "--odon-tooth-cusp": ("#f4f1e8", "occlusal cusp field"),
     # The occlusal view paints its crown with gradients, and a gradient stop
@@ -310,16 +318,68 @@ UNTOKENIZED_BY_DESIGN: tuple[str, ...] = (
 # Matched on the EXACT layer path, not as a prefix: a declaration is inserted
 # on one element, and a prefix match would scatter it over every descendant.
 #
+# Each rule also names the ELEMENT TYPES it may land on, because the same
+# layer id is not always the same kind of element. `tooth-base` is a painted
+# `<path>` in the 30 lateral drawings but a `<g>` in the 16 occlusal ones,
+# where the silhouette is drawn by `background-cusp` inside it. That matters
+# for an INHERITED property: `stroke-width` put on the group would flow down
+# into `fissure`, `cusps` and the anonymous stroked paths, widening lines the
+# width token is explicitly not meant to touch. `filter` is not inherited and
+# the implant rule wants the group, so each rule states its own target.
+#
 # UNTOKENIZED_BY_DESIGN deliberately does not apply here. That list exists
 # because recolouring the implant's greys individually would wreck the
 # shading — which is precisely why the fixture gets a single filter hook over
 # the whole group instead of per-colour tokens. The two rules agree.
 # --------------------------------------------------------------------------
 
-Ensure = tuple[str, str, str, str]  # (exact layer path, property, token, fallback)
+# (exact layer path, property, token, fallback, element types it may land on)
+Ensure = tuple[str, str, str, str, tuple[str, ...]]
+
+PAINTED = ("path",)
+"""Element types the outline-width rules target: the ones that actually
+stroke the silhouette. Every one of the 430 elements below is a `<path>`;
+the 41 cases where one of these ids is a `<g>` are skipped on purpose."""
+
+# The tooth's own contour, in every state a tooth can be charted in — a
+# natural crown, a deciduous crown, a root remnant, a prepared crown, a tooth
+# under the gum, and the seven fracture patterns. One width for all of them,
+# so the contour does not change thickness when the clinical state changes.
+#
+# `tooth-crownprep-outer`/`-inner` are in: they are the prepared crown drawn
+# twice, and a width that differed between the two views of one tooth would
+# read as a bug.
+#
+# NOT in, by the requester's explicit decision (issue #39): `fissure`,
+# `fissure1`, `background-cusp` and `background-cusp1`. The first two are
+# grooves — decoration, not contour. The other two are the occlusal
+# silhouette, so by the "every layer that is the tooth's own contour" rule
+# they would belong here; excluding them means the occlusal row keeps a
+# hairline contour while the side views widen. That trade-off is reported on
+# the issue, and adding them is one line each.
+_OUTLINE_WIDTH_LAYERS: tuple[str, ...] = (
+    "tooth/tooth-base",
+    "milktooth/milktooth-base",
+    "tooth-variants/tooth-radix",
+    "tooth-variants/tooth-crownprep",
+    "tooth-variants/tooth-crownprep/tooth-crownprep-outer",
+    "tooth-variants/tooth-crownprep/tooth-crownprep-inner",
+    "tooth-variants/tooth-under-gum",
+    "tooth-variants/tooth-broken-mesial",
+    "tooth-variants/tooth-broken-distal",
+    "tooth-variants/tooth-broken-incisal",
+    "tooth-variants/tooth-broken-mesial-distal",
+    "tooth-variants/tooth-broken-mesial-incisal",
+    "tooth-variants/tooth-broken-distal-incisal",
+    "tooth-variants/tooth-broken-mesial-distal-incisal",
+)
 
 ENSURE: tuple[Ensure, ...] = (
-    ("restorations/implant/implant-base", "filter", "--odon-implant-tint", "none"),
+    ("restorations/implant/implant-base", "filter", "--odon-implant-tint", "none", ("g",)),
+    *(
+        (path, "stroke-width", "--odon-tooth-outline-width", "1", PAINTED)
+        for path in _OUTLINE_WIDTH_LAYERS
+    ),
 )
 
 # Colours the generator synthesizes itself rather than copying from a source
@@ -364,11 +424,16 @@ def lookup(path: str, prop: str, colour: str) -> str | None:
     return best[1] if best else None
 
 
-def lookup_ensure(path: str) -> tuple[Ensure, ...]:
+def lookup_ensure(path: str, tag: str) -> tuple[Ensure, ...]:
     """The declarations that must be present on this exact layer.
 
     Unlike :func:`lookup`, which answers "what token replaces this literal",
     this answers "what declaration does this layer have to carry even though
     the drawing never had one".
+
+    `tag` is the element's type. A rule applies only to the types it names:
+    the same layer id can be a painted shape in one drawing and a wrapping
+    `<g>` in another, and an inherited property on the wrapper would reach
+    descendants the rule is not about.
     """
-    return tuple(e for e in ENSURE if path == e[0])
+    return tuple(e for e in ENSURE if path == e[0] and tag in e[4])

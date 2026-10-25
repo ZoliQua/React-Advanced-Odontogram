@@ -85,19 +85,19 @@ def _rewrite_value(raw: str, path: str, prop: str, stats: collections.Counter,
     return f"var({token}, {raw.strip()})"
 
 
-def _ensure_decls(style: str, path: str, stats: collections.Counter) -> str:
+def _ensure_decls(style: str, path: str, tag: str, stats: collections.Counter) -> str:
     """Add the declarations this layer must carry but the drawing never had.
 
     Appends rather than rebuilds: the existing text is preserved byte for
     byte, so re-running this leaves a file that already has the declaration
     completely untouched.
     """
-    rules = palette.lookup_ensure(path)
+    rules = palette.lookup_ensure(path, tag)
     if not rules:
         return style
     present = {m.group(1).lower() for m in PROP_NAME.finditer(style)}
     additions: list[str] = []
-    for _path, prop, token, fallback in rules:
+    for _path, prop, token, fallback, _tags in rules:
         stats[token] += 1
         if prop.lower() in present:
             continue  # already there — idempotent
@@ -143,7 +143,7 @@ def process(text: str, stats: collections.Counter,
         # layer") and the opposite of what an insertion wants: without this
         # guard every child path inside the group gets its own copy.
         if own:
-            new_style = _ensure_decls(new_style, path, stats)
+            new_style = _ensure_decls(new_style, path, name, stats)
         if sm:
             if new_style != style:
                 edits.append((m.start(3) + sm.start(1), m.start(3) + sm.end(1), new_style))

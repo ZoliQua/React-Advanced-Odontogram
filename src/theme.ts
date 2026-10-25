@@ -76,6 +76,20 @@ export type OdontogramThemeConfig = {
     dentin?: string;
     /** Crown and root outline. */
     outline?: string;
+    /** The width of that outline, as a CSS length in SVG user units
+     *  (`"1"`, `"1.4"`, `"0.75"`). Not a colour — it is here because it is
+     *  the other half of {@link outline}.
+     *
+     *  It rides every layer that is the tooth's own silhouette, so the
+     *  contour keeps one thickness whatever the tooth is charted as: a
+     *  natural or deciduous crown, a root remnant, a prepared crown, a tooth
+     *  under the gum, or any of the seven fracture states. Occlusal grooves
+     *  and the occlusal silhouette are deliberately not included, so the
+     *  occlusal row keeps a hairline contour.
+     *
+     *  Unset, the drawings declare no width at all and stroke at the SVG
+     *  initial value of `1`. */
+    outlineWidth?: string;
     /** Crown sheen (the "beauty" layer). */
     highlight?: string;
     /** The deciduous tooth's silhouette. */
@@ -173,6 +187,13 @@ const TOOTH_COLOR_MAP: Record<string, string> = {
   outlineDark: '--odon-outline-dark',
 };
 
+/** Curated tooth-artwork fields that are NOT colours. Kept apart from
+ *  {@link TOOTH_COLOR_MAP} so that map's name stays true; both are applied
+ *  the same way, since a custom property does not care what it carries. */
+const TOOTH_SCALAR_MAP: Record<string, string> = {
+  outlineWidth: '--odon-tooth-outline-width',
+};
+
 /** Prefix every settable token shares. `tokens` entries outside it are
  *  ignored, so a host config can never reach an unrelated custom property. */
 const TOKEN_PREFIX = '--odon-';
@@ -235,7 +256,10 @@ export function applyThemeConfig(
   }
 
   if (config.tooth) {
-    for (const [key, cssVar] of Object.entries(TOOTH_COLOR_MAP)) {
+    for (const [key, cssVar] of [
+      ...Object.entries(TOOTH_COLOR_MAP),
+      ...Object.entries(TOOTH_SCALAR_MAP),
+    ]) {
       const value = config.tooth[key as keyof NonNullable<OdontogramThemeConfig['tooth']>];
       if (value) set(cssVar, value);
     }

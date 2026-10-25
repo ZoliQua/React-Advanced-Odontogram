@@ -21,6 +21,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   layers are among them). A refused template is listed by `getToothTemplateRejections()` and the factory one stays: the chart is never left
   without a tooth. With nothing supplied `activeAnatomyProfile()` returns exactly the same object as before.
 
+- **`--odon-tooth-outline-width` / `themeConfig.tooth.outlineWidth`: the tooth contour's width is themable**
+  ([#39](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/39), asked for by @jsampedroc). The drawings declared no
+  `stroke-width` at all and therefore stroked at the SVG initial value; the token carries `1` as its fallback, so an unset chart is
+  unchanged.
+
+  It rides **every layer that is the tooth's own silhouette** — the natural and deciduous crowns, the root remnant, the prepared crown
+  (including its two-view `-outer`/`-inner` pair), the tooth under the gum, and all seven fracture states. Those are separate drawings of
+  one contour, so a token on the crown alone would have made the outline snap back to `1` the moment a tooth was charted as a radix or a
+  fracture. The occlusal grooves and the occlusal silhouette (`fissure`, `background-cusp`) are deliberately left at a fixed width.
+
+  `palette.ENSURE` rules now also name the **element types** they may land on. `stroke-width` is an inherited property and `tooth-base` is a
+  painted `<path>` in the side drawings but a wrapping `<g>` in the occlusal ones — on the group the declaration would have flowed down into
+  the fissures and cusps it is explicitly not meant to touch.
+
 - **`--odon-implant-tint`: the implant fixture can be tinted toward a host's palette** ([#40](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/40),
   asked for by @jsampedroc). The fixture's drawing carries ~65 near-identical metal greys that encode a light source, which is why it is
   deliberately excluded from the colour-token table — setting those greys one by one flattens the shading instead of retheming it. The

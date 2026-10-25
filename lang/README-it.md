@@ -561,6 +561,8 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
@@ -581,6 +583,8 @@ export default function Host(){
 I disegni portano i propri colori come proprietà personalizzate CSS con il colore di serie come fallback, così entrambi i profili anatomici seguono un'unica impostazione e l'esportazione li risolve prima di lasciare la pagina. La tabella completa dei token è in `tools/toothgen/palette.py`. La modalità scura porta una propria palette per i disegni, così lo schema si scurisce insieme all'interfaccia invece di abbagliare. Nel profilo `measured` corona e radice portano anche un nucleo di dentina: prende il colore di `body` finché `dentin` non viene impostato, quindi il confine compare solo quando lo si chiede. In modalità scura le caselle occlusali si scuriscono insieme alle viste laterali e una lesione cariosa mantiene il suo riempimento scuro: è il contorno a passare al chiaro e a portare la forma, perché «carie = scuro» si legge prima di qualsiasi rapporto di contrasto.
 
 **L'impianto viene tinto, non ricolorato** *(non ancora pubblicato — su `main`, arriva nella prossima release)*. Il suo disegno porta circa 65 grigi metallici quasi identici che codificano una sorgente luminosa, perciò non sono deliberatamente tematizzabili uno per uno: impostarli singolarmente appiattirebbe l'ombreggiatura invece di ricolorarla. `--odon-implant-tint` è un filtro CSS sull'impianto nel suo insieme, così ogni grigio si sposta insieme agli altri e i loro rapporti restano intatti — `hue-rotate(205deg) saturate(.85)`, oppure un filtro `url(#…)` tuo. Vale `none` finché non lo imposti, e lascia intatto il livello di perdita ossea perimplantare: quel livello sta fuori dal gruppo filtrato, quindi un'impostazione cosmetica non può mai spostare un segnale clinico.
+
+**Anche lo spessore del contorno è personalizzabile** *(non ancora pubblicato — su `main`, arriva nella prossima release)*. I disegni non dichiarano alcuno `stroke-width`, quindi tracciano con il valore iniziale SVG `1`; `themeConfig.tooth.outlineWidth` — oppure `--odon-tooth-outline-width` — lo cambia. Viene applicato a ogni livello che è la sagoma del dente stesso: le corone permanente e decidua, il residuo radicolare, il moncone preparato, il dente sotto la gengiva e tutti e sette gli stati di frattura. Il contorno mantiene così uno spessore unico qualunque sia lo stato registrato del dente, invece di tornare a `1` appena diventa un radix o una frattura. I solchi occlusali e la sagoma occlusale restano a spessore fisso.
 
 **Integrazione plugin:**
 ```tsx

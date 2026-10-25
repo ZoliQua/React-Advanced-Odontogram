@@ -561,6 +561,8 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
@@ -581,6 +583,8 @@ export default function Host(){
 Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`. O modo escuro traz sua própria paleta para os desenhos, de modo que o odontograma escurece junto com a interface em vez de ofuscar. No perfil `measured`, a coroa e a raiz também têm um núcleo de dentina: ele assume a cor de `body` enquanto `dentin` não for definido, de modo que o limite só aparece quando você o pede. No modo escuro os ladrilhos oclusais escurecem junto com as vistas laterais, e uma lesão de cárie mantém seu preenchimento escuro: é o contorno que passa a claro e carrega a forma, porque «cárie = escuro» se lê antes de qualquer razão de contraste.
 
 **O implante é tingido, não recolorido** *(ainda não publicado — em `main`, chega na próxima versão)*. Seu desenho carrega cerca de 65 cinzas metálicos quase idênticos que codificam uma fonte de luz, por isso não são deliberadamente tematizáveis um a um: ajustá-los separadamente achataria o sombreado em vez de recolori-lo. `--odon-implant-tint` é um filtro CSS sobre o implante como um todo, de modo que todos os cinzas se deslocam juntos e as relações entre eles se preservam — `hue-rotate(205deg) saturate(.85)`, ou um filtro `url(#…)` seu. É `none` enquanto você não o definir, e deixa intacta a camada de perda óssea peri-implantar: ela fica fora do grupo filtrado, de modo que um ajuste cosmético nunca pode deslocar um sinal clínico.
+
+**A espessura do contorno também é tematizável** *(ainda não publicado — em `main`, chega na próxima versão)*. Os desenhos não declaram nenhum `stroke-width`, portanto traçam com o valor inicial do SVG, `1`; `themeConfig.tooth.outlineWidth` — ou `--odon-tooth-outline-width` — muda isso. Ela vai em toda camada que é a silhueta do próprio dente: as coroas permanente e decídua, o resto radicular, o preparo protético, o dente sob a gengiva e os sete estados de fratura. Assim o contorno mantém uma única espessura seja qual for o estado registrado do dente, em vez de voltar a `1` assim que ele vira um radix ou uma fratura. Os sulcos oclusais e a silhueta oclusal permanecem com espessura fixa.
 
 **Integração de plugins:**
 ```tsx

@@ -561,6 +561,8 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
@@ -581,6 +583,8 @@ export default function Host(){
 The drawings carry their colours as CSS custom properties with the shipped colour as the fallback, so both anatomy profiles follow one setting and an export resolves them before it leaves the page. The full token table lives in `tools/toothgen/palette.py`. Dark mode already ships its own artwork palette, so the chart darkens with the rest of the interface rather than glaring. In the `measured` profile the crown and root also carry a dentin core: it takes the body's colour until `dentin` is set, so the boundary appears only when you ask for it. In dark mode the occlusal tiles darken with the side views, and a carious lesion keeps its dark fill — the outline flips to light and carries the shape, because "caries = dark" is read before any contrast ratio.
 
 **The implant fixture is tinted, not recoloured** *(unreleased — on `main`, ships in the next release)*. Its drawing carries around 65 near-identical metal greys that encode a light source, so they are deliberately not themable one by one: setting them individually would flatten the shading instead of retheming it. `--odon-implant-tint` is a CSS filter over the fixture as a whole, so every grey moves together and the relationships between them survive — `hue-rotate(205deg) saturate(.85)`, or a `url(#…)` filter of your own. It is `none` unless you set it, and it leaves the peri-implant bone-loss overlay untouched: that layer sits outside the filtered group, so a cosmetic setting can never shift a clinical signal.
+
+**The contour width is themable too** *(unreleased — on `main`, ships in the next release)*. The drawings declare no `stroke-width` at all, so they stroke at the SVG initial value of `1`; `themeConfig.tooth.outlineWidth` — or `--odon-tooth-outline-width` — changes that. It rides every layer that is the tooth's own silhouette: the natural and deciduous crowns, the root remnant, the prepared crown, the tooth under the gum and all seven fracture states. The contour therefore keeps one thickness whatever the tooth is charted as, instead of snapping back to `1` the moment it becomes a radix or a fracture. The occlusal grooves and the occlusal silhouette stay at a fixed width.
 
 **Plugin integration:**
 ```tsx

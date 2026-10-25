@@ -561,6 +561,8 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
@@ -581,6 +583,8 @@ export default function Host(){
 Rysunki niosą swoje kolory jako właściwości niestandardowe CSS z kolorem fabrycznym jako wartością zapasową, dzięki czemu oba profile anatomii podążają za jednym ustawieniem, a eksport rozwiązuje je, zanim opuszczą stronę. Pełna tabela tokenów znajduje się w `tools/toothgen/palette.py`. Tryb ciemny ma własną paletę rysunków, więc diagram ciemnieje razem z interfejsem, zamiast razić. W profilu `measured` korona i korzeń mają dodatkowo rdzeń zębinowy: przejmuje kolor `body`, dopóki nie ustawisz `dentin`, więc granica pojawia się dopiero wtedy, gdy o nią poprosisz. W trybie ciemnym kafelki okluzyjne ciemnieją razem z widokami bocznymi, a ognisko próchnicy zachowuje ciemne wypełnienie — to obrys zmienia się na jasny i niesie kształt, bo „próchnica = ciemna” czyta się wcześniej niż jakikolwiek współczynnik kontrastu.
 
 **Implant jest tonowany, a nie przemalowywany** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Jego rysunek niesie około 65 niemal identycznych metalicznych szarości kodujących źródło światła, dlatego celowo nie są one motywowalne pojedynczo: ustawione osobno spłaszczyłyby cieniowanie zamiast je przebarwić. `--odon-implant-tint` to filtr CSS nałożony na cały implant, więc każda szarość przesuwa się razem z pozostałymi, a relacje między nimi zostają zachowane — `hue-rotate(205deg) saturate(.85)` albo własny filtr `url(#…)`. Dopóki go nie ustawisz, wynosi `none`, a warstwy utraty kości okołowszczepowej nie dotyka: leży ona poza filtrowaną grupą, więc ustawienie kosmetyczne nigdy nie przesunie sygnału klinicznego.
+
+**Grubość konturu również podlega motywowaniu** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Rysunki w ogóle nie deklarują `stroke-width`, więc kreślą domyślną wartością SVG `1`; zmienia to `themeConfig.tooth.outlineWidth` — albo `--odon-tooth-outline-width`. Trafia na każdą warstwę będącą własną sylwetką zęba: korony stałej i mlecznej, pozostałości korzenia, opracowanego filaru, zęba pod dziąsłem oraz wszystkich siedmiu stanów złamania. Kontur zachowuje więc jedną grubość niezależnie od tego, jak ząb został zapisany, zamiast wracać do `1` z chwilą, gdy staje się radixem lub złamaniem. Bruzdy okluzyjne i sylwetka okluzyjna pozostają przy stałej grubości.
 
 **Integracja wtyczki:**
 ```tsx

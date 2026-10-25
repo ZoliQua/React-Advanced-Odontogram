@@ -25,8 +25,13 @@ def run(markup: str) -> str:
 
 
 def wrap(inner: str) -> str:
-    """The id chain the ENSURE rule is written against."""
+    """The id chain the implant ENSURE rule is written against."""
     return f'<svg id="x"><g id="restorations"><g id="implant">{inner}</g></g></svg>'
+
+
+def doc(inner: str) -> str:
+    """A bare template root: the <svg> id is never part of a layer path."""
+    return f'<svg id="x">{inner}</svg>'
 
 
 def test_inserts_on_the_named_layer():
@@ -67,13 +72,63 @@ def test_never_inserted_before_the_id():
 
 
 def test_the_rule_matches_the_exact_path_only():
-    assert palette.lookup_ensure("restorations/implant/implant-base")
-    assert not palette.lookup_ensure("restorations/implant")
-    assert not palette.lookup_ensure("restorations/implant/implant-base/inner")
+    assert palette.lookup_ensure("restorations/implant/implant-base", "g")
+    assert not palette.lookup_ensure("restorations/implant", "g")
+    assert not palette.lookup_ensure("restorations/implant/implant-base/inner", "g")
+
+
+def test_the_rule_matches_the_element_type_too():
+    # The same layer id is not always the same kind of element, and an
+    # INHERITED property on a wrapping <g> reaches descendants the rule is not
+    # about: `stroke-width` on an occlusal `tooth-base` group would widen the
+    # fissures inside it. Each rule therefore names the types it may land on.
+    assert palette.lookup_ensure("tooth/tooth-base", "path")
+    assert not palette.lookup_ensure("tooth/tooth-base", "g")
+    # …and the implant filter wants the group, which is not inherited.
+    assert palette.lookup_ensure("restorations/implant/implant-base", "g")
+    assert not palette.lookup_ensure("restorations/implant/implant-base", "path")
+
+
+def test_the_width_is_not_inserted_on_a_group():
+    # The regression the type guard exists for, end to end through the
+    # rewriter: an occlusal `tooth-base` is a <g> holding the stroked
+    # `fissure`, and neither may come out carrying a width.
+    out = run(doc(
+        '<g id="tooth"><g id="tooth-base" data-active="1">'
+        '<path id="fissure" style="stroke: #c8c9c9;" d="M0 0"/>'
+        "</g></g>"
+    ))
+    assert "--odon-tooth-outline-width" not in out
+
+
+def test_the_width_is_inserted_on_the_painted_silhouette():
+    out = run(doc('<g id="tooth"><path id="tooth-base" style="fill: #ebebeb;" d="M0 0"/></g>'))
+    assert "stroke-width: var(--odon-tooth-outline-width, 1);" in out
 
 
 def test_every_ensured_token_is_in_the_inventory():
-    for _path, _prop, token, fallback in palette.ENSURE:
+    for _path, _prop, token, fallback, tags in palette.ENSURE:
+        assert tags, f"{token}: a rule with no element type can never match"
         assert token in palette.TOKENS, f"{token} missing from the palette table"
         assert palette.TOKENS[token][0] == fallback, (
             f"{token}: the inserted fallback must be the table's default")
+
+
+def test_the_contour_width_covers_every_silhouette_state():
+    # The feature's whole point: one width across every drawing of the SAME
+    # silhouette, so the contour does not change thickness when the tooth is
+    # charted as a root remnant, a prepared crown or a fracture.
+    widths = {
+        path for path, prop, _token, _fb, _tags in palette.ENSURE
+        if prop == "stroke-width"
+    }
+    for layer in (
+        "tooth/tooth-base",
+        "milktooth/milktooth-base",
+        "tooth-variants/tooth-radix",
+        "tooth-variants/tooth-crownprep",
+        "tooth-variants/tooth-under-gum",
+    ):
+        assert layer in widths, f"{layer} would snap back to the default width"
+    broken = {p for p in widths if "tooth-broken-" in p}
+    assert len(broken) == 7, f"expected all seven fracture states, got {sorted(broken)}"

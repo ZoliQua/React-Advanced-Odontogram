@@ -563,6 +563,8 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
@@ -583,6 +585,8 @@ export default function Host(){
 Die Zeichnungen tragen ihre Farben als CSS-Custom-Properties mit der ausgelieferten Farbe als Fallback, sodass beide Anatomieprofile einer Einstellung folgen und ein Export sie auflöst, bevor er die Seite verlässt. Die vollständige Token-Tabelle steht in `tools/toothgen/palette.py`. Der Dunkelmodus bringt eine eigene Zeichnungspalette mit, sodass das Schema mit der Oberfläche abdunkelt statt zu blenden. Im Profil `measured` tragen Krone und Wurzel zusätzlich einen Dentinkern: Er übernimmt die Farbe von `body`, bis `dentin` gesetzt wird — die Grenze erscheint also erst, wenn man sie anfordert. Im Dunkelmodus dunkeln die Okklusalkacheln zusammen mit den Seitenansichten ab, und eine kariöse Läsion behält ihre dunkle Füllung — die Kontur wechselt ins Helle und trägt die Form, denn „Karies = dunkel“ wird vor jedem Kontrastverhältnis gelesen.
 
 **Das Implantat wird getönt, nicht umgefärbt** *(noch nicht veröffentlicht — auf `main`, erscheint im nächsten Release)*. Seine Zeichnung trägt rund 65 nahezu identische Metallgrautöne, die eine Lichtquelle codieren; sie sind deshalb bewusst nicht einzeln themenfähig: einzeln gesetzt würde die Schattierung verflachen statt neu eingefärbt zu werden. `--odon-implant-tint` ist ein CSS-Filter über das Implantat als Ganzes, sodass sich jeder Grauton mitbewegt und die Beziehungen zwischen ihnen erhalten bleiben — `hue-rotate(205deg) saturate(.85)` oder ein eigener `url(#…)`-Filter. Ohne Setzen ist er `none`, und die periimplantäre Knochenverlust-Ebene bleibt unberührt: Sie liegt außerhalb der gefilterten Gruppe, sodass eine kosmetische Einstellung niemals ein klinisches Signal verschieben kann.
+
+**Auch die Konturstärke ist themenfähig** *(noch nicht veröffentlicht — auf `main`, erscheint im nächsten Release)*. Die Zeichnungen deklarieren überhaupt keine `stroke-width` und zeichnen daher mit dem SVG-Ausgangswert `1`; `themeConfig.tooth.outlineWidth` — oder `--odon-tooth-outline-width` — ändert das. Sie liegt auf jeder Ebene, die die Silhouette des Zahns selbst ist: auf der bleibenden und der Milchzahnkrone, dem Wurzelrest, dem präparierten Stumpf, dem Zahn unter dem Zahnfleisch und allen sieben Frakturzuständen. Die Kontur behält damit eine einheitliche Stärke, gleich als was der Zahn erfasst wird, statt bei einem Radix oder einer Fraktur auf `1` zurückzufallen. Okklusale Fissuren und die okklusale Silhouette behalten eine feste Stärke.
 
 **Plugin-Integration:**
 ```tsx

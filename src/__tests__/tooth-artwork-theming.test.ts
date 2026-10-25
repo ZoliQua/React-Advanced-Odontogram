@@ -155,6 +155,128 @@ describe("tooth artwork: the implant tint", () => {
   });
 });
 
+describe("tooth artwork: the contour width", () => {
+  /** Every element in `svg` whose inline style mentions `needle`, as
+   *  `{ id-chain, tagName }` — the chain is what the generator's rules are
+   *  written against, so a drift between table and asset shows up here. */
+  function carriers(svg: string, needle: string): { path: string; tag: string }[] {
+    const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+    const out: { path: string; tag: string }[] = [];
+    const walk = (el: Element, chain: string[]) => {
+      const id = el.getAttribute("id") ?? "";
+      const next = id ? [...chain, id] : chain;
+      if ((el.getAttribute("style") ?? "").includes(needle)) {
+        out.push({ path: next.join("/"), tag: el.tagName });
+      }
+      for (const child of Array.from(el.children)) walk(child, next);
+    };
+    // The root <svg> carries a per-template id that is not part of a layer
+    // path, so start one level down — exactly as the generator does.
+    for (const child of Array.from(doc.documentElement.children)) walk(child, []);
+    return out;
+  }
+
+  const WIDTH = "--odon-tooth-outline-width";
+  const COLOUR = "--odon-tooth-outline";
+
+  it("rides the silhouette in every state a tooth can be charted in", () => {
+    // The point of the token: the contour must not change thickness when the
+    // same tooth is charted as a root remnant, a prepared crown or a
+    // fracture. Those are separate drawings of one silhouette, so each has to
+    // carry the width independently.
+    for (const [name, svg] of [["classic", tooth11], ["measured", measured11]] as const) {
+      const paths = carriers(svg, WIDTH).map((c) => c.path);
+      for (const layer of [
+        "tooth/tooth-base",
+        "tooth-variants/tooth-radix",
+        "tooth-variants/tooth-crownprep",
+        "tooth-variants/tooth-under-gum",
+        "tooth-variants/tooth-broken-mesial",
+        "tooth-variants/tooth-broken-distal",
+        "tooth-variants/tooth-broken-mesial-distal",
+      ]) {
+        expect(paths, `${name}: #${layer} would snap back to the default width`).toContain(layer);
+      }
+    }
+  });
+
+  it("declares the width wherever it declares the colour, and nowhere else", () => {
+    // The invariant that makes the feature coherent: width is a property OF
+    // the outline, so an element that strokes a themable contour must take
+    // both or neither. The only elements allowed to hold the colour alone are
+    // the four decorative layers the requester kept at a fixed width.
+    const DECORATIVE = ["fissure", "fissure1", "background-cusp", "background-cusp1"];
+    for (const [name, svg] of [["classic", tooth11], ["measured", measured11],
+                               ["occlusal", measured16Occl]] as const) {
+      const widths = carriers(svg, WIDTH);
+      for (const { path } of widths) {
+        expect(carriers(svg, COLOUR).map((c) => c.path), `${name}: ${path} has a width but no colour`)
+          .toContain(path);
+      }
+      const colourOnly = carriers(svg, COLOUR)
+        .map((c) => c.path)
+        .filter((p) => !widths.some((w) => w.path === p));
+      for (const path of colourOnly) {
+        expect(DECORATIVE, `${name}: ${path} strokes a contour but keeps a fixed width`)
+          .toContain(path.split("/").pop());
+      }
+    }
+  });
+
+  it("never lands on a group, because stroke-width is inherited", () => {
+    // `tooth-base` is a painted <path> in the side drawings and a <g> in the
+    // occlusal ones. On the group the declaration would flow down into
+    // `fissure`, `cusps` and the anonymous stroked paths — widening exactly
+    // the lines that are supposed to stay fixed. This is the regression that
+    // guard exists for, so it is pinned on the occlusal template that has the
+    // group form.
+    const occlusal = new DOMParser().parseFromString(measured16Occl, "image/svg+xml");
+    const base = occlusal.querySelector("#tooth-base");
+    expect(base?.tagName, "this template no longer has the group form to guard").toBe("g");
+    expect(base?.getAttribute("style") ?? "").not.toContain(WIDTH);
+
+    for (const [name, svg] of [["classic", tooth11], ["measured", measured11],
+                               ["occlusal", measured16Occl]] as const) {
+      for (const { path, tag } of carriers(svg, WIDTH)) {
+        expect(tag, `${name}: the width landed on a <${tag}> at ${path}`).toBe("path");
+      }
+    }
+  });
+
+  it("is settable as a curated field and as a raw token", () => {
+    const curated = document.createElement("div");
+    applyThemeConfig(curated, { tooth: { outlineWidth: "1.4" } });
+    expect(curated.style.getPropertyValue("--odon-tooth-outline-width")).toBe("1.4");
+    // The curated field is NOT a colour and must not disturb the colour half.
+    expect(curated.style.getPropertyValue("--odon-tooth-outline")).toBe("");
+
+    const raw = document.createElement("div");
+    applyThemeConfig(raw, { tokens: { "--odon-tooth-outline-width": ".75" } });
+    expect(raw.style.getPropertyValue("--odon-tooth-outline-width")).toBe(".75");
+
+    // Cleared on the next call, like every other applied property.
+    applyThemeConfig(curated, {});
+    expect(curated.style.getPropertyValue("--odon-tooth-outline-width")).toBe("");
+  });
+
+  it("resolves on export — set, and unset to the width the drawings stroke at today", () => {
+    const xml = '<path style="stroke-width: var(--odon-tooth-outline-width, 1);"/>';
+
+    const themed = document.createElement("div");
+    document.body.appendChild(themed);
+    applyThemeConfig(themed, { tooth: { outlineWidth: "1.4" } });
+    const out = flattenThemeTokens(xml, themed);
+    expect(out).toContain("stroke-width: 1.4");
+    expect(out).not.toContain("var(");
+    themed.remove();
+
+    const plain = document.createElement("div");
+    document.body.appendChild(plain);
+    expect(flattenThemeTokens(xml, plain)).toBe('<path style="stroke-width: 1;"/>');
+    plain.remove();
+  });
+});
+
 describe("tooth artwork: the occlusal crown gradients", () => {
   // A gradient stop carries its colour as a presentation attribute, not as a
   // style declaration, so the first tokenization pass walked straight past it

@@ -155,3 +155,70 @@ test("the dentin core follows the crown until a theme sets it", async ({ page })
   expect(themed.css).toBe("rgb(138, 107, 69)");
   expect((await paintedFill(page, "tooth-base")).css, "the crown must not follow the core").toBe(darkBody.css);
 });
+
+// The two tokens added for issues #39 and #40 both make a claim jsdom cannot
+// check. `--odon-tooth-outline-width` drives a NON-colour property through a
+// custom property, and `--odon-implant-fill` relies on each shape falling back
+// to its OWN literal — so unset, the fixture must still be shaded, and set, it
+// must go flat in one step. Only a browser resolves either.
+
+/** The computed value of one property on a layer inside a tooth's tile. */
+async function painted(
+  page: import("@playwright/test").Page,
+  layerId: string,
+  prop: string,
+  tile = '.tooth-tile.side-view[data-tooth="11"]',
+) {
+  return page.locator(`${tile} [id="${layerId}"]`).first()
+    .evaluate((node, p) => getComputedStyle(node).getPropertyValue(p), prop);
+}
+
+test("the contour width is one width across every state of the silhouette", async ({ page }) => {
+  await openChart(page);
+  await useMeasuredAnatomy(page);
+
+  // The drawings declare no stroke-width, so the browser strokes at the SVG
+  // initial value — which it reports normalised, as `1px`.
+  expect(await painted(page, "tooth-base", "stroke-width"), "an unthemed contour is not the SVG default")
+    .toBe("1px");
+
+  await page.evaluate(() => document.documentElement.style.setProperty("--odon-tooth-outline-width", "1.4"));
+
+  // Every silhouette state follows, which is the whole point: the contour must
+  // not change thickness when the tooth is charted as a radix or a fracture.
+  for (const layer of ["tooth-base", "tooth-radix", "tooth-crownprep", "tooth-under-gum",
+                       "tooth-broken-mesial", "tooth-broken-distal"]) {
+    expect(await painted(page, layer, "stroke-width"), `#${layer} did not follow the token`).toBe("1.4px");
+  }
+
+  // …and the decoration deliberately left out of it does not.
+  const fissure = page.locator('.tooth-tile.occl-view[data-tooth="16"] [id="fissure"]').first();
+  if (await fissure.count()) {
+    expect(await fissure.evaluate((n) => getComputedStyle(n).strokeWidth),
+      "a groove followed the contour width").toBe("1px");
+  }
+});
+
+test("the implant fixture is shaded until one token flattens it", async ({ page }) => {
+  await openChart(page);
+  await useMeasuredAnatomy(page);
+
+  /** Every painted fill inside the fixture of tooth 11's tile. */
+  const fixtureFills = () => page.locator('.tooth-tile.side-view[data-tooth="11"] [id="implant-base"]')
+    .first()
+    .evaluate((base) => Array.from(base.querySelectorAll("*"))
+      .map((el) => getComputedStyle(el).fill)
+      .filter((f) => f && f !== "none"));
+
+  // Unset: each shape falls back to the grey it is drawn in, so the shading
+  // survives. A shared default would have collapsed this to one value.
+  const shaded = await fixtureFills();
+  expect(shaded.length, "no fixture shapes found to measure").toBeGreaterThan(10);
+  expect(new Set(shaded).size, "the fixture lost its shading with the token unset").toBeGreaterThan(10);
+
+  // Set: the whole fixture goes flat in one step.
+  await page.evaluate(() => document.documentElement.style.setProperty("--odon-implant-fill", "#8fa6b8"));
+  const flat = await fixtureFills();
+  expect(new Set(flat), "the fixture did not flatten to the one colour")
+    .toEqual(new Set(["rgb(143, 166, 184)"]));
+});

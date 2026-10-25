@@ -574,6 +574,8 @@ export default function Host(){
       '--odon-rest-gold': '#d4af37',
       // 不是颜色：作用于整个种植体的 CSS 滤镜。
       '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
     },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
@@ -585,6 +587,8 @@ export default function Host(){
 牙齿图形以 CSS 自定义属性承载颜色，并以随附颜色作为回退值，因此两种解剖轮廓都遵循同一处设置，导出时也会在离开页面前完成解析。完整的 token 表位于 `tools/toothgen/palette.py`。深色模式自带一套牙齿图形配色，因此牙位图会与界面一同变暗，而不会刺眼。 在 `measured` 轮廓中，牙冠与牙根还带有牙本质核心：在未设置 `dentin` 之前它沿用 `body` 的颜色，因此只有在你需要时边界才会显现。 在深色模式下，咬合面图块与侧面视图一同变暗；龋损则保留其深色填充——改为浅色的是轮廓线，由它来承载形状，因为「龋坏＝深色」会先于任何对比度被读出。
 
 **种植体是着色，而不是重新上色** *（尚未发布 —— 已在 `main`，将随下一个版本发布）*。它的绘图包含约 65 种极为接近的金属灰，用以编码光源，因此有意不支持逐一设置主题：单独设置只会让明暗关系变平，而不是重新上色。`--odon-implant-tint` 是作用于整个种植体的 CSS 滤镜，所有灰度一起位移，彼此之间的关系得以保留 —— `hue-rotate(205deg) saturate(.85)`，或你自己的 `url(#…)` 滤镜。未设置时为 `none`，并且不会影响种植体周围骨吸收图层：该图层位于被过滤的分组之外，因此外观设置永远不会移动临床信号。
+
+**……或者直接改为纯色，如果你的配色就是这样。** `--odon-implant-fill` 一次性替换种植体中所有图形的填充色，因此扁平的临床配色无需自备滤镜。每个图形都回退到它本身绘制时的灰色，所以在未设置该令牌时，种植体与原图完全一致——这里没有可供声明的统一默认值。两者可以叠加：填充负责变为纯色，着色随后进行偏移。只有 `fill` 受影响，因此𬌗面螺丝通道的边缘保留其轮廓，种植体周骨丧失图层也和着色时一样不受影响。
 
 **轮廓线宽同样可以主题化** *（尚未发布 —— 已在 `main`，将随下一个版本发布）*。绘图完全没有声明 `stroke-width`，因此按 SVG 初始值 `1` 描边；`themeConfig.tooth.outlineWidth`（或 `--odon-tooth-outline-width`）可以改变它。它作用于构成牙齿自身轮廓的每一个图层：恒牙与乳牙的牙冠、残根、预备体、龈下牙以及全部七种折裂状态。这样一来，无论该牙被记录为何种状态，轮廓都保持同一线宽，而不会在变为残根或折裂时退回 `1`。𬌗面沟与𬌗面轮廓保持固定线宽。
 

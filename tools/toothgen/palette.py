@@ -32,7 +32,15 @@ from __future__ import annotations
 # drawn lighter in a milk tooth). Unset, each keeps its own colour exactly;
 # set, they unify. That is the intended trade: one knob per surface, not one
 # knob per shade.
+#
+# A token listed with SELF_FALLBACK has no single default at all: it is a
+# SELF rule (see below), where every declaration it touches falls back to the
+# literal that declaration already carried. The sentinel keeps such a token in
+# the inventory — it is part of the published API — while making it an error
+# to render one default for it.
 # --------------------------------------------------------------------------
+
+SELF_FALLBACK = "<self>"
 
 TOKENS: dict[str, tuple[str, str]] = {
     # -- tooth structure ---------------------------------------------------
@@ -125,6 +133,12 @@ TOKENS: dict[str, tuple[str, str]] = {
     # together and keeps their relationships intact, which is what a host
     # asking to bring the fixture "toward our palette" actually wants.
     "--odon-implant-tint": ("none", "implant fixture tint (a filter, not a colour)"),
+    # The flat-palette counterpart of the tint, for a host that does not want
+    # a shaded fixture at all. Every one of the fixture's greys falls back to
+    # ITSELF (see SELF below), so this token has no single default: unset, the
+    # drawing is exactly what it always was, and set, the whole fixture goes
+    # one flat colour. `css()` therefore refuses to render it.
+    "--odon-implant-fill": (SELF_FALLBACK, "implant fixture flat fill (each grey falls back to itself)"),
     # e.max and metal-ceramic are drawn with a nine-stop gradient each; the
     # stops are individually themable so a host can retune the ramp.
     **{f"--odon-rest-emax-{i}": (c, f"e.max gradient stop {i}") for i, c in enumerate(
@@ -308,6 +322,37 @@ UNTOKENIZED_BY_DESIGN: tuple[str, ...] = (
 )
 
 # --------------------------------------------------------------------------
+# Self-fallback rules.
+#
+# The third and last kind. A RULE maps one known literal to one token, so the
+# token's default is that literal. A SELF rule maps EVERY literal on a layer
+# to one token, each keeping its own literal as the fallback:
+#
+#     fill: #bbc3c6   ->   fill: var(--odon-implant-fill, #bbc3c6)
+#     fill: #a0a4a5   ->   fill: var(--odon-implant-fill, #a0a4a5)
+#
+# Unset, every element renders exactly as before — this cannot be expressed
+# with one shared default, which is why it is its own rule kind. Set, the
+# whole layer collapses to one flat colour.
+#
+# Matched on the EXACT layer path, which covers the layer and its ANONYMOUS
+# descendants (they inherit the id chain), and nothing else.
+#
+# It overrides UNTOKENIZED_BY_DESIGN deliberately, and the two do not
+# conflict. That list keeps the implant fixture out of the per-colour table
+# because its ~58 greys encode a light source and tokenizing them one by one
+# would let a host destroy the shading by halves. A SELF rule is one token:
+# the fixture is either entirely as drawn or entirely flat. For a host with a
+# flat clinical palette, flat IS the intent — issue #40.
+# --------------------------------------------------------------------------
+
+Self = tuple[str, str, str]  # (exact layer path, property, token)
+
+SELF: tuple[Self, ...] = (
+    ("restorations/implant/implant-base", "fill", "--odon-implant-fill"),
+)
+
+# --------------------------------------------------------------------------
 # Ensured declarations.
 #
 # RULES rewrite a literal the drawing already carries. These do the opposite:
@@ -400,6 +445,12 @@ DERIVED: tuple[str, ...] = ("--odon-tooth-dentin",)
 def css(token: str) -> str:
     """Render a token as a CSS value with its default as the fallback."""
     default, _ = TOKENS[token]
+    if default == SELF_FALLBACK:
+        raise ValueError(
+            f"{token} is a SELF rule: its fallback is whatever literal the "
+            "declaration already carries, so there is no one value to render "
+            "here. Let the tokenizer rewrite the declaration instead."
+        )
     return f"var({token}, {default})"
 
 
@@ -411,6 +462,12 @@ def lookup(path: str, prop: str, colour: str) -> str | None:
     `surfaces/fillings/defect` beats one on `surfaces/`.
     """
     colour = colour.strip().lower()
+    # SELF rules are checked first: they match any literal, and the layers
+    # they name are exactly the ones UNTOKENIZED_BY_DESIGN excludes from the
+    # per-colour table (see the SELF comment for why that is not a conflict).
+    for self_path, self_prop, token in SELF:
+        if prop == self_prop and path == self_path:
+            return token
     if any(path.startswith(skip) for skip in UNTOKENIZED_BY_DESIGN):
         return None
     best: tuple[int, str] | None = None

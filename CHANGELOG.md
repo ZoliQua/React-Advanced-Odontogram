@@ -21,6 +21,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   layers are among them). A refused template is listed by `getToothTemplateRejections()` and the factory one stays: the chart is never left
   without a tooth. With nothing supplied `activeAnatomyProfile()` returns exactly the same object as before.
 
+- **`--odon-implant-fill`: a flat colour for the implant fixture, beside the tint**
+  ([#40](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/40), asked for by @jsampedroc). The tint shifts the fixture's ~58
+  shading greys together and keeps the metal look; a host whose clinical palette is flat wants the opposite, and reported that reaching it
+  through the tint would take a `url(#…)` filter whose definition the exported SVG then has to carry. The new token sets the fill of every
+  shape in the fixture in one step, so that host can drop its `!important` override. The two compose: the fill flattens, the filter shifts.
+  Only `fill` is affected, so the occlusal screw-hole rims keep their outline, and the peri-implant bone-loss overlay is untouched for the
+  same reason the tint leaves it alone.
+
+  **Unset, nothing changes**: each of the 1954 shapes falls back to the grey it is drawn in, not to a shared default — so the fixture still
+  renders exactly as before, shading and all. That needed a third kind of generator rule. `palette.RULES` map one known literal to one
+  token, `palette.ENSURE` insert a declaration that was never there, and the new `palette.SELF` rewrite *every* literal on a layer to one
+  token with that literal as its own fallback. A token of that kind has no single default to state, so it carries a sentinel in the table
+  and `palette.css()` refuses to render it rather than silently flattening the artwork at generation time.
+
 - **`--odon-tooth-outline-width` / `themeConfig.tooth.outlineWidth`: the tooth contour's width is themable**
   ([#39](https://github.com/ZoliQua/React-Advanced-Odontogram/issues/39), asked for by @jsampedroc). The drawings declared no
   `stroke-width` at all and therefore stroked at the SVG initial value; the token carries `1` as its fallback, so an unset chart is

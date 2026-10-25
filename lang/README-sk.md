@@ -572,6 +572,8 @@ export default function Host(){
       '--odon-rest-gold': '#d4af37',
       // Nie je to farba: CSS filter nad celým implantátom.
       '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
     },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
@@ -583,6 +585,8 @@ export default function Host(){
 Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval. V profile `measured` nesie korunka aj koreň navyše dentínové jadro: preberá farbu `body`, kým nenastavíte `dentin`, takže hranica sa objaví až vtedy, keď si ju vyžiadate. V tmavom režime okluzálne dlaždice tmavnú spolu s bočnými pohľadmi a kazivá lézia si ponecháva tmavú výplň — na svetlú sa prepne obrys a ten nesie tvar, pretože „kaz = tmavý“ sa prečíta skôr než akýkoľvek kontrastný pomer.
 
 **Implantát sa tónuje, nie prefarbuje** *(zatiaľ nevydané — v `main`, príde v ďalšom vydaní)*. Jeho kresba nesie približne 65 takmer zhodných kovových sivých odtieňov, ktoré kódujú zdroj svetla, preto zámerne nie sú tematizovateľné jeden po druhom: nastavené jednotlivo by sa tieňovanie sploštilo namiesto prefarbenia. `--odon-implant-tint` je CSS filter nad implantátom ako celkom, takže každý odtieň sa posunie spoločne a vzťahy medzi nimi ostanú zachované — `hue-rotate(205deg) saturate(.85)`, alebo vlastný `url(#…)` filter. Kým ho nenastavíte, je `none`, a vrstvu periimplantátovej straty kosti nechá na pokoji: tá leží mimo filtrovanej skupiny, takže kozmetické nastavenie nikdy nemôže posunúť klinický signál.
+
+**…alebo plochý, ak je taká vaša paleta.** `--odon-implant-fill` naraz nahradí výplň každého tvaru implantátu, takže plochá klinická paleta nepotrebuje vlastný filter. Každý tvar sa vracia k sivej, v ktorej je nakreslený, takže bez nastaveného tokenu je implantát presne pôvodná kresba — neexistuje jedna spoločná východisková hodnota. Obe veci sa dopĺňajú: výplň zrovná, tónovanie potom posunie. Týka sa len `fill`, takže okraje okluzálnych otvorov skrutky si zachovajú obrys a vrstva periimplantátovej straty kosti ostane nedotknutá, rovnako ako pri tónovaní.
 
 **Hrúbka obrysu je tiež témovateľná** *(zatiaľ nevydané — v `main`, príde v ďalšom vydaní)*. Kresby neuvádzajú žiadnu `stroke-width`, takže kreslia východiskovou hodnotou SVG `1`; mení to `themeConfig.tooth.outlineWidth` — alebo `--odon-tooth-outline-width`. Nesie ju každá vrstva, ktorá je vlastnou siluetou zuba: trvalá aj mliečna korunka, koreňový zvyšok, pripravený pahýľ, zub pod ďasnom a všetkých sedem stavov fraktúry. Obrys si tak zachová jednotnú hrúbku bez ohľadu na to, ako je zub zaznamenaný, namiesto toho, aby sa pri radixe alebo fraktúre vrátil na `1`. Okluzálne ryhy a okluzálna silueta ostávajú s pevnou hrúbkou.
 

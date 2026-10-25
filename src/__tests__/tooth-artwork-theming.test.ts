@@ -62,22 +62,27 @@ describe("tooth artwork: the drawings are tokenized", () => {
     expect(inlineFill(measured11, "zircon-crown")).toBe("var(--odon-rest-zircon, #cfe3ee)");
   });
 
-  it("leaves the photorealistic implant shading literal, by design", () => {
-    // ~65 near-identical metal greys encoding a light source, not a surface.
-    // #b7c0c3 is one of the fixture's shading greys: still a bare literal,
-    // and never wrapped in a token.
+  it("never lets the implant's shading be rethemed by halves", () => {
+    // ~58 near-identical metal greys encoding a light source, not a surface.
+    // The rule has always been that a host cannot pick them off one at a
+    // time, because changing some and not others destroys the shading rather
+    // than retheming it.
     //
-    // This used to assert `not.toContain("var(--odon-implant")`, which was a
-    // proxy for "no grey is tokenized". The fixture now carries exactly one
-    // implant reference — the whole-group tint, a FILTER — so the assertion
-    // states the actual rule instead of the proxy: the colours stay literal,
-    // and the single token is not one of them.
-    expect(measured11).toContain("fill: #b7c0c3");
-    expect(measured11).not.toContain("#b7c0c3)");
-    for (const svg of [tooth11, measured11]) {
-      const refs = svg.match(/var\(--odon-implant[\w-]*/g) ?? [];
-      expect(refs).toEqual(["var(--odon-implant-tint"]);
+    // The assertion has tracked that rule through two mechanisms. It first
+    // read `not.toContain("var(--odon-implant")` — a proxy for "no grey is
+    // tokenized" — which stopped being the rule once the group gained a
+    // filter. What it pins now is the rule itself: the fixture exposes
+    // exactly TWO knobs, and each is all-or-nothing over the whole group.
+    for (const [name, svg] of [["classic", tooth11], ["measured", measured11]] as const) {
+      const refs = new Set(svg.match(/var\(--odon-implant[\w-]*/g) ?? []);
+      expect([...refs].sort(), name)
+        .toEqual(["var(--odon-implant-fill", "var(--odon-implant-tint"]);
     }
+
+    // And every grey is still THERE, as its own fallback — so with neither
+    // knob set the fixture renders exactly the drawing, shading and all.
+    // #b7c0c3 is one of them.
+    expect(measured11).toContain("fill: var(--odon-implant-fill, #b7c0c3);");
   });
 });
 
@@ -152,6 +157,123 @@ describe("tooth artwork: the implant tint", () => {
     document.body.appendChild(plain);
     expect(flattenThemeTokens(xml, plain)).toBe('<g style="filter: none;"/>');
     plain.remove();
+  });
+});
+
+describe("tooth artwork: the implant flat fill", () => {
+  // The tint's counterpart, for a host whose clinical palette is flat rather
+  // than shaded (issue #40). One token over every shape in the fixture, each
+  // falling back to the grey it is drawn in — so unset it changes nothing,
+  // and set, the fixture goes one solid colour in a single step.
+
+  /** Every `fill:` declaration inside `#implant-base`, as written. */
+  function fixtureFills(svg: string): string[] {
+    const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+    const base = doc.querySelector("#implant-base");
+    if (!base) throw new Error("no #implant-base in this template");
+    return Array.from(base.querySelectorAll("*"))
+      .map((el) => /(?:^|;)\s*fill:\s*([^;]+)/.exec(el.getAttribute("style") ?? "")?.[1]?.trim())
+      .filter((v): v is string => v !== undefined);
+  }
+
+  it("covers every shape in the fixture, in BOTH profiles", () => {
+    for (const [name, svg] of [["classic", tooth11], ["measured", measured11]] as const) {
+      const fills = fixtureFills(svg);
+      expect(fills.length, `${name}: no fills found to check`).toBeGreaterThan(0);
+      for (const fill of fills) {
+        expect(fill, `${name}: a shape in the fixture is not behind the token`)
+          .toMatch(/^var\(--odon-implant-fill, #[0-9a-f]{3,6}\)$/);
+      }
+    }
+  });
+
+  it("gives every shape its OWN grey as the fallback", () => {
+    // The property that makes the token safe to ship: with nothing set, the
+    // fixture is byte-for-byte the drawing it always was. A shared default
+    // would have flattened the shading the moment the token landed.
+    const fills = fixtureFills(measured11);
+    const fallbacks = new Set(
+      fills.map((f) => /#[0-9a-f]{3,6}/.exec(f)?.[0]).filter(Boolean),
+    );
+    expect(fallbacks.size, "the greys collapsed to one — the shading is gone").toBeGreaterThan(10);
+  });
+
+  it("leaves the clinical overlay and the screw-hole rims alone", () => {
+    // Same boundary the tint respects: `peri-implant-bone-loss` is a finding,
+    // not decoration. And the requester's own selector sets `fill` only, so
+    // the occlusal screw-hole outline stays as drawn.
+    for (const [name, svg] of [["classic", tooth11], ["measured", measured11],
+                               ["occlusal", measured16Occl]] as const) {
+      const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+      const overlay = doc.querySelector("#peri-implant-bone-loss");
+      if (overlay) {
+        expect(overlay.getAttribute("style") ?? "", `${name}: the overlay moved with the fill`)
+          .not.toContain("--odon-implant-fill");
+      }
+      const base = doc.querySelector("#implant-base");
+      for (const el of Array.from(base?.querySelectorAll("*") ?? [])) {
+        const stroke = /(?:^|;)\s*stroke:\s*([^;]+)/.exec(el.getAttribute("style") ?? "")?.[1];
+        if (stroke) expect(stroke.trim(), `${name}: a rim was tokenized`).toMatch(/^#[0-9a-f]{3,6}$/);
+      }
+    }
+  });
+
+  it("composes with the tint rather than competing with it", () => {
+    const el = document.createElement("div");
+    applyThemeConfig(el, {
+      tokens: {
+        "--odon-implant-fill": "#8fa6b8",
+        "--odon-implant-tint": "saturate(.9)",
+      },
+    });
+    expect(el.style.getPropertyValue("--odon-implant-fill")).toBe("#8fa6b8");
+    expect(el.style.getPropertyValue("--odon-implant-tint")).toBe("saturate(.9)");
+  });
+
+  it("resolves on export — set, and unset to the grey that shape is drawn in", () => {
+    const xml = '<path style="fill: var(--odon-implant-fill, #b7c0c3);"/>';
+
+    const themed = document.createElement("div");
+    document.body.appendChild(themed);
+    applyThemeConfig(themed, { tokens: { "--odon-implant-fill": "#8fa6b8" } });
+    const out = flattenThemeTokens(xml, themed);
+    expect(out).toContain("fill: #8fa6b8");
+    expect(out).not.toContain("var(");
+    themed.remove();
+
+    const plain = document.createElement("div");
+    document.body.appendChild(plain);
+    expect(flattenThemeTokens(xml, plain)).toBe('<path style="fill: #b7c0c3;"/>');
+    plain.remove();
+  });
+
+  it("flattens on the real export path, themed and unthemed", async () => {
+    // The perio export draws an implant tooth from the fixture group, so this
+    // is the flat fill travelling the REAL path rather than a hand-written
+    // snippet. Unthemed, the file must come out carrying the drawing's own
+    // greys; themed, the one colour — and never a `var()`, which resolves to
+    // nothing in whatever document opens a standalone SVG.
+    __resetChartStateForTest();
+    __setToothStateForTest(11, { toothSelection: "implant" });
+    setPerioSite(11, "MB", { pd: 4 });
+
+    const plain = await buildPerioSvg();
+    expect(plain).not.toBeNull();
+    expect(plain!.xml).not.toContain("var(--odon-");
+    expect(plain!.xml, "an unthemed export lost the fixture's own shading").toContain("#b7c0c3");
+
+    applyThemeConfig(document.documentElement, {
+      tokens: { "--odon-implant-fill": "#8fa6b8" },
+    });
+    try {
+      const themed = await buildPerioSvg();
+      expect(themed!.xml).not.toContain("var(--odon-");
+      expect(themed!.xml).toContain("#8fa6b8");
+      expect(themed!.xml, "a grey survived the flattening").not.toContain("#b7c0c3");
+    } finally {
+      applyThemeConfig(document.documentElement, {});
+      __resetChartStateForTest();
+    }
   });
 });
 

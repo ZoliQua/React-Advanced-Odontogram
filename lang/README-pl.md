@@ -572,6 +572,8 @@ export default function Host(){
       '--odon-rest-gold': '#d4af37',
       // To nie kolor: filtr CSS na całym implancie.
       '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
     },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
@@ -583,6 +585,8 @@ export default function Host(){
 Rysunki niosą swoje kolory jako właściwości niestandardowe CSS z kolorem fabrycznym jako wartością zapasową, dzięki czemu oba profile anatomii podążają za jednym ustawieniem, a eksport rozwiązuje je, zanim opuszczą stronę. Pełna tabela tokenów znajduje się w `tools/toothgen/palette.py`. Tryb ciemny ma własną paletę rysunków, więc diagram ciemnieje razem z interfejsem, zamiast razić. W profilu `measured` korona i korzeń mają dodatkowo rdzeń zębinowy: przejmuje kolor `body`, dopóki nie ustawisz `dentin`, więc granica pojawia się dopiero wtedy, gdy o nią poprosisz. W trybie ciemnym kafelki okluzyjne ciemnieją razem z widokami bocznymi, a ognisko próchnicy zachowuje ciemne wypełnienie — to obrys zmienia się na jasny i niesie kształt, bo „próchnica = ciemna” czyta się wcześniej niż jakikolwiek współczynnik kontrastu.
 
 **Implant jest tonowany, a nie przemalowywany** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Jego rysunek niesie około 65 niemal identycznych metalicznych szarości kodujących źródło światła, dlatego celowo nie są one motywowalne pojedynczo: ustawione osobno spłaszczyłyby cieniowanie zamiast je przebarwić. `--odon-implant-tint` to filtr CSS nałożony na cały implant, więc każda szarość przesuwa się razem z pozostałymi, a relacje między nimi zostają zachowane — `hue-rotate(205deg) saturate(.85)` albo własny filtr `url(#…)`. Dopóki go nie ustawisz, wynosi `none`, a warstwy utraty kości okołowszczepowej nie dotyka: leży ona poza filtrowaną grupą, więc ustawienie kosmetyczne nigdy nie przesunie sygnału klinicznego.
+
+**…albo płaski, jeśli taka jest paleta.** `--odon-implant-fill` zastępuje wypełnienie wszystkich kształtów implantu za jednym razem, więc płaska paleta kliniczna nie potrzebuje własnego filtra. Każdy kształt wraca do szarości, w której jest narysowany, więc bez ustawionego tokenu implant jest dokładnie tym samym rysunkiem co zawsze — nie ma jednej wartości domyślnej do podania. Oba działają razem: wypełnienie spłaszcza, tonowanie potem przesuwa. Dotyczy to wyłącznie `fill`, więc krawędzie okluzyjnych otworów śruby zachowują kontur, a warstwa okołowszczepowej utraty kości pozostaje nietknięta, tak samo jak przy tonowaniu.
 
 **Grubość konturu również podlega motywowaniu** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Rysunki w ogóle nie deklarują `stroke-width`, więc kreślą domyślną wartością SVG `1`; zmienia to `themeConfig.tooth.outlineWidth` — albo `--odon-tooth-outline-width`. Trafia na każdą warstwę będącą własną sylwetką zęba: korony stałej i mlecznej, pozostałości korzenia, opracowanego filaru, zęba pod dziąsłem oraz wszystkich siedmiu stanów złamania. Kontur zachowuje więc jedną grubość niezależnie od tego, jak ząb został zapisany, zamiast wracać do `1` z chwilą, gdy staje się radixem lub złamaniem. Bruzdy okluzyjne i sylwetka okluzyjna pozostają przy stałej grubości.
 

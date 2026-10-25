@@ -337,69 +337,69 @@
         <path d="M20.1,41.7c.3,0-1.1-.3-.9-.2-.4,0-.9,0-1-.7-.2-.9,0-1.9,0-2.9s.2-.2.2-.3l.9-.2c.2,0,.4,0,.5.2-.2.2-.3.4-.3.7v2.5c0,.9.5.6.7.7v.2h-.2s.1,0,0,0h0Z" data-active="1" style="fill: #a0a0a0;" />
         </g>
       <g id="implant-base" data-active="1" style="filter: var(--odon-implant-tint, none);">
-        <path d="M16.1,35.4c-.1-1.3-.2-2.7.2-4h5.6c.4,1,.2,2.9.2,4h-6Z" data-active="1" style="fill: #bbc3c6;" />
-        <path d="M17.3,9c-.2,0,0-2.2,0-2.4.2-1.3.9-2.4,1.9-3,1-.6.2,0,.2-.3,1.7,0,3.3,1.1,3.8,3.1s0,1.2.1,1.8h-1.3c0-.8,0-2.1-.8-2.3s-.7,0-.7.3c0,.8,0,1.5.2,2.1l-3.5.6h0Z" data-active="1" style="fill: #bac3c7;" />
-        <path d="M16.3,31.4c-.4,1.3-.3,2.7-.2,4l-3.8.2c0-.7-.3-4.2.7-4,1.1-.2,2.2-.2,3.3-.2Z" data-active="1" style="fill: #a0a4a5;" />
-        <path d="M16.9,30.9v-2.5c1.5-.3,3-.7,4.6-.7l.2,3.3h-4.8Z" data-active="1" style="fill: #bac3c6;" />
-        <path d="M19.5,3.2s-.1.2-.2.3c-1,.6-1.6,1.7-1.9,3-.3,1.3-.2,2.4,0,2.4l-2.4.6c.1-1.1,0-2.2.3-3.3s1.1-2.2,2.1-2.7,1.5-.4,2.2-.4h-.1Z" data-active="1" style="fill: #9ca3a6;" />
-        <path d="M22.1,35.4c0-1.1.2-3-.2-4h2.7c.2,1,.3,3,0,4h-2.5Z" data-active="1" style="fill: #e8eef0;" />
-        <path d="M16.8,28.3v2.5c.1,0-3.4.2-3.4.2,0-.7,0-1.4.1-2,1.1-.4,2.2-.5,3.2-.8h.1,0Z" data-active="1" style="fill: #9ea3a4;" />
-        <path d="M24.6,35.5c.2-1,.2-3,0-4h1.4c.8.2.7,3.3.5,4h-1.9Z" data-active="1" style="fill: #bcc4c7;" />
-        <path d="M21.7,30.9l-.2-3.3c.6-.2,1.3-.2,1.9-.2l.2,3.6h-1.9Z" data-active="1" style="fill: #e3eaeb;" />
-        <path d="M23.6,31l-.2-3.6c.5-.1,1.1-.1,1.7-.1l.3,3.8h-1.8Z" data-active="1" style="fill: #b8c2c4;" />
-        <path d="M16.9,26.5v-1.1c1.5-.3,3-.6,4.5-.7v1.1l-4.5.7Z" data-active="1" style="fill: #b7c0c3;" />
-        <path d="M17,23.6c-.1-.4,0-.8,0-1.2,1.5-.3,2.9-.5,4.3-.7v1.2l-4.4.7h.1Z" data-active="1" style="fill: #b9c0c4;" />
-        <path d="M17.1,20.7c-.3-.4,0-.5-.2-1.1,1.4-.4,2.8-.6,4.3-.8v1.2c-1.3.2-2.7.4-4.1.7Z" data-active="1" style="fill: #b8c0c3;" />
-        <path d="M17,17.7v-1.1c1.3-.3,2.7-.6,4.1-.7v1.1l-4.1.7Z" data-active="1" style="fill: #b7bfc3;" />
-        <path d="M17.1,14.8v-1.1c1.3-.3,2.6-.5,3.9-.7v1.2l-4,.6s.1,0,0,0h.1Z" data-active="1" style="fill: #b9c1c5;" />
-        <path d="M17.1,10.8c1.2-.3,2.4-.6,3.7-.7v1.2c-1.2.1-2.4.4-3.7.6v-1.1Z" data-active="1" style="fill: #bac3c5;" />
-        <path d="M16.9,27.8c0-.2,0-.5-.1-.7-.2.2-.5.3-.6,0,1.7-.4,3.5-.7,5.3-.9.1.2,0,.5,0,.8l-4.6.7h0Z" data-active="1" style="fill: #b7c0c3;" />
-        <path d="M17,24.9c-.2-.2,0-.5,0-.8,1.5-.3,3-.6,4.5-.7v.8l-4.4.7s-.1,0,0,0c0,0-.1,0,0,0h-.1Z" data-active="1" style="fill: #b9c0c3;" />
-        <path d="M16.9,25.4v1.1l-3.2.8v-1.1c1-.4,2.1-.5,3.1-.7h.1Z" data-active="1" style="fill: #9a9fa1;" />
-        <path d="M17.1,21.9c-.1-.3-.2-.4-.2-.7,1.5-.3,2.9-.6,4.3-.7v.8l-4.2.7h.1Z" data-active="1" style="fill: #bac0c3;" />
-        <path d="M17,22.4c0,.4-.1.8,0,1.2l-3.1.7v-1.2c1-.4,2-.5,3-.7,0,0,.1,0,0,0,0,0,.1,0,0,0h.1Z" data-active="1" style="fill: #999fa1;" />
-        <path d="M17,19v-.8c1.4-.3,2.8-.5,4.2-.7v.8s-4.2.7-4.2.7Z" data-active="1" style="fill: #bac1c4;" />
-        <path d="M17,16.1v-.7c1.3-.3,2.7-.5,4-.7v.8l-4.1.6s.1,0,.1,0Z" data-active="1" style="fill: #b9c0c3;" />
-        <path d="M17.1,13.2v-.8c1.2-.4,2.5-.5,3.8-.7,0,.2.1.5,0,.8l-3.9.7s.1,0,0,0h.1Z" data-active="1" style="fill: #bbc2c4;" />
-        <path d="M16.9,19.6c.1.6,0,.7.2,1.1l-2.9.7v-1.1c.9-.5,1.8-.4,2.7-.6h0Z" data-active="1" style="fill: #9ba0a2;" />
-        <path d="M16.1,27.2c.1.2.4.2.6,0,.1.2.1.5.1.7-1.2.3-2.4.5-3.6.9s-.4-.2-.5-.4c0-.6,2.7-1,3.2-1.1h.2Z" data-active="1" style="fill: #a8aeb1;" />
-        <path d="M16.9,24.1v.8l-3.5.9c-.2,0-.4-.3-.4-.4,0-.6,3.3-1.1,3.8-1.2h.1Z" data-active="1" style="fill: #a6abad;" />
-        <path d="M17,16.6v1.1l-2.7.7v-1.2c.9-.4,1.8-.5,2.6-.6,0,0,.1,0,0,0,0,0,.1,0,0,0,0,0,.1,0,.1,0Z" data-active="1" style="fill: #9ba0a3;" />
-        <path d="M20.8,8.4c-.1-.7-.2-1.4-.2-2.1s.5-.4.7-.3c.8.2.7,1.5.8,2.3l-1.3.2h0Z" data-active="1" style="fill: #e4e9ea;" />
-        <path d="M17.2,10.3v-.8c1.2-.3,2.4-.5,3.7-.6v.8l-3.7.6Z" data-active="1" style="fill: #bcc2c4;" />
-        <path d="M16.9,21.2c0,.3,0,.5.2.7-1.2.2-2.2.5-3.4.8s-.4-.2-.4-.3c-.1-.7,3.1-1.1,3.6-1.2Z" data-active="1" style="fill: #a6abad;" />
-        <path d="M17.1,13.7v1.1l-2.5.7c0-.3,0-.9.1-1.1.8-.4,1.6-.4,2.4-.6h0Z" data-active="1" style="fill: #9da2a4;" />
-        <path d="M17,18.3v.8l-3.2.8c-.2,0-.3-.3-.3-.4s0-.3.2-.4c1.1-.4,2.2-.6,3.2-.8h.1Z" data-active="1" style="fill: #a5aaac;" />
-        <path d="M17.1,10.8v1.1l-2.4.6v-1.1c.8-.3,1.6-.4,2.3-.6,0,0,.1,0,0,0h.1Z" data-active="1" style="fill: #9ca1a3;" />
-        <path d="M17,15.4v.7l-2.9.8c-.2,0-.4-.2-.4-.3-.2-.7,3-1.1,3.3-1.1h0Z" data-active="1" style="fill: #a5aaac;" />
-        <path d="M17,12.4v.8l-2.8.7c-.2,0-.3-.2-.4-.3s0-.4.3-.4c1-.3,1.9-.6,2.9-.7h0Z" data-active="1" style="fill: #a2a7a9;" />
-        <path d="M17.2,9.5v.8c-.9.2-1.7.4-2.6.7s-.4-.1-.4-.3,0-.3.2-.4c.9-.4,1.8-.5,2.8-.8Z" data-active="1" style="fill: #a7abae;" />
-        <path d="M21.5,25.8v-1.1c.5-.2,1.1-.2,1.7-.2.1.4,0,.8,0,1.2l-1.8.2h0Z" data-active="1" style="fill: #e2e9eb;" />
-        <path d="M21.4,22.9v-1.2l1.8-.2v1.1c-.5.2-1.1.2-1.7.3h0Z" data-active="1" style="fill: #e1e8e9;" />
-        <path d="M21.2,18.8c.6,0,1.2-.2,1.8-.2v1.2l-1.7.2v-1.2h0Z" data-active="1" style="fill: #e3e9ea;" />
-        <path d="M21.1,17.1v-1.1c.5,0,1.1-.2,1.6-.2.2.4,0,.8.2,1.1-.6,0-1.2,0-1.8.2Z" data-active="1" style="fill: #e3e9ea;" />
-        <path d="M23.3,25.6v-1.2c.5,0,1.1-.1,1.7-.1,0,.4.1.8.1,1.2-.6.2-1.2,0-1.7.1h-.1Z" data-active="1" style="fill: #b7bfc3;" />
-        <path d="M21,14.2c-.1-.4,0-.8,0-1.2l1.6-.2v1.1c-.4.1-1,.2-1.5.2h-.1Z" data-active="1" style="fill: #e4eaeb;" />
-        <path d="M23.4,26.9v-.8c.5,0,2.5-.5,2.4.3s-1.8.5-2.4.5Z" data-active="1" style="fill: #b4bdc0;" />
-        <path d="M23.3,24v-.8c.4,0,2.4-.5,2.3.2s-.2.4-.4.4h-1.9s0,.2,0,.2Z" data-active="1" style="fill: #b8c0c4;" />
-        <path d="M20.8,10.1c.5,0,1-.2,1.5-.2.1.4,0,.8.2,1.1-.5.1-1,.2-1.6.2v-1.2h-.1Z" data-active="1" style="fill: #e3e8e9;" />
-        <path d="M23.2,22.6v-1.1c.4,0,.9-.1,1.4-.1,0,.4.1.8,0,1.1-.5.2-1.1,0-1.5.1h.1Z" data-active="1" style="fill: #b8c0c3;" />
-        <path d="M23,21.1v-.8c.4,0,2.2-.5,2.2.2s-1.7.5-2.2.6Z" data-active="1" style="fill: #b5bdc1;" />
-        <path d="M23,19.8v-1.2c.5,0,.9-.2,1.4-.1v1.1c-.5.1-1,0-1.5.1h.1Z" data-active="1" style="fill: #b8c1c5;" />
-        <path d="M22.9,18.1c-.1-.2,0-.5,0-.8.5,0,2.1-.4,2.2.2s-1.5.6-2.1.6h-.1Z" data-active="1" style="fill: #bac0c3;" />
-        <path d="M22.7,15.2c-.1-.2,0-.5-.1-.8.5,0,2.1-.5,2.1.2s-1.5.5-2,.6Z" data-active="1" style="fill: #b6bec2;" />
-        <path d="M22.8,16.9c-.1-.4,0-.8-.2-1.1.5,0,.9-.2,1.4-.1,0,.4.1.8,0,1.1h-1.3.1Z" data-active="1" style="fill: #b9c2c6;" />
-        <path d="M21.5,27.1v-.8c.7,0,1.3-.2,2-.2v.8l-1.9.2h-.1Z" data-active="1" style="fill: #e5e9eb;" />
-        <path d="M22.5,12.3v-.8c.3,0,2.2-.5,2,.3s-1.4.4-1.9.5h-.1Z" data-active="1" style="fill: #bbc2c5;" />
-        <path d="M22.6,13.9v-1.1c.3,0,.7-.1,1.2,0,0,.3.1.7,0,1.1-.4.3-.9,0-1.3.1h0Z" data-active="1" style="fill: #b6bfc2;" />
-        <path d="M21.4,24.1v-.8c.6,0,1.2-.2,1.8-.2v.8l-1.9.2h.1Z" data-active="1" style="fill: #e6ebec;" />
-        <path d="M22.5,11.1c-.2-.3,0-.8-.2-1.1.4,0,.8-.2,1.3,0,0,.3.1.7,0,1.1-.4.2-.8,0-1.2.1h.1Z" data-active="1" style="fill: #bdc3c6;" />
-        <path d="M21.3,21.2v-.8c.6,0,1.2-.3,1.8-.2v.8l-1.8.2Z" data-active="1" style="fill: #e6eaeb;" />
-        <path d="M22.3,9.5v-.8c.4,0,2.1-.5,1.9.3s-1.4.4-1.9.4h0Z" data-active="1" style="fill: #bfc4c7;" />
-        <path d="M21.2,18.3v-.8l1.7-.2v.8l-1.8.2h0Z" data-active="1" style="fill: #e5eaeb;" />
-        <path d="M21,15.4v-.8l1.7-.2c0,.3,0,.5.1.8l-1.7.2h-.1Z" data-active="1" style="fill: #e6ebeb;" />
-        <path d="M20.9,12.5v-.8c.5,0,1-.2,1.6-.2v.8l-1.6.2Z" data-active="1" style="fill: #e6eaeb;" />
-        <path d="M20.8,8.9c.5,0,1-.2,1.5-.2v.8l-1.5.2v-.8Z" data-active="1" style="fill: #e1e5e6;" />
+        <path d="M16.1,35.4c-.1-1.3-.2-2.7.2-4h5.6c.4,1,.2,2.9.2,4h-6Z" data-active="1" style="fill: var(--odon-implant-fill, #bbc3c6);" />
+        <path d="M17.3,9c-.2,0,0-2.2,0-2.4.2-1.3.9-2.4,1.9-3,1-.6.2,0,.2-.3,1.7,0,3.3,1.1,3.8,3.1s0,1.2.1,1.8h-1.3c0-.8,0-2.1-.8-2.3s-.7,0-.7.3c0,.8,0,1.5.2,2.1l-3.5.6h0Z" data-active="1" style="fill: var(--odon-implant-fill, #bac3c7);" />
+        <path d="M16.3,31.4c-.4,1.3-.3,2.7-.2,4l-3.8.2c0-.7-.3-4.2.7-4,1.1-.2,2.2-.2,3.3-.2Z" data-active="1" style="fill: var(--odon-implant-fill, #a0a4a5);" />
+        <path d="M16.9,30.9v-2.5c1.5-.3,3-.7,4.6-.7l.2,3.3h-4.8Z" data-active="1" style="fill: var(--odon-implant-fill, #bac3c6);" />
+        <path d="M19.5,3.2s-.1.2-.2.3c-1,.6-1.6,1.7-1.9,3-.3,1.3-.2,2.4,0,2.4l-2.4.6c.1-1.1,0-2.2.3-3.3s1.1-2.2,2.1-2.7,1.5-.4,2.2-.4h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #9ca3a6);" />
+        <path d="M22.1,35.4c0-1.1.2-3-.2-4h2.7c.2,1,.3,3,0,4h-2.5Z" data-active="1" style="fill: var(--odon-implant-fill, #e8eef0);" />
+        <path d="M16.8,28.3v2.5c.1,0-3.4.2-3.4.2,0-.7,0-1.4.1-2,1.1-.4,2.2-.5,3.2-.8h.1,0Z" data-active="1" style="fill: var(--odon-implant-fill, #9ea3a4);" />
+        <path d="M24.6,35.5c.2-1,.2-3,0-4h1.4c.8.2.7,3.3.5,4h-1.9Z" data-active="1" style="fill: var(--odon-implant-fill, #bcc4c7);" />
+        <path d="M21.7,30.9l-.2-3.3c.6-.2,1.3-.2,1.9-.2l.2,3.6h-1.9Z" data-active="1" style="fill: var(--odon-implant-fill, #e3eaeb);" />
+        <path d="M23.6,31l-.2-3.6c.5-.1,1.1-.1,1.7-.1l.3,3.8h-1.8Z" data-active="1" style="fill: var(--odon-implant-fill, #b8c2c4);" />
+        <path d="M16.9,26.5v-1.1c1.5-.3,3-.6,4.5-.7v1.1l-4.5.7Z" data-active="1" style="fill: var(--odon-implant-fill, #b7c0c3);" />
+        <path d="M17,23.6c-.1-.4,0-.8,0-1.2,1.5-.3,2.9-.5,4.3-.7v1.2l-4.4.7h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #b9c0c4);" />
+        <path d="M17.1,20.7c-.3-.4,0-.5-.2-1.1,1.4-.4,2.8-.6,4.3-.8v1.2c-1.3.2-2.7.4-4.1.7Z" data-active="1" style="fill: var(--odon-implant-fill, #b8c0c3);" />
+        <path d="M17,17.7v-1.1c1.3-.3,2.7-.6,4.1-.7v1.1l-4.1.7Z" data-active="1" style="fill: var(--odon-implant-fill, #b7bfc3);" />
+        <path d="M17.1,14.8v-1.1c1.3-.3,2.6-.5,3.9-.7v1.2l-4,.6s.1,0,0,0h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #b9c1c5);" />
+        <path d="M17.1,10.8c1.2-.3,2.4-.6,3.7-.7v1.2c-1.2.1-2.4.4-3.7.6v-1.1Z" data-active="1" style="fill: var(--odon-implant-fill, #bac3c5);" />
+        <path d="M16.9,27.8c0-.2,0-.5-.1-.7-.2.2-.5.3-.6,0,1.7-.4,3.5-.7,5.3-.9.1.2,0,.5,0,.8l-4.6.7h0Z" data-active="1" style="fill: var(--odon-implant-fill, #b7c0c3);" />
+        <path d="M17,24.9c-.2-.2,0-.5,0-.8,1.5-.3,3-.6,4.5-.7v.8l-4.4.7s-.1,0,0,0c0,0-.1,0,0,0h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #b9c0c3);" />
+        <path d="M16.9,25.4v1.1l-3.2.8v-1.1c1-.4,2.1-.5,3.1-.7h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #9a9fa1);" />
+        <path d="M17.1,21.9c-.1-.3-.2-.4-.2-.7,1.5-.3,2.9-.6,4.3-.7v.8l-4.2.7h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #bac0c3);" />
+        <path d="M17,22.4c0,.4-.1.8,0,1.2l-3.1.7v-1.2c1-.4,2-.5,3-.7,0,0,.1,0,0,0,0,0,.1,0,0,0h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #999fa1);" />
+        <path d="M17,19v-.8c1.4-.3,2.8-.5,4.2-.7v.8s-4.2.7-4.2.7Z" data-active="1" style="fill: var(--odon-implant-fill, #bac1c4);" />
+        <path d="M17,16.1v-.7c1.3-.3,2.7-.5,4-.7v.8l-4.1.6s.1,0,.1,0Z" data-active="1" style="fill: var(--odon-implant-fill, #b9c0c3);" />
+        <path d="M17.1,13.2v-.8c1.2-.4,2.5-.5,3.8-.7,0,.2.1.5,0,.8l-3.9.7s.1,0,0,0h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #bbc2c4);" />
+        <path d="M16.9,19.6c.1.6,0,.7.2,1.1l-2.9.7v-1.1c.9-.5,1.8-.4,2.7-.6h0Z" data-active="1" style="fill: var(--odon-implant-fill, #9ba0a2);" />
+        <path d="M16.1,27.2c.1.2.4.2.6,0,.1.2.1.5.1.7-1.2.3-2.4.5-3.6.9s-.4-.2-.5-.4c0-.6,2.7-1,3.2-1.1h.2Z" data-active="1" style="fill: var(--odon-implant-fill, #a8aeb1);" />
+        <path d="M16.9,24.1v.8l-3.5.9c-.2,0-.4-.3-.4-.4,0-.6,3.3-1.1,3.8-1.2h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #a6abad);" />
+        <path d="M17,16.6v1.1l-2.7.7v-1.2c.9-.4,1.8-.5,2.6-.6,0,0,.1,0,0,0,0,0,.1,0,0,0,0,0,.1,0,.1,0Z" data-active="1" style="fill: var(--odon-implant-fill, #9ba0a3);" />
+        <path d="M20.8,8.4c-.1-.7-.2-1.4-.2-2.1s.5-.4.7-.3c.8.2.7,1.5.8,2.3l-1.3.2h0Z" data-active="1" style="fill: var(--odon-implant-fill, #e4e9ea);" />
+        <path d="M17.2,10.3v-.8c1.2-.3,2.4-.5,3.7-.6v.8l-3.7.6Z" data-active="1" style="fill: var(--odon-implant-fill, #bcc2c4);" />
+        <path d="M16.9,21.2c0,.3,0,.5.2.7-1.2.2-2.2.5-3.4.8s-.4-.2-.4-.3c-.1-.7,3.1-1.1,3.6-1.2Z" data-active="1" style="fill: var(--odon-implant-fill, #a6abad);" />
+        <path d="M17.1,13.7v1.1l-2.5.7c0-.3,0-.9.1-1.1.8-.4,1.6-.4,2.4-.6h0Z" data-active="1" style="fill: var(--odon-implant-fill, #9da2a4);" />
+        <path d="M17,18.3v.8l-3.2.8c-.2,0-.3-.3-.3-.4s0-.3.2-.4c1.1-.4,2.2-.6,3.2-.8h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #a5aaac);" />
+        <path d="M17.1,10.8v1.1l-2.4.6v-1.1c.8-.3,1.6-.4,2.3-.6,0,0,.1,0,0,0h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #9ca1a3);" />
+        <path d="M17,15.4v.7l-2.9.8c-.2,0-.4-.2-.4-.3-.2-.7,3-1.1,3.3-1.1h0Z" data-active="1" style="fill: var(--odon-implant-fill, #a5aaac);" />
+        <path d="M17,12.4v.8l-2.8.7c-.2,0-.3-.2-.4-.3s0-.4.3-.4c1-.3,1.9-.6,2.9-.7h0Z" data-active="1" style="fill: var(--odon-implant-fill, #a2a7a9);" />
+        <path d="M17.2,9.5v.8c-.9.2-1.7.4-2.6.7s-.4-.1-.4-.3,0-.3.2-.4c.9-.4,1.8-.5,2.8-.8Z" data-active="1" style="fill: var(--odon-implant-fill, #a7abae);" />
+        <path d="M21.5,25.8v-1.1c.5-.2,1.1-.2,1.7-.2.1.4,0,.8,0,1.2l-1.8.2h0Z" data-active="1" style="fill: var(--odon-implant-fill, #e2e9eb);" />
+        <path d="M21.4,22.9v-1.2l1.8-.2v1.1c-.5.2-1.1.2-1.7.3h0Z" data-active="1" style="fill: var(--odon-implant-fill, #e1e8e9);" />
+        <path d="M21.2,18.8c.6,0,1.2-.2,1.8-.2v1.2l-1.7.2v-1.2h0Z" data-active="1" style="fill: var(--odon-implant-fill, #e3e9ea);" />
+        <path d="M21.1,17.1v-1.1c.5,0,1.1-.2,1.6-.2.2.4,0,.8.2,1.1-.6,0-1.2,0-1.8.2Z" data-active="1" style="fill: var(--odon-implant-fill, #e3e9ea);" />
+        <path d="M23.3,25.6v-1.2c.5,0,1.1-.1,1.7-.1,0,.4.1.8.1,1.2-.6.2-1.2,0-1.7.1h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #b7bfc3);" />
+        <path d="M21,14.2c-.1-.4,0-.8,0-1.2l1.6-.2v1.1c-.4.1-1,.2-1.5.2h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #e4eaeb);" />
+        <path d="M23.4,26.9v-.8c.5,0,2.5-.5,2.4.3s-1.8.5-2.4.5Z" data-active="1" style="fill: var(--odon-implant-fill, #b4bdc0);" />
+        <path d="M23.3,24v-.8c.4,0,2.4-.5,2.3.2s-.2.4-.4.4h-1.9s0,.2,0,.2Z" data-active="1" style="fill: var(--odon-implant-fill, #b8c0c4);" />
+        <path d="M20.8,10.1c.5,0,1-.2,1.5-.2.1.4,0,.8.2,1.1-.5.1-1,.2-1.6.2v-1.2h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #e3e8e9);" />
+        <path d="M23.2,22.6v-1.1c.4,0,.9-.1,1.4-.1,0,.4.1.8,0,1.1-.5.2-1.1,0-1.5.1h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #b8c0c3);" />
+        <path d="M23,21.1v-.8c.4,0,2.2-.5,2.2.2s-1.7.5-2.2.6Z" data-active="1" style="fill: var(--odon-implant-fill, #b5bdc1);" />
+        <path d="M23,19.8v-1.2c.5,0,.9-.2,1.4-.1v1.1c-.5.1-1,0-1.5.1h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #b8c1c5);" />
+        <path d="M22.9,18.1c-.1-.2,0-.5,0-.8.5,0,2.1-.4,2.2.2s-1.5.6-2.1.6h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #bac0c3);" />
+        <path d="M22.7,15.2c-.1-.2,0-.5-.1-.8.5,0,2.1-.5,2.1.2s-1.5.5-2,.6Z" data-active="1" style="fill: var(--odon-implant-fill, #b6bec2);" />
+        <path d="M22.8,16.9c-.1-.4,0-.8-.2-1.1.5,0,.9-.2,1.4-.1,0,.4.1.8,0,1.1h-1.3.1Z" data-active="1" style="fill: var(--odon-implant-fill, #b9c2c6);" />
+        <path d="M21.5,27.1v-.8c.7,0,1.3-.2,2-.2v.8l-1.9.2h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #e5e9eb);" />
+        <path d="M22.5,12.3v-.8c.3,0,2.2-.5,2,.3s-1.4.4-1.9.5h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #bbc2c5);" />
+        <path d="M22.6,13.9v-1.1c.3,0,.7-.1,1.2,0,0,.3.1.7,0,1.1-.4.3-.9,0-1.3.1h0Z" data-active="1" style="fill: var(--odon-implant-fill, #b6bfc2);" />
+        <path d="M21.4,24.1v-.8c.6,0,1.2-.2,1.8-.2v.8l-1.9.2h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #e6ebec);" />
+        <path d="M22.5,11.1c-.2-.3,0-.8-.2-1.1.4,0,.8-.2,1.3,0,0,.3.1.7,0,1.1-.4.2-.8,0-1.2.1h.1Z" data-active="1" style="fill: var(--odon-implant-fill, #bdc3c6);" />
+        <path d="M21.3,21.2v-.8c.6,0,1.2-.3,1.8-.2v.8l-1.8.2Z" data-active="1" style="fill: var(--odon-implant-fill, #e6eaeb);" />
+        <path d="M22.3,9.5v-.8c.4,0,2.1-.5,1.9.3s-1.4.4-1.9.4h0Z" data-active="1" style="fill: var(--odon-implant-fill, #bfc4c7);" />
+        <path d="M21.2,18.3v-.8l1.7-.2v.8l-1.8.2h0Z" data-active="1" style="fill: var(--odon-implant-fill, #e5eaeb);" />
+        <path d="M21,15.4v-.8l1.7-.2c0,.3,0,.5.1.8l-1.7.2h-.1Z" data-active="1" style="fill: var(--odon-implant-fill, #e6ebeb);" />
+        <path d="M20.9,12.5v-.8c.5,0,1-.2,1.6-.2v.8l-1.6.2Z" data-active="1" style="fill: var(--odon-implant-fill, #e6eaeb);" />
+        <path d="M20.8,8.9c.5,0,1-.2,1.5-.2v.8l-1.5.2v-.8Z" data-active="1" style="fill: var(--odon-implant-fill, #e1e5e6);" />
         </g>
       <path id="peri-implant-bone-loss" d="M11.3,27.7c2,7,6,10,9,10s7-3,9-10c-2,4-5,6-9,6s-7-2-9-6Z" data-active="1" style="display: none; fill: #d9534f;" />
       </g>

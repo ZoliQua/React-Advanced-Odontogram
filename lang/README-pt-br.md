@@ -572,6 +572,8 @@ export default function Host(){
       '--odon-rest-gold': '#d4af37',
       // Não é uma cor: um filtro CSS sobre todo o implante.
       '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
     },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
@@ -583,6 +585,8 @@ export default function Host(){
 Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`. O modo escuro traz sua própria paleta para os desenhos, de modo que o odontograma escurece junto com a interface em vez de ofuscar. No perfil `measured`, a coroa e a raiz também têm um núcleo de dentina: ele assume a cor de `body` enquanto `dentin` não for definido, de modo que o limite só aparece quando você o pede. No modo escuro os ladrilhos oclusais escurecem junto com as vistas laterais, e uma lesão de cárie mantém seu preenchimento escuro: é o contorno que passa a claro e carrega a forma, porque «cárie = escuro» se lê antes de qualquer razão de contraste.
 
 **O implante é tingido, não recolorido** *(ainda não publicado — em `main`, chega na próxima versão)*. Seu desenho carrega cerca de 65 cinzas metálicos quase idênticos que codificam uma fonte de luz, por isso não são deliberadamente tematizáveis um a um: ajustá-los separadamente achataria o sombreado em vez de recolori-lo. `--odon-implant-tint` é um filtro CSS sobre o implante como um todo, de modo que todos os cinzas se deslocam juntos e as relações entre eles se preservam — `hue-rotate(205deg) saturate(.85)`, ou um filtro `url(#…)` seu. É `none` enquanto você não o definir, e deixa intacta a camada de perda óssea peri-implantar: ela fica fora do grupo filtrado, de modo que um ajuste cosmético nunca pode deslocar um sinal clínico.
+
+**…ou plano, se a sua paleta for assim.** `--odon-implant-fill` substitui de uma só vez o preenchimento de todas as formas do implante, de modo que uma paleta clínica plana não precisa de um filtro próprio. Cada forma recorre ao cinza em que está desenhada, portanto com o token não definido o implante é exatamente o desenho de sempre — não há um único valor padrão a declarar. Os dois se combinam: o preenchimento achata, a tintura depois desloca. Só o `fill` é afetado, então as bordas dos orifícios oclusais do parafuso mantêm o contorno e a camada de perda óssea peri-implantar fica intacta, assim como acontece com a tintura.
 
 **A espessura do contorno também é tematizável** *(ainda não publicado — em `main`, chega na próxima versão)*. Os desenhos não declaram nenhum `stroke-width`, portanto traçam com o valor inicial do SVG, `1`; `themeConfig.tooth.outlineWidth` — ou `--odon-tooth-outline-width` — muda isso. Ela vai em toda camada que é a silhueta do próprio dente: as coroas permanente e decídua, o resto radicular, o preparo protético, o dente sob a gengiva e os sete estados de fratura. Assim o contorno mantém uma única espessura seja qual for o estado registrado do dente, em vez de voltar a `1` assim que ele vira um radix ou uma fratura. Os sulcos oclusais e a silhueta oclusal permanecem com espessura fixa.
 

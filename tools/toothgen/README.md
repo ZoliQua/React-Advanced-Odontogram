@@ -131,9 +131,9 @@ renderer restores the root scale around the generated CEJ. No external
 illustration is copied; the generator uses anatomical facts and independently
 generated geometry over repository-owned donors.
 
-## Palette: rewriting versus inserting
+## Palette: three kinds of rule
 
-`palette.py` is the single inventory of themable values, and it drives two
+`palette.py` is the single inventory of themable values, and it drives three
 different operations in `tokenize.py`.
 
 `RULES` **rewrite** a literal the drawing already carries: a `fill` or
@@ -155,12 +155,38 @@ unchanged. Two properties of the insertion matter:
   literal `<g id="implant-base"` search, which an attribute inserted in front
   of the id would silently defeat.
 
-`UNTOKENIZED_BY_DESIGN` does not apply to `ENSURE`. That list exists because
-recolouring the implant fixture's greys one by one would destroy its shading —
-which is exactly why the fixture instead gets one filter hook over the whole
-group (`--odon-implant-tint`), moving every grey together.
+Each `ENSURE` rule also names the **element types** it may land on, because
+the same layer id is not always the same kind of element: `tooth-base` is a
+painted `<path>` in the side drawings and a wrapping `<g>` in the occlusal
+ones. That matters for an inherited property — `stroke-width` placed on the
+group would flow down into the fissures and cusps inside it — and not at all
+for `filter`, which the implant rule wants on the group itself.
 
-`test_tokenize.py` covers the insertion half.
+`SELF` rules rewrite **every** literal on a layer to one token, each keeping
+its own literal as the fallback:
+
+```
+fill: #bbc3c6   ->   fill: var(--odon-implant-fill, #bbc3c6)
+fill: #a0a4a5   ->   fill: var(--odon-implant-fill, #a0a4a5)
+```
+
+A `RULE` maps one known colour to one token, so the token's default is that
+colour. A `SELF` rule cannot work that way: the layer has dozens of shades and
+each must keep its own, or an unset token would change the drawing. Such a
+token is listed in `TOKENS` with the `SELF_FALLBACK` sentinel instead of a
+default, and `css()` refuses to render it — there is no one value to render.
+Matched on the exact layer path, which covers the layer and its anonymous
+descendants and nothing else.
+
+`UNTOKENIZED_BY_DESIGN` applies to neither `ENSURE` nor `SELF`. That list
+exists because recolouring the implant fixture's greys one by one would let a
+host destroy its shading by halves. Both exceptions are all-or-nothing over
+the whole fixture and therefore cannot: `--odon-implant-tint` is one filter
+that moves every grey together, and `--odon-implant-fill` replaces all of them
+at once with a single flat colour, for a host whose palette is flat rather
+than shaded.
+
+`test_tokenize.py` covers the insertion and self-fallback halves.
 
 ## Build and verification
 

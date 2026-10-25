@@ -137,10 +137,22 @@ export type OdontogramThemeConfig = {
    * `none` unless set, and it does not touch the peri-implant bone-loss
    * overlay, which sits outside the filtered group.
    *
+   * `--odon-implant-fill` is the **flat** counterpart of that tint, for a
+   * palette that wants one solid colour rather than shaded metal. It is a
+   * colour, and it replaces the fill of every shape in the fixture at once.
+   * Each of those shapes falls back to the grey it is drawn in, so unset it
+   * changes nothing at all — there is no single default to state. The two
+   * compose: the fill flattens the fixture, the filter then shifts it. It
+   * leaves the peri-implant bone-loss overlay alone for the same reason the
+   * tint does, and the occlusal screw-hole rims keep their outline, because
+   * only `fill` is affected.
+   *
    * @example
    * { tokens: { "--odon-rest-gold": "#d4af37", "--odon-fill-composite": "#eae0c8" } }
    * @example
    * { tokens: { "--odon-implant-tint": "hue-rotate(205deg) saturate(.85)" } }
+   * @example
+   * { tokens: { "--odon-implant-fill": "#8fa6b8" } }
    */
   tokens?: Record<string, string>;
   /**

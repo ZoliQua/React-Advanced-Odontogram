@@ -572,6 +572,8 @@ export default function Host(){
       '--odon-rest-gold': '#d4af37',
       // Nem szín: CSS-szűrő az implantátum egészén.
       '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
     },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
@@ -583,6 +585,8 @@ export default function Host(){
 A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram a felülettel együtt sötétedik, nem világít bele. A `measured` profilban a korona és a gyökér dentinmagot is visel: amíg a `dentin` nincs beállítva, a testszínt veszi fel, tehát a határvonal csak akkor jelenik meg, ha kéred. Sötét módban a rágófelszíni csempék az oldalnézetekkel együtt sötétednek, a szuvas lézió pedig megtartja a sötét kitöltését — a körvonala vált világosra és az viszi a formát, mert a „szuvasodás = sötét” hamarabb olvasódik ki, mint bármilyen kontrasztarány.
 
 **Az implantátumot színezzük, nem átfestjük** *(még kiadatlan — a `main`-en, a következő kiadásban jelenik meg)*. A rajza körülbelül 65 egymáshoz közeli fémszürkét hordoz, amelyek egy fényforrást kódolnak, ezért szándékosan nem témázhatók egyenként: külön-külön beállítva az árnyalás ellaposodna, nem újraszíneződne. Az `--odon-implant-tint` az egész implantátumra tett CSS-szűrő, így minden szürke együtt mozdul, és a köztük lévő viszonyok megmaradnak — `hue-rotate(205deg) saturate(.85)`, vagy saját `url(#…)` szűrő. Alapértelmezésben `none`, és nem érinti a peri-implantáris csontvesztés rétegét: az a szűrt csoporton kívül van, így kozmetikai beállítás soha nem mozdíthat el klinikai jelet.
+
+**…vagy laposra állítható, ha a paletta ilyen.** A `--odon-implant-fill` egyetlen lépésben kicseréli az implantátum minden alakzatának kitöltését, így egy lapos klinikai palettának nincs szüksége saját szűrőre. Minden alakzat ahhoz a szürkéhez esik vissza, amelyben rajzolva van, ezért a token beállítása nélkül az implantátum pontosan a régi rajz marad — nincs egyetlen közös alapérték, amit meg lehetne adni. A kettő együttműködik: a kitöltés laposít, a tint utána eltol. Csak a `fill` érintett, így az okkluzális csavarfuratok körvonala megmarad, a peri-implantáris csontvesztés rétegét pedig ugyanúgy nem érinti, ahogy a tint sem.
 
 **A kontúr vastagsága is témázható** *(még kiadatlan — a `main`-en, a következő kiadásban jelenik meg)*. A rajzok egyáltalán nem adnak meg `stroke-width`-et, így az SVG alapértelmezett `1`-esével húzódnak; ezt állítja a `themeConfig.tooth.outlineWidth` — vagy a `--odon-tooth-outline-width`. Minden olyan rétegre rákerül, amely magának a fognak a sziluettje: a maradó és a tejfog koronájára, a gyökérmaradványra, a csonkelőkészítésre, az íny alatti fogra és mind a hét törésmintázatra. A kontúr így egyforma vastag marad akkor is, ha a fogat radixnak vagy töröttnek rögzítik, ahelyett hogy ilyenkor visszaugrana `1`-re. Az okkluzális barázdák és az okkluzális sziluett rögzített vastagságúak maradnak.
 

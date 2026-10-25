@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import collections
 import sys
+
+import pytest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -132,3 +134,76 @@ def test_the_contour_width_covers_every_silhouette_state():
         assert layer in widths, f"{layer} would snap back to the default width"
     broken = {p for p in widths if "tooth-broken-" in p}
     assert len(broken) == 7, f"expected all seven fracture states, got {sorted(broken)}"
+
+
+# --------------------------------------------------------------------------
+# SELF rules: one token over every literal on a layer, each keeping its own
+# literal as the fallback (issue #40). The third rule kind, after RULES
+# (rewrite a known literal) and ENSURE (insert a missing declaration).
+# --------------------------------------------------------------------------
+
+
+def implant(inner: str) -> str:
+    return f'<svg id="x"><g id="restorations"><g id="implant">{inner}</g></g></svg>'
+
+
+def test_self_rule_keeps_each_literal_as_its_own_fallback():
+    # The property that makes the rule safe: unset, every element renders the
+    # colour it was drawn in. A shared default could not do this.
+    out = run(implant(
+        '<g id="implant-base">'
+        '<path style="fill: #bbc3c6;" d="M0 0"/>'
+        '<path style="fill: #a0a4a5;" d="M1 1"/>'
+        "</g>"
+    ))
+    assert "fill: var(--odon-implant-fill, #bbc3c6);" in out
+    assert "fill: var(--odon-implant-fill, #a0a4a5);" in out
+
+
+def test_self_rule_covers_anonymous_descendants_only():
+    # The fixture's shading lives in anonymous children, which share the
+    # layer's id chain. Nothing outside the fixture may be touched — the
+    # peri-implant bone loss next door is a clinical signal.
+    out = run(implant(
+        '<g id="implant-base"><path style="fill: #bbc3c6;" d="M0 0"/></g>'
+        '<path id="peri-implant-bone-loss" style="fill: #bbc3c6;" d="M2 2"/>'
+    ))
+    assert out.count("--odon-implant-fill") == 1
+    assert '<path id="peri-implant-bone-loss" style="fill: #bbc3c6;"' in out
+
+
+def test_self_rule_touches_only_its_own_property():
+    # Mirrors the requester's selector, which sets `fill` and nothing else:
+    # the occlusal screw-hole circles keep their green rim.
+    out = run(implant(
+        '<g id="implant-base">'
+        '<circle style="fill: #eaeaea; stroke: #1b3f1c;" r="1"/>'
+        "</g>"
+    ))
+    assert "fill: var(--odon-implant-fill, #eaeaea);" in out
+    assert "stroke: #1b3f1c;" in out
+
+
+def test_self_rule_is_idempotent():
+    once = run(implant('<g id="implant-base"><path style="fill: #bbc3c6;" d="M0 0"/></g>'))
+    assert run(once) == once
+
+
+def test_self_rule_overrides_the_untokenized_list_only_where_it_says_to():
+    # `restorations/implant` is excluded from the per-colour table, and the
+    # SELF rule deliberately reaches past that for the fixture itself. Every
+    # OTHER layer under it must stay literal.
+    assert palette.lookup("restorations/implant/implant-base", "fill", "#bbc3c6")
+    assert not palette.lookup("restorations/implant", "fill", "#bbc3c6")
+    assert not palette.lookup("restorations/implant/implant-connector", "fill", "#bbc3c6")
+    # …and the rule is per-property.
+    assert not palette.lookup("restorations/implant/implant-base", "stroke", "#1b3f1c")
+
+
+def test_a_self_token_has_no_single_default_to_render():
+    # Rendering one fallback for a SELF token would silently flatten the
+    # fixture at generation time, which is the opposite of the point.
+    for _path, _prop, token in palette.SELF:
+        assert palette.TOKENS[token][0] == palette.SELF_FALLBACK
+        with pytest.raises(ValueError):
+            palette.css(token)

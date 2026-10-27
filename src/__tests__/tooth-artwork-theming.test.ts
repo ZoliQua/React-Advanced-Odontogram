@@ -14,6 +14,7 @@ import { __resetChartStateForTest, __setToothStateForTest, setPerioSite } from "
 import tooth11 from "../assets/teeth-svgs/11.svg?raw";
 import measured11 from "../assets/teeth-svgs/measured/11.svg?raw";
 import measured16Occl from "../assets/teeth-svgs/measured/16_occl.svg?raw";
+import measured54Occl from "../assets/teeth-svgs/measured/54_occl.svg?raw";
 
 import { readFileSync } from "node:fs";
 
@@ -326,8 +327,8 @@ describe("tooth artwork: the contour width", () => {
     // The invariant that makes the feature coherent: width is a property OF
     // the outline, so an element that strokes a themable contour must take
     // both or neither. The only elements allowed to hold the colour alone are
-    // the four decorative layers the requester kept at a fixed width.
-    const DECORATIVE = ["fissure", "fissure1", "background-cusp", "background-cusp1"];
+    // the grooves, which the requester kept at a fixed width.
+    const DECORATIVE = ["fissure", "fissure1"];
     for (const [name, svg] of [["classic", tooth11], ["measured", measured11],
                                ["occlusal", measured16Occl]] as const) {
       const widths = carriers(svg, WIDTH);
@@ -343,6 +344,24 @@ describe("tooth artwork: the contour width", () => {
           .toContain(path.split("/").pop());
       }
     }
+  });
+
+  it("widens the occlusal silhouette with the side views, not the grooves", () => {
+    // `background-cusp` reads like shading and is not: it is the single outer
+    // shape of the occlusal projection, stroked with the contour colour, with
+    // the cusps drawn inside it. The occlusal tiles sit in the same chart grid
+    // as the side views, so excluding it left one row at a hairline while the
+    // other widened. The grooves inside it stay fixed, which is the line the
+    // requester did draw (issue #39).
+    const occlusal = carriers(measured16Occl, WIDTH).map((c) => c.path);
+    expect(occlusal, "the occlusal silhouette would stay a hairline beside the side views")
+      .toContain("tooth/tooth-base/background-cusp");
+    expect(occlusal, "a groove followed the contour width")
+      .not.toContain("tooth/tooth-base/fissure");
+    // The deciduous occlusal projection is the same shape under another name.
+    const milk = carriers(measured54Occl, WIDTH).map((c) => c.path);
+    expect(milk).toContain("milktooth/milktooth-base/background-cusp1");
+    expect(milk).not.toContain("milktooth/milktooth-base/fissure1");
   });
 
   it("never lands on a group, because stroke-width is inherited", () => {

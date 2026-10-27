@@ -56,10 +56,12 @@ TOKENS: dict[str, tuple[str, str]] = {
     # Not a colour: the WIDTH of that outline, in user units. The drawings
     # declare no stroke-width at all, so they render at the SVG initial value
     # — hence the `1` default, which is what every contour strokes at today.
-    # It rides every layer that IS the tooth's own silhouette, so the contour
-    # keeps one width when a tooth is charted as a root remnant, a prepared
-    # crown or any of the seven fracture states; see ENSURE below for the
-    # exact list and for the two decorative layers deliberately left out.
+    # It rides every layer that IS the tooth's own silhouette — including the
+    # occlusal one — so the contour keeps one width when a tooth is charted as
+    # a root remnant, a prepared crown or any of the seven fracture states, and
+    # the occlusal row of the chart widens with the side views instead of
+    # staying a hairline beside them. See ENSURE below for the exact list and
+    # for the grooves deliberately left out.
     "--odon-tooth-outline-width": ("1", "crown and root outline width (not a colour)"),
     "--odon-tooth-highlight": ("#fefefe", "crown sheen (the 'beauty' layer)"),
     "--odon-tooth-cusp": ("#f4f1e8", "occlusal cusp field"),
@@ -383,7 +385,7 @@ Ensure = tuple[str, str, str, str, tuple[str, ...]]
 
 PAINTED = ("path",)
 """Element types the outline-width rules target: the ones that actually
-stroke the silhouette. Every one of the 430 elements below is a `<path>`;
+stroke the silhouette. Every one of the 455 elements below is a `<path>`;
 the 41 cases where one of these ids is a `<g>` are skipped on purpose."""
 
 # The tooth's own contour, in every state a tooth can be charted in — a
@@ -395,16 +397,21 @@ the 41 cases where one of these ids is a `<g>` are skipped on purpose."""
 # twice, and a width that differed between the two views of one tooth would
 # read as a bug.
 #
-# NOT in, by the requester's explicit decision (issue #39): `fissure`,
-# `fissure1`, `background-cusp` and `background-cusp1`. The first two are
-# grooves — decoration, not contour. The other two are the occlusal
-# silhouette, so by the "every layer that is the tooth's own contour" rule
-# they would belong here; excluding them means the occlusal row keeps a
-# hairline contour while the side views widen. That trade-off is reported on
-# the issue, and adding them is one line each.
+# `background-cusp`/`background-cusp1` are in, and the name is why they nearly
+# were not: despite reading as shading, each is the single outer shape of the
+# OCCLUSAL projection — filled with the crown gradient, stroked with
+# `--odon-tooth-outline`, with the cusps drawn inside it. The occlusal tiles
+# sit in the same chart grid as the side views, so leaving them out kept one
+# row at a hairline while the other widened (issue #39).
+#
+# NOT in, by the requester's explicit decision (issue #39): `fissure` and
+# `fissure1`. Those are the occlusal grooves — decoration, not contour, and
+# hairlines by intent, like the dedicated groove paths that pin `.65px`.
 _OUTLINE_WIDTH_LAYERS: tuple[str, ...] = (
     "tooth/tooth-base",
+    "tooth/tooth-base/background-cusp",
     "milktooth/milktooth-base",
+    "milktooth/milktooth-base/background-cusp1",
     "tooth-variants/tooth-radix",
     "tooth-variants/tooth-crownprep",
     "tooth-variants/tooth-crownprep/tooth-crownprep-outer",

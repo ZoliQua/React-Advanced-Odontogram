@@ -83,9 +83,10 @@ export type OdontogramThemeConfig = {
      *  It rides every layer that is the tooth's own silhouette, so the
      *  contour keeps one thickness whatever the tooth is charted as: a
      *  natural or deciduous crown, a root remnant, a prepared crown, a tooth
-     *  under the gum, or any of the seven fracture states. Occlusal grooves
-     *  and the occlusal silhouette are deliberately not included, so the
-     *  occlusal row keeps a hairline contour.
+     *  under the gum, any of the seven fracture states, or the occlusal
+     *  projection — whose tiles sit in the same chart grid as the side views
+     *  and therefore widen with them. The occlusal grooves are deliberately
+     *  not included and stay hairlines.
      *
      *  Unset, the drawings declare no width at all and stroke at the SVG
      *  initial value of `1`. */

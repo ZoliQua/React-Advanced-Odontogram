@@ -191,12 +191,23 @@ test("the contour width is one width across every state of the silhouette", asyn
     expect(await painted(page, layer, "stroke-width"), `#${layer} did not follow the token`).toBe("1.4px");
   }
 
-  // …and the decoration deliberately left out of it does not.
-  const fissure = page.locator('.tooth-tile.occl-view[data-tooth="16"] [id="fissure"]').first();
-  if (await fissure.count()) {
-    expect(await fissure.evaluate((n) => getComputedStyle(n).strokeWidth),
-      "a groove followed the contour width").toBe("1px");
-  }
+  // The occlusal projection follows too. Its silhouette is drawn as
+  // `background-cusp`, and the occlusal tiles sit in the same grid as the side
+  // views — so if it did not, one row of the chart would stay a hairline
+  // beside the other.
+  const occl = '.tooth-tile.occl-view[data-tooth="16"]';
+  const cusp = page.locator(`${occl} [id="background-cusp"]`).first();
+  expect(await cusp.evaluate((n) => getComputedStyle(n).strokeWidth),
+    "the occlusal silhouette stayed a hairline beside the side views").toBe("1.4px");
+
+  // …and the decoration deliberately left out of it does not. The groove is
+  // INSIDE that silhouette, so this is also the proof that the width did not
+  // land on the group and inherit down. Neither locator is guarded by a
+  // `count()` check: a guard would turn a missing layer into a silent pass,
+  // and that is the whole thing being asserted.
+  const fissure = page.locator(`${occl} [id="fissure"]`).first();
+  expect(await fissure.evaluate((n) => getComputedStyle(n).strokeWidth),
+    "a groove followed the contour width").toBe("1px");
 });
 
 test("the implant fixture is shaded until one token flattens it", async ({ page }) => {

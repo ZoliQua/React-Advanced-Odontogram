@@ -136,6 +136,38 @@ def test_the_contour_width_covers_every_silhouette_state():
     assert len(broken) == 7, f"expected all seven fracture states, got {sorted(broken)}"
 
 
+def test_the_contour_width_covers_the_occlusal_silhouette_but_not_the_grooves():
+    # `background-cusp` is named like decoration and is not: it is the outer
+    # shape of the occlusal projection, and the occlusal tiles sit in the same
+    # chart grid as the side views. Leaving it out held one row at a hairline
+    # while the other widened. The grooves inside it stay fixed (issue #39).
+    widths = {
+        path for path, prop, _token, _fb, _tags in palette.ENSURE
+        if prop == "stroke-width"
+    }
+    assert "tooth/tooth-base/background-cusp" in widths
+    assert "milktooth/milktooth-base/background-cusp1" in widths
+    assert not any(path.endswith(("/fissure", "/fissure1")) for path in widths)
+
+
+def test_the_width_reaches_the_occlusal_silhouette_inside_a_group():
+    # End to end through the rewriter: the group form of `tooth-base` is still
+    # skipped, and the painted shape inside it is still reached. Both halves in
+    # one drawing, because getting one right by breaking the other is the
+    # failure mode.
+    out = run(doc(
+        '<g id="tooth"><g id="tooth-base" data-active="1">'
+        '<path id="background-cusp" style="stroke: #c8c9c9;" d="M0 0"/>'
+        '<path id="fissure" style="stroke: #c8c9c9;" d="M0 0"/>'
+        "</g></g>"
+    ))
+    assert '<g id="tooth-base" data-active="1">' in out, "the group took a width"
+    cusp = out.split('id="background-cusp"')[1].split("/>")[0]
+    assert "stroke-width: var(--odon-tooth-outline-width, 1);" in cusp
+    groove = out.split('id="fissure"')[1].split("/>")[0]
+    assert "stroke-width" not in groove
+
+
 # --------------------------------------------------------------------------
 # SELF rules: one token over every literal on a layer, each keeping its own
 # literal as the fallback (issue #40). The third rule kind, after RULES

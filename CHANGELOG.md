@@ -41,9 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   unchanged.
 
   It rides **every layer that is the tooth's own silhouette** — the natural and deciduous crowns, the root remnant, the prepared crown
-  (including its two-view `-outer`/`-inner` pair), the tooth under the gum, and all seven fracture states. Those are separate drawings of
-  one contour, so a token on the crown alone would have made the outline snap back to `1` the moment a tooth was charted as a radix or a
-  fracture. The occlusal grooves and the occlusal silhouette (`fissure`, `background-cusp`) are deliberately left at a fixed width.
+  (including its two-view `-outer`/`-inner` pair), the tooth under the gum, all seven fracture states, and the occlusal projection
+  (`background-cusp`, `background-cusp1`). Those are separate drawings of one contour, so a token on the crown alone would have made the
+  outline snap back to `1` the moment a tooth was charted as a radix or a fracture — or left the occlusal row of the chart at a hairline
+  beside the side views it sits next to. Only the occlusal grooves (`fissure`, `fissure1`) are deliberately left at a fixed width.
 
   `palette.ENSURE` rules now also name the **element types** they may land on. `stroke-width` is an inherited property and `tooth-base` is a
   painted `<path>` in the side drawings but a wrapping `<g>` in the occlusal ones — on the group the declaration would have flowed down into

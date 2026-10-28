@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -479,7 +479,7 @@ I template vengono ruotati di 180 gradi per la mascella inferiore e specchiati o
 **SVG icone** (in `src/assets/icon-svgs/`):
 `icon_8.svg` (giudizio), `icon_gum.svg` (osso), `icon_no_selection.svg` (cancella), `icon_occl.svg` (vista occlusale), `icon_pulp.svg` (polpa)
 
-**Disegni forniti dall'applicazione host** *(non ancora pubblicato — su `main`, arriva nella prossima release)*. Un'applicazione host può sostituire uno qualsiasi di questi template con il proprio SVG, senza fare il fork della libreria, tramite `setToothTemplateOverrides()` o la prop `toothTemplates`. Le sostituzioni sono indicizzate **per profilo anatomico**, perché il template numero N è un disegno diverso in `classic` e in `measured`:
+**Disegni forniti dall'applicazione host**. Un'applicazione host può sostituire uno qualsiasi di questi template con il proprio SVG, senza fare il fork della libreria, tramite `setToothTemplateOverrides()` o la prop `toothTemplates`. Le sostituzioni sono indicizzate **per profilo anatomico**, perché il template numero N è un disegno diverso in `classic` e in `measured`:
 
 ```ts
 import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
@@ -584,11 +584,11 @@ export default function Host(){
 
 I disegni portano i propri colori come proprietà personalizzate CSS con il colore di serie come fallback, così entrambi i profili anatomici seguono un'unica impostazione e l'esportazione li risolve prima di lasciare la pagina. La tabella completa dei token è in `tools/toothgen/palette.py`. La modalità scura porta una propria palette per i disegni, così lo schema si scurisce insieme all'interfaccia invece di abbagliare. Nel profilo `measured` corona e radice portano anche un nucleo di dentina: prende il colore di `body` finché `dentin` non viene impostato, quindi il confine compare solo quando lo si chiede. In modalità scura le caselle occlusali si scuriscono insieme alle viste laterali e una lesione cariosa mantiene il suo riempimento scuro: è il contorno a passare al chiaro e a portare la forma, perché «carie = scuro» si legge prima di qualsiasi rapporto di contrasto.
 
-**L'impianto viene tinto, non ricolorato** *(non ancora pubblicato — su `main`, arriva nella prossima release)*. Il suo disegno porta circa 65 grigi metallici quasi identici che codificano una sorgente luminosa, perciò non sono deliberatamente tematizzabili uno per uno: impostarli singolarmente appiattirebbe l'ombreggiatura invece di ricolorarla. `--odon-implant-tint` è un filtro CSS sull'impianto nel suo insieme, così ogni grigio si sposta insieme agli altri e i loro rapporti restano intatti — `hue-rotate(205deg) saturate(.85)`, oppure un filtro `url(#…)` tuo. Vale `none` finché non lo imposti, e lascia intatto il livello di perdita ossea perimplantare: quel livello sta fuori dal gruppo filtrato, quindi un'impostazione cosmetica non può mai spostare un segnale clinico.
+**L'impianto viene tinto, non ricolorato**. Il suo disegno porta circa 65 grigi metallici quasi identici che codificano una sorgente luminosa, perciò non sono deliberatamente tematizzabili uno per uno: impostarli singolarmente appiattirebbe l'ombreggiatura invece di ricolorarla. `--odon-implant-tint` è un filtro CSS sull'impianto nel suo insieme, così ogni grigio si sposta insieme agli altri e i loro rapporti restano intatti — `hue-rotate(205deg) saturate(.85)`, oppure un filtro `url(#…)` tuo. Vale `none` finché non lo imposti, e lascia intatto il livello di perdita ossea perimplantare: quel livello sta fuori dal gruppo filtrato, quindi un'impostazione cosmetica non può mai spostare un segnale clinico.
 
 **…oppure piatto, se la tua palette è così.** `--odon-implant-fill` sostituisce in un solo passaggio il riempimento di ogni forma dell'impianto, così una palette clinica piatta non ha bisogno di un filtro proprio. Ogni forma ricade sul grigio con cui è disegnata, quindi con il token non impostato l'impianto è esattamente il disegno di sempre: non esiste un unico valore predefinito da dichiarare. I due si compongono: il riempimento appiattisce, la tinta poi sposta. Interessa solo `fill`, perciò i bordi dei fori occlusali della vite mantengono il contorno e il livello di perdita ossea perimplantare resta intatto, come con la tinta.
 
-**Anche lo spessore del contorno è personalizzabile** *(non ancora pubblicato — su `main`, arriva nella prossima release)*. I disegni non dichiarano alcuno `stroke-width`, quindi tracciano con il valore iniziale SVG `1`; `themeConfig.tooth.outlineWidth` — oppure `--odon-tooth-outline-width` — lo cambia. Viene applicato a ogni livello che è la sagoma del dente stesso: le corone permanente e decidua, il residuo radicolare, il moncone preparato, il dente sotto la gengiva, tutti e sette gli stati di frattura e la proiezione occlusale. Il contorno mantiene così uno spessore unico qualunque sia lo stato registrato del dente, invece di tornare a `1` appena diventa un radix o una frattura — e le caselle occlusali si ispessiscono insieme alle viste laterali accanto a cui stanno nello schema. Solo i solchi occlusali restano a spessore fisso.
+**Anche lo spessore del contorno è personalizzabile**. I disegni non dichiarano alcuno `stroke-width`, quindi tracciano con il valore iniziale SVG `1`; `themeConfig.tooth.outlineWidth` — oppure `--odon-tooth-outline-width` — lo cambia. Viene applicato a ogni livello che è la sagoma del dente stesso: le corone permanente e decidua, il residuo radicolare, il moncone preparato, il dente sotto la gengiva, tutti e sette gli stati di frattura e la proiezione occlusale. Il contorno mantiene così uno spessore unico qualunque sia lo stato registrato del dente, invece di tornare a `1` appena diventa un radix o una frattura — e le caselle occlusali si ispessiscono insieme alle viste laterali accanto a cui stanno nello schema. Solo i solchi occlusali restano a spessore fisso.
 
 **Integrazione plugin:**
 ```tsx
@@ -640,7 +640,7 @@ npm run docs           # Genera la documentazione TypeDoc in docs/
 | `onDarkModeChange` | `(dark) => void` | — | Callback quando si attiva/disattiva la modalità scura. Obbligatorio per la modalità controllata. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Override dei colori personalizzati tramite proprietà CSS personalizzate (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Plugin SVG personalizzati per overlay visivi e stato personalizzato per dente. |
-| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Disegni dei denti forniti dall'host (testo SVG) al posto di quelli di fabbrica, per profilo anatomico. Verificati; un template rifiutato lascia il disegno di fabbrica. *(non pubblicato)* |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Disegni dei denti forniti dall'host (testo SVG) al posto di quelli di fabbrica, per profilo anatomico. Verificati; un template rifiutato lascia il disegno di fabbrica. |
 | `readOnly` | `boolean` | `undefined` | Disabilita tutte le interazioni (clic, touch, tastiera). Utile per visualizzazioni di stampa/report. |
 | `enableNotes` | `boolean` | `undefined` | Abilita le note per dente. Doppio clic su un dente per aggiungere/modificare note. |
 
@@ -666,8 +666,8 @@ npm run docs           # Genera la documentazione TypeDoc in docs/
 | `registerPlugins(plugins)` | Registra plugin SVG personalizzati |
 | `setPluginState(toothNo, pluginId, value)` | Imposta lo stato personalizzato di un plugin per un dente |
 | `getPluginState(toothNo, pluginId)` | Ottiene lo stato personalizzato di un plugin per un dente |
-| `setToothTemplateOverrides(overrides)` | Sostituisce i disegni dei denti di fabbrica con SVG fornito dall'host, per profilo anatomico; `null` ripristina i disegni di fabbrica. Il markup viene verificato e un template rifiutato lascia il disegno di fabbrica *(non pubblicato)* |
-| `getToothTemplateRejections()` | I template dell'host rifiutati finora, e perché — `{ profile, set, key, reason }[]` *(non pubblicato)* |
+| `setToothTemplateOverrides(overrides)` | Sostituisce i disegni dei denti di fabbrica con SVG fornito dall'host, per profilo anatomico; `null` ripristina i disegni di fabbrica. Il markup viene verificato e un template rifiutato lascia il disegno di fabbrica |
+| `getToothTemplateRejections()` | I template dell'host rifiutati finora, e perché — `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | Ottiene un riepilogo localizzato di tutti gli stati attivi |
 | `getOdontogramSummary()` | Ottiene un riepilogo testuale strutturato e localizzato dell'intero odontogramma (conteggi, sezioni) |
 | `onStateChange(callback)` | Sottoscrive le modifiche di stato; restituisce una funzione di annullamento |
@@ -898,14 +898,14 @@ Oltre all'esportazione propria dell'odontogramma in Stato JSON / FHIR / PNG / JP
 
 Se utilizzi questo modulo nel tuo lavoro, per favore citalo.
 
-**Questa versione (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Questa versione (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Tutte le versioni (DOI concettuale):** https://doi.org/10.5281/zenodo.21156787
 
 > Il DOI concettuale per tutte le versioni riportato sopra rimanda sempre alla release
 > archiviata più recente; un DOI specifico per versione viene assegnato a ogni release
-> quando viene archiviata su Zenodo. Finché la v2.4.0 non sarà archiviata, citarla
+> quando viene archiviata su Zenodo. Finché la v2.8.0 non sarà archiviata, citarla
 > tramite il DOI concettuale.
 
 I metadati di citazione leggibili dalla macchina si trovano in [`CITATION.cff`](../CITATION.cff).

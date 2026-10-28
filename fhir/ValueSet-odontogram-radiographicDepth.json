@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-radiographicDepth",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-radiographicDepth",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "name": "OdontogramRadiographicDepth",
   "title": "Odontogram — radiographicDepth values",
   "status": "active",

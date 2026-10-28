@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-millerClass",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-millerClass",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "name": "OdontogramMillerClass",
   "title": "Odontogram — millerClass values",
   "status": "active",

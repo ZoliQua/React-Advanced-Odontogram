@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-fillingSurfaces",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-fillingSurfaces",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "name": "OdontogramFillingSurfaces",
   "title": "Odontogram — fillingSurfaces values",
   "status": "active",

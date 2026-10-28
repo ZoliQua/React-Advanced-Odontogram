@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -479,7 +479,7 @@ Os modelos são rotacionados 180 graus para a arcada inferior e espelhados horiz
 **SVGs de ícones** (em `src/assets/icon-svgs/`):
 `icon_8.svg` (siso), `icon_gum.svg` (osso), `icon_no_selection.svg` (limpar), `icon_occl.svg` (vista oclusal), `icon_pulp.svg` (polpa)
 
-**Desenhos fornecidos pela aplicação hospedeira** *(ainda não publicado — em `main`, chega na próxima versão)*. Uma aplicação hospedeira pode substituir qualquer um desses modelos pelo próprio SVG, sem fazer fork da biblioteca, por `setToothTemplateOverrides()` ou pela prop `toothTemplates`. As substituições são indexadas **por perfil anatômico**, porque o modelo de número N é um desenho diferente em `classic` e em `measured`:
+**Desenhos fornecidos pela aplicação hospedeira**. Uma aplicação hospedeira pode substituir qualquer um desses modelos pelo próprio SVG, sem fazer fork da biblioteca, por `setToothTemplateOverrides()` ou pela prop `toothTemplates`. As substituições são indexadas **por perfil anatômico**, porque o modelo de número N é um desenho diferente em `classic` e em `measured`:
 
 ```ts
 import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
@@ -584,11 +584,11 @@ export default function Host(){
 
 Os desenhos carregam suas cores como propriedades personalizadas CSS, tendo a cor de fábrica como fallback, de modo que ambos os perfis de anatomia seguem um único ajuste e a exportação as resolve antes de sair da página. A tabela completa de tokens está em `tools/toothgen/palette.py`. O modo escuro traz sua própria paleta para os desenhos, de modo que o odontograma escurece junto com a interface em vez de ofuscar. No perfil `measured`, a coroa e a raiz também têm um núcleo de dentina: ele assume a cor de `body` enquanto `dentin` não for definido, de modo que o limite só aparece quando você o pede. No modo escuro os ladrilhos oclusais escurecem junto com as vistas laterais, e uma lesão de cárie mantém seu preenchimento escuro: é o contorno que passa a claro e carrega a forma, porque «cárie = escuro» se lê antes de qualquer razão de contraste.
 
-**O implante é tingido, não recolorido** *(ainda não publicado — em `main`, chega na próxima versão)*. Seu desenho carrega cerca de 65 cinzas metálicos quase idênticos que codificam uma fonte de luz, por isso não são deliberadamente tematizáveis um a um: ajustá-los separadamente achataria o sombreado em vez de recolori-lo. `--odon-implant-tint` é um filtro CSS sobre o implante como um todo, de modo que todos os cinzas se deslocam juntos e as relações entre eles se preservam — `hue-rotate(205deg) saturate(.85)`, ou um filtro `url(#…)` seu. É `none` enquanto você não o definir, e deixa intacta a camada de perda óssea peri-implantar: ela fica fora do grupo filtrado, de modo que um ajuste cosmético nunca pode deslocar um sinal clínico.
+**O implante é tingido, não recolorido**. Seu desenho carrega cerca de 65 cinzas metálicos quase idênticos que codificam uma fonte de luz, por isso não são deliberadamente tematizáveis um a um: ajustá-los separadamente achataria o sombreado em vez de recolori-lo. `--odon-implant-tint` é um filtro CSS sobre o implante como um todo, de modo que todos os cinzas se deslocam juntos e as relações entre eles se preservam — `hue-rotate(205deg) saturate(.85)`, ou um filtro `url(#…)` seu. É `none` enquanto você não o definir, e deixa intacta a camada de perda óssea peri-implantar: ela fica fora do grupo filtrado, de modo que um ajuste cosmético nunca pode deslocar um sinal clínico.
 
 **…ou plano, se a sua paleta for assim.** `--odon-implant-fill` substitui de uma só vez o preenchimento de todas as formas do implante, de modo que uma paleta clínica plana não precisa de um filtro próprio. Cada forma recorre ao cinza em que está desenhada, portanto com o token não definido o implante é exatamente o desenho de sempre — não há um único valor padrão a declarar. Os dois se combinam: o preenchimento achata, a tintura depois desloca. Só o `fill` é afetado, então as bordas dos orifícios oclusais do parafuso mantêm o contorno e a camada de perda óssea peri-implantar fica intacta, assim como acontece com a tintura.
 
-**A espessura do contorno também é tematizável** *(ainda não publicado — em `main`, chega na próxima versão)*. Os desenhos não declaram nenhum `stroke-width`, portanto traçam com o valor inicial do SVG, `1`; `themeConfig.tooth.outlineWidth` — ou `--odon-tooth-outline-width` — muda isso. Ela vai em toda camada que é a silhueta do próprio dente: as coroas permanente e decídua, o resto radicular, o preparo protético, o dente sob a gengiva, os sete estados de fratura e a projeção oclusal. Assim o contorno mantém uma única espessura seja qual for o estado registrado do dente, em vez de voltar a `1` assim que ele vira um radix ou uma fratura — e os blocos oclusais engrossam junto com as vistas laterais ao lado das quais ficam no esquema. Apenas os sulcos oclusais permanecem com espessura fixa.
+**A espessura do contorno também é tematizável**. Os desenhos não declaram nenhum `stroke-width`, portanto traçam com o valor inicial do SVG, `1`; `themeConfig.tooth.outlineWidth` — ou `--odon-tooth-outline-width` — muda isso. Ela vai em toda camada que é a silhueta do próprio dente: as coroas permanente e decídua, o resto radicular, o preparo protético, o dente sob a gengiva, os sete estados de fratura e a projeção oclusal. Assim o contorno mantém uma única espessura seja qual for o estado registrado do dente, em vez de voltar a `1` assim que ele vira um radix ou uma fratura — e os blocos oclusais engrossam junto com as vistas laterais ao lado das quais ficam no esquema. Apenas os sulcos oclusais permanecem com espessura fixa.
 
 **Integração de plugins:**
 ```tsx
@@ -640,7 +640,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `onDarkModeChange` | `(dark) => void` | — | Callback quando o modo escuro alterna. Obrigatório para o modo controlado. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Sobrescritas de cor personalizadas via propriedades CSS personalizadas (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Plugins SVG personalizados para sobreposições visuais e estado personalizado por dente. |
-| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Desenhos de dentes da hospedeira (texto SVG) no lugar dos de fábrica, por perfil anatômico. Verificados; um modelo recusado mantém o desenho de fábrica. *(não publicado)* |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Desenhos de dentes da hospedeira (texto SVG) no lugar dos de fábrica, por perfil anatômico. Verificados; um modelo recusado mantém o desenho de fábrica. |
 | `readOnly` | `boolean` | `undefined` | Desativa todas as interações (clique, toque, teclado). Útil para vistas de impressão/relatório. |
 | `enableNotes` | `boolean` | `undefined` | Habilita anotações por dente. Clique duplo em um dente para adicionar/editar anotações. |
 
@@ -666,8 +666,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `registerPlugins(plugins)` | Registra plugins SVG personalizados |
 | `setPluginState(toothNo, pluginId, value)` | Define o estado personalizado de um plugin para um dente |
 | `getPluginState(toothNo, pluginId)` | Obtém o estado personalizado de um plugin para um dente |
-| `setToothTemplateOverrides(overrides)` | Substitui os desenhos de dentes de fábrica por SVG da hospedeira, por perfil anatômico; `null` restaura a arte de fábrica. A marcação é verificada e um modelo recusado mantém o desenho de fábrica *(não publicado)* |
-| `getToothTemplateRejections()` | Os modelos da hospedeira recusados até agora, e por quê — `{ profile, set, key, reason }[]` *(não publicado)* |
+| `setToothTemplateOverrides(overrides)` | Substitui os desenhos de dentes de fábrica por SVG da hospedeira, por perfil anatômico; `null` restaura a arte de fábrica. A marcação é verificada e um modelo recusado mantém o desenho de fábrica |
+| `getToothTemplateRejections()` | Os modelos da hospedeira recusados até agora, e por quê — `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | Obtém o resumo localizado de todos os estados ativos |
 | `getOdontogramSummary()` | Obtém um resumo textual estruturado e localizado de todo o gráfico (contagens, seções) |
 | `onStateChange(callback)` | Assina mudanças de estado; retorna uma função de cancelamento |
@@ -898,14 +898,14 @@ Além da própria exportação Status JSON / FHIR / PNG / JPG / SVG do odontogra
 
 Se você usar este módulo em seu trabalho, por favor cite-o.
 
-**Esta versão (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Esta versão (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Todas as versões (DOI conceitual):** https://doi.org/10.5281/zenodo.21156787
 
 > O DOI conceitual de todas as versões acima sempre resolve para o release arquivado
 > mais recente; um DOI específico de versão é gerado por release quando ele é
-> arquivado no Zenodo. Até que a v2.4.0 seja arquivada, cite-a via o DOI conceitual.
+> arquivado no Zenodo. Até que a v2.8.0 seja arquivada, cite-a via o DOI conceitual.
 
 Metadados de citação legíveis por máquina estão em [`CITATION.cff`](CITATION.cff).
 

@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -479,7 +479,7 @@ Szablony są obracane o 180 stopni dla żuchwy i odbijane poziomo dla lewej stro
 **Ikony SVG** (w `src/assets/icon-svgs/`):
 `icon_8.svg` (mądrość), `icon_gum.svg` (kość), `icon_no_selection.svg` (wyczyść), `icon_occl.svg` (widok okluzyjny), `icon_pulp.svg` (miazga)
 
-**Rysunki dostarczone przez aplikację hosta** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Aplikacja hosta może zastąpić dowolny z tych szablonów własnym SVG, bez forkowania biblioteki, przez `setToothTemplateOverrides()` albo prop `toothTemplates`. Nadpisania są kluczowane **według profilu anatomicznego**, ponieważ szablon numer N to inny rysunek w `classic` i w `measured`:
+**Rysunki dostarczone przez aplikację hosta**. Aplikacja hosta może zastąpić dowolny z tych szablonów własnym SVG, bez forkowania biblioteki, przez `setToothTemplateOverrides()` albo prop `toothTemplates`. Nadpisania są kluczowane **według profilu anatomicznego**, ponieważ szablon numer N to inny rysunek w `classic` i w `measured`:
 
 ```ts
 import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
@@ -584,11 +584,11 @@ export default function Host(){
 
 Rysunki niosą swoje kolory jako właściwości niestandardowe CSS z kolorem fabrycznym jako wartością zapasową, dzięki czemu oba profile anatomii podążają za jednym ustawieniem, a eksport rozwiązuje je, zanim opuszczą stronę. Pełna tabela tokenów znajduje się w `tools/toothgen/palette.py`. Tryb ciemny ma własną paletę rysunków, więc diagram ciemnieje razem z interfejsem, zamiast razić. W profilu `measured` korona i korzeń mają dodatkowo rdzeń zębinowy: przejmuje kolor `body`, dopóki nie ustawisz `dentin`, więc granica pojawia się dopiero wtedy, gdy o nią poprosisz. W trybie ciemnym kafelki okluzyjne ciemnieją razem z widokami bocznymi, a ognisko próchnicy zachowuje ciemne wypełnienie — to obrys zmienia się na jasny i niesie kształt, bo „próchnica = ciemna” czyta się wcześniej niż jakikolwiek współczynnik kontrastu.
 
-**Implant jest tonowany, a nie przemalowywany** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Jego rysunek niesie około 65 niemal identycznych metalicznych szarości kodujących źródło światła, dlatego celowo nie są one motywowalne pojedynczo: ustawione osobno spłaszczyłyby cieniowanie zamiast je przebarwić. `--odon-implant-tint` to filtr CSS nałożony na cały implant, więc każda szarość przesuwa się razem z pozostałymi, a relacje między nimi zostają zachowane — `hue-rotate(205deg) saturate(.85)` albo własny filtr `url(#…)`. Dopóki go nie ustawisz, wynosi `none`, a warstwy utraty kości okołowszczepowej nie dotyka: leży ona poza filtrowaną grupą, więc ustawienie kosmetyczne nigdy nie przesunie sygnału klinicznego.
+**Implant jest tonowany, a nie przemalowywany**. Jego rysunek niesie około 65 niemal identycznych metalicznych szarości kodujących źródło światła, dlatego celowo nie są one motywowalne pojedynczo: ustawione osobno spłaszczyłyby cieniowanie zamiast je przebarwić. `--odon-implant-tint` to filtr CSS nałożony na cały implant, więc każda szarość przesuwa się razem z pozostałymi, a relacje między nimi zostają zachowane — `hue-rotate(205deg) saturate(.85)` albo własny filtr `url(#…)`. Dopóki go nie ustawisz, wynosi `none`, a warstwy utraty kości okołowszczepowej nie dotyka: leży ona poza filtrowaną grupą, więc ustawienie kosmetyczne nigdy nie przesunie sygnału klinicznego.
 
 **…albo płaski, jeśli taka jest paleta.** `--odon-implant-fill` zastępuje wypełnienie wszystkich kształtów implantu za jednym razem, więc płaska paleta kliniczna nie potrzebuje własnego filtra. Każdy kształt wraca do szarości, w której jest narysowany, więc bez ustawionego tokenu implant jest dokładnie tym samym rysunkiem co zawsze — nie ma jednej wartości domyślnej do podania. Oba działają razem: wypełnienie spłaszcza, tonowanie potem przesuwa. Dotyczy to wyłącznie `fill`, więc krawędzie okluzyjnych otworów śruby zachowują kontur, a warstwa okołowszczepowej utraty kości pozostaje nietknięta, tak samo jak przy tonowaniu.
 
-**Grubość konturu również podlega motywowaniu** *(jeszcze niewydane — na `main`, trafi do następnego wydania)*. Rysunki w ogóle nie deklarują `stroke-width`, więc kreślą domyślną wartością SVG `1`; zmienia to `themeConfig.tooth.outlineWidth` — albo `--odon-tooth-outline-width`. Trafia na każdą warstwę będącą własną sylwetką zęba: korony stałej i mlecznej, pozostałości korzenia, opracowanego filaru, zęba pod dziąsłem, wszystkich siedmiu stanów złamania oraz rzutu okluzyjnego. Kontur zachowuje więc jedną grubość niezależnie od tego, jak ząb został zapisany, zamiast wracać do `1` z chwilą, gdy staje się radixem lub złamaniem — a kafelki okluzyjne grubieją razem z widokami bocznymi, przy których stoją w schemacie. Przy stałej grubości pozostają tylko bruzdy okluzyjne.
+**Grubość konturu również podlega motywowaniu**. Rysunki w ogóle nie deklarują `stroke-width`, więc kreślą domyślną wartością SVG `1`; zmienia to `themeConfig.tooth.outlineWidth` — albo `--odon-tooth-outline-width`. Trafia na każdą warstwę będącą własną sylwetką zęba: korony stałej i mlecznej, pozostałości korzenia, opracowanego filaru, zęba pod dziąsłem, wszystkich siedmiu stanów złamania oraz rzutu okluzyjnego. Kontur zachowuje więc jedną grubość niezależnie od tego, jak ząb został zapisany, zamiast wracać do `1` z chwilą, gdy staje się radixem lub złamaniem — a kafelki okluzyjne grubieją razem z widokami bocznymi, przy których stoją w schemacie. Przy stałej grubości pozostają tylko bruzdy okluzyjne.
 
 **Integracja wtyczki:**
 ```tsx
@@ -640,7 +640,7 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `onDarkModeChange` | `(dark) => void` | — | Wywołanie zwrotne przy przełączeniu trybu ciemnego. Wymagane dla trybu kontrolowanego. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Niestandardowe zastąpienia kolorów za pomocą właściwości niestandardowych CSS (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Niestandardowe wtyczki SVG do nakładek wizualnych i niestandardowego stanu na ząb. |
-| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Rysunki zębów od hosta (tekst SVG) zamiast fabrycznych, według profilu anatomicznego. Weryfikowane; odrzucony szablon zostawia rysunek fabryczny. *(niewydane)* |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Rysunki zębów od hosta (tekst SVG) zamiast fabrycznych, według profilu anatomicznego. Weryfikowane; odrzucony szablon zostawia rysunek fabryczny. |
 | `readOnly` | `boolean` | `undefined` | Wyłączenie wszystkich interakcji (klik, dotyk, klawiatura). Przydatne do drukowania/raportowania. |
 | `enableNotes` | `boolean` | `undefined` | Włącz notatki do zębów. Dwuklik na ząb, aby dodać/edytować notatki. |
 
@@ -666,8 +666,8 @@ npm run docs           # Generuj dokumentację TypeDoc w docs/
 | `registerPlugins(plugins)` | Zarejestruj niestandardowe wtyczki SVG |
 | `setPluginState(toothNo, pluginId, value)` | Ustaw niestandardowy stan wtyczki dla zęba |
 | `getPluginState(toothNo, pluginId)` | Pobierz niestandardowy stan wtyczki dla zęba |
-| `setToothTemplateOverrides(overrides)` | Zastępuje fabryczne rysunki zębów SVG od hosta, według profilu anatomicznego; `null` przywraca grafikę fabryczną. Znaczniki są weryfikowane, a odrzucony szablon zostawia rysunek fabryczny *(niewydane)* |
-| `getToothTemplateRejections()` | Szablony hosta odrzucone do tej pory i powód — `{ profile, set, key, reason }[]` *(niewydane)* |
+| `setToothTemplateOverrides(overrides)` | Zastępuje fabryczne rysunki zębów SVG od hosta, według profilu anatomicznego; `null` przywraca grafikę fabryczną. Znaczniki są weryfikowane, a odrzucony szablon zostawia rysunek fabryczny |
+| `getToothTemplateRejections()` | Szablony hosta odrzucone do tej pory i powód — `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | Pobierz zlokalizowane podsumowanie wszystkich aktywnych stanów |
 | `getOdontogramSummary()` | Pobierz ustrukturyzowane, zlokalizowane tekstowe podsumowanie całego wykresu (liczby, sekcje) |
 | `onStateChange(callback)` | Subskrybuj zmiany stanu; zwraca funkcję anulowania subskrypcji |
@@ -898,14 +898,14 @@ Poza własnym eksportem Status JSON / FHIR / PNG / JPG / SVG odontogramu, **wykr
 
 Jeśli używasz tego modułu w swojej pracy, zacytuj go.
 
-**Ta wersja (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Ta wersja (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Wszystkie wersje (DOI koncepcyjny):** https://doi.org/10.5281/zenodo.21156787
 
 > Powyższy koncepcyjny DOI obejmujący wszystkie wersje zawsze prowadzi do najnowszego
 > zarchiwizowanego wydania; DOI dla konkretnej wersji jest nadawany przy każdym wydaniu
-> w momencie jego archiwizacji na Zenodo. Do czasu zarchiwizowania wersji v2.4.0 należy
+> w momencie jego archiwizacji na Zenodo. Do czasu zarchiwizowania wersji v2.8.0 należy
 > cytować ją za pomocą DOI koncepcyjnego.
 
 Metadane cytowania w formacie maszynowym znajdują się w [`CITATION.cff`](../CITATION.cff).

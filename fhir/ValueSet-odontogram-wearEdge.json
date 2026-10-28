@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-wearEdge",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-wearEdge",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "name": "OdontogramWearEdge",
   "title": "Odontogram — wearEdge values",
   "status": "active",

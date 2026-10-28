@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-rootCaries",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-rootCaries",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "name": "OdontogramRootCaries",
   "title": "Odontogram — rootCaries values",
   "status": "active",

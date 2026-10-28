@@ -1,6 +1,6 @@
 {
   "name": "react-advanced-odontogram.fhir",
-  "version": "2.8.1",
+  "version": "2.8.0",
   "type": "Conformance",
   "fhirVersions": [
     "4.0.1"

@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-rootConcavity",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-rootConcavity",
-  "version": "2.8.1",
+  "version": "2.8.0",
   "name": "OdontogramRootConcavity",
   "title": "Odontogram — rootConcavity values",
   "status": "active",

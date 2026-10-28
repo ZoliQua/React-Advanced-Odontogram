@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.1-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -900,14 +900,14 @@ enablePersistence({
 
 إذا استخدمت هذه الوحدة في عملك، يُرجى الاستشهاد بها.
 
-**هذا الإصدار (v2.8.1):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.1). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**هذا الإصدار (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **كل الإصدارات (معرّف DOI المفاهيمي):** https://doi.org/10.5281/zenodo.21156787
 
 > يشير معرّف DOI المفاهيمي أعلاه، الشامل لكل الإصدارات، دائمًا إلى أحدث
 > إصدار مؤرشف؛ ويُصدَر معرّف DOI خاص بكل إصدار عند أرشفته على Zenodo.
-> وإلى حين أرشفة الإصدار v2.8.1، يُرجى الاستشهاد به عبر معرّف DOI المفاهيمي.
+> وإلى حين أرشفة الإصدار v2.8.0، يُرجى الاستشهاد به عبر معرّف DOI المفاهيمي.
 
 البيانات الوصفية للاستشهاد القابلة للقراءة الآلية موجودة في [`CITATION.cff`](../CITATION.cff).
 

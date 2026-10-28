@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-discoloration",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-discoloration",
-  "version": "2.8.1",
+  "version": "2.8.0",
   "name": "OdontogramDiscoloration",
   "title": "Odontogram — discoloration values",
   "status": "active",

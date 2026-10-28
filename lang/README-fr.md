@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.1-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -900,14 +900,14 @@ Au-delà de l'export propre à l'odontogramme (JSON d'état / FHIR / PNG / JPG /
 
 Si vous utilisez ce module dans votre travail, veuillez le citer.
 
-**Cette version (v2.8.1) :**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.1). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Cette version (v2.8.0) :**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Toutes les versions (DOI de concept) :** https://doi.org/10.5281/zenodo.21156787
 
 > Le DOI de concept toutes-versions ci-dessus résout toujours vers la version
 > archivée la plus récente ; un DOI spécifique à une version est émis à chaque
-> publication lorsqu'elle est archivée sur Zenodo. Jusqu'à ce que la v2.8.1 soit
+> publication lorsqu'elle est archivée sur Zenodo. Jusqu'à ce que la v2.8.0 soit
 > archivée, citez-la via le DOI de concept.
 
 Les métadonnées de citation lisibles par machine se trouvent dans [`CITATION.cff`](CITATION.cff).

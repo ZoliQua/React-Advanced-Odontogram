@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.1-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -900,14 +900,14 @@ Az odontogram saját Státusz JSON / FHIR / PNG / JPG / SVG exportján túl a **
 
 Ha ezt a modult használod a munkádban, kérlek hivatkozz rá.
 
-**Ez a verzió (v2.8.1):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.1). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Ez a verzió (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Összes verzió (koncepció DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > A fenti, összes verzióra vonatkozó koncepció DOI mindig a legutóbb archivált
 > kiadásra mutat; egy verzió-specifikus DOI minden kiadáshoz akkor jön létre,
-> amikor azt archiválják a Zenodón. Amíg a v2.8.1 nincs archiválva, a koncepció
+> amikor azt archiválják a Zenodón. Amíg a v2.8.0 nincs archiválva, a koncepció
 > DOI-val hivatkozz rá.
 
 A géppel olvasható hivatkozási metaadatok a [`CITATION.cff`](../CITATION.cff) fájlban találhatók.

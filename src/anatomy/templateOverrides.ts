@@ -36,9 +36,13 @@ export type ToothTemplateSet = {
   primaryTemplates?: Record<number, string>;
   primaryTemplatesOccl?: Record<number, string>;
 };
-export type ToothTemplateOverrides = Partial<Record<ProfileName, ToothTemplateSet>>;
+// The two public types below spell the union out instead of naming `ProfileName`.
+// That alias is local on purpose (see above) and therefore absent from the
+// generated API reference, where a consumer would be left with a name they
+// cannot look up.
+export type ToothTemplateOverrides = Partial<Record<"classic" | "measured", ToothTemplateSet>>;
 
-export type TemplateRejection = { profile: ProfileName; set: keyof ToothTemplateSet; key: number; reason: string };
+export type TemplateRejection = { profile: "classic" | "measured"; set: keyof ToothTemplateSet; key: number; reason: string };
 
 const SETS = ["templates", "templatesOccl", "primaryTemplates", "primaryTemplatesOccl"] as const;
 const MAX_TEMPLATE_CHARS = 1_000_000;

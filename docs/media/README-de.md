@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -481,6 +481,23 @@ Vorlagen werden für den Unterkiefer um 180 Grad gedreht und für die linke Seit
 **Icon-SVGs** (in `src/assets/icon-svgs/`):
 `icon_8.svg` (Weisheitszahn), `icon_gum.svg` (Knochen), `icon_no_selection.svg` (Auswahl löschen), `icon_occl.svg` (Okklusionsansicht), `icon_pulp.svg` (Pulpa)
 
+**Vom Host gelieferte Zeichnungen**. Eine Host-Anwendung kann jedes dieser Templates durch eigenes SVG ersetzen, ohne die Bibliothek zu forken — über `setToothTemplateOverrides()` oder den Prop `toothTemplates`. Die Overrides werden **pro Anatomieprofil** angegeben, denn die Template-Nummer N ist in `classic` und in `measured` eine andere Zeichnung:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — alles akzeptiert
+```
+
+Jedes Profil nimmt vier Maps — `templates`, `templatesOccl` und, bei einem Profil, das Milchzähne als eigene Zeichnung führt (`measured`), `primaryTemplates` und `primaryTemplatesOccl`. Ein Override übersteht einen Wechsel des Anatomieprofils, `null` stellt die Werkszeichnungen wieder her, und ohne Angabe liefert die Engine exakt die bisherigen Zeichnungen.
+
+Ein Template ist nicht vertrauenswürdiges Markup, das im lebenden DOM landet, und wird deshalb **vor dem Zeichnen geprüft** — siehe die Sicherheitshinweise weiter unten. Ein abgelehntes Template listet `getToothTemplateRejections()` auf, und die Werkszeichnung bleibt bestehen: Im Zahnschema fehlt nie ein Zahn.
+
 ### 🔢 Nummerierungssysteme
 
 **FDI (ISO 3950):** Erwachsenenzähne 11-18, 21-28, 31-38, 41-48. Milchzähne 51-55, 61-65, 71-75, 81-85.
@@ -546,12 +563,20 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Keine Farbe: ein CSS-Filter über das gesamte Implantat.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -560,6 +585,12 @@ export default function Host(){
 ```
 
 Die Zeichnungen tragen ihre Farben als CSS-Custom-Properties mit der ausgelieferten Farbe als Fallback, sodass beide Anatomieprofile einer Einstellung folgen und ein Export sie auflöst, bevor er die Seite verlässt. Die vollständige Token-Tabelle steht in `tools/toothgen/palette.py`. Der Dunkelmodus bringt eine eigene Zeichnungspalette mit, sodass das Schema mit der Oberfläche abdunkelt statt zu blenden. Im Profil `measured` tragen Krone und Wurzel zusätzlich einen Dentinkern: Er übernimmt die Farbe von `body`, bis `dentin` gesetzt wird — die Grenze erscheint also erst, wenn man sie anfordert. Im Dunkelmodus dunkeln die Okklusalkacheln zusammen mit den Seitenansichten ab, und eine kariöse Läsion behält ihre dunkle Füllung — die Kontur wechselt ins Helle und trägt die Form, denn „Karies = dunkel“ wird vor jedem Kontrastverhältnis gelesen.
+
+**Das Implantat wird getönt, nicht umgefärbt**. Seine Zeichnung trägt rund 65 nahezu identische Metallgrautöne, die eine Lichtquelle codieren; sie sind deshalb bewusst nicht einzeln themenfähig: einzeln gesetzt würde die Schattierung verflachen statt neu eingefärbt zu werden. `--odon-implant-tint` ist ein CSS-Filter über das Implantat als Ganzes, sodass sich jeder Grauton mitbewegt und die Beziehungen zwischen ihnen erhalten bleiben — `hue-rotate(205deg) saturate(.85)` oder ein eigener `url(#…)`-Filter. Ohne Setzen ist er `none`, und die periimplantäre Knochenverlust-Ebene bleibt unberührt: Sie liegt außerhalb der gefilterten Gruppe, sodass eine kosmetische Einstellung niemals ein klinisches Signal verschieben kann.
+
+**…oder flach, wenn die Palette so aussieht.** `--odon-implant-fill` ersetzt die Füllung jeder Form des Implantats in einem Schritt, sodass eine flache klinische Palette keinen eigenen Filter braucht. Jede Form fällt auf das Grau zurück, in dem sie gezeichnet ist — ohne gesetzten Token ist das Implantat also exakt die ursprüngliche Zeichnung, und es gibt keinen einzelnen Standardwert anzugeben. Beides greift ineinander: die Füllung ebnet ein, die Tönung verschiebt anschließend. Betroffen ist nur `fill`, die okklusalen Schraubenkanal-Ränder behalten ihre Kontur, und die periimplantäre Knochenverlust-Ebene bleibt unberührt, genau wie bei der Tönung.
+
+**Auch die Konturstärke ist themenfähig**. Die Zeichnungen deklarieren überhaupt keine `stroke-width` und zeichnen daher mit dem SVG-Ausgangswert `1`; `themeConfig.tooth.outlineWidth` — oder `--odon-tooth-outline-width` — ändert das. Sie liegt auf jeder Ebene, die die Silhouette des Zahns selbst ist: auf der bleibenden und der Milchzahnkrone, dem Wurzelrest, dem präparierten Stumpf, dem Zahn unter dem Zahnfleisch, allen sieben Frakturzuständen und der okklusalen Ansicht. Die Kontur behält damit eine einheitliche Stärke, gleich als was der Zahn erfasst wird, statt bei einem Radix oder einer Fraktur auf `1` zurückzufallen — und die okklusalen Kacheln verbreitern sich gemeinsam mit den Seitenansichten, neben denen sie im Schema stehen. Nur die okklusalen Fissuren behalten eine feste Stärke.
 
 **Plugin-Integration:**
 ```tsx
@@ -611,6 +642,7 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `onDarkModeChange` | `(dark) => void` | — | Callback beim Umschalten des Dunkelmodus. Erforderlich für gesteuerten Modus. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Benutzerdefinierte Farbüberschreibungen über CSS Custom Properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Benutzerdefinierte SVG-Plugins für visuelle Overlays und per-Zahn Custom State. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Vom Host gelieferte Zahnzeichnungen (SVG-Text) anstelle der Werkszeichnungen, pro Anatomieprofil. Geprüft; bei Ablehnung bleibt die Werkszeichnung. |
 | `readOnly` | `boolean` | `undefined` | Alle Interaktionen deaktivieren (Klick, Touch, Tastatur). Nützlich für Druck-/Berichtsansichten. |
 | `enableNotes` | `boolean` | `undefined` | Per-Zahn Notizen aktivieren. Doppelklick auf einen Zahn zum Hinzufügen/Bearbeiten. |
 
@@ -636,6 +668,8 @@ npm run docs           # TypeDoc-Dokumentation in docs/ generieren
 | `registerPlugins(plugins)` | Benutzerdefinierte SVG-Plugins registrieren |
 | `setPluginState(toothNo, pluginId, value)` | Plugin Custom State für einen Zahn setzen |
 | `getPluginState(toothNo, pluginId)` | Plugin Custom State eines Zahns abrufen |
+| `setToothTemplateOverrides(overrides)` | Ersetzt die Werks-Zahnzeichnungen durch vom Host geliefertes SVG, pro Anatomieprofil; `null` stellt die Werkszeichnungen wieder her. Das Markup wird geprüft, bei Ablehnung bleibt die Werkszeichnung |
+| `getToothTemplateRejections()` | Die bisher abgelehnten Host-Templates und der Grund — `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | Lokalisierte Zusammenfassung aller aktiven Zustände eines Zahns abrufen |
 | `getOdontogramSummary()` | Strukturierte, lokalisierte Textzusammenfassung des gesamten Befunds abrufen (Zählungen, Abschnitte) |
 | `onStateChange(callback)` | Auf Zustandsänderungen abonnieren; gibt eine Abmeldefunktion zurück |
@@ -853,6 +887,7 @@ Parodontale Daten laufen jetzt auch über den FHIR-Import im Kreis, nicht nur ü
 ### 🔒 Sicherheitshinweise
 
 - **Plugins laufen als vertrauenswürdiger Code.** Der Rückgabewert von `renderSvg()` eines Plugins wird in das SVG des Live-Befunds eingefügt. Diese Ausgabe wird vor dem Einfügen mit [DOMPurify](https://github.com/cure53/DOMPurify) (SVG-Profil, plus `svgFilters`) bereinigt — `<script>`, `<iframe>`, `<object>`, `<embed>` und `<foreignObject>` sind grundsätzlich verboten, und vollständig bösartige Ausgaben werden verworfen statt teilweise gerendert. Das verringert die Angriffsfläche eines kompromittierten oder fehlerhaften Plugins, aber Plugins sollten dennoch nur aus vertrauenswürdigen Quellen geladen werden — die Bereinigung ist ein Sicherheitsnetz, kein Ersatz für eine Prüfung.
+- **Vom Host gelieferte Zahn-Templates werden abgelehnt, nicht bereinigt.** Eine an `setToothTemplateOverrides()` übergebene Zeichnung wird vor dem Zeichnen geprüft: ein einziges `<svg>`-Wurzelelement; DOMPurify (SVG-Profil, verboten sind `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` sowie die Animationselemente) — und wenn DOMPurify *irgendetwas* entfernen muss, wird das gesamte Template **abgelehnt** statt stillschweigend bereinigt, damit ein Host nie anderes Markup zeichnet als das gelieferte; `href` nur auf ein `#id`-Fragment, und kein `url(` oder `@import` in einem `<style>`-Element oder `style`-Attribut, sodass nichts aus einem Template ins Netz greifen kann; und es muss jede Layer-ID der ersetzten Werkszeichnung tragen, denn die Engine schaltet Layer über die ID. Ein abgelehntes Template meldet `getToothTemplateRejections()`, und die Werkszeichnung bleibt erhalten.
 - **Content-Security-Policy.** Der **Produktions-Build** der Demo fügt über ein `<meta http-equiv="Content-Security-Policy">`-Tag folgende Policy ein (der Dev-Server ist davon nicht betroffen):
 
   ```
@@ -865,14 +900,14 @@ Parodontale Daten laufen jetzt auch über den FHIR-Import im Kreis, nicht nur ü
 
 Wenn Sie dieses Modul in Ihrer Arbeit verwenden, zitieren Sie es bitte.
 
-**Diese Version (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Diese Version (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Alle Versionen (Konzept-DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > Die obige versionsübergreifende Konzept-DOI verweist immer auf die zuletzt
 > archivierte Version; eine versionsspezifische DOI wird bei jeder Version erst
-> vergeben, wenn diese auf Zenodo archiviert wird. Solange v2.4.0 nicht archiviert
+> vergeben, wenn diese auf Zenodo archiviert wird. Solange v2.8.0 nicht archiviert
 > ist, zitieren Sie sie bitte über die Konzept-DOI.
 
 Maschinenlesbare Zitationsmetadaten finden Sie in [`CITATION.cff`](../CITATION.cff).

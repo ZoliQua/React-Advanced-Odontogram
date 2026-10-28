@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -481,6 +481,23 @@ export default function OdontogramClient() {
 **图标 SVG**（位于 `src/assets/icon-svgs/`）：
 `icon_8.svg`（智齿）、`icon_gum.svg`（骨组织）、`icon_no_selection.svg`（清除）、`icon_occl.svg`（咬合面视图）、`icon_pulp.svg`（牙髓）
 
+**宿主提供的牙齿绘图**。宿主应用无需 fork 本库，即可通过 `setToothTemplateOverrides()` 或 `toothTemplates` 属性，用自己的 SVG 替换其中任意模板。覆盖项**按解剖轮廓分别指定**，因为同一个模板编号 N 在 `classic` 与 `measured` 中是不同的绘图：
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — 全部接受
+```
+
+每个轮廓接受四张映射表——`templates`、`templatesOccl`，以及在将乳牙画成独立图形的轮廓（`measured`）中的 `primaryTemplates` 与 `primaryTemplatesOccl`。覆盖项在切换解剖轮廓后依然保留，`null` 可恢复出厂绘图；若未提供任何内容，引擎提供的仍然是一贯的绘图。
+
+模板是会进入活动 DOM 的不可信标记，因此在**能够绘制之前先经过校验**——参见下文的安全说明。被拒绝的模板会列在 `getToothTemplateRejections()` 中，出厂绘图保持不变：牙位图上绝不会缺少一颗牙。
+
 ### 🔢 编号系统
 
 **FDI（ISO 3950）：** 恒牙 11-18、21-28、31-38、41-48。乳牙 51-55、61-65、71-75、81-85。
@@ -546,12 +563,20 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // 不是颜色：作用于整个种植体的 CSS 滤镜。
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -560,6 +585,12 @@ export default function Host(){
 ```
 
 牙齿图形以 CSS 自定义属性承载颜色，并以随附颜色作为回退值，因此两种解剖轮廓都遵循同一处设置，导出时也会在离开页面前完成解析。完整的 token 表位于 `tools/toothgen/palette.py`。深色模式自带一套牙齿图形配色，因此牙位图会与界面一同变暗，而不会刺眼。 在 `measured` 轮廓中，牙冠与牙根还带有牙本质核心：在未设置 `dentin` 之前它沿用 `body` 的颜色，因此只有在你需要时边界才会显现。 在深色模式下，咬合面图块与侧面视图一同变暗；龋损则保留其深色填充——改为浅色的是轮廓线，由它来承载形状，因为「龋坏＝深色」会先于任何对比度被读出。
+
+**种植体是着色，而不是重新上色**。它的绘图包含约 65 种极为接近的金属灰，用以编码光源，因此有意不支持逐一设置主题：单独设置只会让明暗关系变平，而不是重新上色。`--odon-implant-tint` 是作用于整个种植体的 CSS 滤镜，所有灰度一起位移，彼此之间的关系得以保留 —— `hue-rotate(205deg) saturate(.85)`，或你自己的 `url(#…)` 滤镜。未设置时为 `none`，并且不会影响种植体周围骨吸收图层：该图层位于被过滤的分组之外，因此外观设置永远不会移动临床信号。
+
+**……或者直接改为纯色，如果你的配色就是这样。** `--odon-implant-fill` 一次性替换种植体中所有图形的填充色，因此扁平的临床配色无需自备滤镜。每个图形都回退到它本身绘制时的灰色，所以在未设置该令牌时，种植体与原图完全一致——这里没有可供声明的统一默认值。两者可以叠加：填充负责变为纯色，着色随后进行偏移。只有 `fill` 受影响，因此𬌗面螺丝通道的边缘保留其轮廓，种植体周骨丧失图层也和着色时一样不受影响。
+
+**轮廓线宽同样可以主题化**。绘图完全没有声明 `stroke-width`，因此按 SVG 初始值 `1` 描边；`themeConfig.tooth.outlineWidth`（或 `--odon-tooth-outline-width`）可以改变它。它作用于构成牙齿自身轮廓的每一个图层：恒牙与乳牙的牙冠、残根、预备体、龈下牙、全部七种折裂状态以及𬌗面投影。这样一来，无论该牙被记录为何种状态，轮廓都保持同一线宽，而不会在变为残根或折裂时退回 `1`；𬌗面方格也会与并排的颊舌面视图一同加粗。保持固定线宽的只有𬌗面沟。
 
 **插件集成：**
 ```tsx
@@ -611,6 +642,7 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `onDarkModeChange` | `(dark) => void` | — | 深色模式切换时的回调。受控模式下必填。 |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | 通过 CSS 自定义属性（`--odon-*`）自定义配色方案。 |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | 用于视觉叠加层和按牙位自定义状态的自定义 SVG 插件。 |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | 宿主提供的牙齿绘图（SVG 文本），按解剖轮廓替换出厂绘图。经过校验；被拒绝时保留出厂绘图。 |
 | `readOnly` | `boolean` | `undefined` | 禁用所有交互（点击、触控、键盘）。适用于打印/报告视图。 |
 | `enableNotes` | `boolean` | `undefined` | 启用每颗牙齿的备注。双击某颗牙齿即可添加/编辑备注。 |
 
@@ -636,6 +668,8 @@ npm run docs           # 在 docs/ 目录生成 TypeDoc 文档
 | `registerPlugins(plugins)` | 注册自定义 SVG 插件 |
 | `setPluginState(toothNo, pluginId, value)` | 设置某颗牙齿的插件自定义状态 |
 | `getPluginState(toothNo, pluginId)` | 获取某颗牙齿的插件自定义状态 |
+| `setToothTemplateOverrides(overrides)` | 按解剖轮廓，用宿主提供的 SVG 替换出厂牙齿绘图；`null` 恢复出厂绘图。标记会经过校验，被拒绝时保留出厂绘图 |
+| `getToothTemplateRejections()` | 迄今被拒绝的宿主模板及原因 —— `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | 获取某颗牙齿全部当前状态的本地化摘要 |
 | `getOdontogramSummary()` | 获取整个图表的结构化本地化文字摘要（计数、各区块） |
 | `onStateChange(callback)` | 订阅状态变化；返回一个取消订阅函数 |
@@ -853,6 +887,7 @@ enablePersistence({
 ### 🔒 安全说明
 
 - **插件作为受信任代码运行。** 插件 `renderSvg()` 的返回值会被注入到实时图表的 SVG 中。该输出在插入前会经过 [DOMPurify](https://github.com/cure53/DOMPurify)（SVG 配置文件，含 `svgFilters`）净化——`<script>`、`<iframe>`、`<object>`、`<embed>` 及 `<foreignObject>` 一律被禁止，完全恶意的输出会被整体丢弃，而非部分渲染。此举降低了因插件被攻破或存在缺陷而带来的影响范围，但插件仍应仅从可信来源加载——净化是一道安全防线，而非审查把关的替代品。
+- **宿主提供的牙齿模板是被拒绝，而不是被清洗。** 传给 `setToothTemplateOverrides()` 的绘图在能够绘制之前先经过校验：单一的 `<svg>` 根元素；DOMPurify（SVG 配置，禁止 `<script>`、`<iframe>`、`<object>`、`<embed>`、`<foreignObject>`、`<image>`、`<a>` 及动画元素）——并且只要 DOMPurify *需要移除任何内容*，整个模板就会被**拒绝**，而不是悄悄清洗，这样宿主绝不会绘制出与其提供的内容不一致的标记；`href` 只能指向 `#id` 片段，`<style>` 元素与 `style` 属性中不得出现 `url(` 或 `@import`，因此模板中的任何内容都无法访问网络；最后，它必须带有被替换的出厂绘图的每一个图层 id，因为引擎是按 id 切换图层的。被拒绝的模板由 `getToothTemplateRejections()` 报告，出厂绘图继续生效。
 - **内容安全策略（CSP）。** 演示站点的**生产构建**会通过 `<meta http-equiv="Content-Security-Policy">` 标签注入以下策略（开发服务器不受影响）：
 
   ```
@@ -865,13 +900,13 @@ enablePersistence({
 
 如果您在工作中使用了本模块，请引用它。
 
-**本版本（v2.4.0）：**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**本版本（v2.8.0）：**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **所有版本（概念 DOI）：** https://doi.org/10.5281/zenodo.21156787
 
 > 上述概念 DOI 始终指向最新归档的发布版本；每次在 Zenodo 上归档发布时，
-> 都会为该版本铸造一个版本专属 DOI。在 v2.4.0 被归档之前，请使用概念 DOI 进行引用。
+> 都会为该版本铸造一个版本专属 DOI。在 v2.8.0 被归档之前，请使用概念 DOI 进行引用。
 
 机器可读的引用元数据位于 [`CITATION.cff`](../CITATION.cff)。
 

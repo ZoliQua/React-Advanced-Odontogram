@@ -78,7 +78,7 @@ export type OdontogramThemeConfig = {
     outline?: string;
     /** The width of that outline, as a CSS length in SVG user units
      *  (`"1"`, `"1.4"`, `"0.75"`). Not a colour — it is here because it is
-     *  the other half of {@link outline}.
+     *  the other half of `outline` above.
      *
      *  It rides every layer that is the tooth's own silhouette, so the
      *  contour keeps one thickness whatever the tooth is charted as: a

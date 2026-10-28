@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -481,6 +481,23 @@ export default function OdontogramClient() {
 **أيقونات SVG** (في `src/assets/icon-svgs/`):
 `icon_8.svg` (أسنان العقل), `icon_gum.svg` (العظم), `icon_no_selection.svg` (مسح التحديد), `icon_occl.svg` (المنظر الإطباقي), `icon_pulp.svg` (اللب)
 
+**رسومات يقدّمها التطبيق المضيف**. يمكن لتطبيق مضيف أن يستبدل أيًّا من هذه القوالب برسم SVG خاص به، دون نسخ المكتبة (fork)، عبر `setToothTemplateOverrides()` أو الخاصية `toothTemplates`. تُفهرَس عمليات الاستبدال **لكل ملف تشريحي على حدة**، لأن القالب رقم N رسم مختلف في `classic` وفي `measured`:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — قُبِل كل شيء
+```
+
+يقبل كل ملف تشريحي أربع خرائط — `templates` و`templatesOccl`، وفي ملف يرسم الأسنان اللبنية برسم خاص بها (`measured`) أيضًا `primaryTemplates` و`primaryTemplatesOccl`. يبقى الاستبدال قائمًا بعد تبديل الملف التشريحي، ويعيد `null` الرسومات الأصلية، وإن لم يُقدَّم شيء فإن المحرّك يقدّم الرسومات نفسها كما كان دائمًا.
+
+القالب ترميز غير موثوق ينتهي داخل DOM الحيّ، لذلك **يُفحَص قبل أن يُرسم** — انظر ملاحظات الأمان أدناه. يُدرِج `getToothTemplateRejections()` أي قالب مرفوض، ويبقى الرسم الأصلي في مكانه: لا يفقد المخطط سنًّا أبدًا.
+
 ### 🔢 أنظمة الترقيم
 
 **FDI (وفق ISO 3950):** الأسنان الدائمة 11-18، 21-28، 31-38، 41-48. الأسنان اللبنية 51-55، 61-65، 71-75، 81-85.
@@ -546,12 +563,20 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // ليست لونًا: مُرشِّح CSS على الغرسة بأكملها.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -560,6 +585,12 @@ export default function Host(){
 ```
 
 تحمل الرسوم ألوانها كخصائص CSS مخصَّصة مع اللون المُضمَّن كقيمة احتياطية، فيتبع كلا ملفَّي التشريح إعدادًا واحدًا، ويحلّ التصدير هذه القيم قبل مغادرتها الصفحة. جدول الرموز الكامل في `tools/toothgen/palette.py`. ويأتي الوضع الداكن بلوحة ألوان خاصة بالرسوم، فيَعتِم المخطط مع بقية الواجهة بدل أن يبهر العين. وفي ملف `measured` يحمل التاجُ والجذرُ أيضًا لبًّا عاجيًّا: يأخذ لون `body` ما لم تُضبط `dentin`، فلا يظهر الحدّ إلا عندما تطلبه. في الوضع الداكن تَعتِم مربّعات السطح الإطباقي مع المناظر الجانبية، ويحتفظ التسوّس بتعبئته الداكنة — إذ ينقلب المحيط إلى الفاتح وهو ما يحمل الشكل، لأن «التسوّس = داكن» يُقرأ قبل أي نسبة تباين.
+
+**الغرسة تُصبَغ ولا يُعاد تلوينها**. يحمل رسمها نحو 65 درجة رمادية معدنية شديدة التقارب تُرمِّز مصدر الضوء، ولذلك لا تقبل التخصيص واحدة واحدة عن قصد: ضبطها فرادى يُسطِّح التظليل بدل إعادة تلوينه. الرمز `--odon-implant-tint` مُرشِّح CSS على الغرسة ككل، فتتحرك كل الدرجات الرمادية معًا وتبقى العلاقات بينها سليمة — `hue-rotate(205deg) saturate(.85)`، أو مُرشِّح `url(#…)` خاص بك. قيمته `none` ما لم تضبطه، وهو لا يمسّ طبقة فقدان العظم حول الغرسة: تقع تلك الطبقة خارج المجموعة المُرشَّحة، فلا يمكن لإعداد تجميلي أن يُزيح إشارة سريرية أبدًا.
+
+**…أو مسطّحة، إن كانت لوحتك اللونية كذلك.** يستبدل `--odon-implant-fill` تعبئة كل شكل في الغرسة دفعةً واحدة، فلا تحتاج اللوحة السريرية المسطّحة إلى مرشّح خاص بها. يعود كل شكل إلى الرمادي الذي رُسم به، لذا تبقى الغرسة — عند عدم ضبط الرمز — هي الرسم الأصلي تمامًا، ولا توجد قيمة افتراضية واحدة يمكن ذكرها. ويعمل الاثنان معًا: التعبئة تُسطِّح، ثم الصبغة تُزيح. لا يتأثر سوى `fill`، لذا تحتفظ حواف فتحات البراغي الإطباقية بحدودها، وتبقى طبقة فقدان العظم حول الغرسة دون مساس، تمامًا كما هو الحال مع الصبغة.
+
+**عرض الحد الخارجي قابل للتنسيق أيضًا**. لا تُعرِّف الرسوم أي `stroke-width` إطلاقًا، لذا تُرسم بالقيمة الابتدائية في SVG وهي `1`؛ ويغيّر ذلك `themeConfig.tooth.outlineWidth` — أو `--odon-tooth-outline-width`. يسري على كل طبقة تمثّل الظل الخارجي للسن نفسه: تاج السن الدائم واللبني، وجذر السن المتبقي، والتحضير التاجي، والسن تحت اللثة، وحالات الكسر السبع جميعها، والمسقط الإطباقي. وبذلك يحتفظ الحد بسماكة واحدة أيًّا كانت الحالة المسجَّلة للسن، بدلًا من العودة إلى `1` بمجرد أن يصبح جذرًا متبقيًا أو كسرًا — وتزداد سماكة المربعات الإطباقية مع المناظر الجانبية التي تجاورها في المخطط. أما الأخاديد الإطباقية وحدها فتبقى بسماكة ثابتة.
 
 **تكامل الإضافات:**
 ```tsx
@@ -611,6 +642,7 @@ npm run docs           # توليد توثيق TypeDoc داخل docs/
 | `onDarkModeChange` | `(dark) => void` | — | استدعاء عند تبديل الوضع الداكن. مطلوب للوضع المتحكَّم به. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | تجاوزات ألوان مخصصة عبر خصائص CSS المخصصة (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | إضافات SVG مخصصة للتراكبات البصرية وحالة كل سن. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | رسومات أسنان يقدّمها المضيف (نص SVG) بدل الأصلية، لكل ملف تشريحي. مفحوصة؛ والقالب المرفوض يُبقي الرسم الأصلي. |
 | `readOnly` | `boolean` | `undefined` | تعطيل كل التفاعلات (نقر، لمس، لوحة مفاتيح). مفيد لعروض الطباعة/التقارير. |
 | `enableNotes` | `boolean` | `undefined` | تفعيل الملاحظات لكل سن. نقر مزدوج على سن لإضافة/تعديل الملاحظات. |
 
@@ -636,6 +668,8 @@ npm run docs           # توليد توثيق TypeDoc داخل docs/
 | `registerPlugins(plugins)` | تسجيل إضافات SVG مخصصة |
 | `setPluginState(toothNo, pluginId, value)` | ضبط حالة إضافة مخصصة لسن معين |
 | `getPluginState(toothNo, pluginId)` | قراءة حالة إضافة مخصصة لسن معين |
+| `setToothTemplateOverrides(overrides)` | استبدال رسومات الأسنان الأصلية بـ SVG من المضيف، لكل ملف تشريحي؛ و`null` يعيد الرسومات الأصلية. يُفحَص الترميز، والقالب المرفوض يُبقي الرسم الأصلي |
+| `getToothTemplateRejections()` | قوالب المضيف المرفوضة حتى الآن وسببها — `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | الحصول على ملخص مترجم لكل الحالات النشطة لسن معين |
 | `getOdontogramSummary()` | الحصول على ملخص نصي منظَّم ومترجم لكامل المخطط (أعداد، أقسام) |
 | `onStateChange(callback)` | الاشتراك في تغييرات الحالة؛ تُعيد دالة لإلغاء الاشتراك |
@@ -853,6 +887,7 @@ enablePersistence({
 ### 🔒 ملاحظات أمنية
 
 - **الإضافات تعمل ككود موثوق.** يتم حقن القيمة التي تُرجعها دالة `renderSvg()` الخاصة بالإضافة داخل SVG المخطط الحي. تُنقَّى تلك المخرجات باستخدام [DOMPurify](https://github.com/cure53/DOMPurify) (نمط SVG، بالإضافة إلى `svgFilters`) قبل الإدراج — يُمنع تمامًا كل من `<script>` و`<iframe>` و`<object>` و`<embed>` و`<foreignObject>`، ويتم إسقاط المخرجات الخبيثة بالكامل بدلًا من عرضها جزئيًا. يقلّل هذا من نطاق الضرر الناتج عن إضافة مخترَقة أو معطوبة، لكن يجب أن تظل الإضافات محمَّلة فقط من مصادر تثق بها — فالتنقية شبكة أمان، لا بديلًا عن التحقق.
+- **قوالب الأسنان التي يقدّمها المضيف تُرفَض ولا تُنظَّف.** يُفحَص أي رسم يُمرَّر إلى `setToothTemplateOverrides()` قبل أن يُرسم: جذر `<svg>` واحد فقط؛ وDOMPurify (ملف SVG، مع حظر `<script>` و`<iframe>` و`<object>` و`<embed>` و`<foreignObject>` و`<image>` و`<a>` وعناصر الحركة) — وإذا اضطر DOMPurify إلى إزالة *أي شيء* فإن القالب كاملًا **يُرفَض** بدل تنظيفه بصمت، حتى لا يرسم المضيف ترميزًا يختلف عمّا قدّمه؛ و`href` إلى جزء `#id` فقط، ولا `url(` ولا `@import` داخل عنصر `<style>` أو سمة `style`، كي لا يستطيع أي شيء في القالب الوصول إلى الشبكة؛ وأخيرًا يجب أن يحمل القالب كل معرّفات الطبقات الخاصة بالرسم الأصلي الذي يحلّ محلّه، لأن المحرّك يبدّل الطبقات بالمعرّف. يُبلَّغ عن القالب المرفوض عبر `getToothTemplateRejections()` ويبقى الرسم الأصلي ساريًا.
 - **سياسة أمان المحتوى (Content-Security-Policy).** يُدرج إصدار **الإنتاج (production build)** الخاص بالنسخة التجريبية هذه السياسة عبر وسم `<meta http-equiv="Content-Security-Policy">` (خادم التطوير غير متأثر):
 
   ```
@@ -865,14 +900,14 @@ enablePersistence({
 
 إذا استخدمت هذه الوحدة في عملك، يُرجى الاستشهاد بها.
 
-**هذا الإصدار (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**هذا الإصدار (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **كل الإصدارات (معرّف DOI المفاهيمي):** https://doi.org/10.5281/zenodo.21156787
 
 > يشير معرّف DOI المفاهيمي أعلاه، الشامل لكل الإصدارات، دائمًا إلى أحدث
 > إصدار مؤرشف؛ ويُصدَر معرّف DOI خاص بكل إصدار عند أرشفته على Zenodo.
-> وإلى حين أرشفة الإصدار v2.4.0، يُرجى الاستشهاد به عبر معرّف DOI المفاهيمي.
+> وإلى حين أرشفة الإصدار v2.8.0، يُرجى الاستشهاد به عبر معرّف DOI المفاهيمي.
 
 البيانات الوصفية للاستشهاد القابلة للقراءة الآلية موجودة في [`CITATION.cff`](../CITATION.cff).
 

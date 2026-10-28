@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -479,6 +479,23 @@ Templates are rotated 180 degrees for the lower jaw and mirrored horizontally fo
 **Icon SVGs** (in `src/assets/icon-svgs/`):
 `icon_8.svg` (wisdom), `icon_gum.svg` (bone), `icon_no_selection.svg` (clear), `icon_occl.svg` (occlusal view), `icon_pulp.svg` (pulp)
 
+**Host-supplied drawings**. A host app can replace any of these templates with its own SVG, without forking the library, through `setToothTemplateOverrides()` or the `toothTemplates` prop. Overrides are keyed **per anatomy profile**, because template number N is a different drawing in `classic` and in `measured`:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — everything was accepted
+```
+
+Each profile takes four maps — `templates`, `templatesOccl` and, for a profile that draws milk teeth as their own artwork (`measured`), `primaryTemplates` and `primaryTemplatesOccl`. An override survives a change of anatomy profile, `null` restores the factory artwork, and with nothing supplied the engine serves exactly the drawings it always did.
+
+A template is untrusted markup that ends up in the live DOM, so it is **vetted before it can be drawn** — see the security notes below. A refused template is listed by `getToothTemplateRejections()` and the factory drawing stays in place: the chart is never left without a tooth.
+
 ### 🔢 Numbering Systems
 
 **FDI (ISO 3950):** Adult teeth 11-18, 21-28, 31-38, 41-48. Primary teeth 51-55, 61-65, 71-75, 81-85.
@@ -544,12 +561,20 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Not a colour: a CSS filter over the implant fixture as a whole.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -558,6 +583,12 @@ export default function Host(){
 ```
 
 The drawings carry their colours as CSS custom properties with the shipped colour as the fallback, so both anatomy profiles follow one setting and an export resolves them before it leaves the page. The full token table lives in `tools/toothgen/palette.py`. Dark mode already ships its own artwork palette, so the chart darkens with the rest of the interface rather than glaring. In the `measured` profile the crown and root also carry a dentin core: it takes the body's colour until `dentin` is set, so the boundary appears only when you ask for it. In dark mode the occlusal tiles darken with the side views, and a carious lesion keeps its dark fill — the outline flips to light and carries the shape, because "caries = dark" is read before any contrast ratio.
+
+**The implant fixture is tinted, not recoloured**. Its drawing carries around 65 near-identical metal greys that encode a light source, so they are deliberately not themable one by one: setting them individually would flatten the shading instead of retheming it. `--odon-implant-tint` is a CSS filter over the fixture as a whole, so every grey moves together and the relationships between them survive — `hue-rotate(205deg) saturate(.85)`, or a `url(#…)` filter of your own. It is `none` unless you set it, and it leaves the peri-implant bone-loss overlay untouched: that layer sits outside the filtered group, so a cosmetic setting can never shift a clinical signal.
+
+**…or made flat, if that is what your palette is.** `--odon-implant-fill` replaces the fill of every shape in the fixture at once, so a flat clinical palette needs no filter of its own. Each shape falls back to the grey it is drawn in, so with the token unset the fixture is exactly the drawing it always was — there is no single default to state. The two compose: the fill flattens, the tint then shifts. Only `fill` is affected, so the occlusal screw-hole rims keep their outline, and the peri-implant bone-loss overlay is left alone just as it is by the tint.
+
+**The contour width is themable too**. The drawings declare no `stroke-width` at all, so they stroke at the SVG initial value of `1`; `themeConfig.tooth.outlineWidth` — or `--odon-tooth-outline-width` — changes that. It rides every layer that is the tooth's own silhouette: the natural and deciduous crowns, the root remnant, the prepared crown, the tooth under the gum, all seven fracture states and the occlusal projection. The contour therefore keeps one thickness whatever the tooth is charted as, instead of snapping back to `1` the moment it becomes a radix or a fracture — and the occlusal tiles widen together with the side views they sit next to in the chart. Only the occlusal grooves stay at a fixed width.
 
 **Plugin integration:**
 ```tsx
@@ -609,6 +640,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `onDarkModeChange` | `(dark) => void` | — | Callback when dark mode toggles. Required for controlled mode. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Custom color overrides via CSS custom properties (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Custom SVG plugins for visual overlays and per-tooth custom state. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Host-supplied tooth drawings (SVG text) in place of the factory ones, per anatomy profile. Vetted; a refused template keeps the factory drawing. |
 | `readOnly` | `boolean` | `undefined` | Disable all interactions (click, touch, keyboard). Useful for print/report views. |
 | `enableNotes` | `boolean` | `undefined` | Enable per-tooth notes. Double-click a tooth to add/edit notes. |
 
@@ -634,6 +666,8 @@ npm run docs           # Generate TypeDoc docs in docs/
 | `registerPlugins(plugins)` | Register custom SVG plugins |
 | `setPluginState(toothNo, pluginId, value)` | Set a plugin's custom state for a tooth |
 | `getPluginState(toothNo, pluginId)` | Get a plugin's custom state for a tooth |
+| `setToothTemplateOverrides(overrides)` | Replace the factory tooth drawings with host-supplied SVG, per anatomy profile; `null` restores the factory artwork. The markup is vetted and a refused template keeps the factory drawing |
+| `getToothTemplateRejections()` | The host templates refused so far, and why — `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | Get localized summary of all active states |
 | `getOdontogramSummary()` | Get a structured, localized text summary of the whole chart (counts, sections) |
 | `onStateChange(callback)` | Subscribe to state changes; returns an unsubscribe function |
@@ -851,6 +885,7 @@ Beyond the odontogram's own Status JSON / FHIR / PNG / JPG / SVG export, the **p
 ### 🔒 Security notes
 
 - **Plugins run as trusted code.** A plugin's `renderSvg()` return value is injected into the live chart's SVG. That output is sanitized with [DOMPurify](https://github.com/cure53/DOMPurify) (SVG profile, plus `svgFilters`) before insertion — `<script>`, `<iframe>`, `<object>`, `<embed>` and `<foreignObject>` are forbidden outright, and wholly-malicious output is dropped rather than partially rendered. This reduces the blast radius of a compromised or buggy plugin, but plugins should still only be loaded from sources you trust — sanitization is a safety net, not a substitute for vetting.
+- **Host-supplied tooth templates are rejected, not cleaned.** A drawing passed to `setToothTemplateOverrides()` is vetted before it can be drawn: a single `<svg>` root; DOMPurify (SVG profile, with `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` and the animation elements forbidden) — and if DOMPurify has to remove *anything*, the whole template is **refused** rather than quietly sanitized, so a host never draws markup that differs from what it supplied; `href` only to a `#id` fragment, and no `url(` or `@import` in a `<style>` element or a `style` attribute, so nothing a template contains can reach the network; and it must carry every layer id of the factory drawing it replaces, because the engine toggles layers by id. A refused template is reported by `getToothTemplateRejections()` and the factory drawing is kept.
 - **Content-Security-Policy.** The demo's **production build** injects this policy via a `<meta http-equiv="Content-Security-Policy">` tag (the dev server is unaffected):
 
   ```
@@ -863,14 +898,14 @@ Beyond the odontogram's own Status JSON / FHIR / PNG / JPG / SVG export, the **p
 
 If you use this module in your work, please cite it.
 
-**This version (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**This version (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **All versions (concept DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > The all-versions concept DOI above always resolves to the most recent archived
 > release; a version-specific DOI is minted per release when it is archived on
-> Zenodo. Until v2.4.0 is archived, cite it via the concept DOI.
+> Zenodo. Until v2.8.0 is archived, cite it via the concept DOI.
 
 Machine-readable citation metadata is in [`CITATION.cff`](CITATION.cff).
 

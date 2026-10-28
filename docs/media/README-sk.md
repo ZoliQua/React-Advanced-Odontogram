@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -479,6 +479,23 @@ Otvárané cez ikonu ozubeného kolieska na hornej lište; dialóg s uzamknutým
 **Ikony SVG** (v `src/assets/icon-svgs/`):
 `icon_8.svg` (múdrosť), `icon_gum.svg` (kosť), `icon_no_selection.svg` (zrušiť), `icon_occl.svg` (oklúzny pohľad), `icon_pulp.svg` (dreň)
 
+**Vlastné kresby hostiteľskej aplikácie**. Hostiteľská aplikácia môže ktorúkoľvek z týchto šablón nahradiť vlastným SVG bez forkovania knižnice, cez `setToothTemplateOverrides()` alebo prop `toothTemplates`. Prepisy sú kľúčované **podľa anatomického profilu**, pretože šablóna číslo N je v `classic` a v `measured` iná kresba:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — všetko prijaté
+```
+
+Každý profil prijíma štyri mapy — `templates`, `templatesOccl` a pri profile, ktorý kreslí mliečne zuby vlastnou grafikou (`measured`), `primaryTemplates` a `primaryTemplatesOccl`. Prepis prežije zmenu anatomického profilu, `null` obnoví továrenskú grafiku a ak nie je zadané nič, engine servíruje presne tie isté kresby ako doteraz.
+
+Šablóna je nedôveryhodný markup, ktorý skončí v živom DOM, preto sa **pred vykreslením preveruje** — pozri bezpečnostné poznámky nižšie. Odmietnutú šablónu vypíše `getToothTemplateRejections()` a továrenská kresba zostáva na mieste: v diagrame nikdy nechýba zub.
+
 ### 🔢 Systémy číslovania
 
 **FDI (ISO 3950):** Trvalé zuby 11-18, 21-28, 31-38, 41-48. Mliečne zuby 51-55, 61-65, 71-75, 81-85.
@@ -544,12 +561,20 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Nie je to farba: CSS filter nad celým implantátom.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -558,6 +583,12 @@ export default function Host(){
 ```
 
 Kresby nesú svoje farby ako vlastné vlastnosti CSS s dodávanou farbou ako záložnou hodnotou, takže oba anatomické profily sledujú jedno nastavenie a export ich vyrieši skôr, než opustí stránku. Úplná tabuľka tokenov je v `tools/toothgen/palette.py`. Tmavý režim prináša vlastnú paletu kresieb, takže diagram stmavne spolu s rozhraním namiesto toho, aby oslňoval. V profile `measured` nesie korunka aj koreň navyše dentínové jadro: preberá farbu `body`, kým nenastavíte `dentin`, takže hranica sa objaví až vtedy, keď si ju vyžiadate. V tmavom režime okluzálne dlaždice tmavnú spolu s bočnými pohľadmi a kazivá lézia si ponecháva tmavú výplň — na svetlú sa prepne obrys a ten nesie tvar, pretože „kaz = tmavý“ sa prečíta skôr než akýkoľvek kontrastný pomer.
+
+**Implantát sa tónuje, nie prefarbuje**. Jeho kresba nesie približne 65 takmer zhodných kovových sivých odtieňov, ktoré kódujú zdroj svetla, preto zámerne nie sú tematizovateľné jeden po druhom: nastavené jednotlivo by sa tieňovanie sploštilo namiesto prefarbenia. `--odon-implant-tint` je CSS filter nad implantátom ako celkom, takže každý odtieň sa posunie spoločne a vzťahy medzi nimi ostanú zachované — `hue-rotate(205deg) saturate(.85)`, alebo vlastný `url(#…)` filter. Kým ho nenastavíte, je `none`, a vrstvu periimplantátovej straty kosti nechá na pokoji: tá leží mimo filtrovanej skupiny, takže kozmetické nastavenie nikdy nemôže posunúť klinický signál.
+
+**…alebo plochý, ak je taká vaša paleta.** `--odon-implant-fill` naraz nahradí výplň každého tvaru implantátu, takže plochá klinická paleta nepotrebuje vlastný filter. Každý tvar sa vracia k sivej, v ktorej je nakreslený, takže bez nastaveného tokenu je implantát presne pôvodná kresba — neexistuje jedna spoločná východisková hodnota. Obe veci sa dopĺňajú: výplň zrovná, tónovanie potom posunie. Týka sa len `fill`, takže okraje okluzálnych otvorov skrutky si zachovajú obrys a vrstva periimplantátovej straty kosti ostane nedotknutá, rovnako ako pri tónovaní.
+
+**Hrúbka obrysu je tiež témovateľná**. Kresby neuvádzajú žiadnu `stroke-width`, takže kreslia východiskovou hodnotou SVG `1`; mení to `themeConfig.tooth.outlineWidth` — alebo `--odon-tooth-outline-width`. Nesie ju každá vrstva, ktorá je vlastnou siluetou zuba: trvalá aj mliečna korunka, koreňový zvyšok, pripravený pahýľ, zub pod ďasnom, všetkých sedem stavov fraktúry a okluzálny priemet. Obrys si tak zachová jednotnú hrúbku bez ohľadu na to, ako je zub zaznamenaný, namiesto toho, aby sa pri radixe alebo fraktúre vrátil na `1` — a okluzálne dlaždice hrubnú spolu s bočnými pohľadmi, vedľa ktorých v schéme stoja. Pevnú hrúbku si ponechávajú len okluzálne ryhy.
 
 **Integrácia pluginu:**
 ```tsx
@@ -609,6 +640,7 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `onDarkModeChange` | `(dark) => void` | — | Spätné volanie pri prepnutí tmavého režimu. Vyžadované pre riadený režim. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Vlastné prepísanie farieb cez CSS vlastné vlastnosti (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Vlastné SVG pluginy pre vizuálne prekrytia a vlastný stav každého zuba. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Kresby zubov od hostiteľa (SVG text) namiesto továrenských, podľa anatomického profilu. Preverené; odmietnutá šablóna ponechá továrenskú kresbu. |
 | `readOnly` | `boolean` | `undefined` | Zakázanie všetkých interakcií (klik, dotyk, klávesnica). Užitočné pre zobrazenia tlače/správ. |
 | `enableNotes` | `boolean` | `undefined` | Povolenie poznámok ku každému zubu. Dvojklik na zub pre pridanie/úpravu poznámok. |
 
@@ -634,6 +666,8 @@ npm run docs           # Generovať dokumentáciu TypeDoc v docs/
 | `registerPlugins(plugins)` | Registrovať vlastné SVG pluginy |
 | `setPluginState(toothNo, pluginId, value)` | Nastaviť vlastný stav pluginu pre zub |
 | `getPluginState(toothNo, pluginId)` | Získať vlastný stav pluginu pre zub |
+| `setToothTemplateOverrides(overrides)` | Nahradí továrenské kresby zubov SVG od hostiteľa, podľa anatomického profilu; `null` obnoví továrenskú grafiku. Markup sa preveruje a odmietnutá šablóna ponechá továrenskú kresbu |
+| `getToothTemplateRejections()` | Doteraz odmietnuté šablóny hostiteľa a dôvod — `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | Získať lokalizovaný súhrn všetkých aktívnych stavov |
 | `getOdontogramSummary()` | Získať štruktúrovaný, lokalizovaný textový súhrn celého odontogramu (počty, sekcie) |
 | `onStateChange(callback)` | Prihlásiť sa na odber zmien stavu; vracia funkciu na odhlásenie |
@@ -851,6 +885,7 @@ Okrem vlastného exportu odontogramu Stav JSON / FHIR / PNG / JPG / SVG má **pa
 ### 🔒 Bezpečnostné poznámky
 
 - **Pluginy bežia ako dôveryhodný kód.** Návratová hodnota `renderSvg()` pluginu sa vkladá do SVG živého grafu. Tento výstup je pred vložením sanitizovaný knižnicou [DOMPurify](https://github.com/cure53/DOMPurify) (SVG profil plus `svgFilters`) — `<script>`, `<iframe>`, `<object>`, `<embed>` a `<foreignObject>` sú úplne zakázané a úplne škodlivý výstup je zahodený namiesto čiastočného vykreslenia. Toto znižuje dosah kompromitovaného alebo chybného pluginu, no pluginy by sa mali naďalej načítavať iba zo zdrojov, ktorým dôverujete — sanitizácia je poistka, nie náhrada za preverenie.
+- **Šablóny zubov od hostiteľa sa odmietajú, nie čistia.** Kresba odovzdaná do `setToothTemplateOverrides()` sa pred vykreslením preveruje: jediný koreň `<svg>`; DOMPurify (profil SVG, zakázané `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` a animačné elementy) — a ak musí DOMPurify odstrániť *čokoľvek*, celá šablóna sa **odmietne** namiesto tichého vyčistenia, takže hostiteľ nikdy nekreslí iný markup, než aký dodal; `href` len na fragment `#id` a žiadne `url(` ani `@import` v elemente `<style>` či atribúte `style`, aby sa nič zo šablóny nedostalo na sieť; a musí niesť každé id vrstvy továrenskej kresby, ktorú nahrádza, lebo engine prepína vrstvy podľa id. Odmietnutú šablónu ohlási `getToothTemplateRejections()` a továrenská kresba zostáva v platnosti.
 - **Content-Security-Policy.** Produkčný build dema vkladá túto politiku cez tag `<meta http-equiv="Content-Security-Policy">` (vývojový server nie je ovplyvnený):
 
   ```
@@ -863,14 +898,14 @@ Okrem vlastného exportu odontogramu Stav JSON / FHIR / PNG / JPG / SVG má **pa
 
 Ak tento modul použijete vo svojej práci, prosím, citujte ho.
 
-**Táto verzia (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Táto verzia (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Všetky verzie (konceptové DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > Konceptové DOI pre všetky verzie vyššie sa vždy odkazuje na najnovšie archivované
 > vydanie; DOI špecifické pre danú verziu sa vytvára pri každom vydaní v čase jeho
-> archivácie na Zenodo. Kým nie je v2.4.0 archivovaná, citujte ju cez konceptové DOI.
+> archivácie na Zenodo. Kým nie je v2.8.0 archivovaná, citujte ju cez konceptové DOI.
 
 Strojovo čitateľné citačné metadáta sú v súbore [`CITATION.cff`](../CITATION.cff).
 

@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.7.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -479,6 +479,23 @@ A sablonok az alsó állcsontnál 180 fokkal elforgatva, a bal oldalnál vízszi
 **Ikon SVG-k** (`src/assets/icon-svgs/`):
 `icon_8.svg` (bölcsesség), `icon_gum.svg` (csont), `icon_no_selection.svg` (törlés), `icon_occl.svg` (okkluzális nézet), `icon_pulp.svg` (pulpa)
 
+**Saját fograjzok**. A host alkalmazás bármelyik sablont lecserélheti a sajátjára, a könyvtár forkolása nélkül, a `setToothTemplateOverrides()` függvénnyel vagy a `toothTemplates` proppal. A felülírások kulcsa **anatómiai profilonként** külön van, mert az N-es sablonszám a `classic` és a `measured` profilban más-más rajzot jelent:
+
+```ts
+import { setToothTemplateOverrides, getToothTemplateRejections } from "react-advanced-odontogram";
+
+setToothTemplateOverrides({
+  classic:  { templates: { 11: myIncisorSvg }, templatesOccl: { 16: myMolarOcclusalSvg } },
+  measured: { templates: { 11: myMeasuredIncisorSvg } },
+});
+
+getToothTemplateRejections(); // [] — minden sablont elfogadott
+```
+
+Profilonként négy térkép adható meg — `templates`, `templatesOccl`, és olyan profilnál, amely a tejfogakat önálló rajzként rajzolja (`measured`), `primaryTemplates` és `primaryTemplatesOccl`. A felülírás túléli az anatómiai profil váltását, a `null` visszaállítja a gyári rajzokat, és ha semmit nem adsz meg, a motor pontosan ugyanazokat a rajzokat szolgálja ki, mint eddig.
+
+A sablon nem megbízható markup, amely az élő DOM-ba kerül, ezért **a kirajzolás előtt ellenőrzésen megy át** — lásd lent a biztonsági megjegyzéseket. Az elutasított sablont a `getToothTemplateRejections()` sorolja fel, és a gyári rajz marad a helyén: a chartról soha nem tűnik el egy fog.
+
 ### 🔢 Számozási rendszerek
 
 **FDI (ISO 3950):** Felnőtt fogak 11-18, 21-28, 31-38, 41-48. Tejfogak 51-55, 61-65, 71-75, 81-85.
@@ -544,12 +561,20 @@ export default function Host(){
       body: '#f2f2f2',
       dentin: '#e6d7bf',
       outline: '#b9bdc2',
+      // Not a colour: the width of that outline, in SVG user units.
+      outlineWidth: '1.4',
       gum: '#e8a5a0',
       bone: '#f6e6c8',
     },
     // Any palette token by name, for the surfaces `tooth` does not cover
     // (per-material restoration colours, gradient stops).
-    tokens: { '--odon-rest-gold': '#d4af37' },
+    tokens: {
+      '--odon-rest-gold': '#d4af37',
+      // Nem szín: CSS-szűrő az implantátum egészén.
+      '--odon-implant-tint': 'hue-rotate(205deg) saturate(.85)',
+      // …or one flat colour over the whole fixture, instead of the tint.
+      '--odon-implant-fill': '#8fa6b8',
+    },
     // The selection highlight. Not artwork — the chart draws it around a
     // tile — but it lives here so one object covers the whole palette.
     selection: { color: '#3b7bff', borderStyle: 'dashed' },
@@ -558,6 +583,12 @@ export default function Host(){
 ```
 
 A rajzok CSS egyéni tulajdonságként viselik a színeiket, a szállított szín a tartalék érték — így egyetlen beállítást mindkét anatómiaprofil követ, az export pedig feloldja őket, mielőtt elhagynák az oldalt. A teljes token-tábla: `tools/toothgen/palette.py`. A sötét mód saját rajzpalettát hoz, így a diagram a felülettel együtt sötétedik, nem világít bele. A `measured` profilban a korona és a gyökér dentinmagot is visel: amíg a `dentin` nincs beállítva, a testszínt veszi fel, tehát a határvonal csak akkor jelenik meg, ha kéred. Sötét módban a rágófelszíni csempék az oldalnézetekkel együtt sötétednek, a szuvas lézió pedig megtartja a sötét kitöltését — a körvonala vált világosra és az viszi a formát, mert a „szuvasodás = sötét” hamarabb olvasódik ki, mint bármilyen kontrasztarány.
+
+**Az implantátumot színezzük, nem átfestjük**. A rajza körülbelül 65 egymáshoz közeli fémszürkét hordoz, amelyek egy fényforrást kódolnak, ezért szándékosan nem témázhatók egyenként: külön-külön beállítva az árnyalás ellaposodna, nem újraszíneződne. Az `--odon-implant-tint` az egész implantátumra tett CSS-szűrő, így minden szürke együtt mozdul, és a köztük lévő viszonyok megmaradnak — `hue-rotate(205deg) saturate(.85)`, vagy saját `url(#…)` szűrő. Alapértelmezésben `none`, és nem érinti a peri-implantáris csontvesztés rétegét: az a szűrt csoporton kívül van, így kozmetikai beállítás soha nem mozdíthat el klinikai jelet.
+
+**…vagy laposra állítható, ha a paletta ilyen.** A `--odon-implant-fill` egyetlen lépésben kicseréli az implantátum minden alakzatának kitöltését, így egy lapos klinikai palettának nincs szüksége saját szűrőre. Minden alakzat ahhoz a szürkéhez esik vissza, amelyben rajzolva van, ezért a token beállítása nélkül az implantátum pontosan a régi rajz marad — nincs egyetlen közös alapérték, amit meg lehetne adni. A kettő együttműködik: a kitöltés laposít, a tint utána eltol. Csak a `fill` érintett, így az okkluzális csavarfuratok körvonala megmarad, a peri-implantáris csontvesztés rétegét pedig ugyanúgy nem érinti, ahogy a tint sem.
+
+**A kontúr vastagsága is témázható**. A rajzok egyáltalán nem adnak meg `stroke-width`-et, így az SVG alapértelmezett `1`-esével húzódnak; ezt állítja a `themeConfig.tooth.outlineWidth` — vagy a `--odon-tooth-outline-width`. Minden olyan rétegre rákerül, amely magának a fognak a sziluettje: a maradó és a tejfog koronájára, a gyökérmaradványra, a csonkelőkészítésre, az íny alatti fogra, mind a hét törésmintázatra és az okkluzális nézetre. A kontúr így egyforma vastag marad akkor is, ha a fogat radixnak vagy töröttnek rögzítik, ahelyett hogy ilyenkor visszaugrana `1`-re — és az okkluzális csempék együtt vastagodnak az oldalnézetekkel, amelyek mellett a sémában állnak. Rögzített vastagságúak csak az okkluzális barázdák maradnak.
 
 **Plugin integráció:**
 ```tsx
@@ -609,6 +640,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `onDarkModeChange` | `(dark) => void` | — | Callback sötét mód váltáskor. Szükséges vezérelt módhoz. |
 | `themeConfig` | `OdontogramThemeConfig` | `undefined` | Egyedi szín felülírások CSS custom property-kkel (`--odon-*`). |
 | `plugins` | `OdontogramPlugin[]` | `undefined` | Egyedi SVG pluginek vizuális fedvényekhez és foganként egyedi állapothoz. |
+| `toothTemplates` | `ToothTemplateOverrides` | `undefined` | Host által megadott fograjzok (SVG szöveg) a gyáriak helyett, anatómiai profilonként. Ellenőrzött; elutasítás esetén a gyári rajz marad. |
 | `readOnly` | `boolean` | `undefined` | Összes interakció letiltása (kattintás, érintés, billentyűzet). Nyomtatási/jelentés nézetekhez. |
 | `enableNotes` | `boolean` | `undefined` | Fogankénti megjegyzések engedélyezése. Dupla kattintás a fogra megjegyzés hozzáadásához/szerkesztéséhez. |
 
@@ -634,6 +666,8 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 | `registerPlugins(plugins)` | Egyedi SVG pluginek regisztrálása |
 | `setPluginState(toothNo, pluginId, value)` | Plugin egyedi állapot beállítása egy foghoz |
 | `getPluginState(toothNo, pluginId)` | Plugin egyedi állapot lekérdezése egy foghoz |
+| `setToothTemplateOverrides(overrides)` | A gyári fograjzok lecserélése host által megadott SVG-re, anatómiai profilonként; a `null` visszaállítja a gyári rajzokat. A markup ellenőrzésen megy át, elutasítás esetén a gyári rajz marad |
+| `getToothTemplateRejections()` | Az eddig elutasított host-sablonok és az elutasítás oka — `{ profile, set, key, reason }[]` |
 | `getToothStateSummary(toothNo)` | Lokalizált összesítés az összes aktív állapotról |
 | `getOdontogramSummary()` | Strukturált, lokalizált szöveges összegzés a teljes státuszról (fogszámok, szekciók) |
 | `onStateChange(callback)` | Feliratkozás állapotváltozásra; leiratkozó függvényt ad vissza |
@@ -853,6 +887,7 @@ Az odontogram saját Státusz JSON / FHIR / PNG / JPG / SVG exportján túl a **
 ### 🔒 Biztonsági megjegyzések
 
 - **A pluginok megbízható kódként futnak.** Egy plugin `renderSvg()` visszatérési értéke bekerül az élő diagram SVG-jébe. Ez a kimenet a beszúrás előtt [DOMPurify](https://github.com/cure53/DOMPurify)-jal van megtisztítva (SVG profil, plusz `svgFilters`) — a `<script>`, `<iframe>`, `<object>`, `<embed>` és `<foreignObject>` elemek eleve tiltottak, és egy teljesen rosszindulatú kimenet inkább eldobásra kerül, mintsem részlegesen renderelődjön. Ez csökkenti egy kompromittált vagy hibás plugin okozta kárt, de a pluginokat továbbra is csak megbízható forrásból szabad betölteni — a tisztítás egy biztonsági háló, nem az ellenőrzés helyettesítője.
+- **A host által megadott fogsablonokat elutasítjuk, nem megtisztítjuk.** A `setToothTemplateOverrides()`-nak átadott rajz a kirajzolás előtt ellenőrzésen megy át: egyetlen `<svg>` gyökérelem; DOMPurify (SVG-profil, tiltott `<script>`, `<iframe>`, `<object>`, `<embed>`, `<foreignObject>`, `<image>`, `<a>` és animációs elemek) — és ha a DOMPurify-nak *bármit* el kell távolítania, a teljes sablon **elutasításra kerül**, nem pedig csendben megtisztul, így a host soha nem rajzol olyan markupot, amely eltér attól, amit megadott; `href` csak `#id` töredékre mutathat, és sem `<style>` elemben, sem `style` attribútumban nem lehet `url(` vagy `@import`, így a sablon semmilyen tartalma nem érheti el a hálózatot; végül tartalmaznia kell a lecserélt gyári rajz minden rétegazonosítóját, mert a motor azonosító alapján kapcsolja a rétegeket. Az elutasított sablont a `getToothTemplateRejections()` jelenti, és a gyári rajz marad érvényben.
 - **Content-Security-Policy.** A demó **production build-je** ezt a szabályzatot szúrja be egy `<meta http-equiv="Content-Security-Policy">` tag formájában (a dev szervert ez nem érinti):
 
   ```
@@ -865,14 +900,14 @@ Az odontogram saját Státusz JSON / FHIR / PNG / JPG / SVG exportján túl a **
 
 Ha ezt a modult használod a munkádban, kérlek hivatkozz rá.
 
-**Ez a verzió (v2.4.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.4.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Ez a verzió (v2.8.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Összes verzió (koncepció DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > A fenti, összes verzióra vonatkozó koncepció DOI mindig a legutóbb archivált
 > kiadásra mutat; egy verzió-specifikus DOI minden kiadáshoz akkor jön létre,
-> amikor azt archiválják a Zenodón. Amíg a v2.4.0 nincs archiválva, a koncepció
+> amikor azt archiválják a Zenodón. Amíg a v2.8.0 nincs archiválva, a koncepció
 > DOI-val hivatkozz rá.
 
 A géppel olvasható hivatkozási metaadatok a [`CITATION.cff`](../CITATION.cff) fájlban találhatók.

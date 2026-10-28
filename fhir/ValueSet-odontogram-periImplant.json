@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-periImplant",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-periImplant",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "name": "OdontogramPeriImplant",
   "title": "Odontogram — periImplant values",
   "status": "active",

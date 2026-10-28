@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.8.0] - 2026-10-28
+## [2.8.1] - 2026-10-28
+
+> 2.8.0 was tagged but never reached npm: an interrupted publish left the
+> version staged on the registry, which no later attempt can publish over.
+> Everything its section listed ships here instead, unchanged — the jump is a
+> registry accident, not a patch on top of a release anyone could install.
 
 ### Added
 

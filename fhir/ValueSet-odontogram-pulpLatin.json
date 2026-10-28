@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-pulpLatin",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-pulpLatin",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "name": "OdontogramPulpLatin",
   "title": "Odontogram — pulpLatin values",
   "status": "active",

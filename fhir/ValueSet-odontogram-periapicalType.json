@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-periapicalType",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-periapicalType",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "name": "OdontogramPeriapicalType",
   "title": "Odontogram — periapicalType values",
   "status": "active",

@@ -2,7 +2,7 @@
   "resourceType": "ValueSet",
   "id": "odontogram-fillingMaterial",
   "url": "https://github.com/ZoliQua/React-Advanced-Odontogram/fhir/ValueSet/odontogram-fillingMaterial",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "name": "OdontogramFillingMaterial",
   "title": "Odontogram — fillingMaterial values",
   "status": "active",

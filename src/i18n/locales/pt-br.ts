@@ -333,6 +333,8 @@ const ptBr: Record<string, string> = {
   "language.ar": "🇸🇦 Árabe",
   "language.zh": "🇨🇳 Chinês simplificado",
   "language.fr": "🇫🇷 Francês",
+  "language.ja": "🇯🇵 Japonês",
+  "language.ko": "🇰🇷 Coreano",
   "numbering.label": "Numeração",
   "numbering.fdi": "FDI - ISO 3950",
   "numbering.universal": "Universal - EUA",

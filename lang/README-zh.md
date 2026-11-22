@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -15,7 +15,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md)
+> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md) | 🇯🇵 [日本語](README-ja.md) | 🇰🇷 [한국어](README-ko.md)
 
 ---
 
@@ -85,7 +85,7 @@ import "react-advanced-odontogram/style.css";
 export function Chart() {
   return (
     <OdontogramShell
-      language="zh"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr
+      language="zh"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr | ja | ko
       numberingSystem="FDI"  // FDI | Universal | Palmer
       darkMode={false}
     />
@@ -99,7 +99,7 @@ export function Chart() {
 
 | Prop | 类型 | 默认值 | 说明 |
 |------|------|---------|------|
-| `language` | `Language` | `"hu"` | 界面语言（`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`）。 |
+| `language` | `Language` | `"hu"` | 界面语言（`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`/`fr`/`ja`/`ko`）。 |
 | `numberingSystem` | `"FDI" \| "Universal" \| "Palmer"` | `"FDI"` | 牙位编号系统。 |
 | `darkMode` | `boolean` | `false` | 深色主题切换。 |
 | `readOnly` | `boolean` | `false` | 禁用所有编辑（仅查看）。 |
@@ -272,7 +272,7 @@ export default function OdontogramClient() {
 - ⏳ 图像导出过程中的进度浮层
 - 🎓 18 步交互式新手导览
 - 🔢 三种牙位编号系统（FDI、通用编号法、Palmer）
-- 🌐 国际化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR），支持语言切换；主包中只包含英语——其他每种语言都是单独的分块，首次选择时才下载
+- 🌐 国际化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO），支持语言切换；主包中只包含英语——其他每种语言都是单独的分块，首次选择时才下载
 - 🌗 支持深色模式，附带切换按钮（独立控制或由父应用控制）
 - 🎨 通过 CSS 自定义属性（`--odon-*`）实现的自定义主题配置（`themeConfig` 属性）
 - 📱 移动端触控体验：点按缩放弹出层、长按上下文菜单、双指缩放、符合 WCAG 标准的 44px 触控目标、牙弓切换导航
@@ -301,7 +301,7 @@ export default function OdontogramClient() {
 - 🎛️ 控件与状态面板
 - 🎨 SVG 分层渲染引擎及模板
 - 🔢 牙位编号与标签映射（FDI/通用编号法/Palmer）
-- 🌐 本地化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR）
+- 🌐 本地化（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO）
 - 💾 状态导出/导入
 - 📋 状态附加功能：预定义修复体模板
 - 🎨 主题配置：通过 `--odon-*` CSS 属性实现的可自定义配色方案
@@ -317,7 +317,7 @@ export default function OdontogramClient() {
 ### 🛠️ 界面控件
 
 **🔝 顶部工具栏：**
-- 语言切换器（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR 下拉菜单）
+- 语言切换器（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO 下拉菜单）
 - 深色模式切换按钮（太阳/月亮图标，在亮色与深色主题间切换）
 - 编号系统切换器（FDI/通用编号法/Palmer 下拉菜单）
 - 导出状态 / 导入状态按钮
@@ -856,7 +856,7 @@ enablePersistence({
 - `src/plugin.ts` - `OdontogramPlugin` 类型、`PluginLayer`、`getQuadrant()`、`LAYER_Z` 层级优先级
 - `src/theme.ts` - `OdontogramThemeConfig` 类型及 `applyThemeConfig()` 工具函数
 - `src/status_extras.ts` - 34 种预定义修复体模板（桥、义齿、杆卡结构）
-- `src/i18n/` - 翻译文件（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR）及国际化 hook
+- `src/i18n/` - 翻译文件（HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO）及国际化 hook
 - `src/utils/numbering.ts` - FDI、通用编号法、Palmer 编号转换
 - `src/registry/` - 声明式临床轴注册表：FHIR 字段映射、SVG 清除集/布尔标志激活、修复体类型×材料矩阵、界面选项列表（生成导出/导入、FHIR 及选择器界面的单一数据来源）
 - `src/fhir/` - HL7 FHIR R4 导出/导入：`toFhir.ts`/`fromFhir.ts`、代码系统、字段映射、基础类型

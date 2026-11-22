@@ -11,6 +11,7 @@
 // a real app starts in.
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
+import { LANGUAGES, FALLBACK_LANGUAGE } from "../i18n/languages";
 import path from "node:path";
 import { createElement } from "react";
 import { render, cleanup, waitFor, act, renderHook } from "@testing-library/react";
@@ -55,9 +56,14 @@ describe("i18n: the code split holds", () => {
 
   it("the loader reaches every other language through a literal dynamic import", () => {
     const loader = readFileSync(path.join(SRC, "i18n/loader.ts"), "utf8");
-    for (const lang of ["hu", "de", "es", "it", "sk", "pl", "ru", "pt-br", "zh", "ar", "fr"]) {
+    // From the registry rather than a literal list: this guard existed to make
+    // sure no language is left out of the code-splitting, and a hand-written
+    // list is the one way to leave a language out of the guard itself.
+    for (const lang of LANGUAGES.filter((l) => l !== FALLBACK_LANGUAGE)) {
       expect(loader, lang).toContain(`import("./locales/${lang}")`);
     }
+    // English is the one statically bundled locale, being the fallback.
+    expect(FALLBACK_LANGUAGE).toBe("en");
     expect(loader).toMatch(/^import en from "\.\/locales\/en";$/m);
   });
 });

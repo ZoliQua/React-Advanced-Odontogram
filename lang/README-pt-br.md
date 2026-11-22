@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -15,7 +15,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md)
+> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md) | 🇯🇵 [日本語](README-ja.md) | 🇰🇷 [한국어](README-ko.md)
 
 ---
 
@@ -83,7 +83,7 @@ import "react-advanced-odontogram/style.css";
 export function Chart() {
   return (
     <OdontogramShell
-      language="pt-br"       // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr
+      language="pt-br"       // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr | ja | ko
       numberingSystem="FDI"  // FDI | Universal | Palmer
       darkMode={false}
     />
@@ -97,7 +97,7 @@ export function Chart() {
 
 | Prop | Tipo | Padrão | Descrição |
 |------|------|---------|-------------|
-| `language` | `Language` | `"hu"` | Idioma da interface (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`). |
+| `language` | `Language` | `"hu"` | Idioma da interface (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`/`fr`/`ja`/`ko`). |
 | `numberingSystem` | `"FDI" \| "Universal" \| "Palmer"` | `"FDI"` | Sistema de numeração dentária. |
 | `darkMode` | `boolean` | `false` | Alternância de tema escuro. |
 | `readOnly` | `boolean` | `false` | Desativa toda a edição (somente visualização). |
@@ -270,7 +270,7 @@ Ou carregue-o com um dynamic import somente cliente: `dynamic(() => import("./Od
 - ⏳ Overlay de progresso durante a exportação de imagem
 - 🎓 Tour interativo de introdução em 18 passos
 - 🔢 Três sistemas de numeração (FDI, Universal, Palmer)
-- 🌐 I18n — 12 idiomas de interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) com um seletor de idioma; o árabe renderiza a interface da direita para a esquerda com os gráficos dentário/perio fixados da esquerda para a direita (tradução automática, revisão por falante nativo pendente para AR/ZH/FR); só o inglês vai no pacote principal — cada outro idioma é um chunk separado, baixado na primeira vez que é selecionado
+- 🌐 I18n — 14 idiomas de interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) com um seletor de idioma; o árabe renderiza a interface da direita para a esquerda com os gráficos dentário/perio fixados da esquerda para a direita (tradução automática, revisão por falante nativo pendente para AR/ZH/FR/JA/KO); só o inglês vai no pacote principal — cada outro idioma é um chunk separado, baixado na primeira vez que é selecionado
 - 🌗 Suporte a modo escuro com botão de alternância (autônomo ou controlado pela aplicação pai)
 - 🎨 Configuração de tema personalizada (prop `themeConfig`) com propriedades CSS personalizadas (`--odon-*`)
 - 📱 UX de toque para dispositivos móveis: popover de tocar-para-zoom, menu de contexto por pressão longa, pinça-para-zoom, alvos de toque WCAG de 44px, navegação por alternância de arcada
@@ -299,7 +299,7 @@ Ou carregue-o com um dynamic import somente cliente: `dynamic(() => import("./Od
 - 🎛️ Controles e painel de status
 - 🎨 Motor de camadas SVG e modelos
 - 🔢 Numeração de dentes e mapeamento de rótulos (FDI/Universal/Palmer)
-- 🌐 Localização — 12 idiomas de interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR), incluindo árabe (RTL)
+- 🌐 Localização — 14 idiomas de interface (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO), incluindo árabe (RTL)
 - 💾 Exportação/importação de estado
 - 📋 Extras de status: modelos de restauração predefinidos
 - 🎨 Configuração de tema: paleta de cores personalizável via propriedades CSS `--odon-*`
@@ -315,7 +315,7 @@ Ou carregue-o com um dynamic import somente cliente: `dynamic(() => import("./Od
 ### 🛠️ Controles da interface
 
 **🔝 Barra superior:**
-- Seletor de idioma (dropdown HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR)
+- Seletor de idioma (dropdown HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO)
 - Botão de alternância de modo escuro (ícone sol/lua, alterna entre tema claro e escuro)
 - Seletor de sistema de numeração (dropdown FDI/Universal/Palmer)
 - Botões Export Status / Import Status
@@ -632,7 +632,7 @@ npm run docs           # Generate TypeDoc docs in docs/
 
 | Prop | Tipo | Padrão | Descrição |
 |---|---|---|---|
-| `language` | `string` | `'hu'` | Idioma da interface (hu/en/de/es/it/sk/pl/ru/pt-br/ar/zh/fr) |
+| `language` | `string` | `'hu'` | Idioma da interface (hu/en/de/es/it/sk/pl/ru/pt-br/ar/zh/fr/ja/ko) |
 | `onLanguageChange` | `(lang) => void` | — | Callback quando o idioma muda |
 | `numberingSystem` | `string` | `'FDI'` | Sistema de numeração (FDI/Universal/Palmer) |
 | `onNumberingChange` | `(system) => void` | — | Callback quando a numeração muda |
@@ -854,7 +854,7 @@ Além da própria exportação Status JSON / FHIR / PNG / JPG / SVG do odontogra
 - `src/plugin.ts` - tipo `OdontogramPlugin`, `PluginLayer`, `getQuadrant()`, prioridades de z-index `LAYER_Z`
 - `src/theme.ts` - tipo `OdontogramThemeConfig` e utilitário `applyThemeConfig()`
 - `src/status_extras.ts` - 34 modelos de restauração predefinidos (pontes, próteses, construções tipo barra)
-- `src/i18n/` - traduções (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) e hook de i18n
+- `src/i18n/` - traduções (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) e hook de i18n
 - `src/utils/numbering.ts` - conversão de numeração FDI, Universal, Palmer
 - `src/registry/` - registry declarativo de eixos clínicos: mapeamentos de campo FHIR, ativação de SVG-clear-set/boolean-flag, matriz tipo×material de restauração, listas de opções de interface (fonte única de verdade gerando exportação/importação, FHIR e a interface do seletor)
 - `src/fhir/` - exportação/importação HL7 FHIR R4: `toFhir.ts`/`fromFhir.ts`, sistemas de código, mapeamentos de campo, primitivos

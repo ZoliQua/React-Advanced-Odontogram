@@ -5,6 +5,70 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2026-11-22
+
+### Added
+
+- **Japanese (`ja`) and Korean (`ko`): the thirteenth and fourteenth UI languages.** Both carry the full key set — all 1017 keys, checked
+  against Hungarian, the authoritative source — with the clinical terminology taken from Japanese Society of Conservative Dentistry /
+  Japanese Society of Periodontology and Korean Academy of Conservative Dentistry / Korean Academy of Periodontology usage. The 2017
+  periodontal classification keeps its international stage/grade wording in both, as the Japanese and Korean literature does. Like every
+  language but English, each is its own lazy chunk; `language.ja` / `language.ko` were added to the other twelve locales so every language
+  can name them, and both appear in the topbar menu and in Settings. Neither has had a native-speaker review yet — the READMEs say so,
+  alongside AR/ZH/FR.
+
+- **Two embedded PDF fonts, `src/fonts/notoJP.ts` and `src/fonts/notoKR.ts`.** The report embeds one subset font per script, so a PDF export
+  works offline; the existing Chinese subset contains no kana and no hangul, so neither language could have rendered. The coverage of each
+  new subset is a measured trade-off, not a default:
+
+  | | coverage | size |
+  |---|---|---|
+  | `notoJP.ts` | every kana + the kanji in the `ja` strings | 284 KB |
+  | `notoKR.ts` | **all 11,172** precomposed hangul syllables + jamo | 3.2 MB |
+
+  Japanese has a phonetic fallback — any name can be written in kana — so complete kana matters more than complete kanji; all 20,992 CJK
+  ideographs measured 5.65 MB, twenty times the file for the same fixed report labels. Korean has no fallback: a PDF performs no OpenType
+  composition here, so a hangul syllable is one glyph, and a syllable missing from the subset cannot be drawn at all. The UI uses 429 of
+  them; a patient's name uses whichever it likes, and a dental report naming the patient in empty boxes is not a report. Both are lazy
+  chunks, loaded only when a PDF is exported in that language — the trade-off the measured tooth anatomy already makes at 3.8 MB.
+
+- **`tools/fonts/build_fonts.py`: the embedded fonts are generated, not hand-made.** It reads the codepoints each locale actually uses
+  straight from `src/i18n/locales/<lang>.ts`, instances the Noto variable font to wght=400, subsets, and writes the base64 module. The
+  previous fonts had no generator, which is how both defects below went unnoticed. Follows `tools/toothgen`'s rule: change the script and
+  re-run; never hand-edit a generated file.
+
+- **`src/__tests__/pdf-font-coverage.test.ts`: does the PDF actually render, or does it render boxes?** It parses the base64 each font module
+  ships, walks its `cmap` (formats 4 and 12, computing glyph ids so a range mapped to `.notdef` is never counted as covered), and compares
+  that against the locale the font serves. Both defects below fail it; restoring the 2.8.0 Chinese font fails it on 82 named characters and
+  on the `fvar` table at once.
+
+### Fixed
+
+- **Chinese PDF text rendered hairline Thin.** The Chinese subset was cut from a variable font without instancing it, so `fvar`/`gvar`
+  survived into the embedded TTF — and that font's `fvar` default is `wght=100`. jsPDF has no variable-font support: it renders the default
+  instance. Every Chinese PDF has been Thin. Instancing to `wght=400` fixes the weight and, with the variation tables gone, makes the file
+  **40% smaller** (489 KB → 296 KB).
+
+- **The Chinese PDF font was missing 84 characters the Chinese UI displays.** It was generated before the case-diagnoses strings existed and
+  never regenerated, so 唾 (saliva), 腺 (gland), 瘘 (fistula), 颞 (temporal) and the rest came out as missing glyphs. Regenerating from the
+  locale closed the gap; the new test is what will keep it closed.
+
+- **Three language tests restated the language list instead of reading it.** `translations.test.ts`, `tour.test.ts`, `dx-settings.test.ts` and
+  the `i18n-lazy-load` code-splitting guard each carried a hand-written list of twelve codes, so a new language could be wired into
+  `LANGUAGES`, `loader.ts`, `translations.ts` and both pickers and still have none of its 1000+ keys checked — the suite would stay green and
+  say nothing. All four now derive the list from `LANGUAGES`, and the two that asserted `toHaveLength(12)` compare against the registry.
+
+### Changed
+
+- **`notoArabic.ts` is now a static face too**, 20% smaller (472 KB → 378 KB), with its coverage verified unchanged. This is **not** a
+  rendering fix: unlike the Chinese font, its `fvar` default was already `wght=400`, so Arabic was never hairline. Every embedded face is now
+  static, which is what the new test requires — a font whose variable default happens to be right today is one edit away from not being.
+
+### Notes
+
+- Payload version unchanged at 2.19; no state, render or FHIR change. SVG-fingerprint, FHIR-golden and roundtrip-golden fixtures are
+  byte-identical.
+
 ## [2.8.0] - 2026-10-28
 
 ### Added

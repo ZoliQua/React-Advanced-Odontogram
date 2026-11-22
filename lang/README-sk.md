@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -15,7 +15,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md)
+> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md) | 🇯🇵 [日本語](README-ja.md) | 🇰🇷 [한국어](README-ko.md)
 
 ---
 
@@ -83,7 +83,7 @@ import "react-advanced-odontogram/style.css";
 export function Chart() {
   return (
     <OdontogramShell
-      language="sk"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr
+      language="sk"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr | ja | ko
       numberingSystem="FDI"  // FDI | Universal | Palmer
       darkMode={false}
     />
@@ -97,7 +97,7 @@ export function Chart() {
 
 | Vlastnosť | Typ | Predvolená hodnota | Popis |
 |------|------|---------|-------------|
-| `language` | `Language` | `"hu"` | Jazyk používateľského rozhrania (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`). |
+| `language` | `Language` | `"hu"` | Jazyk používateľského rozhrania (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`/`fr`/`ja`/`ko`). |
 | `numberingSystem` | `"FDI" \| "Universal" \| "Palmer"` | `"FDI"` | Systém číslovania zubov. |
 | `darkMode` | `boolean` | `false` | Prepínač tmavého motívu. |
 | `readOnly` | `boolean` | `false` | Vypne všetko úpravy (iba na zobrazenie). |
@@ -270,7 +270,7 @@ Alebo ho načítajte pomocou dynamického importu iba na strane klienta: `dynami
 - ⏳ Prekrytie priebehom počas exportu obrázka
 - 🎓 18-krokový interaktívny úvodný sprievodca
 - 🔢 Tri systémy číslovania (FDI, Universal, Palmer)
-- 🌐 I18n — 12 jazykov rozhrania (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) s prepínačom jazyka; arabčina vykresľuje rozhranie sprava doľava, pričom zubné/parodontálne grafy zostávajú zľava doprava (strojovo preložené, kontrola rodeným hovorcom pre AR/ZH/FR zatiaľ neprebehla); v hlavnom balíku je len angličtina — každý ďalší jazyk je samostatný chunk, stiahnutý pri prvom výbere
+- 🌐 I18n — 14 jazykov rozhrania (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) s prepínačom jazyka; arabčina vykresľuje rozhranie sprava doľava, pričom zubné/parodontálne grafy zostávajú zľava doprava (strojovo preložené, kontrola rodeným hovorcom pre AR/ZH/FR/JA/KO zatiaľ neprebehla); v hlavnom balíku je len angličtina — každý ďalší jazyk je samostatný chunk, stiahnutý pri prvom výbere
 - 🌗 Podpora tmavého režimu s prepínacím tlačidlom (samostatný alebo riadený nadradenou aplikáciou)
 - 🎨 Vlastná konfigurácia témy (prop `themeConfig`) s CSS vlastnými vlastnosťami (`--odon-*`)
 - 📱 Mobilné dotykové UX: vyskakovacie okno pre priblíženie kliknutím, kontextová ponuka dlhým stlačením, priblíženie štipnutím, WCAG 44px dotykové ciele, navigácia prepínania oblúka
@@ -299,7 +299,7 @@ Alebo ho načítajte pomocou dynamického importu iba na strane klienta: `dynami
 - 🎛️ Ovládacie prvky a stavový panel
 - 🎨 SVG vrstevnací modul a šablóny
 - 🔢 Číslovanie zubov a mapovanie popiskov (FDI/Universal/Palmer)
-- 🌐 Lokalizácia — 12 jazykov rozhrania (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR), vrátane arabčiny (RTL)
+- 🌐 Lokalizácia — 14 jazykov rozhrania (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO), vrátane arabčiny (RTL)
 - 💾 Export/import stavu
 - 📋 Doplnky stavu: preddefinované šablóny reštaurácií
 - 🎨 Konfigurácia témy: prispôsobiteľná farebná paleta cez CSS vlastnosti `--odon-*`
@@ -315,7 +315,7 @@ Alebo ho načítajte pomocou dynamického importu iba na strane klienta: `dynami
 ### 🛠️ Ovládacie prvky rozhrania
 
 **🔝 Horná lišta:**
-- Prepínač jazyka (rozbaľovací zoznam HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR)
+- Prepínač jazyka (rozbaľovací zoznam HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO)
 - Prepínacie tlačidlo tmavého režimu (ikona slnka/mesiaca, prepína medzi svetlou a tmavou témou)
 - Prepínač systému číslovania (rozbaľovací zoznam FDI/Universal/Palmer)
 - Tlačidlá Exportovať stav / Importovať stav
@@ -854,7 +854,7 @@ Okrem vlastného exportu odontogramu Stav JSON / FHIR / PNG / JPG / SVG má **pa
 - `src/plugin.ts` - typ `OdontogramPlugin`, `PluginLayer`, `getQuadrant()`, priority z-indexu `LAYER_Z`
 - `src/theme.ts` - typ `OdontogramThemeConfig` a pomocná funkcia `applyThemeConfig()`
 - `src/status_extras.ts` - 34 preddefinovaných šablón reštaurácií (mostíky, protézy, stegové konštrukcie)
-- `src/i18n/` - preklady (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) a i18n hook
+- `src/i18n/` - preklady (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) a i18n hook
 - `src/utils/numbering.ts` - konverzia číslovania FDI, Universal, Palmer
 - `src/registry/` - deklaratívny register klinických osí: mapovania polí FHIR, aktivácia SVG-clear-set/boolean príznakov, matica typ×materiál náhrady, zoznamy možností rozhrania (jediný zdroj pravdy generujúci export/import, FHIR aj rozhranie výberov)
 - `src/fhir/` - export/import HL7 FHIR R4: `toFhir.ts`/`fromFhir.ts`, systémy kódov, mapovania polí, primitíva

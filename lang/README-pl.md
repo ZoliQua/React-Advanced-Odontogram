@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -15,7 +15,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md)
+> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md) | 🇯🇵 [日本語](README-ja.md) | 🇰🇷 [한국어](README-ko.md)
 
 ---
 
@@ -83,7 +83,7 @@ import "react-advanced-odontogram/style.css";
 export function Chart() {
   return (
     <OdontogramShell
-      language="pl"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr
+      language="pl"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr | ja | ko
       numberingSystem="FDI"  // FDI | Universal | Palmer
       darkMode={false}
     />
@@ -97,7 +97,7 @@ export function Chart() {
 
 | Prop | Typ | Domyślnie | Opis |
 |------|------|---------|-------------|
-| `language` | `Language` | `"hu"` | Język interfejsu (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`). |
+| `language` | `Language` | `"hu"` | Język interfejsu (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`/`fr`/`ja`/`ko`). |
 | `numberingSystem` | `"FDI" \| "Universal" \| "Palmer"` | `"FDI"` | System numeracji zębów. |
 | `darkMode` | `boolean` | `false` | Przełącznik trybu ciemnego. |
 | `readOnly` | `boolean` | `false` | Wyłącza całą edycję (tylko podgląd). |
@@ -270,7 +270,7 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 - ⏳ Nakładka postępu podczas eksportu obrazu
 - 🎓 18-krokowy interaktywny samouczek wprowadzający
 - 🔢 Trzy systemy numeracji (FDI, Universal, Palmer)
-- 🌐 I18n — 12 języków interfejsu (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) z przełącznikiem języka; arabski wyświetla interfejs od prawej do lewej, a wykresy zębowe/periodontologiczne pozostają od lewej do prawej (tłumaczenie maszynowe, weryfikacja przez rodzimego użytkownika dla AR/ZH/FR w toku); w głównym pakiecie jest tylko angielski — każdy inny język to osobny chunk, pobierany przy pierwszym wyborze
+- 🌐 I18n — 14 języków interfejsu (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) z przełącznikiem języka; arabski wyświetla interfejs od prawej do lewej, a wykresy zębowe/periodontologiczne pozostają od lewej do prawej (tłumaczenie maszynowe, weryfikacja przez rodzimego użytkownika dla AR/ZH/FR/JA/KO w toku); w głównym pakiecie jest tylko angielski — każdy inny język to osobny chunk, pobierany przy pierwszym wyborze
 - 🌗 Obsługa trybu ciemnego z przyciskiem przełączania (samodzielny lub kontrolowany przez aplikację nadrzędną)
 - 🎨 Konfiguracja niestandardowego motywu (właściwość `themeConfig`) z właściwościami niestandardowymi CSS (`--odon-*`)
 - 📱 Mobilny interfejs dotykowy: wyskakujące okno powiększenia przy dotknięciu, menu kontekstowe przy długim przytrzymaniu, powiększanie szczypnięciem, cele dotykowe WCAG 44px, nawigacja po łukach
@@ -299,7 +299,7 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 - 🎛️ Panel sterowania i statusu
 - 🎨 Silnik warstwowania SVG i szablony
 - 🔢 Numeracja zębów i mapowanie etykiet (FDI/Universal/Palmer)
-- 🌐 Lokalizacja — 12 języków interfejsu (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR), w tym arabski (RTL)
+- 🌐 Lokalizacja — 14 języków interfejsu (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO), w tym arabski (RTL)
 - 💾 Eksport/import statusu
 - 📋 Dodatki statusu: predefiniowane szablony uzupełnień
 - 🎨 Konfiguracja motywu: konfigurowalna paleta kolorów za pomocą właściwości CSS `--odon-*`
@@ -315,7 +315,7 @@ Ewentualnie załaduj go za pomocą dynamicznego importu tylko po stronie klienta
 ### 🛠️ Kontrolki interfejsu
 
 **🔝 Pasek górny:**
-- Przełącznik języka (lista rozwijana HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR)
+- Przełącznik języka (lista rozwijana HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO)
 - Przycisk przełączania trybu ciemnego (ikona słońca/księżyca, przełącza między jasnym i ciemnym motywem)
 - Przełącznik systemu numeracji (lista rozwijana FDI/Universal/Palmer)
 - Przyciski Eksportuj status / Importuj status
@@ -854,7 +854,7 @@ Poza własnym eksportem Status JSON / FHIR / PNG / JPG / SVG odontogramu, **wykr
 - `src/plugin.ts` - typ `OdontogramPlugin`, `PluginLayer`, `getQuadrant()`, priorytety z-index `LAYER_Z`
 - `src/theme.ts` - typ `OdontogramThemeConfig` i narzędzie `applyThemeConfig()`
 - `src/status_extras.ts` - 34 predefiniowane szablony uzupełnień (mosty, protezy, konstrukcje belkowe)
-- `src/i18n/` - tłumaczenia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) i hook i18n
+- `src/i18n/` - tłumaczenia (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) i hook i18n
 - `src/utils/numbering.ts` - konwersja numeracji FDI, Universal, Palmer
 - `src/registry/` - deklaratywny rejestr osi klinicznych: mapowania pól FHIR, aktywacja zestawu czyszczenia SVG/flag logicznych, macierz typ×materiał odbudowy, listy opcji interfejsu (jedno źródło prawdy generujące eksport/import, FHIR i interfejs selektorów)
 - `src/fhir/` - eksport/import HL7 FHIR R4: `toFhir.ts`/`fromFhir.ts`, systemy kodów, mapowania pól, prymitywy

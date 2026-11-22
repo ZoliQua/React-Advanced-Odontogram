@@ -37,6 +37,37 @@ describe("Round 2: PDF font loader", () => {
     expect(doc.fonts).toContain("NotoSC");
   });
 
+  it("selects the Japanese font + identity transform for ja", async () => {
+    const f = await loadPdfFont("ja");
+    expect(f.family).toBe("NotoJP");
+    // Kana and kanji both pass through untouched: Japanese is LTR and needs
+    // glyphs, not shaping.
+    expect(f.transform("歯科のレポート")).toBe("歯科のレポート");
+    const doc = fakeDoc();
+    expect(f.register(doc)).toBe(true);
+    expect(doc.fonts).toContain("NotoJP");
+  });
+
+  it("selects the Korean font + identity transform for ko", async () => {
+    const f = await loadPdfFont("ko");
+    expect(f.family).toBe("NotoKR");
+    expect(f.transform("치과 보고서")).toBe("치과 보고서");
+    const doc = fakeDoc();
+    expect(f.register(doc)).toBe(true);
+    expect(doc.fonts).toContain("NotoKR");
+  });
+
+  it("gives each script its OWN font, never another script's", async () => {
+    // A copy-paste in the loader's if-chain would quietly send Japanese to the
+    // Chinese font, which has no kana at all — and the chain's own tests would
+    // still pass, because each only checks its own branch.
+    const families = await Promise.all(
+      ["ar", "zh", "ja", "ko", "hu"].map(async (l) => (await loadPdfFont(l)).family),
+    );
+    expect(families).toEqual(["NotoArabic", "NotoSC", "NotoJP", "NotoKR", "Roboto"]);
+    expect(new Set(families).size).toBe(families.length);
+  });
+
   it("falls back to Roboto (Latin/Cyrillic) + identity for European locales", async () => {
     for (const lang of ["hu", "en", "ru", "pt-br"]) {
       const f = await loadPdfFont(lang);

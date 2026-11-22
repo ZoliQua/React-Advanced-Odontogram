@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -15,7 +15,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md)
+> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md) | 🇯🇵 [日本語](README-ja.md) | 🇰🇷 [한국어](README-ko.md)
 
 ---
 
@@ -85,7 +85,7 @@ import "react-advanced-odontogram/style.css";
 export function Chart() {
   return (
     <OdontogramShell
-      language="ar"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr
+      language="ar"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr | ja | ko
       numberingSystem="FDI"  // FDI | Universal | Palmer
       darkMode={false}
     />
@@ -99,7 +99,7 @@ export function Chart() {
 
 | الخاصية | النوع | الافتراضي | الوصف |
 |------|------|---------|-------------|
-| `language` | `Language` | `"hu"` | لغة الواجهة (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`). |
+| `language` | `Language` | `"hu"` | لغة الواجهة (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`/`fr`/`ja`/`ko`). |
 | `numberingSystem` | `"FDI" \| "Universal" \| "Palmer"` | `"FDI"` | نظام ترقيم الأسنان. |
 | `darkMode` | `boolean` | `false` | مفتاح تبديل السمة الداكنة. |
 | `readOnly` | `boolean` | `false` | تعطيل كل إمكانيات التحرير (عرض فقط). |
@@ -272,7 +272,7 @@ export default function OdontogramClient() {
 - ⏳ طبقة تغطية للتقدم أثناء تصدير الصورة
 - 🎓 جولة تعريفية تفاعلية من 18 خطوة
 - 🔢 ثلاثة أنظمة ترقيم (FDI، العالمي، بالمر)
-- 🌐 دعم متعدد اللغات (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) مع مبدّل لغة؛ الإنجليزية وحدها مضمّنة في الحزمة الرئيسية — كل لغة أخرى جزء منفصل يُنزَّل عند اختيارها أول مرة
+- 🌐 دعم متعدد اللغات (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) مع مبدّل لغة؛ الإنجليزية وحدها مضمّنة في الحزمة الرئيسية — كل لغة أخرى جزء منفصل يُنزَّل عند اختيارها أول مرة
 - 🌗 دعم الوضع الداكن بزر تبديل (مستقل أو متحكَّم به من التطبيق الأصل)
 - 🎨 إعدادات سمة مخصصة (خاصية `themeConfig`) عبر خصائص CSS المخصصة (`--odon-*`)
 - 📱 تجربة لمس محسّنة للجوال: نافذة تكبير عند اللمس، قائمة سياق بالضغط المطوّل، تكبير بالقرص (Pinch-to-zoom)، أهداف لمس بحجم WCAG 44px، تنقل بتبديل القوس
@@ -301,7 +301,7 @@ export default function OdontogramClient() {
 - 🎛️ عناصر التحكم ولوحة الحالة
 - 🎨 محرك طبقات SVG والقوالب
 - 🔢 ترقيم الأسنان وربط التسميات (FDI/العالمي/بالمر)
-- 🌐 الترجمة والتوطين (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR)
+- 🌐 الترجمة والتوطين (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO)
 - 💾 تصدير/استيراد الحالة
 - 📋 إضافات الحالة: قوالب ترميم جاهزة مسبقًا
 - 🎨 إعدادات السمة: لوحة ألوان قابلة للتخصيص عبر خصائص CSS من نوع `--odon-*`
@@ -317,7 +317,7 @@ export default function OdontogramClient() {
 ### 🛠️ عناصر التحكم في الواجهة
 
 **🔝 الشريط العلوي:**
-- مبدّل اللغة (قائمة منسدلة HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR)
+- مبدّل اللغة (قائمة منسدلة HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO)
 - زر تبديل الوضع الداكن (أيقونة شمس/قمر، يبدّل بين السمة الفاتحة والداكنة)
 - مبدّل نظام الترقيم (قائمة منسدلة FDI/العالمي/بالمر)
 - زرا تصدير الحالة / استيراد الحالة
@@ -856,7 +856,7 @@ enablePersistence({
 - `src/plugin.ts` - نوع `OdontogramPlugin`، `PluginLayer`، الدالة `getQuadrant()`، أولويات z-index في `LAYER_Z`
 - `src/theme.ts` - نوع `OdontogramThemeConfig` والأداة المساعدة `applyThemeConfig()`
 - `src/status_extras.ts` - 34 قالب ترميم جاهزًا مسبقًا (جسور، أطقم، تراكيب بار)
-- `src/i18n/` - الترجمات (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) وخطاف الترجمة
+- `src/i18n/` - الترجمات (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) وخطاف الترجمة
 - `src/utils/numbering.ts` - تحويل الترقيم بين FDI والعالمي وبالمر
 - `src/registry/` - سجل تصريحي لمحاور الحالة السريرية: ربط حقول FHIR، تفعيل مجموعة SVG الواضحة/العلامات المنطقية، مصفوفة نوع×مادة الترميم، قوائم خيارات الواجهة (مصدر وحيد للحقيقة يولّد التصدير/الاستيراد وFHIR وواجهة المحدِّدات)
 - `src/fhir/` - تصدير/استيراد HL7 FHIR R4: `toFhir.ts`/`fromFhir.ts`، أنظمة الترميز، ربط الحقول، الأنواع الأولية

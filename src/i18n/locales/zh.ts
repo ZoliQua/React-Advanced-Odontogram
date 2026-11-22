@@ -331,6 +331,8 @@ const zh: Record<string, string> = {
   "language.ar": "🇸🇦 阿拉伯语",
   "language.zh": "🇨🇳 简体中文",
   "language.fr": "🇫🇷 法语",
+  "language.ja": "🇯🇵 日语",
+  "language.ko": "🇰🇷 韩语",
   "numbering.label": "编号系统",
   "numbering.fdi": "FDI - ISO 3950",
   "numbering.universal": "通用 - 美国",

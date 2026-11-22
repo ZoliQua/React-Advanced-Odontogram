@@ -1,11 +1,14 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { translations } from "../i18n/translations";
+import { LANGUAGES } from "../i18n/languages";
 import { getSnomedEnabled, setSnomedEnabled } from "../odontogram";
 
 describe("diagnosis coding-pack i18n", () => {
-  it("has the coding-pack setting keys in all 12 languages", () => {
+  it("has the coding-pack setting keys in every supported language", () => {
     const keys = ["settings.diagnosisCoding", "settings.diagnosisCoding.desc", "settings.diagnosisCoding.none", "settings.diagnosisCoding.bno10"];
-    expect(Object.keys(translations)).toHaveLength(12);
+    // Against the registry, not a literal: a language added to LANGUAGES but
+    // missing from `translations` should fail here rather than be skipped.
+    expect(Object.keys(translations).sort()).toEqual([...LANGUAGES].sort());
     for (const lang of Object.keys(translations)) {
       for (const k of keys) {
         expect(translations[lang as keyof typeof translations][k], `${lang}:${k}`).toBeDefined();

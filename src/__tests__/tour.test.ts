@@ -4,6 +4,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { TOUR_STEPS, clampStep, startIntroTour } from "../tour";
 import { translations } from "../i18n/translations";
+import { LANGUAGES } from "../i18n/languages";
 
 function counterText(): string | null {
   return document.querySelector(".odon-tour-counter")?.textContent ?? null;
@@ -38,9 +39,10 @@ describe("intro tour model", () => {
     expect(selectors).toContain("#openCaseDiagnosesBtn"); // case/regional diagnoses pop-up (2.5.0)
   });
 
-  it("has every tour i18n key in all 12 languages", () => {
+  it("has every tour i18n key in every supported language", () => {
     const langs = Object.keys(translations);
-    expect(langs).toHaveLength(12);
+    // Against the registry, not a literal — see dx-settings.test.ts.
+    expect(langs.sort()).toEqual([...LANGUAGES].sort());
     for (const lang of langs) {
       const table = translations[lang as keyof typeof translations];
       for (const s of TOUR_STEPS) {

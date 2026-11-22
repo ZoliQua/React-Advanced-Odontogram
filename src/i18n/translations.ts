@@ -4,7 +4,7 @@
 // EVERY locale, statically imported — for tests and tooling only.
 //
 // Application code must never import this module's value: doing so would pull
-// all twelve languages back into the main bundle, which is exactly what
+// all fourteen languages back into the main bundle, which is exactly what
 // `./loader.ts` exists to avoid. The UI reads strings through `t()` in
 // `./useI18n.ts`. A guard test (`i18n-lazy-load.test.ts`) fails if any
 // non-test module imports this file.
@@ -24,6 +24,8 @@ import ptBr from "./locales/pt-br";
 import zh from "./locales/zh";
 import ar from "./locales/ar";
 import fr from "./locales/fr";
+import ja from "./locales/ja";
+import ko from "./locales/ko";
 
 export type { Language } from "./languages";
 
@@ -33,5 +35,5 @@ export type { Language } from "./languages";
  * set of keys. Template placeholders use `{{name}}` syntax.
  */
 export const translations: Record<Language, Record<string, string>> = {
-  hu, en, de, es, it, sk, pl, ru, "pt-br": ptBr, zh, ar, fr,
+  hu, en, de, es, it, sk, pl, ru, "pt-br": ptBr, zh, ar, fr, ja, ko,
 };

@@ -4,7 +4,8 @@
 // Language-aware PDF font loader. Picks the right embedded Unicode font for the
 // active UI language and returns a descriptor the export path uses: the jsPDF
 // family name, a registration fn, and a per-string text transform (Arabic
-// shaping; identity otherwise). Each font module is loaded via a dynamic import
+// shaping; identity otherwise — Chinese, Japanese and Korean are LTR and need
+// glyphs, not shaping). Each font module is loaded via a dynamic import
 // so only the font for the language actually being exported is pulled in — the
 // fonts stay code-split out of the main bundle (they are still bundled in the
 // package = fully offline, never fetched from the network).
@@ -29,6 +30,14 @@ export async function loadPdfFont(lang: string): Promise<PdfFont> {
   if (lang === "zh") {
     const { registerCjkFont, PDF_FONT_CJK } = await import("./notoSC");
     return { family: PDF_FONT_CJK, register: registerCjkFont, transform: (s) => s };
+  }
+  if (lang === "ja") {
+    const { registerJapaneseFont, PDF_FONT_JP } = await import("./notoJP");
+    return { family: PDF_FONT_JP, register: registerJapaneseFont, transform: (s) => s };
+  }
+  if (lang === "ko") {
+    const { registerKoreanFont, PDF_FONT_KR } = await import("./notoKR");
+    return { family: PDF_FONT_KR, register: registerKoreanFont, transform: (s) => s };
   }
   // hu, en, de, es, it, sk, pl, ru, pt-br, fr — Latin + Cyrillic.
   const { registerRobotoFont, PDF_FONT_FAMILY } = await import("./roboto");

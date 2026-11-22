@@ -331,6 +331,8 @@ const ar: Record<string, string> = {
   "language.ar": "🇸🇦 العربية",
   "language.zh": "🇨🇳 الصينية المبسطة",
   "language.fr": "🇫🇷 الفرنسية",
+  "language.ja": "🇯🇵 اليابانية",
+  "language.ko": "🇰🇷 الكورية",
   "numbering.label": "نظام الترقيم",
   "numbering.fdi": "FDI - ISO 3950",
   "numbering.universal": "العام - الولايات المتحدة",

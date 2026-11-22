@@ -333,6 +333,8 @@ const es: Record<string, string> = {
   "language.ar": "🇸🇦 Árabe",
   "language.zh": "🇨🇳 Chino simplificado",
   "language.fr": "🇫🇷 Francés",
+  "language.ja": "🇯🇵 Japonés",
+  "language.ko": "🇰🇷 Coreano",
   "numbering.label": "Numeración",
   "numbering.fdi": "FDI - ISO 3950",
   "numbering.universal": "Universal - EE.UU.",

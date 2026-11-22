@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -15,7 +15,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md)
+> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md) | 🇯🇵 [日本語](README-ja.md) | 🇰🇷 [한국어](README-ko.md)
 
 ---
 
@@ -83,7 +83,7 @@ import "react-advanced-odontogram/style.css";
 export function Chart() {
   return (
     <OdontogramShell
-      language="ru"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr
+      language="ru"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr | ja | ko
       numberingSystem="FDI"  // FDI | Universal | Palmer
       darkMode={false}
     />
@@ -97,7 +97,7 @@ export function Chart() {
 
 | Проп | Тип | По умолчанию | Описание |
 |------|------|---------|-------------|
-| `language` | `Language` | `"hu"` | Язык интерфейса (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`). |
+| `language` | `Language` | `"hu"` | Язык интерфейса (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`/`fr`/`ja`/`ko`). |
 | `numberingSystem` | `"FDI" \| "Universal" \| "Palmer"` | `"FDI"` | Система нумерации зубов. |
 | `darkMode` | `boolean` | `false` | Переключатель тёмной темы. |
 | `readOnly` | `boolean` | `false` | Отключить всё редактирование (только просмотр). |
@@ -270,7 +270,7 @@ export default function OdontogramClient() {
 - ⏳ Индикатор прогресса при экспорте изображения
 - 🎓 Интерактивное обучение из 18 шагов
 - 🔢 Три системы нумерации (FDI, Universal, Palmer)
-- 🌐 Интернационализация — 12 языков интерфейса (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) с переключателем языков; арабский отображает интерфейс справа налево, а зубные/пародонтологические карты закреплены слева направо (машинный перевод, проверка носителем языка для AR/ZH/FR ожидается); в основной бандл входит только английский — каждый другой язык — отдельный чанк, загружаемый при первом выборе
+- 🌐 Интернационализация — 14 языков интерфейса (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) с переключателем языков; арабский отображает интерфейс справа налево, а зубные/пародонтологические карты закреплены слева направо (машинный перевод, проверка носителем языка для AR/ZH/FR/JA/KO ожидается); в основной бандл входит только английский — каждый другой язык — отдельный чанк, загружаемый при первом выборе
 - 🌗 Поддержка тёмного режима с кнопкой переключения (автономный или управляемый родительским приложением)
 - 🎨 Настраиваемая тема (`themeConfig` prop) с CSS-переменными (`--odon-*`)
 - 📱 Мобильный сенсорный интерфейс: всплывающее окно по касанию для масштабирования, контекстное меню по долгому нажатию, масштабирование жестом «щипок», сенсорные цели WCAG 44 пикселя, переключение зубной дуги
@@ -299,7 +299,7 @@ export default function OdontogramClient() {
 - 🎛️ Панель управления и статуса
 - 🎨 Движок слоёв SVG и шаблоны
 - 🔢 Нумерация зубов и сопоставление меток (FDI/Universal/Palmer)
-- 🌐 Локализация — 12 языков интерфейса (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR), включая арабский (RTL)
+- 🌐 Локализация — 14 языков интерфейса (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO), включая арабский (RTL)
 - 💾 Экспорт/импорт статуса
 - 📋 Дополнительные статусы: предустановленные шаблоны реставраций
 - 🎨 Настройка темы: настраиваемая цветовая палитра через CSS-свойства `--odon-*`
@@ -315,7 +315,7 @@ export default function OdontogramClient() {
 ### 🛠️ Элементы управления интерфейса
 
 **🔝 Верхняя панель:**
-- Переключатель языков (выпадающий список HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR)
+- Переключатель языков (выпадающий список HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO)
 - Кнопка переключения тёмного режима (иконка солнца/луны, переключает между светлой и тёмной темой)
 - Переключатель системы нумерации (выпадающий список FDI/Universal/Palmer)
 - Кнопки «Экспорт статуса» / «Импорт статуса»
@@ -854,7 +854,7 @@ enablePersistence({
 - `src/plugin.ts` — тип `OdontogramPlugin`, `PluginLayer`, `getQuadrant()`, z-index приоритеты `LAYER_Z`
 - `src/theme.ts` — тип `OdontogramThemeConfig` и утилита `applyThemeConfig()`
 - `src/status_extras.ts` — 34 предустановленных шаблона реставраций (мосты, протезы, балочные конструкции)
-- `src/i18n/` — переводы (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) и хук i18n
+- `src/i18n/` — переводы (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) и хук i18n
 - `src/utils/numbering.ts` — преобразование нумерации FDI, Universal, Palmer
 - `src/registry/` — декларативный реестр клинических осей: сопоставления полей FHIR, набор очистки SVG/активация логических флагов, матрица тип×материал реставраций, списки опций интерфейса (единый источник истины, генерирующий экспорт/импорт, FHIR и интерфейс выбора)
 - `src/fhir/` — экспорт/импорт HL7 FHIR R4: `toFhir.ts`/`fromFhir.ts`, системы кодов, сопоставления полей, примитивы

@@ -5,7 +5,7 @@
 # 🦷 React Advanced Odontogram
 
 [![Download](https://img.shields.io/badge/Download-React--Odontogram--Modul-blue?style=for-the-badge&logo=github)](https://github.com/ZoliQua/React-Advanced-Odontogram/releases)
-[![Version](https://img.shields.io/badge/version-2.8.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
+[![Version](https://img.shields.io/badge/version-2.9.0-green?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram)
 [![npm](https://img.shields.io/npm/v/react-advanced-odontogram?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/react-advanced-odontogram)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](https://github.com/ZoliQua/React-Advanced-Odontogram/blob/main/LICENSE)
 [![DOI](../src/assets/zenodo.21156787.svg)](https://doi.org/10.5281/zenodo.21156787)
@@ -15,7 +15,7 @@
 
 ---
 
-> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md)
+> 🌐 **Languages:**  🇬🇧 [English](README-en.md) | 🇪🇸 [Español](README-es.md) | 🇩🇪 [Deutsch](README-de.md) | 🇭🇺 [Magyar](README-hu.md) | 🇮🇹 [Italiano](README-it.md) | 🇸🇰 [Slovenčina](README-sk.md) | 🇵🇱 [Polski](README-pl.md) | 🇷🇺 [Русский](README-ru.md) | 🇧🇷 [Português (BR)](README-pt-br.md) | 🇸🇦 [العربية](README-ar.md) | 🇨🇳 [简体中文](README-zh.md) | 🇫🇷 [Français](README-fr.md) | 🇯🇵 [日本語](README-ja.md) | 🇰🇷 [한국어](README-ko.md)
 
 ---
 
@@ -83,7 +83,7 @@ import "react-advanced-odontogram/style.css";
 export function Chart() {
   return (
     <OdontogramShell
-      language="hu"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr
+      language="hu"          // hu | en | de | es | it | sk | pl | ru | pt-br | ar | zh | fr | ja | ko
       numberingSystem="FDI"  // FDI | Universal | Palmer
       darkMode={false}
     />
@@ -97,7 +97,7 @@ Az `OdontogramShell` egy vezérelt (controlled) komponens. A leggyakoribb propok
 
 | Prop | Típus | Alapértelmezett | Leírás |
 |------|------|---------|-------------|
-| `language` | `Language` | `"hu"` | UI nyelv (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`). |
+| `language` | `Language` | `"hu"` | UI nyelv (`hu`/`en`/`de`/`es`/`it`/`sk`/`pl`/`ru`/`pt-br`/`ar`/`zh`/`fr`/`ja`/`ko`). |
 | `numberingSystem` | `"FDI" \| "Universal" \| "Palmer"` | `"FDI"` | Fogszámozási rendszer. |
 | `darkMode` | `boolean` | `false` | Sötét téma kapcsoló. |
 | `readOnly` | `boolean` | `false` | Minden szerkesztés letiltása (csak megtekintés). |
@@ -270,7 +270,7 @@ Vagy töltsd be egy kizárólag kliensoldali dinamikus importtal: `dynamic(() =>
 - ⏳ Folyamatjelző overlay a képexport alatt
 - 🎓 18 lépéses interaktív bemutató túra
 - 🔢 Három számozási rendszer (FDI, Universal, Palmer)
-- 🌐 I18n — 12 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) nyelvváltóval; az arab a felületet jobbról balra rendereli, a fog-/parodontális diagramokat balról jobbra rögzítve (gépi fordítás, anyanyelvi lektorálás az AR/ZH/FR nyelveknél még várat magára); a fő csomagban csak az angol van — minden más nyelv külön chunk, amely az első kiválasztáskor töltődik le
+- 🌐 I18n — 14 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) nyelvváltóval; az arab a felületet jobbról balra rendereli, a fog-/parodontális diagramokat balról jobbra rögzítve (gépi fordítás, anyanyelvi lektorálás az AR/ZH/FR/JA/KO nyelveknél még várat magára); a fő csomagban csak az angol van — minden más nyelv külön chunk, amely az első kiválasztáskor töltődik le
 - 🌗 Sötét mód támogatás váltógombbal (önálló vagy szülő alkalmazás által vezérelt)
 - 🎨 Egyedi téma konfiguráció (`themeConfig` prop) CSS custom property-kkel (`--odon-*`)
 - 📱 Mobil érintéses UX: koppintásos nagyítós felugró, hosszú nyomás helyi menü, csípéses zoom, WCAG 44px érintési célpontok, fogív navigáció
@@ -299,7 +299,7 @@ Vagy töltsd be egy kizárólag kliensoldali dinamikus importtal: `dynamic(() =>
 - 🎛️ Vezérlők és státusz panel
 - 🎨 SVG rétegelő motor és fogsablonok
 - 🔢 Fogszámozás és címke generálás (FDI/Universal/Palmer)
-- 🌐 Lokalizáció — 12 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR), beleértve az arabot (RTL)
+- 🌐 Lokalizáció — 14 UI nyelv (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO), beleértve az arabot (RTL)
 - 💾 Státusz export/import
 - 📋 Státusz extrák: előre definiált restaurációs sablonok
 - 🎨 Téma konfiguráció: testreszabható színpaletta `--odon-*` CSS property-kkel
@@ -315,7 +315,7 @@ Vagy töltsd be egy kizárólag kliensoldali dinamikus importtal: `dynamic(() =>
 ### 🛠️ UI vezérlők
 
 **🔝 Fejléc sáv:**
-- Nyelvválasztó (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR legördülő)
+- Nyelvválasztó (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO legördülő)
 - Sötét mód váltógomb (nap/hold ikon, világos és sötét téma között vált)
 - Számozási rendszer választó (FDI/Universal/Palmer legördülő)
 - Státusz exportálás / Státusz importálás gombok
@@ -632,7 +632,7 @@ npm run docs           # TypeDoc dokumentáció generálása a docs/ mappába
 
 | Prop | Típus | Alapértelmezett | Leírás |
 |---|---|---|---|
-| `language` | `string` | `'hu'` | UI nyelv (hu/en/de/es/it/sk/pl/ru/pt-br/ar/zh/fr) |
+| `language` | `string` | `'hu'` | UI nyelv (hu/en/de/es/it/sk/pl/ru/pt-br/ar/zh/fr/ja/ko) |
 | `onLanguageChange` | `(lang) => void` | — | Callback nyelvváltáskor |
 | `numberingSystem` | `string` | `'FDI'` | Számozási rendszer (FDI/Universal/Palmer) |
 | `onNumberingChange` | `(system) => void` | — | Callback számozásváltáskor |
@@ -854,7 +854,7 @@ Az odontogram saját Státusz JSON / FHIR / PNG / JPG / SVG exportján túl a **
 - `src/plugin.ts` - `OdontogramPlugin` típus, `PluginLayer`, `getQuadrant()`, `LAYER_Z` z-index prioritások
 - `src/theme.ts` - `OdontogramThemeConfig` típus és `applyThemeConfig()` segédfüggvény
 - `src/status_extras.ts` - 34 előre definiált restaurációs sablon (hidak, protézisek, bár konstrukciók)
-- `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR) és i18n hook
+- `src/i18n/` - fordítások (HU/EN/DE/ES/IT/SK/PL/RU/PT-BR/AR/ZH/FR/JA/KO) és i18n hook
 - `src/utils/numbering.ts` - FDI, Universal, Palmer számozási konverzió
 - `src/registry/` - deklaratív klinikai-tengely registry: FHIR mezőmegfeleltetések, SVG-törlési-halmaz/logikai-jelző aktiválás, pótlás típus×anyag mátrix, UI opciólisták (egyetlen forrás, amely generálja az export/import, FHIR és a választó UI-t)
 - `src/fhir/` - HL7 FHIR R4 export/import: `toFhir.ts`/`fromFhir.ts`, kódrendszerek, mezőmegfeleltetések, primitívek

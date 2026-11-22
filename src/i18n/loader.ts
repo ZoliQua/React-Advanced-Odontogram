@@ -3,7 +3,7 @@
 
 // The UI strings, loaded one language at a time.
 //
-// Twelve languages used to ship in a single 770 KB module that every app paid
+// Fourteen languages would ship in a single ~900 KB module that every app paid
 // for, whichever language it showed. Now English — the fallback, and the
 // language the UI starts in — is the only locale in the main bundle; each other
 // language is its own chunk, fetched the first time it is selected.
@@ -34,6 +34,8 @@ const LOADERS: Record<Exclude<Language, "en">, () => Promise<{ default: Table }>
   zh: () => import("./locales/zh"),
   ar: () => import("./locales/ar"),
   fr: () => import("./locales/fr"),
+  ja: () => import("./locales/ja"),
+  ko: () => import("./locales/ko"),
 };
 
 /** Whether a language's strings are available (synchronously) right now. */

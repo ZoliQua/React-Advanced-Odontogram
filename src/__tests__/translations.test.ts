@@ -3,8 +3,17 @@
 
 import { describe, it, expect } from 'vitest';
 import { translations, type Language } from '../i18n/translations';
+import { LANGUAGES } from '../i18n/languages';
 
-const ALL_LANGUAGES: Language[] = ['hu', 'en', 'de', 'es', 'it', 'sk', 'pl', 'ru', 'pt-br', 'zh', 'ar', 'fr'];
+/**
+ * Taken from the registry, NOT restated here.
+ *
+ * This list used to be a literal, which meant a language could be added to
+ * `LANGUAGES`, `loader.ts`, `translations.ts` and the two pickers — and still
+ * have none of its 1000+ keys checked for completeness, because this file had
+ * never heard of it. The suite stayed green and said nothing.
+ */
+const ALL_LANGUAGES: readonly Language[] = LANGUAGES;
 const PRIMARY_LANGUAGE: Language = 'hu';
 
 describe('translations.ts', () => {

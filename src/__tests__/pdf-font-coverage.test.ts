@@ -34,13 +34,32 @@ import ar from "../i18n/locales/ar";
 
 const FONT_DIR = path.join(__dirname, "..", "fonts");
 
-/** The base64 face a font module ships, decoded. */
-function embeddedFont(module: string): DataView {
+/**
+ * EVERY base64 face a font module ships, decoded, by constant name.
+ *
+ * Plural on purpose. A module can embed more than one weight — `notoArabic.ts`
+ * ships a Regular and a Bold — and a first-match lookup checked only the
+ * Regular. `AR_BOLD_B64` was a variable face whose fvar default was 400, so
+ * Arabic "bold" rendered at regular weight and nothing noticed.
+ */
+function embeddedFaces(module: string): Map<string, DataView> {
   const src = fs.readFileSync(path.join(FONT_DIR, module), "utf8");
-  const match = src.match(/(?:REGULAR_B64|[A-Z_]*_B64)\s*=\s*"([^"]+)"/);
-  if (!match) throw new Error(`${module}: no base64 font constant found`);
-  const bytes = Buffer.from(match[1], "base64");
-  return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const faces = new Map<string, DataView>();
+  for (const match of src.matchAll(/([A-Z0-9_]*B64)\s*=\s*"([^"]+)"/g)) {
+    const bytes = Buffer.from(match[2], "base64");
+    faces.set(match[1], new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength));
+  }
+  if (faces.size === 0) throw new Error(`${module}: no base64 font constant found`);
+  return faces;
+}
+
+/** The face a module uses for body text, which is the one the locale must cover. */
+function regularFace(module: string): DataView {
+  const faces = embeddedFaces(module);
+  for (const [name, face] of faces) {
+    if (name.includes("REGULAR")) return face;
+  }
+  return [...faces.values()][0];
 }
 
 /** The sfnt table directory: tag -> { offset, length }. */
@@ -166,7 +185,7 @@ const CASES = [
 describe("embedded PDF fonts cover the locale they serve", () => {
   for (const { lang, module, table } of CASES) {
     it(`${lang}: every character in ${lang}.ts has a glyph in ${module}`, () => {
-      const covered = mappedCodepoints(embeddedFont(module));
+      const covered = mappedCodepoints(regularFace(module));
       const needed = neededCodepoints(table);
       const allowed = new Set(KNOWN_GAPS[lang] ?? []);
       const missing = [...needed].filter((c) => !covered.has(c) && !allowed.has(c));
@@ -180,17 +199,32 @@ describe("embedded PDF fonts cover the locale they serve", () => {
 
 describe("embedded PDF fonts are static, not variable", () => {
   for (const { lang, module } of CASES) {
-    it(`${lang}: ${module} carries no fvar table`, () => {
+    it(`${lang}: every face in ${module} is static, and weighted as its name says`, () => {
       // jsPDF renders a variable font's DEFAULT instance, whatever that is.
       // Noto Sans SC's default is wght=100, which is how Chinese PDFs came out
       // hairline. Rather than check each font's default — a font whose default
       // happens to be 400 today is one edit from not being — require every
       // embedded face to be static, so the question cannot arise.
       // tools/fonts/build_fonts.py instances to wght=400; this is the guard
-      // that it stays done.
-      const present = [...tables(embeddedFont(module)).keys()];
-      expect(present).not.toContain("fvar");
-      expect(present).not.toContain("gvar");
+      // that it stays done — for every embedded weight, not just the first.
+      for (const [name, face] of embeddedFaces(module)) {
+        const present = [...tables(face).keys()];
+        expect(present, `${module}:${name} is a variable face`).not.toContain("fvar");
+        expect(present, `${module}:${name} is a variable face`).not.toContain("gvar");
+
+        // A face named BOLD that reports weight 400 is a face that renders
+        // regular. That is how Arabic bold shipped: a variable Bold subset
+        // whose fvar default was 400.
+        const os2 = tables(face).get("OS/2");
+        if (os2) {
+          const weight = face.getUint16(os2.offset + 4);
+          if (name.includes("BOLD")) {
+            expect(weight, `${module}:${name} is named bold but weighs ${weight}`).toBeGreaterThanOrEqual(600);
+          } else {
+            expect(weight, `${module}:${name} should be a regular weight`).toBeLessThan(600);
+          }
+        }
+      }
     });
   }
 });
@@ -202,7 +236,7 @@ describe("the known-gap allowances are still needed", () => {
     const allowed = KNOWN_GAPS[lang] ?? [];
     if (allowed.length === 0) continue;
     it(`${lang}: every allowance in KNOWN_GAPS is genuinely absent and genuinely used`, () => {
-      const covered = mappedCodepoints(embeddedFont(module));
+      const covered = mappedCodepoints(regularFace(module));
       const needed = neededCodepoints(table);
       for (const cp of allowed) {
         const ch = `${String.fromCodePoint(cp)} (U+${cp.toString(16).toUpperCase()})`;
@@ -216,7 +250,7 @@ describe("the known-gap allowances are still needed", () => {
 describe("embedded PDF fonts are well-formed", () => {
   for (const { lang, module } of CASES) {
     it(`${lang}: ${module} decodes to an sfnt with glyf, cmap, head and hmtx`, () => {
-      const present = tables(embeddedFont(module));
+      const present = tables(regularFace(module));
       for (const required of ["glyf", "cmap", "head", "hmtx", "loca", "maxp"]) {
         expect([...present.keys()], `${module} is missing ${required}`).toContain(required);
       }

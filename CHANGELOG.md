@@ -58,11 +58,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `LANGUAGES`, `loader.ts`, `translations.ts` and both pickers and still have none of its 1000+ keys checked — the suite would stay green and
   say nothing. All four now derive the list from `LANGUAGES`, and the two that asserted `toHaveLength(12)` compare against the registry.
 
+- **Arabic bold text was never bold.** `notoArabic.ts` embeds two faces, and `AR_BOLD_B64` was a variable subset whose `fvar` default — and
+  `OS/2` weight class — was `400`. jsPDF renders the default instance, so every "bold" Arabic run in a PDF came out at regular weight. Pinned
+  to `wght=700`, which also dropped the module another 25% (378 KB → 283 KB).
+
+  Found by widening the new test rather than by reading: its first version looked up one base64 constant per module and so only ever checked
+  the Regular face. It now walks **every** embedded face, and additionally asserts that a face named bold reports a weight of at least 600 —
+  the property that was actually wrong.
+
 ### Changed
 
-- **`notoArabic.ts` is now a static face too**, 20% smaller (472 KB → 378 KB), with its coverage verified unchanged. This is **not** a
-  rendering fix: unlike the Chinese font, its `fvar` default was already `wght=400`, so Arabic was never hairline. Every embedded face is now
-  static, which is what the new test requires — a font whose variable default happens to be right today is one edit away from not being.
+- **`notoArabic.ts`'s Regular face is now static too**, with its coverage verified unchanged. For that face this is **not** a rendering fix:
+  unlike the Chinese font, its `fvar` default was already `wght=400`, so regular Arabic was never hairline. Every embedded face is now static,
+  which is what the new test requires — a font whose variable default happens to be right today is one edit away from not being.
 
 ### Notes
 

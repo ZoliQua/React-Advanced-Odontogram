@@ -42,8 +42,10 @@ The point most often asked about: **the tooth drawings are not third-party asset
 ## 2. Fonts embedded in the published package
 
 These are base64-embedded in the library so that PDF export works fully offline.
-They are **subsets** — reduced to the glyphs the report needs — which counts as a
-modification under their licenses.
+They are **subsets** — reduced to the glyphs the report needs, and pinned to one
+weight because jsPDF cannot read a variable font. `tools/fonts/build_fonts.py`
+produces them from the upstream originals; it records which codepoints each one
+covers and why. Subsetting counts as a modification under their licenses.
 
 ### Roboto (subset)
 
@@ -69,7 +71,21 @@ built-in Helvetica cannot encode Hungarian double-acute accents or Cyrillic.
   https://fonts.google.com/noto/specimen/Noto+Sans+SC
 - **License:** SIL Open Font License, Version 1.1 (full text in § 4)
 
-> **Note on the OFL and modified versions.** Both Noto subsets are modified
+### Noto Sans JP (subset)
+
+- **File:** `src/fonts/notoJP.ts` (Regular), lazy-loaded
+- **Upstream:** Noto Sans Japanese, by The Noto Project Authors —
+  https://fonts.google.com/noto/specimen/Noto+Sans+JP
+- **License:** SIL Open Font License, Version 1.1 (full text in § 4)
+
+### Noto Sans KR (subset)
+
+- **File:** `src/fonts/notoKR.ts` (Regular), lazy-loaded
+- **Upstream:** Noto Sans Korean, by The Noto Project Authors —
+  https://fonts.google.com/noto/specimen/Noto+Sans+KR
+- **License:** SIL Open Font License, Version 1.1 (full text in § 4)
+
+> **Note on the OFL and modified versions.** Every Noto subset here is modified
 > (subsetted) versions. The OFL permits this, and permits selling the result
 > *bundled in* software — it only forbids selling the font software on its own.
 > If you subset or re-generate these fonts yourself, confirm the exact copyright
@@ -101,7 +117,8 @@ for the authoritative text.
 
 ## 4. SIL Open Font License, Version 1.1
 
-Applies to the Noto Naskh Arabic and Noto Sans SC subsets listed in § 2.
+Applies to the Noto Naskh Arabic, Noto Sans SC, Noto Sans JP and Noto Sans KR
+subsets listed in § 2.
 
 ```
 Copyright (c) The Noto Project Authors

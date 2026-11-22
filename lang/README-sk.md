@@ -898,14 +898,14 @@ Okrem vlastného exportu odontogramu Stav JSON / FHIR / PNG / JPG / SVG má **pa
 
 Ak tento modul použijete vo svojej práci, prosím, citujte ho.
 
-**Táto verzia (v2.8.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Táto verzia (v2.9.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.9.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Všetky verzie (konceptové DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > Konceptové DOI pre všetky verzie vyššie sa vždy odkazuje na najnovšie archivované
 > vydanie; DOI špecifické pre danú verziu sa vytvára pri každom vydaní v čase jeho
-> archivácie na Zenodo. Kým nie je v2.8.0 archivovaná, citujte ju cez konceptové DOI.
+> archivácie na Zenodo. Kým nie je v2.9.0 archivovaná, citujte ju cez konceptové DOI.
 
 Strojovo čitateľné citačné metadáta sú v súbore [`CITATION.cff`](../CITATION.cff).
 

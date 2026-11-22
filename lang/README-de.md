@@ -900,14 +900,14 @@ Parodontale Daten laufen jetzt auch über den FHIR-Import im Kreis, nicht nur ü
 
 Wenn Sie dieses Modul in Ihrer Arbeit verwenden, zitieren Sie es bitte.
 
-**Diese Version (v2.8.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Diese Version (v2.9.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.9.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Alle Versionen (Konzept-DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > Die obige versionsübergreifende Konzept-DOI verweist immer auf die zuletzt
 > archivierte Version; eine versionsspezifische DOI wird bei jeder Version erst
-> vergeben, wenn diese auf Zenodo archiviert wird. Solange v2.8.0 nicht archiviert
+> vergeben, wenn diese auf Zenodo archiviert wird. Solange v2.9.0 nicht archiviert
 > ist, zitieren Sie sie bitte über die Konzept-DOI.
 
 Maschinenlesbare Zitationsmetadaten finden Sie in [`CITATION.cff`](../CITATION.cff).

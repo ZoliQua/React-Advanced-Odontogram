@@ -898,14 +898,14 @@ Oltre all'esportazione propria dell'odontogramma in Stato JSON / FHIR / PNG / JP
 
 Se utilizzi questo modulo nel tuo lavoro, per favore citalo.
 
-**Questa versione (v2.8.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Questa versione (v2.9.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.9.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Tutte le versioni (DOI concettuale):** https://doi.org/10.5281/zenodo.21156787
 
 > Il DOI concettuale per tutte le versioni riportato sopra rimanda sempre alla release
 > archiviata più recente; un DOI specifico per versione viene assegnato a ogni release
-> quando viene archiviata su Zenodo. Finché la v2.8.0 non sarà archiviata, citarla
+> quando viene archiviata su Zenodo. Finché la v2.9.0 non sarà archiviata, citarla
 > tramite il DOI concettuale.
 
 I metadati di citazione leggibili dalla macchina si trovano in [`CITATION.cff`](../CITATION.cff).

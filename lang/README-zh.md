@@ -900,13 +900,13 @@ enablePersistence({
 
 如果您在工作中使用了本模块，请引用它。
 
-**本版本（v2.8.0）：**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**本版本（v2.9.0）：**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.9.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **所有版本（概念 DOI）：** https://doi.org/10.5281/zenodo.21156787
 
 > 上述概念 DOI 始终指向最新归档的发布版本；每次在 Zenodo 上归档发布时，
-> 都会为该版本铸造一个版本专属 DOI。在 v2.8.0 被归档之前，请使用概念 DOI 进行引用。
+> 都会为该版本铸造一个版本专属 DOI。在 v2.9.0 被归档之前，请使用概念 DOI 进行引用。
 
 机器可读的引用元数据位于 [`CITATION.cff`](../CITATION.cff)。
 

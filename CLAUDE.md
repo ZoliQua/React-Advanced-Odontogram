@@ -18,7 +18,7 @@
 - `src/plugin.ts` — plugin system for extending functionality
 - `src/status_extras.ts` — additional dental status types (bridges, implants, etc.)
 - `src/theme.ts` — theme configuration and CSS variable mapping
-- `src/i18n/locales/<code>.ts` — the UI strings, one file per language (12). Only `en.ts` is bundled statically; `src/i18n/loader.ts` fetches every other language on demand (`loadLanguage`), and `src/i18n/useI18n.ts` holds `t()` (synchronous) and `setI18nLanguage()` (loads first, switches second). `src/i18n/translations.ts` imports ALL locales and is for tests only — never import its value from app code (`i18n-lazy-load.test.ts` guards this)
+- `src/i18n/locales/<code>.ts` — the UI strings, one file per language (14). Only `en.ts` is bundled statically; `src/i18n/loader.ts` fetches every other language on demand (`loadLanguage`), and `src/i18n/useI18n.ts` holds `t()` (synchronous) and `setI18nLanguage()` (loads first, switches second). `src/i18n/translations.ts` imports ALL locales and is for tests only — never import its value from app code (`i18n-lazy-load.test.ts` guards this)
 - `src/utils/numbering.ts` — tooth numbering systems (FDI, Universal, Palmer)
 - `src/assets/teeth-svgs/` — SVG templates for individual teeth (11-48)
 - `src/anatomy/profiles.ts` — the `classic` (default) and `measured` tooth-anatomy profiles, the `AnatomyProfile` shape and `ensureMeasuredProfile()`; `src/anatomy/measured.ts` is the measured artwork, loaded on demand as its own chunk (~3.6 MB) and never imported statically
@@ -132,10 +132,11 @@ Each tooth has:
   version in `package.json` and the README version badge for each release.
 - **English is the source of truth** for the README; translate the others from it.
 - Maintain a README for **every UI language the program supports** (currently
-  HU, EN, DE, ES, IT, SK, PL, RU, PT-BR, AR, ZH, FR — see `Language` in
+  HU, EN, DE, ES, IT, SK, PL, RU, PT-BR, AR, ZH, FR, JA, KO — see `Language` in
   `src/i18n/languages.ts`). `README.md` holds English + Spanish; the rest live
   in `lang/README-<code>.md` (e.g. `lang/README-de.md`, `lang/README-pl.md`,
-  `lang/README-ru.md`, `lang/README-ar.md`, `lang/README-zh.md`). When a new UI
+  `lang/README-ru.md`, `lang/README-ar.md`, `lang/README-zh.md`,
+  `lang/README-ja.md`, `lang/README-ko.md`). When a new UI
   language is added: create `src/i18n/locales/<code>.ts`, add the code to
   `Language` and `LANGUAGES` in `languages.ts`, give it a literal `import()` in
   `LOADERS` (`loader.ts`) and an entry in the test-only `translations.ts` — then
@@ -145,6 +146,32 @@ Each tooth has:
   the whole UI mirrors; the dental chart (`#toothGrid`) and the periodontal
   charts are explicitly pinned `dir="ltr"` (attribute + CSS) so tooth
   geometry/numbering never flips.
+
+## PDF fonts (embedded, generated)
+
+- The PDF report embeds one subset font per script, base64 in a TypeScript
+  module under `src/fonts/`: `roboto.ts` (Latin + Cyrillic), `notoArabic.ts`,
+  `notoSC.ts` (zh), `notoJP.ts` (ja), `notoKR.ts` (ko). `src/fonts/loader.ts`
+  picks one per UI language.
+- **They are GENERATED.** Change `tools/fonts/build_fonts.py` and re-run it;
+  never hand-edit a `src/fonts/noto*.ts`. The script reads the codepoints each
+  language needs straight from `src/i18n/locales/<lang>.ts`, so **adding or
+  changing UI strings can make a font stale** — a character with no glyph
+  renders as a missing glyph in the PDF and nowhere else. That is exactly how
+  the Chinese font came to be missing 84 characters its own UI displayed.
+- **Instance before subsetting.** jsPDF has no variable-font support: it draws
+  the default instance. Noto's variable fonts default to `wght=100`, so an
+  un-instanced subset renders hairline — the bug the Chinese font shipped with.
+  A face named BOLD must be pinned to 700, not left at a variable default of
+  400, which is how Arabic "bold" rendered at regular weight.
+- `src/__tests__/pdf-font-coverage.test.ts` parses the base64 each module ships
+  and checks both: every character its locale uses has a glyph, and every
+  embedded face is static and weighted as its name claims. Run it after any
+  i18n change.
+- Coverage per language is a deliberate trade-off, documented in each module's
+  header. Korean carries ALL 11,172 hangul syllables (3.2 MB) because a missing
+  syllable cannot be drawn and Korean has no phonetic fallback; Japanese carries
+  every kana but only its own kanji, because it does.
 
 ## Scope Control
 - Do not add dependencies on external dental systems or APIs

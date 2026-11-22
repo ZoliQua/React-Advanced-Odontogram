@@ -898,14 +898,14 @@ Beyond the odontogram's own Status JSON / FHIR / PNG / JPG / SVG export, the **p
 
 If you use this module in your work, please cite it.
 
-**This version (v2.8.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**This version (v2.9.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.9.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **All versions (concept DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > The all-versions concept DOI above always resolves to the most recent archived
 > release; a version-specific DOI is minted per release when it is archived on
-> Zenodo. Until v2.8.0 is archived, cite it via the concept DOI.
+> Zenodo. Until v2.9.0 is archived, cite it via the concept DOI.
 
 Machine-readable citation metadata is in [`CITATION.cff`](CITATION.cff).
 

@@ -898,14 +898,14 @@ Além da própria exportação Status JSON / FHIR / PNG / JPG / SVG do odontogra
 
 Se você usar este módulo em seu trabalho, por favor cite-o.
 
-**Esta versão (v2.8.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Esta versão (v2.9.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.9.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Todas as versões (DOI conceitual):** https://doi.org/10.5281/zenodo.21156787
 
 > O DOI conceitual de todas as versões acima sempre resolve para o release arquivado
 > mais recente; um DOI específico de versão é gerado por release quando ele é
-> arquivado no Zenodo. Até que a v2.8.0 seja arquivada, cite-a via o DOI conceitual.
+> arquivado no Zenodo. Até que a v2.9.0 seja arquivada, cite-a via o DOI conceitual.
 
 Metadados de citação legíveis por máquina estão em [`CITATION.cff`](CITATION.cff).
 

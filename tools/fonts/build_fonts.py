@@ -103,15 +103,24 @@ def locale_codepoints(lang):
     return sorted(cps)
 
 
-def instance_regular(src, dst):
+def instance_weight(src, dst, weight=400):
+    """Pin a variable font to one weight and drop the variation tables."""
     font = TTFont(src)
     if "fvar" in font:
-        instantiateVariableFont(font, {"wght": 400}, inplace=True, updateFontNames=True)
+        instantiateVariableFont(font, {"wght": weight}, inplace=True, updateFontNames=True)
         for table in ("fvar", "gvar", "avar", "HVAR", "VVAR", "MVAR", "STAT"):
             if table in font:
                 del font[table]
+    # Instancing updates the name table but not always usWeightClass, and that
+    # is what a reader asks when it wants to know whether a face is bold.
+    if "OS/2" in font:
+        font["OS/2"].usWeightClass = weight
     font.save(dst)
     return dst
+
+
+def instance_regular(src, dst):
+    return instance_weight(src, dst, 400)
 
 
 def subset(src, codepoints, dst):
@@ -220,12 +229,16 @@ def build(source_dir):
         emit(final, module, const_name, family, register_fn,
              f"{CREDIT}\n{note}\n{INSTANCED_NOTE}\n{GENERATED}")
 
-    # The Arabic subset has no pristine source fetched here; fix only its weight.
-    reinstance_embedded("notoArabic.ts", "AR_REGULAR_B64")
+    # The Arabic subset has no pristine source fetched here; fix only its
+    # weights. BOTH faces, and each to the weight its name claims: the Bold
+    # face shipped as a variable subset whose fvar default was 400, so Arabic
+    # bold text rendered at regular weight.
+    reinstance_embedded("notoArabic.ts", "AR_REGULAR_B64", 400)
+    reinstance_embedded("notoArabic.ts", "AR_BOLD_B64", 700)
 
 
-def reinstance_embedded(module, const_name):
-    """Pin an ALREADY-EMBEDDED subset to wght=400, in place.
+def reinstance_embedded(module, const_name, weight=400):
+    """Pin an ALREADY-EMBEDDED subset to one weight, in place.
 
     `build()` regenerates a module from its pristine Noto source. Not every
     embedded font has one fetched here: `notoArabic.ts` is a subset whose source
@@ -250,13 +263,13 @@ def reinstance_embedded(module, const_name):
 
     before = TTFont(raw)
     if "fvar" not in before:
-        print(f"  {module:<14} already static — unchanged")
+        print(f"  {module:<14} {const_name:<18} already static — unchanged")
         return
     covered_before = set()
     for t in before["cmap"].tables:
         covered_before |= set(t.cmap.keys())
 
-    out = instance_regular(raw, os.path.join(work, "out.ttf"))
+    out = instance_weight(raw, os.path.join(work, "out.ttf"), weight)
     after = TTFont(out)
     covered_after = set()
     for t in after["cmap"].tables:
@@ -269,8 +282,8 @@ def reinstance_embedded(module, const_name):
     open(path, "w", encoding="utf-8").write(
         text[:match.start(1)] + new_b64 + text[match.end(1):]
     )
-    print(f"  {module:<14} {os.path.getsize(path)/1024:8.1f} KB  {len(covered_after):6d} codepoints  "
-          f"re-instanced to Regular, coverage unchanged")
+    print(f"  {module:<14} {const_name:<18} {os.path.getsize(path)/1024:8.1f} KB  "
+          f"{len(covered_after):6d} codepoints  pinned to wght={weight}, coverage unchanged")
 
 
 if __name__ == "__main__":

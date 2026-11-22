@@ -900,14 +900,14 @@ Az odontogram saját Státusz JSON / FHIR / PNG / JPG / SVG exportján túl a **
 
 Ha ezt a modult használod a munkádban, kérlek hivatkozz rá.
 
-**Ez a verzió (v2.8.0):**
-> Dul, Z. (2026). *React Advanced Odontogram* (v2.8.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
+**Ez a verzió (v2.9.0):**
+> Dul, Z. (2026). *React Advanced Odontogram* (v2.9.0). Zenodo. https://doi.org/10.5281/zenodo.21156787
 
 **Összes verzió (koncepció DOI):** https://doi.org/10.5281/zenodo.21156787
 
 > A fenti, összes verzióra vonatkozó koncepció DOI mindig a legutóbb archivált
 > kiadásra mutat; egy verzió-specifikus DOI minden kiadáshoz akkor jön létre,
-> amikor azt archiválják a Zenodón. Amíg a v2.8.0 nincs archiválva, a koncepció
+> amikor azt archiválják a Zenodón. Amíg a v2.9.0 nincs archiválva, a koncepció
 > DOI-val hivatkozz rá.
 
 A géppel olvasható hivatkozási metaadatok a [`CITATION.cff`](../CITATION.cff) fájlban találhatók.

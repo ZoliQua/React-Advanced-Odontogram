@@ -74,8 +74,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Notes
 
-- Payload version unchanged at 2.19; no state, render or FHIR change. SVG-fingerprint, FHIR-golden and roundtrip-golden fixtures are
-  byte-identical.
+- Payload version unchanged at **2.22**; no state, render or FHIR-content change. The SVG-fingerprint, roundtrip-golden, API-surface and
+  shell-DOM parity fixtures are byte-identical.
+
+- The FHIR goldens and the published `fhir/` terminology artifacts were regenerated, and differ **only** in the package version string:
+  36 files, 71 lines, every one of them `"version": "2.8.0"` → `"2.9.0"`.
 
 ## [2.8.0] - 2026-10-28
 
